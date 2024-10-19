@@ -1,0 +1,14 @@
+.rectangle{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #E41B1B;
+    width: 8vw;
+    height: 0.8vw;
+    margin-top: 10px;
+}
+.line {
+    background-color: #E41B1B;
+    width: 35vw;
+    height: 0.1vw;
+}

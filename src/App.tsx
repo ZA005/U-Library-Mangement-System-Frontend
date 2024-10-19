@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LoginForm from './components/LoginForm';
+import { checkUserCredentials } from './services/UserService';
+import ListUserComponent from './components/ListUserComponent';
+import RegistrationPage from './components/RegisterComponent';
+import HomeScreen from './pages/HomeScreen'; // Import the HomeScreen component
 
 function App() {
-  const [count, setCount] = useState(0)
+  const handleLogin = async (libraryCardNumber: string, password: string) => {
+    try {
+      const response = await checkUserCredentials({ libraryCardNumber, password });
+      if (response) {
+        console.log('Login successful', response);
+        // Redirect to a different page or save user data
+      }
+    } catch (error) {
+      console.error('Login failed', error);
+    }
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/login' element={<LoginForm onLogin={handleLogin} />} />
+          <Route path='/register' element={<RegistrationPage />} />
+          <Route path='/users' element={<ListUserComponent />} />
+          <Route path='/' element={<HomeScreen />} /> {/* Home route to display the HomeScreen */}
+        </Routes>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
