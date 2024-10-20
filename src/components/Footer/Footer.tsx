@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
+import Copyright from './Copyright';
+import UNCLogo from '../../assets/images/unc-logo.png';
 
 const Footer: React.FC = () => {
   return (
@@ -8,7 +10,7 @@ const Footer: React.FC = () => {
 
         {/* LOGO ALIGNMENT */}
         <Box display="flex" justifyContent="center" alignItems="center">
-          <img src="src/assets/images/unc-logo.png" alt="University Logo" height={60} />
+          <img src={ UNCLogo} alt="University Logo" height={60} />
           <Box ml={2}>
             <Typography>UNIVERSITY OF</Typography>
             <Typography>NUEVA CACERES</Typography>
@@ -59,9 +61,7 @@ const Footer: React.FC = () => {
           </Link>
         </Box>
       </Box>
-      <Box display="flex" bgcolor="#282828" alignItems="center" justifyContent="center" padding="5px">
-        <Typography variant='caption'>&copy; 2023 University of Nueva Caceres. All Rights Reserved.</Typography>
-      </Box>
+      <Copyright/>
     </Box>
   );
 };

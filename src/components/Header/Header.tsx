@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppBar, Toolbar, Box, Typography } from '@mui/material';
 import Style from './Header.module.css';
+import LibraryLogo from '../../assets/images/lms-logo.png'
 
 // Passing of props so that the buttons can be dynamic
 interface HeaderProps {
@@ -12,7 +13,7 @@ const Header: React.FC<HeaderProps> = ({ buttons }) => {
     <AppBar position="static" color="transparent" elevation={0} className={Style.bottomLine}>
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Box display="flex" alignItems="center">
-          <img src="src/assets/images/lms-logo.png" alt="Library Logo" height={50} />
+          <img src={ LibraryLogo } alt="Library Logo" height={50} />
           <Box display="flex" flexDirection="column">
             <Typography
               variant="caption"
