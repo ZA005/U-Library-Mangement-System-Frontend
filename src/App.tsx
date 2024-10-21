@@ -4,8 +4,8 @@ import LoginForm from './components/LoginForm';
 import { checkUserCredentials } from './services/UserService';
 import ListUserComponent from './components/ListUserComponent';
 import RegistrationPage from './components/RegisterComponent';
-import HomeScreen from './pages/HomeScreen'; // Import the HomeScreen component
-
+import HomeScreen from './pages/HomeScreen';
+import LibraryCardGenerationPage from './pages/LibraryCardGeneration/LibraryCardGenerationPage';
 function App() {
   const handleLogin = async (libraryCardNumber: string, password: string) => {
     try {
@@ -26,6 +26,7 @@ function App() {
           <Route path='/login' element={<LoginForm onLogin={handleLogin} />} />
           <Route path='/register' element={<RegistrationPage />} />
           <Route path='/users' element={<ListUserComponent />} />
+          <Route path='/register/card' element={<LibraryCardGenerationPage />} />
           <Route path='/' element={<HomeScreen />} /> {/* Home route to display the HomeScreen */}
         </Routes>
       </BrowserRouter>

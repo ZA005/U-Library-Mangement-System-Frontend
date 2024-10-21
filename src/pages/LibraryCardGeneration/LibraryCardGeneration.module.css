@@ -1,0 +1,13 @@
+.buttonDesign{
+    background-color: #CC0000 !important;
+    width: 100vw !important;
+    @media (max-width: 600px){
+
+    }
+
+    @media (max-width: 900px){
+        width: 100% !important;
+    }
+
+    
+}
