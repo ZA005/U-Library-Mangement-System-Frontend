@@ -1,0 +1,15 @@
+@font-face {
+    font-family: Spartan;
+    src: url(../../assets/fonts/LeagueSpartan-Regular.ttf);
+}
+
+.spartan{
+    font-family: Spartan;
+}
+.title {
+    color: red;
+}
+.bottomLine{
+    border-bottom: 2px solid lightgrey;
+    margin-bottom: 30px;
+}

@@ -1,0 +1,26 @@
+.rectangle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #CC0000;
+    width: 8vw;
+    height: 1vw;
+    margin-top: 10px;
+    margin-bottom: 25px;
+
+    @media (max-width: 600px) {
+        width: 20vw;
+        height: 1.5vw;
+    }
+}
+
+.line {
+    background-color: #CC0000;
+    width: 35vw;
+    height: 0.1vw;
+
+    @media (max-width: 600px) {
+        width: 80vw;
+        height: 0.2vw;
+    }
+}
