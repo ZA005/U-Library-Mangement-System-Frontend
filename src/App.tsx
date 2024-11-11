@@ -1,12 +1,10 @@
 import './App.css';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LoginForm from './components/LoginForm';
+import { checkUserCredentials } from './services/UserService';
+import ListUserComponent from './components/ListUserComponent';
+import RegistrationPage from './components/RegisterComponent';
 import HomeScreen from './pages/HomeScreen'; // Import the HomeScreen component
-import { AuthProvider } from './contexts/AuthContext';
-import LibraryCardGenerationPage from './pages/LibraryCardGenerationPage';
-import UserService from './services/UserService';
-import Register from './pages/RegistrationPage';
-import VerifyStudent from './pages/VerifyUser';
-import VerifyOtp from './pages/VerifyOtp';
 
 function App() {
 
@@ -17,7 +15,8 @@ function App() {
           <Routes>
 
             {/* PUBLIC ACCESS  */}
-            <Route path='/' element={<HomeScreen />} /> {/* Home route to display the HomeScreen */}
+            <Route path='/register/card' element={<LibraryCardGenerationPage />} />
+          <Route path='/' element={<HomeScreen />} /> {/* Home route to display the HomeScreen */}
 
             <Route path='/verify' element={<VerifyStudent />} /> {/* Registration route to display the Register component */}
             <Route path="/verify-otp" element={<VerifyOtp />} />

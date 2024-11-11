@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     TextField,
@@ -8,13 +8,16 @@ import {
     MenuItem,
     Grid
 } from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import UserService from '../services/UserService';
 
 // Define departments and courses for the select dropdown
 const departments = ['Department of Computer Science', 'Department of Engineering', 'Department of Business'];
 const courses = ['BSIT', 'BSCS', 'BSBA', 'BSME'];
 
 const Register: React.FC = () => {
-    // State for form data
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         studentId: '',
         libraryCardNumber: '',
@@ -29,33 +32,60 @@ const Register: React.FC = () => {
         password: '',
     });
 
-    // State for error handling (can be used for validation)
     const [error, setError] = useState<string | null>(null);
 
-    // Handle input change for the form
+    // Simulate the process of confirming OTP and enrollment
+    const studentIdFromOTP = '16-07984'; // This would come from the OTP verification process
+
+    useEffect(() => {
+        // Fetch user details after OTP verification and enrollment confirmation
+        const fetchUserDetails = async () => {
+            try {
+                const response = await axios.get(`${UserService.BASE_URL}/details/${studentIdFromOTP}`);
+                if (response.data) {
+                    setFormData(prevData => ({
+                        ...prevData,
+                        ...response.data,
+                    }));
+                }
+            } catch (error) {
+                setError('Error fetching user details');
+            }
+        };
+
+        fetchUserDetails();
+    }, [studentIdFromOTP]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Handle form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validation logic goes here (e.g., required fields, email format, password strength, etc.)
+        // Validate required fields
         if (!formData.email || !formData.password || !formData.studentId) {
             setError('Please fill in all required fields.');
             return;
         }
 
+        // Generate library card number (based on studentId and current date)
+        const currentDate = new Date();
+        const dateStamp = currentDate.getFullYear().toString() +
+            (currentDate.getMonth() + 1).toString().padStart(2, '0') +
+            currentDate.getDate().toString().padStart(2, '0');
+        const libraryCardNumber = `${formData.studentId}-${dateStamp}`;
+
+        setFormData(prevData => ({
+            ...prevData,
+            libraryCardNumber
+        }));
+
         try {
-            // Call API or handle form submission logic here
+            // Submit form data (including libraryCardNumber)
             console.log('Form Submitted:', formData);
-
-            // Reset error
             setError(null);
-
-            // Clear form after submission
             setFormData({
                 studentId: '',
                 libraryCardNumber: '',
@@ -69,6 +99,7 @@ const Register: React.FC = () => {
                 email: '',
                 password: '',
             });
+            navigate('/dashboard'); // Redirect to the dashboard after successful submission
         } catch (error) {
             setError('Error submitting form.');
         }
@@ -97,10 +128,9 @@ const Register: React.FC = () => {
                         <TextField
                             label="Library Card Number"
                             name="libraryCardNumber"
-                            value={formData.libraryCardNumber}
-                            onChange={handleChange}
+                            value={formData.libraryCardNumber} // Display generated library card number
                             fullWidth
-                            required
+                            disabled
                         />
                     </Grid>
 
@@ -195,8 +225,7 @@ const Register: React.FC = () => {
 
                     <Grid item xs={12}>
                         <TextField
-                            label="Email Address"
-                            type="email"
+                            label="Email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
@@ -208,27 +237,23 @@ const Register: React.FC = () => {
                     <Grid item xs={12}>
                         <TextField
                             label="Password"
-                            type="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
+                            type="password"
                             fullWidth
                             required
                         />
                     </Grid>
+
+                    <Grid item xs={12}>
+                        <Button variant="contained" color="primary" type="submit" fullWidth>
+                            Register
+                        </Button>
+                    </Grid>
                 </Grid>
 
-                {/* Show error if any */}
-                {error && (
-                    <Typography variant="body2" color="error" gutterBottom>
-                        {error}
-                    </Typography>
-                )}
-
-                {/* Submit Button */}
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-                    Register
-                </Button>
+                {error && <Typography color="error">{error}</Typography>}
             </form>
         </Container>
     );
