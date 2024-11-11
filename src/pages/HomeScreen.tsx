@@ -24,7 +24,7 @@ const HomeScreen: React.FC = () => {
   };
 
   const handleSignUp = () => {
-    navigate('/register');
+    navigate('/verify');
   };
 
   return (
