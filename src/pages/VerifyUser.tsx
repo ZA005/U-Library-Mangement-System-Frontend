@@ -9,6 +9,8 @@ const VerifyStudent: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+
     const handleSubmit = async (): Promise<void> => {
         // e.preventDefault();
         setError(null);
@@ -19,9 +21,10 @@ const VerifyStudent: React.FC = () => {
             const data = await UserService.verifyUser(studentId);
             // Check if the data contains student information, meaning verification was successful
             if (data && data.id) {
-                // If the OTP is sent, navigate to the OTP verification page with the studentId
+                // If the OTP is sent, navigate to the OTP verification page
+                // localStorage.setItem('studentId', data.studentId);
                 localStorage.setItem('emailAdd', data.emailAdd);
-                navigate('/verify-otp');
+                navigate('/verify-otp', { state: { userData: data } });
             } else {
                 // If the student is not found or enrolled, show an error
                 setError('Student not found or not currently enrolled.');

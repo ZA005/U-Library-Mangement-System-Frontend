@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import UserService from "../services/UserService";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 const VerifyOtp: React.FC = () => {
     const [otp, setOtp] = useState<string>(''); // Store OTP input
     const [error, setError] = useState<string | null>(null); // Store error messages
     const [loading, setLoading] = useState<boolean>(false); // Show loading state
+    const location = useLocation();
+    const userData = location.state?.userData;
     const navigate = useNavigate();
 
     // Get the email from localStorage
@@ -29,7 +32,7 @@ const VerifyOtp: React.FC = () => {
 
             if (response.success === "true") {
                 // OTP verified successfully, navigate to the next page (e.g., dashboard)
-                navigate('/register');
+                navigate('/register', { state: { userData } });
             } else {
                 // If OTP verification failed, display the error message
                 setError(response.message || 'Invalid OTP. Please try again.');

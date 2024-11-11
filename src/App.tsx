@@ -1,15 +1,12 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
-import UserService, { checkUserCredentials } from './services/UserService';
-import ListUserComponent from './components/ListUserComponent';
-import RegistrationPage from './components/RegisterComponent';
 import HomeScreen from './pages/HomeScreen'; // Import the HomeScreen component
 import { AuthProvider } from './contexts/AuthContext';
 import LibraryCardGenerationPage from './pages/LibraryCardGeneration/LibraryCardGenerationPage';
-import Register from './pages/RegistrationPage';
+import Register from './components/RegistrationForm/RegistrationForm';
 import VerifyOtp from './pages/VerifyOtp';
 import VerifyStudent from './pages/VerifyUser';
+import UserService from './services/UserService';
 
 function App() {
 

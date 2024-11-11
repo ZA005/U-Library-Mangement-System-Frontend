@@ -1,18 +1,14 @@
 import axios from "axios";
 
 
-// interface UserData {
-//     libraryCardNumber: string;
-//     password: string;
-//     // Add other fields as necessary for user registration
-// }
+interface UserData {
+    libraryCardNumber: string;
+    schoolId: string;
+    role: string;
+    password: string;
+}
 
-// interface UserResponse {
-//     message: string;
-//     token: string;
-//     role: string;
-//     // Include other fields as necessary based on your API response
-// }
+
 
 class UserService {
     static BASE_URL = "http://localhost:8080";
@@ -20,6 +16,12 @@ class UserService {
     static async login(libraryCardNumber: string, password: string) {
         const response = await axios.post(`${UserService.BASE_URL}/user/auth/login`, { libraryCardNumber, password });
         console.log('Login Response:', response); //Debugging
+        return response.data;
+    }
+
+    static async register(userData: UserData) {
+        console.log('User Data:', userData);  // Log user data to check before the request
+        const response = await axios.post(`${UserService.BASE_URL}/user/auth/register`, userData);
         return response.data;
     }
 
@@ -34,11 +36,16 @@ class UserService {
         console.log("Verifying OTP with email:", emailAdd, "and OTP:", otp);
 
         const response = await axios.post(`${UserService.BASE_URL}/verify/confirm-otp`, {
-                emailAdd, // Send 'email' as a query parameter
-                otp    // Send 'otp' as a query parameter
+            emailAdd, // Send 'email' as a query parameter
+            otp    // Send 'otp' as a query parameter
         });
         return response.data;
     }
+
+
+
+
+
 
     /** AUTHENTICATION CHECKER */
     static logout(): void {

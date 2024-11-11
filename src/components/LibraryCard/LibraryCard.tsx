@@ -24,7 +24,7 @@ const LibraryCard: React.FC = () => {
 
       {/* QR Code Section */}
       <Box className={Style.qrSection}>
-        <Box className= { Style.qrImage }>
+        <Box className={Style.qrImage}>
           <QRCodeSVG value="85462698423684" size={128} />
         </Box>
 
@@ -32,7 +32,7 @@ const LibraryCard: React.FC = () => {
       </Box>
 
       {/* Details Section */}
-      <Box className={Style.detailsSection} display= "flex" >
+      <Box className={Style.detailsSection} display="flex" >
         <Typography className={Style.detailLabel}>Name:</Typography>
         <Typography className={Style.detailLabel}>Year Level:</Typography>
         <Typography className={Style.detailLabel}>Department:</Typography>
