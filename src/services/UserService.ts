@@ -1,40 +1,81 @@
 import axios from "axios";
- 
-const REST_API_BASE_URL = 'http://localhost:8080/api/users';
 
-export interface LoginCredentials {
-    libraryCardNumber: string;
-    password: string;
-}
 
-export interface RegistrationFormData {
+interface UserData {
     libraryCardNumber: string;
-    password: string;
     schoolId: string;
-    userType: string;
+    role: string;
+    password: string;
 }
 
 
-export const checkUserCredentials = async (credentials: LoginCredentials) => {
-    try {
-        const response = await axios.post(`${REST_API_BASE_URL}/login`, credentials);
-        return response.data;  // return user data if the credentials are correct
-    } catch (error) {
-        // Handle errors, e.g. incorrect credentials, user not found, etc.
-        console.error("Error verifying user credentials", error);
-        throw error;
-    }
-};
 
-export const listUsers = () => axios.get(REST_API_BASE_URL);
+class UserService {
+    static BASE_URL = "http://localhost:8080";
 
-// Function to register a new user
-export const registerUser = async (formData: RegistrationFormData) => {
-    try {
-        const response = await axios.post(`${REST_API_BASE_URL}/register`, formData);
+    static async login(libraryCardNumber: string, password: string) {
+        const response = await axios.post(`${UserService.BASE_URL}/user/auth/login`, { libraryCardNumber, password });
+        console.log('Login Response:', response); //Debugging
         return response.data;
-    } catch (error) {
-        console.error("Error registering user", error);
-        throw error;
     }
-};
+
+    static async register(userData: UserData) {
+        console.log('User Data:', userData);  // Log user data to check before the request
+        const response = await axios.post(`${UserService.BASE_URL}/user/auth/register`, userData);
+        return response.data;
+    }
+
+    static async verifyUser(id: string) {
+        const response = await axios.get(`${UserService.BASE_URL}/verify/${id}`);
+        console.log('Verify Student Response:', response); //Debugging
+        return response.data;
+    }
+
+    static async verifyOTP(emailAdd: string, otp: string) {
+
+        console.log("Verifying OTP with email:", emailAdd, "and OTP:", otp);
+
+        const response = await axios.post(`${UserService.BASE_URL}/verify/confirm-otp`, {
+            emailAdd, // Send 'email' as a query parameter
+            otp    // Send 'otp' as a query parameter
+        });
+        return response.data;
+    }
+
+
+
+
+
+
+    /** AUTHENTICATION CHECKER */
+    static logout(): void {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+    }
+
+    static isAuthenticated(): boolean {
+        const token = localStorage.getItem('token');
+        return !!token;
+    }
+
+    static isAdmin(): boolean {
+        const role = localStorage.getItem('role');
+        return role === 'ADMIN';
+    }
+
+    static isUser(): boolean {
+        const role = localStorage.getItem('role');
+        return role === 'STUDENT';
+    }
+
+    static adminOnly(): boolean {
+        return this.isAuthenticated() && this.isAdmin();
+    }
+
+    static userOnly(): boolean {
+        return this.isAuthenticated() && this.isUser();
+    }
+}
+
+export default UserService;
+
