@@ -131,15 +131,19 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
           </Button>
 
           <Typography variant="body2" className="modal-footer">
-            Don't have an account?{' '}
-            <Button
-              color="inherit"
-              sx={{ color: '#d32f2f', textDecoration: 'underline' }}
-              onClick={handleSignUp}
-            >
-              Sign up
-            </Button>
-          </Typography>
+  Don't have an account?{' '}
+  <Button
+    color="inherit"
+    sx={{ color: '#d32f2f', textDecoration: 'underline' }}
+    onClick={() => {
+      onClose(); // Close the login modal
+      navigate('/verify'); // Redirect to the verify user page
+    }}
+  >
+    Sign up
+  </Button>
+</Typography>
+
         </Box>
       </Box>
     </Modal>
