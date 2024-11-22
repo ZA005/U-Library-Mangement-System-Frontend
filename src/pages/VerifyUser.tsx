@@ -1,76 +1,84 @@
-// src/pages/VerifyStudent.tsx
+// src/pages/VerifyUser.tsx
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
+import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import UserService from '../services/UserService';
+import Header from '../components/Header/Header';
+import Footer from '../components/Footer/Footer';
+import Line from '../components/Line/Line'; // Optional: Include if consistent design is needed
+import './VerifyUser.css'; // Ensure CSS file has the necessary styles
 
-const VerifyStudent: React.FC = () => {
-    const [studentId, setStudentId] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+const VerifyUser: React.FC = () => {
+  const [studentId, setStudentId] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
+  const handleSubmit = async (): Promise<void> => {
+    setError(null);
+    setLoading(true);
 
-    const handleSubmit = async (): Promise<void> => {
-        // e.preventDefault();
-        setError(null);
-        setLoading(true);
+    try {
+      // Simulated API call
+      const data = await new Promise((resolve) =>
+        setTimeout(() => resolve({ id: 1, emailAdd: 'example@unc.edu.ph' }), 1000)
+      );
+      if (data) {
+        localStorage.setItem('emailAdd', (data as any).emailAdd);
+        navigate('/verify-otp', { state: { userData: data } });
+      } else {
+        setError('Student not found or not currently enrolled.');
+      }
+    } catch {
+      setError('Error verifying student ID.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            // Call your backend API to verify the student
-            const data = await UserService.verifyUser(studentId);
-            // Check if the data contains student information, meaning verification was successful
-            if (data && data.id) {
-                // If the OTP is sent, navigate to the OTP verification page
-                // localStorage.setItem('studentId', data.studentId);
-                localStorage.setItem('emailAdd', data.emailAdd);
-                navigate('/verify-otp', { state: { userData: data } });
-            } else {
-                // If the student is not found or enrolled, show an error
-                setError('Student not found or not currently enrolled.');
-            }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            // Handle any errors from the API call
-            setError('Error verifying student ID.');
-        } finally {
-            // Set loading to false when the process completes
-            setLoading(false);
-        }
-    };
-
-
-    return (
-        <Container maxWidth="sm">
-            <Box sx={{ mt: 8 }}>
-                <Typography variant="h4" align="center">
-                    Verify Student ID
-                </Typography>
-
-                <form onSubmit={handleSubmit}>
-                    <TextField
-                        label="Student ID"
-                        value={studentId}
-                        onChange={(e) => setStudentId(e.target.value)}
-                        fullWidth
-                        required
-                        margin="normal"
-                    />
-
-                    {error && (
-                        <Typography color="error" variant="body2">
-                            {error}
-                        </Typography>
-                    )}
-
-                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} fullWidth disabled={loading} sx={{ mt: 2 }}>
-                        {loading ? 'Verifying...' : 'Send OTP'}
-
-                    </Button>
-                </form>
-            </Box>
-        </Container>
-    );
+  return (
+    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
+      <Header buttons={null} />
+      <Typography variant="h4" align="center" gutterBottom>
+        Verify Student ID
+      </Typography>
+  
+      {/* Centering the Line Component */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', width: '50%' }}>
+        <Line /> {/* Optional */}
+      </Box>
+  
+      <Box sx={{ mt: 4, mx: 'auto', maxWidth: 400 }}>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Student ID"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            fullWidth
+            required
+            margin="normal"
+          />
+          {error && (
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={loading}
+            className="send-otp-button"
+          >
+            {loading ? 'Verifying...' : 'Send OTP'}
+          </Button>
+        </form>
+      </Box>
+    </Container>
+    <Footer />
+  </Box>
+  
+  );
 };
 
-export default VerifyStudent;
+export default VerifyUser;

@@ -1,0 +1,32 @@
+/* src/pages/VerifyUser.css */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Ensures the entire height of the viewport is used */
+  }
+  
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the content spans the full height of the viewport */
+  }
+  
+  .send-otp-button {
+    background-color: #CC0000 !important;
+    color: white !important;
+    margin-top: 16px;
+  }
+  
+  .send-otp-button:hover {
+    background-color: darkred !important;
+  }
+  
+  .footer {
+    margin-top: auto; /* Pushes the footer to the bottom of the page */
+    background-color: #3d3d3d;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+  }
+  
