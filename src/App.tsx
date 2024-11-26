@@ -4,8 +4,8 @@ import HomeScreen from './pages/HomeScreen'; // Import the HomeScreen component
 import { AuthProvider } from './contexts/AuthContext';
 import LibraryCardGenerationPage from './pages/LibraryCardGeneration/LibraryCardGenerationPage';
 import Register from './components/RegistrationForm/RegistrationForm';
-import VerifyOtp from './pages/VerifyOtp';
-import VerifyStudent from './pages/VerifyUser';
+import VerifyOtp from './components/Verify/VerifyOtp';
+import VerifyStudent from './components/Verify/VerifyUser';
 import UserService from './services/UserService';
 
 function App() {

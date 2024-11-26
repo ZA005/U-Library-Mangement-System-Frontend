@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
-import UserService from "../services/UserService";
+import UserService from "../../services/UserService";
 import { useLocation, useNavigate } from "react-router-dom";
+
+
 
 
 const VerifyOtp: React.FC = () => {

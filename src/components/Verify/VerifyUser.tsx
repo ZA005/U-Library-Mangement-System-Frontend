@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
-import Line from '../components/Line/Line'; // Optional: Include if consistent design is needed
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+import Line from '../Line/Line'; // Optional: Include if consistent design is needed
 import './VerifyUser.css'; // Ensure CSS file has the necessary styles
 
 const VerifyUser: React.FC = () => {
