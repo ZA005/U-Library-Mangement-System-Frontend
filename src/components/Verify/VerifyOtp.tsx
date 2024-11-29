@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import UserService from "../../services/UserService";
 import { useLocation, useNavigate } from "react-router-dom";
-
-
-
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
+import "./VerifyOtp.css";
 
 const VerifyOtp: React.FC = () => {
-    const [otp, setOtp] = useState<string>(''); // Store OTP input
+    const [otp, setOtp] = useState<string>(""); // Store OTP input
     const [error, setError] = useState<string | null>(null); // Store error messages
     const [loading, setLoading] = useState<boolean>(false); // Show loading state
     const location = useLocation();
@@ -15,7 +15,7 @@ const VerifyOtp: React.FC = () => {
     const navigate = useNavigate();
 
     // Get the email from localStorage
-    const emailAdd = localStorage.getItem('emailAdd');
+    const emailAdd = localStorage.getItem("emailAdd");
 
     const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
@@ -23,7 +23,7 @@ const VerifyOtp: React.FC = () => {
         setLoading(true);
 
         if (!emailAdd) {
-            setError('Email is missing. Please make sure you are logged in.');
+            setError("Email is missing. Please make sure you are logged in.");
             setLoading(false);
             return;
         }
@@ -34,39 +34,46 @@ const VerifyOtp: React.FC = () => {
 
             if (response.success === "true") {
                 // OTP verified successfully, navigate to the next page (e.g., dashboard)
-                navigate('/register', { state: { userData } });
+                navigate("/register", { state: { userData } });
             } else {
                 // If OTP verification failed, display the error message
-                setError(response.message || 'Invalid OTP. Please try again.');
+                setError(response.message || "Invalid OTP. Please try again.");
             }
         } catch (error) {
-            setError('Error verifying OTP. Please try again later.');
+            setError("Error verifying OTP. Please try again later.");
         } finally {
             setLoading(false);
         }
     };
 
-
-
     return (
-        <div>
-            <h2>Verify OTP</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Enter OTP:</label>
-                    <input
-                        type="text"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="Enter the OTP you received"
-                        required
-                    />
-                </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Verifying...' : 'Submit'}
-                </button>
-            </form>
+        <div className="verify-otp-page">
+            <Header buttons={null} />
+            <div className="verify-otp-container">
+                <h2 className="verify-otp-title">Verify OTP</h2>
+                {error && <p className="verify-otp-error">{error}</p>}
+                <form onSubmit={handleSubmit} className="verify-otp-form">
+                    <div className="form-group">
+                        <label className="form-label">Enter OTP:</label>
+                        <input
+                            type="text"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            placeholder="Enter the OTP you received"
+                            required
+                            className="form-input"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="verify-otp-button"
+                    >
+                        {loading ? "Verifying..." : "Submit"}
+                    </button>
+                </form>
+            </div>
+            <Footer />
         </div>
     );
 };
