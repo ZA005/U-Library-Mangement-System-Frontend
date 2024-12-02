@@ -16,7 +16,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import UserService from '../../services/UserService';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
-import './RegistrationForm.css';
+import Style from './RegistrationForm.module.css';
 
 const RegisterForm: React.FC = () => {
   const location = useLocation();
@@ -113,7 +113,7 @@ const RegisterForm: React.FC = () => {
     <>
       <Header buttons={[]} />
 
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" className={ Style.container }>
         <Typography variant="h4" align="center" gutterBottom>
           Register
         </Typography>

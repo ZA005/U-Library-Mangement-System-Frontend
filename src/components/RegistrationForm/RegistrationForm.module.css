@@ -44,6 +44,21 @@ html, body, #root {
     margin-top: 40px; /* Adds spacing between form content and footer */
 }
 
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    margin-bottom: 100px;
+    padding: 20px 0px 20px 0px;
+    border: 1px solid rgb(179, 179, 179);
+    border-radius: 10px;
+}
+
+
+
+
 /* Adjustments for small screens */
 @media (max-width: 600px) {
     .register-form-container {
