@@ -7,7 +7,10 @@ import Register from './components/RegistrationForm/RegistrationForm';
 import VerifyOtp from './components/Verify/VerifyOtp';
 import VerifyStudent from './components/Verify/VerifyUser';
 import UserService from './services/UserService';
-
+import CurriculumManagement from './pages/Curriculum-Management/CurriculumManagement';
+import ManageDepartments from './pages/CurriculumManagementButtonScreens/ManageDepartments';
+import ManageCourses from './pages/CurriculumManagementButtonScreens/ManageCourse';
+import ManageSubjects  from './pages/CurriculumManagementButtonScreens/ManageSubjects';
 function App() {
 
   return (
@@ -19,7 +22,10 @@ function App() {
             {/* PUBLIC ACCESS  */}
             <Route path='/register/card' element={<LibraryCardGenerationPage />} />
             <Route path='/' element={<HomeScreen />} /> {/* Home route to display the HomeScreen */}
-
+            <Route path='/curriculummanagement' element={<CurriculumManagement />} />
+            <Route path='/curriculummanagement/manage/departments' element={<ManageDepartments />} />
+            <Route path='/curriculummanagement/manage/courses' element={<ManageCourses />} />
+            <Route path='/curriculummanagement/manage/subjects' element={<ManageSubjects />} />
             <Route path='/verify' element={<VerifyStudent />} /> {/* Registration route to display the Register component */}
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path='/register' element={<Register />} />
