@@ -1,55 +1,113 @@
 import React from 'react';
-import { Box, Container, Typography, Button } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import { Box, Container, Typography, } from "@mui/material";
 import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer';
-import './LandingPage.css'; // Import the CSS file
+import Footer from '../../components/Footer/Footer'; // Ensure Footer is correctly imported
+import Line from "../../components/Line/Line";
+import styles from "./styles.module.css";
 
 const LandingPage: React.FC = () => {
-  return (
-    <Box className="landing-page-container">
-      <Container maxWidth="lg" className="landing-content">
-        {/* Header */}
-        <Header buttons={null} />
+    const navigate = useNavigate();
 
-        {/* Main Content */}
-        <Box className="landing-main-content">
-          <Typography variant="h3" className="landing-title">
-            Admin Dashboard
-          </Typography>
-          <Typography variant="body1" className="landing-description">
-            Welcome! This is the Admins Dashboard, your central hub for managing the Library Management System (LMS).
-          </Typography>
+    return (
+        <Box display="flex" flexDirection="column" height="100vh">
+            <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
+                <Header
+                    buttons={
+                        <>
+                        </>
+                    }
+                />
 
-          {/* Centering the Line Component */}
-          <Box className="line-container">
-            {/* Line component, styled as needed */}
-          </Box>
+                <Typography
+                    variant="h4"
+                    gutterBottom
+                    sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
+                    fontWeight="bold"
+                >
+                    Admin Landing Page
+                </Typography>
+                <Line />
 
-          {/* Action Buttons */}
-          <Box className="action-buttons-container">
-            <Button variant="contained" className="action-button">Item Search</Button>
-            <Button variant="contained" className="action-button">Cataloging</Button>
-            <Button variant="contained" className="action-button">Circulation</Button>
-            <Button variant="contained" className="action-button">Book Reference</Button>
-            <Button variant="contained" className="action-button">Acquisition</Button>
-          </Box>
+                <Box className={styles.container}>
+                    {/* Left Content */}
+                   {/* Left Content */}
+<Box className={styles.leftContent}>
+    <Typography variant="body1">
+        Welcome! This is the Admins Dashboard, your central hub for managing the Library Management System (LMS).
+    </Typography>
 
-          {/* Additional Links */}
-          <Box className="links-container">
-            <Typography variant="body2" className="help-link">
-              Stuck? <a href="https://example.com" target="_blank" rel="noopener noreferrer">Click here for help!</a>
+    <Typography variant="body1">
+        With just a few clicks, you can:
+    </Typography>
+    <ul>
+        <li className={styles.listItem}>
+            <Typography variant="body1">
+                <strong>Cataloging:</strong> Organize and maintain the library's collection for easy access.
             </Typography>
-            <Typography variant="body2" className="additional-links">
-              About LMS | LMS Administration | Authorities | Patrons | Serials
+        </li>
+        <li className={styles.listItem}>
+            <Typography variant="body1">
+                <strong>Circulation:</strong> Manage lending, returns, and user accounts.
             </Typography>
-          </Box>
+        </li>
+        <li className={styles.listItem}>
+            <Typography variant="body1">
+                <strong>Book Reference:</strong> Provide quick access to resource information and recommendations.
+            </Typography>
+        </li>
+        <li className={styles.listItem}>
+            <Typography variant="body1">
+                <strong>Acquisition:</strong> Handle procurement of books and digital materials.
+            </Typography>
+        </li>
+    </ul>
+
+    {/* Additional Links */}
+    <Box className={styles.linksContainer}>
+        <Box className={styles.additionalLinks}>
+            <ul>
+                <li><a href="/help" onClick={() => navigate("/advanced-search")}>Need help? Click here for help!</a></li>
+                <li><a href="/advanced-search" onClick={() => navigate("/advanced-search")}>Advanced Search</a></li>
+                <li><a href="/about-lms" onClick={() => navigate("/about-lms")}>About LMS</a></li>
+                <li><a href="/lms-administration" onClick={() => navigate("/lms-administration")}>LMS Administration</a></li>
+                <li><a href="/authorities" onClick={() => navigate("/authorities")}>Authorities</a></li>
+                <li><a href="/patrons" onClick={() => navigate("/patrons")}>Patrons</a></li>
+                <li><a href="/serials" onClick={() => navigate("/serials")}>Serials</a></li>
+            </ul>
         </Box>
-      </Container>
-
-      {/* Footer */}
-      <Footer />
     </Box>
-  );
+</Box>
+
+                    {/* Right Content */}
+                    <Box className={styles.rightContent}>
+                        <Box className={styles.buttonContainer}>
+                            <button className={styles.manageButton}>
+                                Cataloging
+                            </button>
+                        </Box>
+
+                        <Box className={styles.buttonContainer}>
+                            <button className={styles.manageButton}>Circulation</button>
+                        </Box>
+
+                        <Box className={styles.buttonContainer}>
+                            <button className={styles.manageButton}>Book Reference</button>
+                        </Box>
+
+                        <Box className={styles.buttonContainer}>
+                            <button className={styles.manageButton}>
+                               Aquisition
+                            </button>
+                        </Box>
+                    </Box>
+                </Box>
+            </Container>
+
+            {/* Footer */}
+            <Footer />
+        </Box>
+    );
 };
 
 export default LandingPage;
