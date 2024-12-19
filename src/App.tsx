@@ -12,6 +12,11 @@ import ManageDepartments from './pages/CurriculumManagementButtonScreens/ManageD
 import ManageCourses from './pages/CurriculumManagementButtonScreens/ManageCourse';
 import ManageSubjects from './pages/CurriculumManagementButtonScreens/ManageSubjects';
 import LandingPage from './pages/LandingPageAdmin/LandingPage'; // Import the LandingPage component
+import CirculationDashboard from './pages/CirculationAdmin/CirculationDashboard';
+import ManageCirculation from './pages/ManageCirculation/ManageCirculation';
+import ManageReservation from './pages/ManageReservation/ManageReservation';
+import OverseeOverdue from './pages/OverseeOverdues/OverseeOverdues';
+
 
 function App() {
   return (
@@ -30,6 +35,11 @@ function App() {
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path='/register' element={<Register />} />
             <Route path='/landing' element={<LandingPage />} /> {/* New route for admin landing page */}
+            <Route path='/circulation' element={<CirculationDashboard />} /> {/* New route for admin landing page */}
+            <Route path='/manage-circulation' element={<ManageCirculation />} />
+            <Route path='/manage-reservation' element={<ManageReservation />} />
+            <Route path='/oversee-overdue' element={<OverseeOverdue />} />
+            
 
             {/* Protected pages only registered users can access */}
             {UserService.userOnly() && (

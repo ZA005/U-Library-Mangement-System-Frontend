@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { Box, Container, Typography, } from "@mui/material";
 import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer'; // Ensure Footer is correctly imported
+import Footer from '../../components/Footer/Footer'; 
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
 
@@ -43,7 +43,7 @@ const LandingPage: React.FC = () => {
     <ul>
         <li className={styles.listItem}>
             <Typography variant="body1">
-                <strong>Cataloging:</strong> Organize and maintain the library's collection for easy access.
+                <strong>Cataloguing:</strong> Organize and maintain the library's collection for easy access.
             </Typography>
         </li>
         <li className={styles.listItem}>
@@ -53,12 +53,12 @@ const LandingPage: React.FC = () => {
         </li>
         <li className={styles.listItem}>
             <Typography variant="body1">
-                <strong>Book Reference:</strong> Provide quick access to resource information and recommendations.
+                <strong>Curriculum Management:</strong> Provide quick access to resource information and recommendations.
             </Typography>
         </li>
         <li className={styles.listItem}>
             <Typography variant="body1">
-                <strong>Acquisition:</strong> Handle procurement of books and digital materials.
+                <strong>Aquisition:</strong> Handle procurement of books and digital materials.
             </Typography>
         </li>
     </ul>
@@ -88,12 +88,24 @@ const LandingPage: React.FC = () => {
                         </Box>
 
                         <Box className={styles.buttonContainer}>
-                            <button className={styles.manageButton}>Circulation</button>
-                        </Box>
+    <button
+        className={styles.manageButton}
+        onClick={() => navigate('/circulation')}
+    >
+        Circulation
+    </button>
+</Box>
 
-                        <Box className={styles.buttonContainer}>
-                            <button className={styles.manageButton}>Book Reference</button>
-                        </Box>
+
+<Box className={styles.buttonContainer}>
+    <button
+        className={styles.manageButton}
+        onClick={() => navigate('/curriculummanagement')}
+    >
+        Curriculum Management
+    </button>
+</Box>
+
 
                         <Box className={styles.buttonContainer}>
                             <button className={styles.manageButton}>
