@@ -8,6 +8,8 @@ interface CirculationIssueBookModalProps {
     BookTitle: string;
     Author: string;
     Borrower: string;
+    IDnumber: string;
+    Department: string;
     UserType: string;
     DateandTimeBorrowed: string;
     DateandTimeReturned: string;
@@ -23,6 +25,8 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   const [bookTitle, setBookTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [borrower, setBorrower] = useState("");
+  const [idNumber, setIDnumber] = useState("");
+  const [department, setDepartment] = useState("");
   const [userType, setUserType] = useState("");
   const [dateandTimeBorrowed, setDateandTimeBorrowed] = useState("");
   const [dateandTimeReturned, setDateandTimeReturned] = useState("");
@@ -33,6 +37,8 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
       BookTitle: bookTitle,
       Author: author,
       Borrower: borrower,
+      IDnumber: idNumber,
+      Department: department,
       UserType: userType,
       DateandTimeBorrowed: dateandTimeBorrowed,
       DateandTimeReturned: dateandTimeReturned,
@@ -65,6 +71,19 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
           type: "text",
           value: borrower,
           onChange: setBorrower,
+        },
+        {
+          label: "ID Number",
+          type: "text",
+          value: idNumber,
+          onChange: setIDnumber,
+        },
+        {
+          label: "Department",
+          type: "select",
+          value: department,
+          onChange: setDepartment,
+          options: ["SCIS", "CEA","NU","ACCOUNTING","PHOLSCI"],
         },
         {
           label: "User Type",

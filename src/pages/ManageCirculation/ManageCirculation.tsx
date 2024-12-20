@@ -37,6 +37,8 @@ const ManageCirculation: React.FC = () => {
       BookTitle: "Greek Mythology",
       Author: "Unknown",
       Borrower: "Mikyla Grace",
+      IDnumber: "13-14356",
+      Department: "SCIS",
       UserType: "Student",
       DateandTimeBorrowed: "March 5, 2024",
       DateandTimeReturned: "",
@@ -113,6 +115,8 @@ const ManageCirculation: React.FC = () => {
                 <TableCell>Book Title</TableCell>
                 <TableCell>Author</TableCell>
                 <TableCell>Borrower</TableCell>
+                <TableCell>ID number</TableCell>
+                <TableCell>Department</TableCell>
                 <TableCell>User Type</TableCell>
                 <TableCell>Date & Time Borrowed</TableCell>
                 <TableCell>Date & Time Returned</TableCell>
@@ -126,6 +130,8 @@ const ManageCirculation: React.FC = () => {
                   <TableCell>{book.BookTitle}</TableCell>
                   <TableCell>{book.Author}</TableCell>
                   <TableCell>{book.Borrower}</TableCell>
+                  <TableCell>{book.IDnumber}</TableCell>
+                  <TableCell>{book.Department}</TableCell>
                   <TableCell>{book.UserType}</TableCell>
                   <TableCell>{book.DateandTimeBorrowed}</TableCell>
                   <TableCell>{book.DateandTimeReturned}</TableCell>
