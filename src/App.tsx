@@ -16,6 +16,10 @@ import CirculationDashboard from './pages/CirculationAdmin/CirculationDashboard'
 import ManageCirculation from './pages/ManageCirculation/ManageCirculation';
 import ManageReservation from './pages/ManageReservation/ManageReservation';
 import OverseeOverdue from './pages/OverseeOverdues/OverseeOverdues';
+import BookDetails from './components/BookDetails/BookDetails';
+import BookForm from './components/BookForm/BookForm';
+import PageNotFound from './components/PageNotFound/PageNotFound';
+import BookSearch from './pages/BookSearch';
 
 
 function App() {
