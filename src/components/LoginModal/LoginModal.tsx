@@ -33,7 +33,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
 
       if (userData.token) {
         login(userData.token, userData.role); // Use the context's login function
-        navigate('/library'); // Navigate to the profile page on successful login
+        navigate('/search-book'); // Navigate to the profile page on successful login
         onClose(); // Close the modal after successful login
       } else {
         setError(userData.message); // Handle error message from the server
@@ -48,7 +48,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
   };
 
   const handleSignUp = () => {
-    navigate('/register');
+    navigate('/verify');
   };
 
   return (

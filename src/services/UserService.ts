@@ -1,14 +1,11 @@
 import axios from "axios";
 
-
 interface UserData {
     libraryCardNumber: string;
     schoolId: string;
     role: string;
     password: string;
 }
-
-
 
 class UserService {
     static BASE_URL = "http://localhost:8080";
@@ -51,7 +48,12 @@ class UserService {
     static logout(): void {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+
+        // Log the result to see if the items were removed
+        console.log('Token removed:', !localStorage.getItem('token'));
+        console.log('Role removed:', !localStorage.getItem('role'));
     }
+
 
     static isAuthenticated(): boolean {
         const token = localStorage.getItem('token');
@@ -60,7 +62,7 @@ class UserService {
 
     static isAdmin(): boolean {
         const role = localStorage.getItem('role');
-        return role === 'ADMIN';
+        return role === 'LIBRARIAN';
     }
 
     static isUser(): boolean {
