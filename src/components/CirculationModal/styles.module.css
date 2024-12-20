@@ -1,0 +1,44 @@
+.modalBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: white;
+    box-shadow: 24px 24px 24px rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .modalHeader {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .modalHeaderLine {
+    display: inline-block;
+    width: 10px;
+    height: 24px;
+    background-color: #e53935;
+    margin-right: 8px;
+  }
+  
+  .textField {
+    margin-bottom: 16px;
+  }
+  
+  .confirmButton {
+    background-color: #e53935;
+    color: white;
+    width: 100%;
+    text-transform: none;
+  }
+  
+  .cancelButton {
+    color: #e53935;
+    width: 100%;
+    text-transform: none;
+  }
+  
