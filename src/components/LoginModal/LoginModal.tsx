@@ -33,7 +33,10 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
 
       if (userData.token) {
         login(userData.token, userData.role); // Use the context's login function
-        navigate('/search-book'); // Navigate to the profile page on successful login
+        if (userData.role == "LIBRARIAN")
+          navigate('/landing');
+        else
+          navigate('/browse')
         onClose(); // Close the modal after successful login
       } else {
         setError(userData.message); // Handle error message from the server
@@ -70,7 +73,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
             <Typography variant="h6" className="login-text">Login</Typography>
           </Box>
 
-          {error && <p className="error-message">{error}</p>}
+
 
           {/* Input fields */}
           <form onSubmit={handleLogin}>
@@ -131,18 +134,18 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
           </Button>
 
           <Typography variant="body2" className="modal-footer">
-  Don't have an account?{' '}
-  <Button
-    color="inherit"
-    sx={{ color: '#d32f2f', textDecoration: 'underline' }}
-    onClick={() => {
-      onClose(); // Close the login modal
-      navigate('/verify'); // Redirect to the verify user page
-    }}
-  >
-    Sign up
-  </Button>
-</Typography>
+            Don't have an account?{' '}
+            <Button
+              color="inherit"
+              sx={{ color: '#d32f2f', textDecoration: 'underline' }}
+              onClick={() => {
+                onClose(); // Close the login modal
+                handleSignUp();
+              }}
+            >
+              Sign up
+            </Button>
+          </Typography>
 
         </Box>
       </Box>

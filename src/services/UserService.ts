@@ -11,14 +11,14 @@ class UserService {
     static BASE_URL = "http://localhost:8080";
 
     static async login(libraryCardNumber: string, password: string) {
-        const response = await axios.post(`${UserService.BASE_URL}/user/auth/login`, { libraryCardNumber, password });
+        const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { libraryCardNumber, password });
         console.log('Login Response:', response); //Debugging
         return response.data;
     }
 
     static async register(userData: UserData) {
         console.log('User Data:', userData);  // Log user data to check before the request
-        const response = await axios.post(`${UserService.BASE_URL}/user/auth/register`, userData);
+        const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData);
         return response.data;
     }
 

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -7,28 +7,31 @@ interface AuthContextType {
     logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('token'));
-    const [role, setRole] = useState<string | null>(localStorage.getItem('role'));
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
-        // Sync role and authentication status with localStorage on mount
-        setIsAuthenticated(!!localStorage.getItem('token'));
-        setRole(localStorage.getItem('role'));
-    }, []);
+        const token = localStorage.getItem("token");
+        const savedRole = localStorage.getItem("role");
+        if (token && savedRole) {
+            setIsAuthenticated(true);
+            setRole(savedRole);
+        }
+    }, []); // Runs only on initial render
 
     const login = (token: string, role: string) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('role', role);
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
         setIsAuthenticated(true);
         setRole(role);
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
         setIsAuthenticated(false);
         setRole(null);
     };
@@ -40,10 +43,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
 };
 
-export const useAuth = (): AuthContextType => {
+// Create a custom hook to use the AuthContext
+export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
+        throw new Error("useAuth must be used within an AuthProvider");
     }
     return context;
 };

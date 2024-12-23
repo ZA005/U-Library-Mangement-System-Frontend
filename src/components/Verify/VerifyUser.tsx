@@ -19,7 +19,6 @@ const VerifyUser: React.FC = () => {
     setLoading(true);
 
     try {
-      // Call backend API to verify the student
       const data = await UserService.verifyUser(studentId);
       // Check if the data contains student information, meaning verification was successful
       if (data && data.id) {
@@ -32,7 +31,6 @@ const VerifyUser: React.FC = () => {
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      // Handle any errors from the API call
       setError('Error verifying student ID.');
     } finally {
       // Set loading to false when the process completes
