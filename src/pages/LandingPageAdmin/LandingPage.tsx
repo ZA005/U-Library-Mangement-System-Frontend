@@ -1,20 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Box, Container, Typography, } from "@mui/material";
+import { Box, Container, IconButton, Typography, } from "@mui/material";
 import Header from '../../components/Header/Header';
+import MenuIcon from "@mui/icons-material/Menu";
 import Footer from '../../components/Footer/Footer';
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
+import Sidebar from '../../components/Sidebar';
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+    const handleSideBarClick = () => {
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarClose = () => {
+        setSidebarOpen(false);
+    };
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
+            <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header
                     buttons={
                         <>
+                            <IconButton onClick={handleSideBarClick}>
+                                <MenuIcon style={{ color: "#EA4040" }} />
+                            </IconButton>
                         </>
                     }
                 />
@@ -78,10 +93,12 @@ const LandingPage: React.FC = () => {
                         </Box>
                     </Box>
 
+
                     {/* Right Content */}
                     <Box className={styles.rightContent}>
                         <Box className={styles.buttonContainer}>
-                            <button className={styles.manageButton} onClick={() => navigate('/search-book')}>
+                            <button className={styles.manageButton}
+                                onClick={() => navigate('/admin/catalog/management/search-title')}>
                                 Cataloging
                             </button>
                         </Box>
@@ -89,7 +106,7 @@ const LandingPage: React.FC = () => {
                         <Box className={styles.buttonContainer}>
                             <button
                                 className={styles.manageButton}
-                                onClick={() => navigate('/circulation')}
+                                onClick={() => navigate('/admin/circulation/management/page')}
                             >
                                 Circulation
                             </button>
@@ -99,7 +116,7 @@ const LandingPage: React.FC = () => {
                         <Box className={styles.buttonContainer}>
                             <button
                                 className={styles.manageButton}
-                                onClick={() => navigate('/curriculummanagement')}
+                                onClick={() => navigate('/admin/curriculum/management/page')}
                             >
                                 Curriculum Management
                             </button>

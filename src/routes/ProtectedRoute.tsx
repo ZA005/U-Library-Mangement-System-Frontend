@@ -14,6 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const { isAuthenticated } = useAuth(); // Use isAuthenticated to check if the user is logged in
   const role = localStorage.getItem('role'); // Get the role from localStorage (as per your context)
+  console.log('ProtectedRoute: isAuthenticated =', isAuthenticated, ', role =', role);
 
   if (!isAuthenticated) {
     return <Navigate to={redirectPath} />; // If not authenticated, redirect to the login page

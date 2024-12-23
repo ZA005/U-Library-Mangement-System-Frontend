@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { searchGoogleBooks } from '../services/GoogleBooksApi';
-// import { searchMainLibrary } from '../services/MainLibraryApi'; // Assuming you have a service for your DB
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import BookList from '../components/BookList/BookListComponent';
 import searchLibraryOfCongress from '../services/LibraryOfCongressApi';
+import UserService from '../services/UserService';
 
 interface Book {
     id: string;
@@ -22,7 +22,7 @@ const BookSearch: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [source, setSource] = useState('Main Library'); // Default source
+    const [source, setSource] = useState('Main Library');
     const { role, logout, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -74,14 +74,14 @@ const BookSearch: React.FC = () => {
 
     const handleBookClick = (book: Book) => {
         // Pass search state to BookDetails for returning to this page
-        navigate(`/book/${book.id}`, {
+        navigate(`/user/book/${book.id}`, {
             state: { book, searchState: { query, books } },
         });
     };
 
     const handleLogout = () => {
-        logout(); // Clear role from context
-        navigate('/'); // Redirect to home or login page
+        logout();
+        navigate('/');
     };
 
     return (
@@ -102,12 +102,12 @@ const BookSearch: React.FC = () => {
                     id="source"
                     value={source}
                     onChange={(e) => setSource(e.target.value)}
-                    disabled={role === 'STUDENT'}
+                    disabled={UserService.isUser()}
                     style={{ padding: '8px', marginBottom: '10px', width: '200px' }}
                 >
                     <option value="Main Library">Main Library</option>
-                    {role === 'LIBRARIAN' && <option value="Google Books">Google Books</option>}
-                    {role === 'LIBRARIAN' && <option value="Library Of Congress">Library Of Congress</option>}
+                    {UserService.isAdmin() && <option value="Google Books">Google Books</option>}
+                    {UserService.isAdmin() && <option value="Library Of Congress">Library Of Congress</option>}
                 </select>
             </div>
 

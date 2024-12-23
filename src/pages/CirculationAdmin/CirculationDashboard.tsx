@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { Box, Container, Typography } from "@mui/material";
 import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer'; 
+import Footer from '../../components/Footer/Footer';
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
 
@@ -10,9 +10,9 @@ const CirculationDashboard: React.FC = () => {
     const navigate = useNavigate();
 
     // Navigation Handlers
-    const handleManageCirculation = () => navigate("/manage-circulation");
-    const handleManageReservation = () => navigate("/manage-reservation");
-    const handleOverseeOverdues = () => navigate("/oversee-overdue");
+    const handleManageCirculation = () => navigate("/admin/manage-circulation");
+    const handleManageReservation = () => navigate("/admin/manage-reservation");
+    const handleOverseeOverdues = () => navigate("/admin/oversee-overdue");
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -25,7 +25,7 @@ const CirculationDashboard: React.FC = () => {
                     sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                     fontWeight="bold"
                 >
-                   Circulation Admin
+                    Circulation Admin
                 </Typography>
                 <Line />
 
@@ -81,7 +81,7 @@ const CirculationDashboard: React.FC = () => {
                                 Manage Circulation
                             </button>
                         </Box>
-                        
+
                         <Box className={styles.buttonContainer}>
                             <button
                                 className={styles.manageButton}
@@ -90,7 +90,7 @@ const CirculationDashboard: React.FC = () => {
                                 Manage Reservation
                             </button>
                         </Box>
-                        
+
                         <Box className={styles.buttonContainer}>
                             <button
                                 className={styles.manageButton}

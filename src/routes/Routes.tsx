@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import HomeScreen from '../pages/HomeScreen';
 import Register from '../components/RegistrationForm/RegistrationForm';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -7,9 +7,11 @@ import CurriculumManagement from '../pages/Curriculum-Management/CurriculumManag
 import ManageCourses from '../pages/Curriculum-Management/Managers/ManageCourse';
 import ManageDepartments from '../pages/Curriculum-Management/Managers/ManageDepartments';
 import ManageSubjects from '../pages/Curriculum-Management/Managers/ManageSubjects';
-import LandingPage from '../pages/LandingPageAdmin/LandingPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';
 import VerifyUser from '../components/Verify/VerifyUser';
+import PageNotFound from '../components/PageNotFound/PageNotFound';
+import AdminRoutes from './AdminRoutes';
+import UserRoutes from './UserRoutes';
 
 const AppRoutes = () => (
   <Routes>
@@ -25,12 +27,18 @@ const AppRoutes = () => (
     <Route path="/verify/user/otp" element={<VerifyOtp />} />
 
     {/* PROTECTED ROUTES */}
-    <Route path="/library" element={<LandingPage />} />
-    
+    {/* <Route path="/library" element={<LandingPage />} /> */}
+
+
+    {/* ADMIN ROUTES */}
+    <Route path="admin/*" element={<AdminRoutes />} />
+
+    {/* USER ROUTES */}
+    <Route path="user/*" element={<UserRoutes />} />
 
 
     {/* Default page for unmatched routes */}
-    <Route path="*" element={<Navigate to="/" />} />
+    <Route path="*" element={<PageNotFound />} />
   </Routes>
 );
 

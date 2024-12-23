@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import UserService from '../../services/UserService';
 
 interface Book {
     id: string;
@@ -21,13 +22,9 @@ const BookDetails: React.FC = () => {
     const navigate = useNavigate();
 
     const book: Book = state?.book;
-    const handleGoBack = () => {
-        // Go back to BookSearch with search state
-        navigate('/search-book', { state: { searchState: state?.searchState } });
-    };
 
     const handleAddCopies = async () => {
-        navigate('/book-form', { state: { book } });
+        navigate('/admin/book-form', { state: { book } });
     };
 
     const handleEditTitle = () => {
@@ -43,9 +40,18 @@ const BookDetails: React.FC = () => {
         // Add your logic here for adding to wishlist
     };
 
+
     return (
         <div>
-            <button onClick={handleGoBack}>Go Back</button>
+            {UserService.isAdmin() && (
+                <button onClick={() => navigate('/admin/catalog/management/search-title', { state: { searchState: state?.searchState } })}>
+                    Go Back</button>
+            )}
+            {UserService.isUser() && (
+                <button onClick={() => navigate('/user/browse', { state: { searchState: state?.searchState } })}>
+                    Go Back</button>
+            )}
+
             <img src={book.thumbnail} alt={book.title} style={{ width: '150px', height: '225px' }} />
             <h1>{book.title}</h1>
             <p><strong>Authors:</strong> {book.authors.join(', ')}</p>
@@ -61,8 +67,15 @@ const BookDetails: React.FC = () => {
 
             {/* Buttons for actions */}
             <div style={{ marginTop: '20px' }}>
-                <button onClick={handleAddCopies} style={{ marginRight: '10px' }}>Add Copies</button>
-                <button onClick={handleEditTitle} style={{ marginRight: '10px' }}>Edit Title</button>
+
+                {UserService.isAdmin() && (
+                    <button onClick={handleAddCopies} style={{ marginRight: '10px' }}>
+                        Add Copies</button>
+                )}
+                {UserService.isAdmin() && (
+                    <button onClick={handleEditTitle} style={{ marginRight: '10px' }}>
+                        Edit Title</button>
+                )}
                 <button onClick={handleAddToWishlist}>Add to Wishlist</button>
             </div>
         </div>

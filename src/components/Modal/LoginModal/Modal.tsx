@@ -33,7 +33,13 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
 
       if (userData.token) {
         login(userData.token, userData.role); // Use the context's login function
-        navigate('/library'); // Navigate to the profile page on successful login
+        if (userData.role === "LIBRARIAN") {
+          navigate('admin/library');
+        } else if (userData.role === "STUDENT") {
+          navigate('/user/browse');
+        } else {
+          navigate('*'); // Redirect to the home or login page for unexpected roles
+        }
         onClose(); // Close the modal after successful login
       } else {
         setError(userData.message); // Handle error message from the server
@@ -127,18 +133,18 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
           </Button>
 
           <Typography variant="body2" className="modal-footer">
-  Don't have an account?{' '}
-  <Button
-    color="inherit"
-    sx={{ color: '#d32f2f', textDecoration: 'underline' }}
-    onClick={() => {
-      onClose(); // Close the login modal
-      navigate('/register');
-    }}
-  >
-    Sign up
-  </Button>
-</Typography>
+            Don't have an account?{' '}
+            <Button
+              color="inherit"
+              sx={{ color: '#d32f2f', textDecoration: 'underline' }}
+              onClick={() => {
+                onClose(); // Close the login modal
+                navigate('/register');
+              }}
+            >
+              Sign up
+            </Button>
+          </Typography>
 
         </Box>
       </Box>

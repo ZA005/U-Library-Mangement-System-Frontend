@@ -29,14 +29,17 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
   const handleLogin = async (): Promise<void> => {
     try {
       const userData = await UserService.login(libraryCardNumber, password);
-      console.log(userData);
+      // console.log(userData);
 
       if (userData.token) {
         login(userData.token, userData.role); // Use the context's login function
-        if (userData.role == "LIBRARIAN")
-          navigate('/landing');
-        else
-          navigate('/browse')
+        if (userData.role === "LIBRARIAN") {
+          navigate('admin/library');
+        } else if (userData.role === "STUDENT") {
+          navigate('/browse');
+        } else {
+          navigate('/'); // Redirect to the home or login page for unexpected roles
+        }
         onClose(); // Close the modal after successful login
       } else {
         setError(userData.message); // Handle error message from the server
