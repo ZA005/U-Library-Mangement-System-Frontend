@@ -1,77 +1,11 @@
-import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HomeScreen from './pages/HomeScreen'; // Import the HomeScreen component
-import LibraryCardGenerationPage from './pages/LibraryCardGeneration/LibraryCardGenerationPage';
-import Register from './components/RegistrationForm/RegistrationForm';
-import VerifyOtp from './components/Verify/VerifyOtp';
-import VerifyStudent from './components/Verify/VerifyUser';
-import UserService from './services/UserService';
-import CurriculumManagement from './pages/Curriculum-Management/CurriculumManagement';
-import ManageDepartments from './pages/CurriculumManagementButtonScreens/ManageDepartments';
-import ManageCourses from './pages/CurriculumManagementButtonScreens/ManageCourse';
-import ManageSubjects from './pages/CurriculumManagementButtonScreens/ManageSubjects';
-import LandingPage from './pages/LandingPageAdmin/LandingPage'; // Import the LandingPage component
-import CirculationDashboard from './pages/CirculationAdmin/CirculationDashboard';
-import ManageCirculation from './pages/ManageCirculation/ManageCirculation';
-import ManageReservation from './pages/ManageReservation/ManageReservation';
-import OverseeOverdue from './pages/OverseeOverdues/OverseeOverdues';
-import BookDetails from './components/BookDetails/BookDetails';
-import BookForm from './components/BookForm/BookForm';
-import PageNotFound from './components/PageNotFound/PageNotFound';
-import BookSearch from './pages/BookSearch';
-import CatalogHome from './pages/CatalogHome';
-
+import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
+import RoutesWrapper from './routes/Routes'; // Import the routes configuration
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          {/* PUBLIC ACCESS  */}
-          <Route path='/register/card' element={<LibraryCardGenerationPage />} />
-          <Route path='/' element={<HomeScreen />} /> {/* Home route to display the HomeScreen */}
-          <Route path='/curriculummanagement' element={<CurriculumManagement />} />
-          <Route path='/curriculummanagement/manage/departments' element={<ManageDepartments />} />
-          <Route path='/curriculummanagement/manage/courses' element={<ManageCourses />} />
-          <Route path='/curriculummanagement/manage/subjects' element={<ManageSubjects />} />
-          <Route path='/verify' element={<VerifyStudent />} /> {/* Registration route to display the Register component */}
-          <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/browse' element={<CatalogHome />} />
-          {/* <Route path='/search-book' element={<SearchBooks />}></Route> */}
-
-          <Route path='/circulation' element={<CirculationDashboard />} /> {/* New route for admin landing page */}
-          <Route path='/manage-circulation' element={<ManageCirculation />} />
-          <Route path='/manage-reservation' element={<ManageReservation />} />
-          <Route path='/oversee-overdue' element={<OverseeOverdue />} />
-
-
-          {/* Protected pages only registered users can access */}
-          {UserService.userOnly() && (
-            <>
-              <Route path='/library' element={<LibraryCardGenerationPage />} />
-              <Route path='/browse' element={<CatalogHome />} />
-            </>
-          )}
-
-          {/* Admin only access */}
-          {UserService.adminOnly() && (
-            <>
-              <Route path='/admin' />
-              <Route path='/landing' element={<LandingPage />} /> {/* New route for admin landing page */}
-              <Route path='/library' element={<LibraryCardGenerationPage />} />
-              {/* <Route path='/search-book' element={<BookSearch />}></Route> */}
-              <Route path='/search-book' element={<BookSearch />}></Route>
-              <Route path="/book/:bookId" element={<BookDetails />} />
-              <Route path="/book-form" element={<BookForm />}></Route>
-            </>
-          )}
-
-          {/* Default page */}
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter> {/* Wrap your routes with BrowserRouter */}
+      <RoutesWrapper /> {/* Renders all routes with authentication context */}
+    </BrowserRouter>
   );
 }
 

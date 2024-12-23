@@ -3,6 +3,7 @@ import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import './VerifyUser.css'; 
 import Line from '../Line/Line';
 import './VerifyUser.css';
 import UserService from '../../services/UserService';
@@ -40,29 +41,31 @@ const VerifyUser: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
+      <Container maxWidth="lg" sx={{
+        flexGrow: 1,
+      }}>
         <Header buttons={null} />
-        <Box
-          className="centered-container"
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          // border: '1px solid red',
+          minHeight: '60vh',
+
+        }}>
+          <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
             bgcolor: '#f5f5f5',
             p: 4,
             borderRadius: 2,
             boxShadow: 3,
+            width: "20vw",
+            // border: '1px solid red',
           }}
         >
           <Typography variant="h4" align="center" gutterBottom>
             Verify Student ID
           </Typography>
-
-          {/* Red Line Container */}
-          <Box className="red-line-container">
-            <Line />
-          </Box>
 
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <TextField
