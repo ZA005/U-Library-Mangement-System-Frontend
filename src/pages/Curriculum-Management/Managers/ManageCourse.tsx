@@ -3,25 +3,31 @@ import { Box, Container, IconButton, Typography, Button, TextField, Table, Table
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
-import Header from "../../components/Header/Header";
-import Line from "../../components/Line/Line";
-import Copyright from "../../components/Footer/Copyright";
-import AddNewDepartmentModal from "../../components/AddNewDepartmentModal";
-import UpdateDepartmentModal from "../../components/UpdateDepartmentModal";
+import Header from "../../../components/Header/Header";
+import Line from "../../../components/Line/Line";
+import Copyright from "../../../components/Footer/Copyright";
+import AddNewCourseModal from "../../../components/CurriculumManagement/AddNewCourseModal";
+import UpdateCourseModal from "../../../components/CurriculumManagement/UpdateCourseModal";
+import Sidebar from "../../../components/Sidebar";
+
 import styles from "./styles.module.css";
 
-const ManageDepartments: React.FC = () => {
+const ManageCourses: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  
-  // temporary datas just to visualize the style
-  const [departments, setDepartments] = useState([
-    { code: "AS", name: "Arts and Sciences", courses: 4, status: "Active" },
-  ]);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSideBarClick = () => {
-    console.log("Hamburger menu clicked!");
-  };
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarClose = () => {
+        setSidebarOpen(false);
+    };
+
+  // temporary datas just to visualize the style
+  const courses = [
+    { code: "IT", name: "Information Technology", department: "Computer Studies", subjects: 4, status: "Active" },
+  ];
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -31,23 +37,18 @@ const ManageDepartments: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleUpdateDepartment = () => {
+    const handleUpdateCourse = () => {
 
   }
 
-  const handleAddDepartment = (newDepartment: {
-    code: string;
-    name: string;
-    status: string;
-  }) => {
-    setDepartments((prev) => [
-      ...prev,
-      { ...newDepartment, courses: 0 }, // Add new department with 0 courses initially
-    ]);
-  };
+  const handleAddCourse = () => {
+
+  }
+
 
   return (
     <Box className={styles.rootContainer}>
+      <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
       <Container maxWidth="lg" className={styles.container}>
         <Header
           buttons={
@@ -58,11 +59,15 @@ const ManageDepartments: React.FC = () => {
             </>
           }
         />
-        <Typography variant="h4" gutterBottom className={styles.title}>
-          Manage Departments
+        <Typography
+          variant="h4"
+          gutterBottom
+          className={styles.title}
+        >
+          Manage Courses
         </Typography>
-
-        <Line />
+    
+        <Line/>
 
         <Box className={styles.actionBar}>
           <Button
@@ -75,7 +80,7 @@ const ManageDepartments: React.FC = () => {
             }}
             onClick={handleOpenModal}
           >
-            Add New Department
+            Add New Course
           </Button>
 
           <Box className={styles.searchBox}>
@@ -83,7 +88,9 @@ const ManageDepartments: React.FC = () => {
               placeholder="Search..."
               size="small"
               InputProps={{
-                startAdornment: <SearchIcon className={styles.searchIcon} />,
+                startAdornment: (
+                  <SearchIcon className={styles.searchIcon} />
+                ),
               }}
             />
             <IconButton>
@@ -98,25 +105,21 @@ const ManageDepartments: React.FC = () => {
               <TableRow>
                 <TableCell>CODE</TableCell>
                 <TableCell>NAME</TableCell>
-                <TableCell># COURSES</TableCell>
-                <TableCell>STATUS</TableCell>
-                <TableCell>ACTION</TableCell>
+                <TableCell>DEPARTMENT</TableCell>
+                <TableCell># SUBJECTS</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {departments.map((dept, index) => (
+              {courses.map((course, index) => (
                 <TableRow key={index}>
-                  <TableCell>{dept.code}</TableCell>
-                  <TableCell>{dept.name}</TableCell>
-                  <TableCell>{dept.courses}</TableCell>
-                  <TableCell
-                    className={
-                      dept.status === "Active"
-                        ? styles.activeStatus
-                        : styles.inactiveStatus
-                    }
-                  >
-                    {dept.status.toUpperCase()}
+                  <TableCell>{course.code}</TableCell>
+                  <TableCell>{course.name}</TableCell>
+                  <TableCell>{course.department}</TableCell>
+                  <TableCell>{course.subjects}</TableCell>
+                  <TableCell className={course.status === "Active" ? styles.activeStatus : styles.inactiveStatus}>
+                    {course.status.toUpperCase()}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -137,22 +140,20 @@ const ManageDepartments: React.FC = () => {
           </Table>
         </TableContainer>
       </Container>
-
-      {/* Call the AddNewDepartmentModal */}
-      <AddNewDepartmentModal
-        open={isModalOpen}
+      <AddNewCourseModal
+        open = { isModalOpen}
         handleClose={handleCloseModal}
-        onDepartmentAdd={handleAddDepartment}
+        onCourseAdd={handleAddCourse}
       />
-      
-      <UpdateDepartmentModal
-        open={isModalOpen}
+
+      <UpdateCourseModal
+        open = { isModalOpen}
         handleClose={handleCloseModal}
-        onDepartmentUpdate={ handleUpdateDepartment }
+        onCourseUpdate={handleUpdateCourse}
       />
       <Copyright />
     </Box>
   );
 };
 
-export default ManageDepartments;
+export default ManageCourses;

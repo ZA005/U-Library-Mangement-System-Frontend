@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, IconButton, Container, Typography, Icon } from "@mui/material";
 import Header from "../../components/Header/Header";
@@ -10,15 +10,23 @@ import BookIcon from "@mui/icons-material/Book";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
+import Sidebar from "../../components/Sidebar";
 
 const CurriculumManagement: React.FC = () => {
   const navigate = useNavigate();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSideBarClick = () => {
-    console.log("Hamburger menu clicked!");
-  };
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarClose = () => {
+        setSidebarOpen(false);
+    };
+
   return (
     <Box display="flex" flexDirection="column" height="100vh">
+      <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
       <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
         <Header
           buttons={
@@ -91,7 +99,10 @@ const CurriculumManagement: React.FC = () => {
               <Icon className={styles.icon}>
                 <LocationCityIcon />
               </Icon>
-              <button className={styles.manageButton}>
+              <button
+                className={styles.manageButton}
+                onClick={ () => navigate('/curriculum/management/manage/departments') }
+              >
                 Manage Departments
               </button>
             </Box>
@@ -100,14 +111,20 @@ const CurriculumManagement: React.FC = () => {
               <Icon className={styles.icon}>
                 <LocalLibraryIcon />
               </Icon>
-              <button className={styles.manageButton}>Manage Courses</button>
+              <button
+                className={styles.manageButton}
+                onClick={ () => navigate('/curriculum/management/manage/courses') }
+              >Manage Courses</button>
             </Box>
 
             <Box className={styles.buttonContainer}>
               <Icon className={styles.icon}>
                 <BookIcon />
               </Icon>
-              <button className={styles.manageButton}>Manage Subjects</button>
+              <button
+                className={styles.manageButton}
+                onClick={ () => navigate('/curriculum/management/manage/subjects') }
+              >Manage Subjects</button>
             </Box>
 
             <Box className={styles.buttonContainer}>

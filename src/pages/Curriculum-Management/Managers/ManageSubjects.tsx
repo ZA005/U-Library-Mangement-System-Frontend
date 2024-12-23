@@ -3,20 +3,27 @@ import { Box, Container, IconButton, Typography, Button, TextField, Table, Table
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
-import Header from "../../components/Header/Header";
-import Line from "../../components/Line/Line";
-import Copyright from "../../components/Footer/Copyright";
-import AddNewSubjectModal from "../../components/AddNewSubjectModal";
-import UpdateSubjectModal from "../../components/UpdateSubjectModal";
+import Header from "../../../components/Header/Header";
+import Line from "../../../components/Line/Line";
+import Copyright from "../../../components/Footer/Copyright";
+import AddNewSubjectModal from "../../../components/CurriculumManagement/AddNewSubjectModal";
+import UpdateSubjectModal from "../../../components/CurriculumManagement/UpdateSubjectModal";
+import Sidebar from "../../../components/Sidebar";
 
 import styles from "./styles.module.css";
 
 const ManageSubjects: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
   const handleSideBarClick = () => {
-    console.log("Hamburger menu clicked!");
-  };
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarClose = () => {
+        setSidebarOpen(false);
+    };
 
   // temporary datas just to visualize the style
   const departments = [
@@ -40,6 +47,7 @@ const ManageSubjects: React.FC = () => {
   }
   return (
     <Box className={styles.rootContainer}>
+      <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
       <Container maxWidth="lg" className={styles.container}>
         <Header
           buttons={
