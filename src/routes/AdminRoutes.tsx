@@ -5,9 +5,8 @@ import ProtectedRoute from './ProtectedRoute';
 const AdminRoutes = () => (
   <Routes>
     <Route
-      element={<ProtectedRoute allowedRoles={['admin']} redirectPath="/login" />}
+      element={<ProtectedRoute allowedRoles={['LIBRARIAN']} redirectPath="/login" />}
     >
-      
       <Route path="curriculum/management/page" element={<CurriculumManagement />} />
     </Route>
   </Routes>

@@ -1,7 +1,6 @@
-// src/routes/ProtectedRoute.tsx
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Assuming you have useAuth context to access the user info
+import { useAuth } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
   allowedRoles: string[];  // Define which roles are allowed for this route

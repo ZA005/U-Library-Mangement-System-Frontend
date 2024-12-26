@@ -5,9 +5,9 @@ import ProtectedRoute from './ProtectedRoute';
 const UserRoutes = () => (
   <Routes>
     <Route
-      element={<ProtectedRoute allowedRoles={['user', 'admin']} redirectPath="/login" />}
+      element={<ProtectedRoute allowedRoles={['LIBRARIAN']} redirectPath="/" />}
     >
-      <Route path="user/library/card/" element={<LibraryCardGenerationPage />} />
+      <Route path="/library/card/" element={<LibraryCardGenerationPage />} />
       {/* <Route path="user/library" element={<LibraryCard />} /> */}
     </Route>
   </Routes>
