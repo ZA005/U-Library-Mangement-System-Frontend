@@ -5,8 +5,8 @@ import Visibility from '@mui/icons-material/Visibility'; // Keeping only this on
 import AccountCircle from '@mui/icons-material/LibraryBooks';
 import LockIcon from '@mui/icons-material/Lock';
 import './LoginModal.css';
-import UserService from '../../services/UserService';
-import { useAuth } from '../../contexts/AuthContext';
+import UserService from '../../../services/UserService';
+import { useAuth } from '../../../contexts/AuthContext';
 
 interface LoginProps {
   open: boolean;
@@ -38,17 +38,13 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
       } else {
         setError(userData.message); // Handle error message from the server
       }
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error);
-      setError('An unexpected error occurred'); // Handle unexpected errors
+      setError(`An unexpected error occurred`); // Handle unexpected errors
       setTimeout(() => {
         setError(null); // Reset error after a timeout
       }, 5000);
     }
-  };
-
-  const handleSignUp = () => {
-    navigate('/register');
   };
 
   return (
@@ -131,15 +127,19 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
           </Button>
 
           <Typography variant="body2" className="modal-footer">
-            Don't have an account?{' '}
-            <Button
-              color="inherit"
-              sx={{ color: '#d32f2f', textDecoration: 'underline' }}
-              onClick={handleSignUp}
-            >
-              Sign up
-            </Button>
-          </Typography>
+  Don't have an account?{' '}
+  <Button
+    color="inherit"
+    sx={{ color: '#d32f2f', textDecoration: 'underline' }}
+    onClick={() => {
+      onClose(); // Close the login modal
+      navigate('/register');
+    }}
+  >
+    Sign up
+  </Button>
+</Typography>
+
         </Box>
       </Box>
     </Modal>
