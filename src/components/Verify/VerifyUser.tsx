@@ -3,7 +3,9 @@ import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
-import './VerifyUser.css'; 
+import './VerifyUser.css';
+import './VerifyUser.css';
+import UserService from '../../services/UserService';
 
 const VerifyUser: React.FC = () => {
   const [studentId, setStudentId] = useState('');
@@ -12,23 +14,26 @@ const VerifyUser: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (): Promise<void> => {
+    // e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      // Simulated API call
-      const data = await new Promise((resolve) =>
-        setTimeout(() => resolve({ id: 1, emailAdd: 'example@unc.edu.ph' }), 1000)
-      );
-      if (data) {
-        localStorage.setItem('emailAdd', (data as any).emailAdd);
-        navigate('/verify/user/otp', { state: { userData: data } });
+      const data = await UserService.verifyUser(studentId);
+      // Check if the data contains student information, meaning verification was successful
+      if (data && data.id) {
+        // If the OTP is sent, navigate to the OTP verification page with the studentId
+        localStorage.setItem('emailAdd', data.emailAdd);
+        navigate('/verify-otp');
       } else {
+        // If the student is not found or enrolled, show an error
         setError('Student not found or not currently enrolled.');
       }
-    } catch {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       setError('Error verifying student ID.');
     } finally {
+      // Set loading to false when the process completes
       setLoading(false);
     }
   };
@@ -48,49 +53,46 @@ const VerifyUser: React.FC = () => {
 
         }}>
           <Box
-          sx={{
-            bgcolor: '#f5f5f5',
-            p: 4,
-            borderRadius: 2,
-            boxShadow: 3,
-            width: "20vw",
-            // border: '1px solid red',
-          }}
-        >
-          <Typography variant="h4" align="center" gutterBottom>
-            Verify Student ID
-          </Typography>
+            sx={{
+              bgcolor: '#f5f5f5',
+              p: 4,
+              borderRadius: 2,
+              boxShadow: 3,
+              width: "20vw",
+              // border: '1px solid red',
+            }}
+          >
+            <Typography variant="h4" align="center" gutterBottom>
+              Verify Student ID
+            </Typography>
 
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <TextField
-              label="Student ID"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              fullWidth
-              required
-              margin="normal"
-            />
-            {error && (
-              <Typography color="error" variant="body2">
-                {error}
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              disabled={loading}
-                      className="send-otp-button"
-                      onClick={handleSubmit}
-            >
-              {loading ? 'Verifying...' : 'Send OTP'}
-            </Button>
-          </form>
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+              <TextField
+                label="Student ID"
+                value={studentId}
+                onChange={(e) => setStudentId(e.target.value)}
+                fullWidth
+                required
+                margin="normal"
+              />
+              {error && (
+                <Typography color="error" variant="body2">
+                  {error}
+                </Typography>
+              )}
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={loading}
+                className="send-otp-button"
+                onClick={handleSubmit}
+              >
+                {loading ? 'Verifying...' : 'Send OTP'}
+              </Button>
+            </form>
+          </Box>
         </Box>
-
-
-        </Box>
-
       </Container>
       <Footer />
     </Box>
