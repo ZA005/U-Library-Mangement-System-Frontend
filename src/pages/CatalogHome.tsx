@@ -11,16 +11,6 @@ import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { Book } from "../model/Book";
 
-// interface Book {
-//     id: string;
-//     title: string;
-//     authors: string[];
-//     publisher?: string;
-//     publishedDate?: string;
-//     isbn10?: string;
-//     isbn13?: string;
-//     thumbnail: string;
-// }
 
 const CatalogHome: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -24,25 +25,38 @@ import CirculationIssueBookModal from "../../components/CirculationPopUps/Circul
 import CirculationUpdateModal from "../../components/CirculationPopUps/CirculationUpdateModal";
 
 import styles from "./styles.module.css";
+import { getAllLoans } from "../../services/CirculationApi";
 
 const ManageCirculation: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loans, setLoans] = useState([]);
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const loansData = await getAllLoans();
+        setLoans(loansData);
+      } catch (error) {
+        console.error("Error fetching loans:", error);
+      }
+    };
+    fetchLoans(); // Call the function on component mount
+  }, []);
 
   const handleSideBarClick = () => {
     console.log("Hamburger menu clicked!");
   };
 
-  const borrow = [
-    {
-      BookTitle: "Greek Mythology",
-      Author: "Unknown",
-      Borrower: "Mikyla Grace",
-      UserType: "Student",
-      DateandTimeBorrowed: "March 5, 2024",
-      DateandTimeReturned: "",
-      status: "Borrowed",
-    },
-  ];
+  // const borrow = [
+  //   {
+  //     BookTitle: "Greek Mythology",
+  //     Author: "Unknown",
+  //     Borrower: "Mikyla Grace",
+  //     UserType: "Student",
+  //     DateandTimeBorrowed: "March 5, 2024",
+  //     DateandTimeReturned: "",
+  //     status: "Borrowed",
+  //   },
+  // ];
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -121,22 +135,22 @@ const ManageCirculation: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {borrow.map((book, index) => (
+              {loans.map((loan: any, index: number) => (
                 <TableRow key={index}>
-                  <TableCell>{book.BookTitle}</TableCell>
-                  <TableCell>{book.Author}</TableCell>
-                  <TableCell>{book.Borrower}</TableCell>
-                  <TableCell>{book.UserType}</TableCell>
-                  <TableCell>{book.DateandTimeBorrowed}</TableCell>
-                  <TableCell>{book.DateandTimeReturned}</TableCell>
+                  <TableCell>{loan.title}</TableCell>
+                  <TableCell>{loan.authorName}</TableCell>
+                  <TableCell>{loan.borrowerFullName}</TableCell>
+                  <TableCell>{loan.departmentName}</TableCell>
+                  <TableCell>{loan.borrowDate}</TableCell>
+                  <TableCell>{loan.returnDate}</TableCell>
                   <TableCell
                     className={
-                      book.status === "Active"
+                      loan.status === "Active"
                         ? styles.activeStatus
                         : styles.inactiveStatus
                     }
                   >
-                    {book.status.toUpperCase()}
+                    {loan.status.toUpperCase()}
                   </TableCell>
                   <TableCell>
                     <Button
