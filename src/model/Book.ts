@@ -9,7 +9,7 @@ export interface Book {
     thumbnail: string;
     description: string;
     pageCount: string;
-    categories: string;
+    categories: string[];
     language: string;
     printType: string;
     status: string;

@@ -1,16 +1,7 @@
 import React from 'react';
+import { Book } from '../../model/Book';
+import { useNavigate } from 'react-router-dom';
 
-// Reuse the same Book type as in the parent component
-interface Book {
-    id: string; // Match the parent component's type for id
-    title: string;
-    authors: string[];
-    publisher?: string;
-    publishedDate?: string;
-    isbn10?: string;
-    isbn13?: string;
-    thumbnail: string;
-}
 
 interface BookListProps {
     books: Book[];
@@ -18,6 +9,7 @@ interface BookListProps {
 }
 
 const BookList: React.FC<BookListProps> = ({ books, onBookClick }) => {
+    const navigate = useNavigate();
     return (
         <div>
             {books.length > 0 ? (
@@ -38,7 +30,7 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick }) => {
                                 }}
                             />
                             <h2>{book.title}</h2>
-                            <p><strong>Authors:</strong> {book.authors.join(', ')}</p>
+                            <p><strong>Authors:</strong> <a href="/about-author" onClick={() => navigate("/about-author")}>{book.authors.join(', ')}</a></p>
                             <p><strong>Publisher:</strong> {book.publisher || 'N/A'}</p>
                             <p><strong>Published Date:</strong> {book.publishedDate || 'N/A'}</p>
                             <p><strong>ISBN:</strong> {book.isbn10 || book.isbn13 || 'N/A'}</p>

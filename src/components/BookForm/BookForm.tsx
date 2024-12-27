@@ -73,7 +73,7 @@ const BookForm: React.FC = () => {
             barcode,
             circulationType,
             dateAcquired,
-            categories: categories.split(','),
+            categories: categories?.split(','),
             notes,
             sublocation,
             vendor,

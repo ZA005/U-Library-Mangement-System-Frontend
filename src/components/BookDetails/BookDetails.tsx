@@ -1,27 +1,29 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserService from '../../services/UserService';
-
-interface Book {
-    id: string;
-    title: string;
-    authors: string[];
-    publisher?: string;
-    publishedDate?: string;
-    description?: string;
-    pageCount?: number;
-    categories?: string[];
-    language?: string;
-    isbn10?: string;
-    isbn13?: string;
-    thumbnail?: string;
-    printType?: string;
-}
+import { Book } from '../../model/Book';
+import { getBooksByAuthor } from '../../services/LocalBooksAPI';
+import { useState } from 'react';
+import BookList from '../BookList/BookListComponent';
 
 const BookDetails: React.FC = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const [showBooks, setShowBooks] = useState<boolean>(false);
+    const [booksByAuthor, setBooksByAuthor] = useState<Book[] | null>(null);
 
     const book: Book = state?.book;
+
+    const handleToggleBooksByAuthor = async () => {
+        setShowBooks(!showBooks); // Toggle visibility
+        if (!showBooks && booksByAuthor === null) {
+            try {
+                const books = await getBooksByAuthor(book.authors[0]); // Assuming the first author is the primary one
+                setBooksByAuthor(books);
+            } catch (error) {
+                console.error("Failed to fetch books by the author:", error);
+            }
+        }
+    };
 
     const handleAddCopies = async () => {
         navigate('/admin/book-form', { state: { book } });
@@ -35,9 +37,24 @@ const BookDetails: React.FC = () => {
         }
     };
 
+    const handleReserve = () => {
+        alert(`Book "${book.title}" to reserve.`);
+        // Add your logic here for reserving book
+    }
+
+    const handleBorrow = () => {
+        alert(`Book "${book.title}" to borrow.`);
+        // Add your logic here for borrow book
+    }
+
     const handleAddToWishlist = () => {
         alert(`Book "${book.title}" added to your wishlist.`);
         // Add your logic here for adding to wishlist
+    };
+    const handleBookClick = (book: Book) => {
+        navigate(`/user/book/${book.id}`, {
+            state: { book },
+        })
     };
 
 
@@ -58,16 +75,25 @@ const BookDetails: React.FC = () => {
             <p><strong>Publisher:</strong> {book.publisher || 'N/A'}</p>
             <p><strong>Published Date:</strong> {book.publishedDate || 'N/A'}</p>
             <p><strong>Page Count:</strong> {book.pageCount || 'N/A'}</p>
-            <p><strong>Categories:</strong> {book.categories?.join(', ') || 'N/A'}</p>
+            <p><strong>Categories:</strong> {book.categories || 'N/A'}</p>
             <p><strong>Language:</strong> {book.language || 'N/A'}</p>
             <p><strong>ISBN-10:</strong> {book.isbn10 || 'N/A'}</p>
             <p><strong>ISBN-13:</strong> {book.isbn13 || 'N/A'}</p>
             <p><strong>Description:</strong> {book.description || 'No description available.'}</p>
             <p><strong>Item Type:</strong> {book.printType || 'N/A'}</p>
 
+            <button onClick={handleToggleBooksByAuthor} style={{ marginTop: '20px' }}>
+                {showBooks ? 'Hide Books by This Author' : 'More on This Author'}
+            </button>
+
+            {showBooks && booksByAuthor && (
+                <BookList books={booksByAuthor} onBookClick={handleBookClick} />
+            )}
+
             {/* Buttons for actions */}
             <div style={{ marginTop: '20px' }}>
 
+                {/* Buttons for admins */}
                 {UserService.isAdmin() && (
                     <button onClick={handleAddCopies} style={{ marginRight: '10px' }}>
                         Add Copies</button>
@@ -76,6 +102,10 @@ const BookDetails: React.FC = () => {
                     <button onClick={handleEditTitle} style={{ marginRight: '10px' }}>
                         Edit Title</button>
                 )}
+
+                {/* Buttons for USERS  */}
+                <button onClick={handleReserve}>Reserve item</button>
+                <button onClick={handleBorrow}>Borrow item</button>
                 <button onClick={handleAddToWishlist}>Add to Wishlist</button>
             </div>
         </div>

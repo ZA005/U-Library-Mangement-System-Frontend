@@ -5,17 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import BookList from '../components/BookList/BookListComponent';
 import searchLibraryOfCongress from '../services/LibraryOfCongressApi';
 import UserService from '../services/UserService';
-
-interface Book {
-    id: string;
-    title: string;
-    authors: string[];
-    publisher?: string;
-    publishedDate?: string;
-    isbn10?: string;
-    isbn13?: string;
-    thumbnail: string;
-}
+import { Book } from '../model/Book';
 
 const BookSearch: React.FC = () => {
     const [query, setQuery] = useState('');

@@ -9,17 +9,18 @@ import BookList from "../components/BookList/BookListComponent";
 import { getAllBooks } from "../services/LocalBooksAPI";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
+import { Book } from "../model/Book";
 
-interface Book {
-    id: string;
-    title: string;
-    authors: string[];
-    publisher?: string;
-    publishedDate?: string;
-    isbn10?: string;
-    isbn13?: string;
-    thumbnail: string;
-}
+// interface Book {
+//     id: string;
+//     title: string;
+//     authors: string[];
+//     publisher?: string;
+//     publishedDate?: string;
+//     isbn10?: string;
+//     isbn13?: string;
+//     thumbnail: string;
+// }
 
 const CatalogHome: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
@@ -39,7 +40,12 @@ const CatalogHome: React.FC = () => {
                     publishedDate: book.publishedDate,
                     isbn10: book.isbn10,
                     isbn13: book.isbn13,
-                    thumbnail: book.thumbnail || 'default-thumbnail.jpg', // Default image if not available
+                    thumbnail: book.thumbnail || 'default-thumbnail.jpg',
+                    description: book.description,
+                    language: book.language,
+                    categories: book.categories,
+                    pageCount: book.pageCount,
+                    printType: book.printType
                 }));
                 setBooks(mappedBookData);
             } catch (err) {
