@@ -28,12 +28,33 @@ const BookForm: React.FC = () => {
     const [dateAcquired, setDateAcquired] = useState('');
     const [categories, setCategories] = useState(book.categories || '');
     const [notes, setNotes] = useState('');
-    const [sublocation, setSublocation] = useState('');
+    const [location, setLocation] = useState('');
     const [vendor, setVendor] = useState('');
     const [fundingSource, setFundingSource] = useState('');
     const [subjects, setSubjects] = useState('');
     const [numberOfCopies, setNumberOfCopies] = useState(1);
+    const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
     const token = localStorage.getItem('token');
+
+    const locationPrefixes: { [key: string]: string } = {
+        eLibrary: 'E',
+        'Graduate Studies Library': 'GS',
+        'Law Library': 'L',
+        'Engineering and Architecture Library': 'EA',
+        'High School Library': 'HS',
+        'Elementary Library': 'EL',
+    };
+
+    const generateAccessionNumbers = useCallback(() => {
+        const prefix = locationPrefixes[location] || 'UNK'; // Default to "UNK" if location not recognized
+        console.log(`Sublocation: ${location}, Prefix: ${prefix}, NumberOfCopies: ${numberOfCopies}`);
+        const numbers = Array.from({ length: numberOfCopies }, (_, index) => {
+            const formattedIndex = (index + 1).toString().padStart(6, '0');
+            return `${prefix}-${formattedIndex} c.${index + 1}`;
+        });
+        console.log(`Generated Accession Numbers:`, numbers);
+        setAccessionNumbers(numbers);
+    }, [location, numberOfCopies]);
 
     const handleGenerateCallNumber = useCallback(async () => {
         try {
@@ -61,21 +82,35 @@ const BookForm: React.FC = () => {
         }
     }, [book.callNumber, handleGenerateCallNumber]);
 
+    useEffect(() => {
+        console.log('useEffect for generateAccessionNumbers triggered');
+        if (location && numberOfCopies > 0) {
+            generateAccessionNumbers();
+        }
+    }, [location, numberOfCopies, generateAccessionNumbers]);
+
     const handleSave = async () => {
-        const formData = {
+        // Ensure all fields are valid before proceeding
+        if (!numberOfCopies || numberOfCopies < 1 || accessionNumbers.length === 0) {
+            alert("Please specify a valid number of copies and ensure accession numbers are generated.");
+            return;
+        }
+
+
+        const booksToSave = accessionNumbers.map((accessionNumber) => ({
             bookId: book.id,
             title: book.title,
+            accessionNo: accessionNumber, // Unique for each copy
             authors: book.authors.map((author) => ({ name: author })),
             callNumber,
             purchasePrice,
             status,
-            numberOfCopies,
             barcode,
             circulationType,
             dateAcquired,
-            categories: categories?.split(','),
+            categories: Array.isArray(categories) ? categories : categories?.split(','),
             notes,
-            sublocation,
+            location,
             vendor,
             fundingSource,
             subjects: subjects.split(','),
@@ -87,17 +122,24 @@ const BookForm: React.FC = () => {
             pageCount: state.book.pageCount,
             publishedDate: state.book.publishedDate,
             publisher: state.book.publisher,
-            printType: state.book.printType
-        };
+            printType: state.book.printType,
+        }));
 
         try {
             if (!token) {
+                alert("Authentication token is missing. Please log in again.");
                 return;
             }
-            await saveBook(formData, token);
+
+            // Save each book entry
+            for (const bookData of booksToSave) {
+                await saveBook(bookData, token);
+            }
+
             alert('Book details saved successfully!');
             navigate(-1); // Go back to the previous page
         } catch (error) {
+            console.error(error);
             alert('Failed to save book. Please try again.');
         }
     };
@@ -180,14 +222,29 @@ const BookForm: React.FC = () => {
                     />
                 </div>
 
+                <div style={{ marginBottom: '10px' }}>
+                    <label>Location: </label>
+                    <select value={location} onChange={(e) => setLocation(e.target.value)}>
+                        <option value="">Select</option>
+                        <option value="eLibrary">eLibrary</option>
+                        <option value="Graduate Studies Library">Graduate Studies Library</option>
+                        <option value="Law Library">Law Library</option>
+                        <option value="Engineering and Architecture Library">Engineering and Architecture Library</option>
+                        <option value="High School Library">High School Library</option>
+                        <option value="Elementary Libray">High School Library</option>
+                    </select>
+                </div>
+
                 {/* Circulation Type */}
                 <div style={{ marginBottom: '10px' }}>
                     <label>Circulation Type: </label>
                     <select value={circulationType} onChange={(e) => setCirculationType(e.target.value)}>
                         <option value="">Select</option>
-                        <option value="General">General</option>
-                        <option value="Reference">Reference</option>
-                        <option value="Reserve">Reserve</option>
+                        <option value="General Reference">General Reference</option>
+                        <option value="Cilculation">Cilculation</option>
+                        <option value="Periodical">Periodical</option>
+                        <option value="Filipiniana">Filipiniana</option>
+                        <option value="Special Collection">Special Collection</option>
                     </select>
                 </div>
 
@@ -221,15 +278,7 @@ const BookForm: React.FC = () => {
                     ></textarea>
                 </div>
 
-                {/* Sublocation */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Sublocation: </label>
-                    <input
-                        type="text"
-                        value={sublocation}
-                        onChange={(e) => setSublocation(e.target.value)}
-                    />
-                </div>
+
 
                 {/* Vendor */}
                 <div style={{ marginBottom: '10px' }}>
