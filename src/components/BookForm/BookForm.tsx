@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { generateCallNumber, saveBook } from '../../services/GoogleBooksApi';
+import { fetchLastAccessionNumber } from '../../services/LocalBooksAPI';
 
 interface Book {
     id: string;
@@ -36,25 +37,36 @@ const BookForm: React.FC = () => {
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
     const token = localStorage.getItem('token');
 
-    const locationPrefixes: { [key: string]: string } = {
-        eLibrary: 'E',
-        'Graduate Studies Library': 'GS',
-        'Law Library': 'L',
-        'Engineering and Architecture Library': 'EA',
-        'High School Library': 'HS',
-        'Elementary Library': 'EL',
-    };
 
-    const generateAccessionNumbers = useCallback(() => {
-        const prefix = locationPrefixes[location] || 'UNK'; // Default to "UNK" if location not recognized
-        console.log(`Sublocation: ${location}, Prefix: ${prefix}, NumberOfCopies: ${numberOfCopies}`);
-        const numbers = Array.from({ length: numberOfCopies }, (_, index) => {
-            const formattedIndex = (index + 1).toString().padStart(6, '0');
-            return `${prefix}-${formattedIndex} c.${index + 1}`;
-        });
-        console.log(`Generated Accession Numbers:`, numbers);
-        setAccessionNumbers(numbers);
+
+    const generateAccessionNumbers = useCallback(async () => {
+        const locationPrefixes: { [key: string]: string } = {
+            eLibrary: 'E',
+            'Graduate Studies Library': 'GS',
+            'Law Library': 'L',
+            'Engineering and Architecture Library': 'EA',
+            'High School Library': 'HS',
+            'Elementary Library': 'EL',
+        };
+        const prefix = locationPrefixes[location] || 'UNK';
+        try {
+            const lastAccessionNumber = await fetchLastAccessionNumber(prefix);
+            const lastNumber = parseInt(lastAccessionNumber.split('-')[1], 10) || 0;
+
+            const baseNumber = (lastNumber + 1).toString().padStart(6, '0');
+            const baseAccessionNumber = `${prefix}-${baseNumber}`;
+
+            const numbers = Array.from({ length: numberOfCopies }, (_, index) =>
+                `${baseAccessionNumber} c.${index + 1}`
+            );
+
+            setAccessionNumbers(numbers);
+        } catch (error) {
+            console.error('Error generating accession numbers:', error);
+            alert('Failed to generate accession numbers. Please try again.');
+        }
     }, [location, numberOfCopies]);
+
 
     const handleGenerateCallNumber = useCallback(async () => {
         try {
