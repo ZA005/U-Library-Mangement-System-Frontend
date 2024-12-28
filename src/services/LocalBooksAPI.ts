@@ -22,3 +22,14 @@ export const getBooksByAuthor = async (authorName: string) => {
     }
 };
 
+export const fetchLastAccessionNumber = async (locationPrefix: string): Promise<string> => {
+    try {
+        const response = await fetch(`${BASE_URL}last-accession-number?locationPrefix=${locationPrefix}`);
+        const data = await response.text(); // Since the backend returns a plain string
+        return data;
+    } catch (error) {
+        console.error('Error fetching last accession number:', error);
+        throw error;
+    }
+};
+
