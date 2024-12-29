@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 interface UserData {
     libraryCardNumber: string;
     schoolId: string;
@@ -8,20 +7,18 @@ interface UserData {
     password: string;
 }
 
-
-
 class UserService {
     static BASE_URL = "http://localhost:8080";
 
     static async login(libraryCardNumber: string, password: string) {
-        const response = await axios.post(`${UserService.BASE_URL}/user/auth/login`, { libraryCardNumber, password });
+        const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { libraryCardNumber, password });
         console.log('Login Response:', response); //Debugging
         return response.data;
     }
 
     static async register(userData: UserData) {
         console.log('User Data:', userData);  // Log user data to check before the request
-        const response = await axios.post(`${UserService.BASE_URL}/user/auth/register`, userData);
+        const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData);
         return response.data;
     }
 
@@ -51,7 +48,12 @@ class UserService {
     static logout(): void {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+
+        // Log the result to see if the items were removed
+        console.log('Token removed:', !localStorage.getItem('token'));
+        console.log('Role removed:', !localStorage.getItem('role'));
     }
+
 
     static isAuthenticated(): boolean {
         const token = localStorage.getItem('token');
@@ -60,7 +62,7 @@ class UserService {
 
     static isAdmin(): boolean {
         const role = localStorage.getItem('role');
-        return role === 'ADMIN';
+        return role === 'LIBRARIAN';
     }
 
     static isUser(): boolean {

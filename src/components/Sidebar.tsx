@@ -4,6 +4,8 @@ import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Bac
 import { styled } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -17,6 +19,13 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
   open,
   onClose,
 }) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <>
       <Backdrop
@@ -55,7 +64,8 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+
+            <ListItemButton onClick={handleLogout}>
               <ListItemIcon>
                 <LogoutIcon sx={{ color: "#FFF" }} />
               </ListItemIcon>
