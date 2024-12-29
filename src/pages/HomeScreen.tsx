@@ -7,7 +7,7 @@ import ActionButtons from '../components/ActionButtons/ActionButtons';
 import Footer from '../components/Footer/Footer';
 import Line from '../components/Line/Line';
 import { useNavigate } from 'react-router-dom';
-import Login from "../components/LoginModal/LoginModal";
+import Login from '../components/Modal/LoginModal/Modal';
 
 
 const HomeScreen: React.FC = () => {
@@ -24,7 +24,7 @@ const HomeScreen: React.FC = () => {
   };
 
   const handleSignUp = () => {
-    navigate('/verify');
+    navigate('/verify/user');
   };
 
   return (

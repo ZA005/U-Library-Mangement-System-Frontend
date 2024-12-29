@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import ModalForm from "./Modal/ModalForm";
+import ModalForm from "../Modal/ModalForm";
 
-interface AddNewDepartmentModalProps {
+interface UpdateDepartmentModalProps {
   open: boolean;
   handleClose: () => void;
-  onDepartmentAdd: (data: { code: string; name: string; status: string }) => void;
+  onDepartmentUpdate: (data: { code: string; name: string; status: string }) => void;
 }
 
-const AddNewDepartmentModal: React.FC<AddNewDepartmentModalProps> = ({
+const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps> = ({
   open,
   handleClose,
-  onDepartmentAdd,
+  onDepartmentUpdate,
 }) => {
   const [departmentCode, setDepartmentCode] = useState("");
   const [departmentName, setDepartmentName] = useState("");
@@ -22,7 +22,7 @@ const AddNewDepartmentModal: React.FC<AddNewDepartmentModalProps> = ({
       name: departmentName,
       status: status,
     };
-    onDepartmentAdd(newDepartment); // Pass the new department data to the parent component
+    onDepartmentUpdate(newDepartment); // Pass the new department data to the parent component
     handleClose();
   };
 
@@ -30,7 +30,7 @@ const AddNewDepartmentModal: React.FC<AddNewDepartmentModalProps> = ({
     <ModalForm
       open={open}
       handleClose={handleClose}
-      title="Add New Department"
+      title="Update Department"
       fields={[
         {
           label: "Department Code",
@@ -53,9 +53,9 @@ const AddNewDepartmentModal: React.FC<AddNewDepartmentModalProps> = ({
         },
       ]}
       onConfirm={handleConfirm}
-      confirmText="Submit"
+      confirmText="Update"
     />
   );
 };
 
-export default AddNewDepartmentModal;
+export default UpdateDepartmentModal;

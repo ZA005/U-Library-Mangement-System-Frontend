@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ModalForm from "./Modal/ModalForm";
+import ModalForm from "../Modal/ModalForm";
 
 interface AddNewSubjectModalProps {
   open: boolean;
