@@ -16,6 +16,7 @@ import CirculationDashboard from './pages/CirculationAdmin/CirculationDashboard'
 import ManageCirculation from './pages/ManageCirculation/ManageCirculation';
 import ManageReservation from './pages/ManageReservation/ManageReservation';
 import OverseeOverdue from './pages/OverseeOverdues/OverseeOverdues';
+import CatalogingAdmin from './pages/CatalogingAdmin/CatalogingAdmin';
 
 
 function App() {
@@ -39,6 +40,8 @@ function App() {
             <Route path='/manage-circulation' element={<ManageCirculation />} />
             <Route path='/manage-reservation' element={<ManageReservation />} />
             <Route path='/oversee-overdue' element={<OverseeOverdue />} />
+            <Route path='/cataloging' element={<CatalogingAdmin />} />
+            
             
 
             {/* Protected pages only registered users can access */}

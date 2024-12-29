@@ -81,13 +81,17 @@ const LandingPage: React.FC = () => {
 
                     {/* Right Content */}
                     <Box className={styles.rightContent}>
-                        <Box className={styles.buttonContainer}>
-                            <button className={styles.manageButton}>
-                                Cataloging
-                            </button>
-                        </Box>
+                    <Box className={styles.buttonContainer}>
+  <button
+    className={styles.manageButton}
+    onClick={() => navigate('/cataloging')}
+  >
+    Cataloging
+  </button>
+</Box>
 
-                        <Box className={styles.buttonContainer}>
+
+<Box className={styles.buttonContainer}>
     <button
         className={styles.manageButton}
         onClick={() => navigate('/circulation')}
