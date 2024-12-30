@@ -116,9 +116,9 @@ const ProgramPage: React.FC = () => {
                         )}
                     </Box>
                     {/* border="1px solid red" */}
-                    <Box width="100%" padding="1%">
-
-                        <Box border="1px solid blue" height="100vh" padding="1rem" >
+                    <Box width="100%" >
+                        {/* border="1px solid blue" */}
+                        <Box height="100vh" padding="1rem" >
                             <TextField
                                 label="Search Books"
                                 variant="outlined"
