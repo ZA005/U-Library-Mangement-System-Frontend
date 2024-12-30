@@ -28,6 +28,7 @@ import styles from "./styles.module.css";
 import { getAllLoans } from "../../services/CirculationApi";
 
 const ManageCirculation: React.FC = () => {
+  const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loans, setLoans] = useState([]);
   useEffect(() => {
@@ -46,17 +47,6 @@ const ManageCirculation: React.FC = () => {
     console.log("Hamburger menu clicked!");
   };
 
-  // const borrow = [
-  //   {
-  //     BookTitle: "Greek Mythology",
-  //     Author: "Unknown",
-  //     Borrower: "Mikyla Grace",
-  //     UserType: "Student",
-  //     DateandTimeBorrowed: "March 5, 2024",
-  //     DateandTimeReturned: "",
-  //     status: "Borrowed",
-  //   },
-  // ];
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -64,15 +54,13 @@ const ManageCirculation: React.FC = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setIsIssueModalOpen(false);
   };
 
   const handleBookUpdate = () => {
     // Logic for updating a book record
   };
 
-  const handleBookIssue = () => {
-    // Logic for issuing a new book
-  };
 
   return (
     <Box className={styles.rootContainer}>
@@ -101,7 +89,7 @@ const ManageCirculation: React.FC = () => {
               textTransform: "none",
               ":hover": { backgroundColor: "#d13333" },
             }}
-            onClick={handleOpenModal}
+            onClick={() => setIsIssueModalOpen(true)}
           >
             Issue A Book
           </Button>
@@ -124,12 +112,14 @@ const ManageCirculation: React.FC = () => {
           <Table stickyHeader>
             <TableHead>
               <TableRow>
+                <TableCell>Accesion #</TableCell>
                 <TableCell>Book Title</TableCell>
                 <TableCell>Author</TableCell>
                 <TableCell>Borrower</TableCell>
-                <TableCell>User Type</TableCell>
+                <TableCell>Department</TableCell>
                 <TableCell>Date & Time Borrowed</TableCell>
                 <TableCell>Date & Time Returned</TableCell>
+                <TableCell>Due</TableCell>
                 <TableCell>STATUS</TableCell>
                 <TableCell>ACTION</TableCell>
               </TableRow>
@@ -137,12 +127,35 @@ const ManageCirculation: React.FC = () => {
             <TableBody>
               {loans.map((loan: any, index: number) => (
                 <TableRow key={index}>
+                  <TableCell>{loan.accessionNo}</TableCell>
                   <TableCell>{loan.title}</TableCell>
                   <TableCell>{loan.authorName}</TableCell>
-                  <TableCell>{loan.borrowerFullName}</TableCell>
+                  <TableCell>{loan.borrower}</TableCell>
                   <TableCell>{loan.departmentName}</TableCell>
-                  <TableCell>{loan.borrowDate}</TableCell>
-                  <TableCell>{loan.returnDate}</TableCell>
+                  <TableCell>
+                    {loan.borrowDate
+                      ? new Date(loan.borrowDate).toLocaleString('en-US', {
+                        dateStyle: 'short',
+                        timeStyle: 'medium',
+                      })
+                      : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    {loan.returnDate
+                      ? new Date(loan.returnDate).toLocaleString('en-US', {
+                        dateStyle: 'short',
+                        timeStyle: 'medium',
+                      })
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {loan.dueDate
+                      ? new Date(loan.dueDate).toLocaleString('en-US', {
+                        dateStyle: 'short',
+                        timeStyle: 'medium',
+                      })
+                      : 'N/A'}
+                  </TableCell>
                   <TableCell
                     className={
                       loan.status === "Active"
@@ -175,9 +188,8 @@ const ManageCirculation: React.FC = () => {
         </TableContainer>
       </Container>
       <CirculationIssueBookModal
-        open={isModalOpen}
+        open={isIssueModalOpen}
         handleClose={handleCloseModal}
-        onBookIssue={handleBookIssue}
       />
 
       <CirculationUpdateModal
