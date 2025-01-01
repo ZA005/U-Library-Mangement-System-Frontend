@@ -5,18 +5,6 @@ import { fetchBookDetails, fetchBorrowerDetails, saveLoanDetails } from "../../s
 interface CirculationIssueBookModalProps {
   open: boolean;
   handleClose: () => void;
-  // onBookIssue: (data: {
-  //   accessionNo: string;
-  //   title: string;
-  //   callNumber: string;
-  //   authorName: string;
-  //   borrower: string;
-  //   departmentName: string;
-  //   borrowDate: Date;
-  //   returnDate: Date | null;
-  //   dueDate: Date;
-  //   status: string;
-  // }) => void;
 }
 
 const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
@@ -32,8 +20,23 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   const [authors, setAuthors] = useState("");
   const [department, setDepartment] = useState("");
   const [due, setDue] = useState<Date>(new Date());
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const resetState = () => {
+    setStep(1);
+    setLibraryCardNumber("");
+    setBarcode("");
+    setTitle("");
+    setCallNumber("");
+    setAccessionNo("");
+    setAuthors("");
+    setDepartment("");
+    setDue(new Date());
+    setErrorMessage(null);
+  };
 
   const handleNext = async () => {
+    setErrorMessage(null);
     if (step === 1) {
       try {
         const { department } = await fetchBorrowerDetails(libraryCardNumber);
@@ -41,7 +44,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
         setStep(2);
       } catch (error) {
         console.error("Error fetching borrower details:", error);
-        alert("Borrower details not found!");
+        setErrorMessage("Borrower details not found. Please verify the Library Card Number.");
       }
     } else if (step === 2) {
       try {
@@ -56,19 +59,20 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
         setStep(3);
       } catch (error) {
         console.error("Error fetching book details:", error);
-        alert("Book details not found!");
+        setErrorMessage("Book details not found. Please verify the Barcode.");
       }
     }
   };
 
   const handleConfirm = async () => {
+    setErrorMessage(null);
     const now = new Date();
 
     const newCirculationData = {
       accessionNo: accessionNo,
       title: title,
       callNumber,
-      authorName: Array.isArray(authors) ? authors.join(", ") : authors, // Convert to string
+      authorName: Array.isArray(authors) ? authors.join(", ") : authors,
       borrower: libraryCardNumber,
       departmentName: department,
       borrowDate: now,
@@ -78,11 +82,11 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
     };
     try {
       await saveLoanDetails(newCirculationData);
-      // onBookIssue(newCirculationData);
       handleClose();
+      resetState();
     } catch (error) {
       console.error("Error saving loan information:", error);
-      alert("Failed to save loan information!");
+      setErrorMessage("Failed to save loan information. Please try again.");
     }
   };
 
@@ -101,7 +105,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
       return [
         {
           label: "Barcode",
-          type: 'text',
+          type: "text",
           value: barcode,
           onChange: setBarcode,
           readOnly: false,
@@ -111,43 +115,43 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
       return [
         {
           label: "Accession Number",
-          type: 'text',
+          type: "text",
           value: accessionNo,
           readOnly: true,
         },
         {
           label: "Book Title",
-          type: 'text',
+          type: "text",
           value: title,
           readOnly: true,
         },
         {
           label: "Call Number",
-          type: 'text',
+          type: "text",
           value: callNumber,
           readOnly: true,
         },
         {
           label: "Author",
-          type: 'text',
+          type: "text",
           value: authors,
           readOnly: true,
         },
         {
           label: "Borrower",
-          type: 'text',
+          type: "text",
           value: libraryCardNumber,
           readOnly: true,
         },
         {
           label: "Department",
-          type: 'text',
+          type: "text",
           value: department,
           readOnly: true,
         },
         {
           label: "Due",
-          type: 'text',
+          type: "text",
           value: due ? due.toLocaleString() : "",
           readOnly: true,
         },
@@ -159,11 +163,15 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   return (
     <ModalForm
       open={open}
-      handleClose={handleClose}
+      handleClose={() => {
+        handleClose();
+        resetState();
+      }}
       title="Issue A Book"
       fields={getFieldsForStep()}
       onConfirm={step === 3 ? handleConfirm : handleNext}
       confirmText={step === 3 ? "Save" : "Next"}
+      errorMessage={errorMessage} // Display error message if present
     />
   );
 };

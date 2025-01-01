@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -17,48 +16,90 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import TuneIcon from "@mui/icons-material/Tune";
 import Header from "../../components/Header/Header";
 import Line from "../../components/Line/Line";
 import Copyright from "../../components/Footer/Copyright";
 import CirculationIssueBookModal from "../../components/CirculationPopUps/CirculationIssueBookModal";
 import CirculationUpdateModal from "../../components/CirculationPopUps/CirculationUpdateModal";
-
 import styles from "./styles.module.css";
-import { getAllLoans } from "../../services/CirculationApi";
+import { getAllLoans, getLoanById } from "../../services/CirculationApi";
+import { Loan } from "../../model/Loan";
 
 const ManageCirculation: React.FC = () => {
   const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loans, setLoans] = useState([]);
+  const [loans, setLoans] = useState<Loan[]>([]);
+  const [filteredLoans, setFilteredLoans] = useState<Loan[]>([]);
+  const [barcode, setBarcode] = useState<string>("");
+  const [loanData, setLoanData] = useState<Loan[] | null>(null); // updated to handle one loan at a time
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchLoans = async () => {
+      setIsLoading(true);
       try {
         const loansData = await getAllLoans();
         setLoans(loansData);
+        setFilteredLoans(loansData);
       } catch (error) {
         console.error("Error fetching loans:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchLoans(); // Call the function on component mount
+
+    fetchLoans();
   }, []);
 
-  const handleSideBarClick = () => {
-    console.log("Hamburger menu clicked!");
-  };
+  const handleSideBarClick = () => console.log("Hamburger menu clicked!");
 
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenModal = async (loanId: bigint) => {
+    try {
+      const data = await getLoanById(loanId);
+      setLoanData(data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching loan data:", error);
+    }
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
     setIsIssueModalOpen(false);
+    setIsModalOpen(false);
+    setLoanData(null); // Reset loan data on close
   };
 
-  const handleBookUpdate = () => {
-    // Logic for updating a book record
+  const handleBarcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setBarcode(searchTerm);
+
+    if (searchTerm.trim() === "") {
+      setFilteredLoans(loans);
+    } else {
+      const filtered = loans.filter(
+        (loan) =>
+          loan.barcode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          loan.borrower.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredLoans(filtered);
+    }
+  };
+
+  const handleUpdateLoan = (updatedLoan: Loan) => {
+    setIsModalOpen(false);
+
+    // Update the loan in the state
+    setLoans((prevLoans) =>
+      prevLoans.map((loan) =>
+        loan.loanId === updatedLoan.loanId ? updatedLoan : loan
+      )
+    );
+    setFilteredLoans((prevFilteredLoans) =>
+      prevFilteredLoans.map((loan) =>
+        loan.loanId === updatedLoan.loanId ? updatedLoan : loan
+      )
+    );
+    setLoanData(null); // Reset loan data after updating
   };
 
 
@@ -96,107 +137,117 @@ const ManageCirculation: React.FC = () => {
 
           <Box className={styles.searchBox}>
             <TextField
-              placeholder="Search..."
+              value={barcode}
+              onChange={handleBarcodeChange}
+              placeholder="Search by Barcode..."
               size="small"
               InputProps={{
                 startAdornment: <SearchIcon className={styles.searchIcon} />,
               }}
             />
-            <IconButton>
-              <TuneIcon className={styles.tuneIcon} />
-            </IconButton>
           </Box>
         </Box>
 
-        <TableContainer component={Paper} className={styles.tableContainer}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>Accesion #</TableCell>
-                <TableCell>Book Title</TableCell>
-                <TableCell>Author</TableCell>
-                <TableCell>Borrower</TableCell>
-                <TableCell>Department</TableCell>
-                <TableCell>Date & Time Borrowed</TableCell>
-                <TableCell>Date & Time Returned</TableCell>
-                <TableCell>Due</TableCell>
-                <TableCell>STATUS</TableCell>
-                <TableCell>ACTION</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loans.map((loan: any, index: number) => (
-                <TableRow key={index}>
-                  <TableCell>{loan.accessionNo}</TableCell>
-                  <TableCell>{loan.title}</TableCell>
-                  <TableCell>{loan.authorName}</TableCell>
-                  <TableCell>{loan.borrower}</TableCell>
-                  <TableCell>{loan.departmentName}</TableCell>
-                  <TableCell>
-                    {loan.borrowDate
-                      ? new Date(loan.borrowDate).toLocaleString('en-US', {
-                        dateStyle: 'short',
-                        timeStyle: 'medium',
-                      })
-                      : 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    {loan.returnDate
-                      ? new Date(loan.returnDate).toLocaleString('en-US', {
-                        dateStyle: 'short',
-                        timeStyle: 'medium',
-                      })
-                      : ''}
-                  </TableCell>
-                  <TableCell>
-                    {loan.dueDate
-                      ? new Date(loan.dueDate).toLocaleString('en-US', {
-                        dateStyle: 'short',
-                        timeStyle: 'medium',
-                      })
-                      : 'N/A'}
-                  </TableCell>
-                  <TableCell
-                    className={
-                      loan.status === "Active"
-                        ? styles.activeStatus
-                        : styles.inactiveStatus
-                    }
-                  >
-                    {loan.status.toUpperCase()}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="text"
-                      sx={{
-                        color: "#EA4040",
-                        textTransform: "none",
-                        ":hover": {
-                          backgroundColor: "#f2f2f2",
-                          color: "#d13333",
-                        },
-                      }}
-                      onClick={handleOpenModal}
-                    >
-                      Edit
-                    </Button>
-                  </TableCell>
+        {isLoading ? (
+          <Typography>Loading...</Typography>
+        ) : filteredLoans.length === 0 ? (
+          <Typography>No loans to display</Typography>
+        ) : (
+          <TableContainer component={Paper} className={styles.tableContainer}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Accession #</TableCell>
+                  <TableCell>Book Title</TableCell>
+                  <TableCell>Author</TableCell>
+                  <TableCell>Borrower</TableCell>
+                  <TableCell>Department</TableCell>
+                  <TableCell>Date & Time Borrowed</TableCell>
+                  <TableCell>Date & Time Returned</TableCell>
+                  <TableCell>Due</TableCell>
+                  <TableCell>STATUS</TableCell>
+                  <TableCell>ACTION</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {filteredLoans.map((loan) => (
+                  <TableRow key={loan.loanId}>
+                    <TableCell>{loan.accessionNo}</TableCell>
+                    <TableCell>{loan.title}</TableCell>
+                    <TableCell>{loan.authorName}</TableCell>
+                    <TableCell>{loan.borrower}</TableCell>
+                    <TableCell>{loan.departmentName}</TableCell>
+                    <TableCell>
+                      {loan.borrowDate
+                        ? new Date(loan.borrowDate).toLocaleString("en-US", {
+                          dateStyle: "short",
+                          timeStyle: "medium",
+                        })
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {loan.returnDate
+                        ? new Date(loan.returnDate).toLocaleString("en-US", {
+                          dateStyle: "short",
+                          timeStyle: "medium",
+                        })
+                        : ""}
+                    </TableCell>
+                    <TableCell>
+                      {loan.dueDate
+                        ? new Date(loan.dueDate).toLocaleString("en-US", {
+                          dateStyle: "short",
+                          timeStyle: "medium",
+                        })
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell
+                      className={
+                        loan.status === "Active"
+                          ? styles.activeStatus
+                          : styles.inactiveStatus
+                      }
+                    >
+                      {loan.status}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="text"
+                        sx={{
+                          color: "#EA4040",
+                          textTransform: "none",
+                          ":hover": {
+                            backgroundColor: "#f2f2f2",
+                            color: "#d13333",
+                          },
+                        }}
+                        onClick={() => handleOpenModal(BigInt(loan.loanId))}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Container>
+
       <CirculationIssueBookModal
         open={isIssueModalOpen}
         handleClose={handleCloseModal}
       />
 
-      <CirculationUpdateModal
-        open={isModalOpen}
-        handleClose={handleCloseModal}
-        onUpdateCirculation={handleBookUpdate}
-      />
+
+      {isModalOpen && loanData && (
+        <CirculationUpdateModal
+          open={isModalOpen}
+          handleClose={handleCloseModal}
+          loanData={loanData}
+          onUpdateLoan={handleUpdateLoan} // Pass callback to update loan
+        />
+      )}
       <Copyright />
     </Box>
   );

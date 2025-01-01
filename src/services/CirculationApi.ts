@@ -48,3 +48,26 @@ export const fetchBookDetails = async (barcode: string): Promise<{ accessionNo: 
         throw new Error("Failed to fetch book details: " + error);
     }
 }
+
+export const getLoanById = async (loanId: bigint) => {
+    try {
+        const response = await axios.get(`${BASE_URL}admin/loans/barcode/${loanId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch loan by barcode: " + error);
+    }
+};
+
+export const updateLoanStatus = async (loanId: bigint, status: string) => {
+    try {
+        const response = await axios.put(`${BASE_URL}admin/update/${loanId}`, { status }, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to update loan status: " + error);
+    }
+};
+

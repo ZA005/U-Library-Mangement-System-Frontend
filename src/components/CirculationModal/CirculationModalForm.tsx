@@ -28,6 +28,7 @@ interface ModalFormProps {
   fields: Field[];
   onConfirm: () => void;
   confirmText: string;
+  errorMessage?: string | null;
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({
@@ -37,6 +38,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
   fields,
   onConfirm,
   confirmText,
+  errorMessage, // Include errorMessage here
 }) => {
   return (
     <Modal open={open} onClose={handleClose}>
@@ -86,6 +88,15 @@ const ModalForm: React.FC<ModalFormProps> = ({
             }
             return null;
           })}
+          {errorMessage && (
+            <Typography
+              variant="body2"
+              color="error"
+              className={styles.errorMessage}
+            >
+              {errorMessage}
+            </Typography>
+          )}
           <Button
             variant="contained"
             sx={{
@@ -101,7 +112,6 @@ const ModalForm: React.FC<ModalFormProps> = ({
           <Button
             variant="text"
             sx={{
-
               color: "#EA4040",
               textTransform: "none",
               ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
@@ -115,5 +125,6 @@ const ModalForm: React.FC<ModalFormProps> = ({
     </Modal>
   );
 };
+
 
 export default ModalForm;
