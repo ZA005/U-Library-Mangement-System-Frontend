@@ -9,10 +9,7 @@ import ManageDepartments from '../pages/Curriculum-Management/Managers/ManageDep
 import ManageSubjects from '../pages/Curriculum-Management/Managers/ManageSubjects';
 import VerifyOtp from '../components/Verify/VerifyOtp';
 import VerifyUser from '../components/Verify/VerifyUser';
-<<<<<<< HEAD
-=======
 import PageNotFound from '../components/PageNotFound/PageNotFound';
->>>>>>> a00b42a273fee0a151250e4d9126c6079c1ef182
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
 
@@ -31,11 +28,6 @@ const AppRoutes = () => (
     {/* ADMIN ROUTES */}
     <Route path="admin/*" element={<AdminRoutes />} />
 
-<<<<<<< HEAD
-    {/* USER ROUTES */}
-    <Route path="user/*" element={<UserRoutes />} />
-    
-=======
     {/* PROTECTED ROUTES */}
     {/* <Route path="/library" element={<LandingPage />} /> */}
 
@@ -47,7 +39,6 @@ const AppRoutes = () => (
     <Route path="user/*" element={<UserRoutes />} />
 
 
->>>>>>> a00b42a273fee0a151250e4d9126c6079c1ef182
     {/* Default page for unmatched routes */}
     <Route path="*" element={<PageNotFound />} />
   </Routes>

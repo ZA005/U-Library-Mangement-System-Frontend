@@ -91,17 +91,22 @@ const CatalogHome: React.FC = () => {
                     sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                     fontWeight="bold"
                 >
-                    Browse Books
+                   Library Catalog
                 </Typography>
                 <Line />
-
-                {error && <Typography color="error">{error}</Typography>}
-
-                {books.length === 0 ? (
+                <Box display= "flex" flexDirection="row" justifyContent="space-between">
+                    <Box width="20vw" height="100vh" bgcolor="red"></Box>
+                    <Box width="50vw" height="100vh" bgcolor="blue" mr="10px" ml="10px" overflow="auto">  {books.length === 0 ? (
                     <Typography>No books available.</Typography>
                 ) : (
                     <BookList books={books} onBookClick={handleBookClick} />
-                )}
+                )}</Box>
+                    <Box width="20vw" height="100vh" bgcolor="yellow"></Box>
+                </Box>
+
+                {error && <Typography color="error">{error}</Typography>}
+
+               
             </Container>
 
             <Copyright />

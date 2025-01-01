@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import CurriculumManagement from '../pages/Curriculum-Management/CurriculumManagement';
 import ProtectedRoute from './ProtectedRoute';
-import BookSearch from '../pages/BookSearch';
+import BookSearch from '../pages/BookSearch/BookSearch';
 import BookForm from '../components/BookForm/BookForm';
 import LandingPage from '../pages/LandingPageAdmin/LandingPage';
 import CirculationDashboard from '../pages/CirculationAdmin/CirculationDashboard';
@@ -10,10 +10,6 @@ import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
 const AdminRoutes = () => (
   <Routes>
     <Route
-<<<<<<< HEAD
-      element={<ProtectedRoute allowedRoles={['LIBRARIAN']} redirectPath="/login" />}
-    >
-=======
       element={<ProtectedRoute allowedRoles={['LIBRARIAN']} redirectPath="/" />}
     >
       {/* Admin Landing Page */}
@@ -25,7 +21,6 @@ const AdminRoutes = () => (
       <Route path="book-form" element={<BookForm />} />
 
       {/* Curriculum Module  */}
->>>>>>> a00b42a273fee0a151250e4d9126c6079c1ef182
       <Route path="curriculum/management/page" element={<CurriculumManagement />} />
 
       {/* Ciculation Module  */}
