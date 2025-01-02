@@ -7,6 +7,8 @@ import CurriculumManagement from '../pages/Curriculum-Management/CurriculumManag
 import ManageCourses from '../pages/Curriculum-Management/Managers/ManageCourse';
 import ManageDepartments from '../pages/Curriculum-Management/Managers/ManageDepartments';
 import ManageSubjects from '../pages/Curriculum-Management/Managers/ManageSubjects';
+import UniversityCurriculumPage from '../pages/Curriculum-Management/UniversityCurriculumPage';
+import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';
 import VerifyUser from '../components/Verify/VerifyUser';
 import AdminRoutes from './AdminRoutes';
@@ -18,6 +20,8 @@ const AppRoutes = () => (
     <Route path="/" element={<HomeScreen />} />
     <Route path="/register" element={<Register />} />
     <Route path='/marc-record/add' element={<AddMARCRecord />} />
+    <Route path='/university/curriculum' element={<UniversityCurriculumPage />} />
+    <Route path="/:departmentName/:programName" element={<ProgramPage />} />
     <Route path='/curriculum/management' element={<CurriculumManagement />} />
     <Route path='/curriculum/management/manage/departments' element={<ManageDepartments />} />
     <Route path='/curriculum/management/manage/courses' element={<ManageCourses />} />
@@ -29,7 +33,7 @@ const AppRoutes = () => (
 
     {/* USER ROUTES */}
     <Route path="user/*" element={<UserRoutes />} />
-    
+
     {/* Default page for unmatched routes */}
     <Route path="*" element={<Navigate to="/" />} />
   </Routes>
