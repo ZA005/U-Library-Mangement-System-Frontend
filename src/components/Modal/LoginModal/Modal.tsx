@@ -44,9 +44,9 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
       } else {
         setError(userData.message); // Handle error message from the server
       }
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error);
-      setError('An unexpected error occurred'); // Handle unexpected errors
+      setError(`An unexpected error occurred`); // Handle unexpected errors
       setTimeout(() => {
         setError(null); // Reset error after a timeout
       }, 5000);

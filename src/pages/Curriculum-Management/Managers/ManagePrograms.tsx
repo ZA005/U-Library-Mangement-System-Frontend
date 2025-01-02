@@ -1,43 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { Box, Container, IconButton, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import { getAllDepartments, Department } from "../../../services/Curriculum/DepartmentService";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import Header from "../../../components/Header/Header";
 import Line from "../../../components/Line/Line";
 import Copyright from "../../../components/Footer/Copyright";
-import AddNewDepartmentModal from "../../../components/CurriculumManagement/AddNewDepartmentModal";
-import UpdateDepartmentModal from "../../../components/CurriculumManagement/UpdateDepartmentModal";
-import styles from "./styles.module.css";
+import AddNewCourseModal from "../../../components/CurriculumManagement/AddNewProgramModal";
+import UpdateCourseModal from "../../../components/CurriculumManagement/UpdateProgramModal";
 import Sidebar from "../../../components/Sidebar";
+import { getAllPrograms, Program } from "../../../services/Curriculum/ProgramService";
+import styles from "./styles.module.css";
 
 const ModalType = {
   ADD: 'ADD',
   UPDATE: 'UPDATE',
 };
 
-const ManageDepartments: React.FC = () => {
+const ManageCourses: React.FC = () => {
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [filteredDepartments, setFilteredDepartments] = useState<Department[]>([]);
-  const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
+  // Fetch programs on component mount
   useEffect(() => {
-
-    const fetchDepartments = async () => {
+    const fetchPrograms = async () => {
       try {
-        const data = await getAllDepartments();
-        console.log(data)
-        setDepartments(data);
-        setFilteredDepartments(data);
+        const data = await getAllPrograms();
+        setPrograms(data);
       } catch (error) {
-        console.error("Error fetching departments:", error);
+        console.error("Error fetching programs:", error);
       }
     };
 
-    fetchDepartments();
+    fetchPrograms();
   }, []);
 
   // Sidebar toggle function
@@ -50,40 +47,37 @@ const ManageDepartments: React.FC = () => {
 
   const refreshList = async () => {
     try {
-      const data = await getAllDepartments();
-      setDepartments(data);
-      setFilteredDepartments(data);
+      const data = await getAllPrograms(); // Re-fetch the programs
+      setPrograms(data);
     } catch (error) {
       console.error("Error fetching programs:", error);
     }
   };
 
-  const handleEditClick = (department: Department) => {
-    setSelectedDepartment(department); // Set the selected program
+  const handleEditClick = (program: Program) => {
+    setSelectedProgram(program); // Set the selected program
     handleModalToggle(ModalType.UPDATE); // Open the modal
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const term = event.target.value.toLowerCase();
-    setSearchTerm(term);
-
-    // Filter the departments based on the search term
-    const filtered = departments.filter((dept) =>
-      dept.name.toLowerCase().includes(term)
-    );
-    setFilteredDepartments(filtered);
-  };
+  const filteredPrograms = programs.filter((program) =>
+    program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    program.department_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Box className={styles.rootContainer}>
       <Sidebar open={isSidebarOpen} onClose={toggleSidebar} />
       <Container maxWidth="lg" className={styles.container}>
         <Header
-          buttons={<IconButton onClick={toggleSidebar}>
-            <MenuIcon className={styles.menuIcon} />
-          </IconButton>}
+          buttons={
+            <IconButton onClick={toggleSidebar}>
+              <MenuIcon className={styles.menuIcon} />
+            </IconButton>
+          }
         />
-        <Typography variant="h4" gutterBottom className={styles.title}>Manage Departments</Typography>
+        <Typography variant="h4" gutterBottom className={styles.title}>
+          Manage Program
+        </Typography>
 
         <Line />
 
@@ -98,17 +92,19 @@ const ManageDepartments: React.FC = () => {
             }}
             onClick={() => handleModalToggle(ModalType.ADD)}
           >
-            Add New Department
+            Add New Program
           </Button>
+
           <Box className={styles.searchBox}>
             <TextField
               placeholder="Search..."
               size="small"
               value={searchTerm}
-              onChange={handleSearchChange} // Bind search input to the state
-              InputProps={{ startAdornment: <SearchIcon className={styles.searchIcon} /> }}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: <SearchIcon className={styles.searchIcon} />,
+              }}
             />
-            {/* <IconButton><TuneIcon className={styles.tuneIcon} /></IconButton> */}
           </Box>
         </Box>
 
@@ -117,21 +113,23 @@ const ManageDepartments: React.FC = () => {
             <TableHead>
               <TableRow>
                 <TableCell><strong>NAME</strong></TableCell>
+                <TableCell><strong>DEPARTMENT</strong></TableCell>
                 <TableCell><strong>STATUS</strong></TableCell>
                 <TableCell><strong>ACTION</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredDepartments.length > 0 ? (
-                filteredDepartments.map((dept) => (
-                  <TableRow key={dept.id}>
-                    <TableCell>{dept.name}</TableCell>
+              {filteredPrograms.length > 0 ? (
+                filteredPrograms.map((program) => (
+                  <TableRow key={program.id}>
+                    <TableCell>{program.name}</TableCell>
+                    <TableCell>{program.department_name}</TableCell>
                     <TableCell
                       sx={{
-                        color: dept.status === 1 ? "green" : "red",
+                        color: program.status === 1 ? "green" : "red",
                       }}
                     >
-                      <strong>{dept.status === 1 ? "ACTIVE" : "INACTIVE"}</strong>
+                      <strong>{program.status === 1 ? "ACTIVE" : "INACTIVE"}</strong>
                     </TableCell>
                     <TableCell>
                       <Button
@@ -141,7 +139,7 @@ const ManageDepartments: React.FC = () => {
                           textTransform: "none",
                           ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
                         }}
-                        onClick={() => handleEditClick(dept)}
+                        onClick={() => handleEditClick(program)}
                       >
                         Edit
                       </Button>
@@ -150,9 +148,9 @@ const ManageDepartments: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
+                  <TableCell colSpan={4} align="center">
                     <Typography variant="body1" sx={{ color: "gray" }}>
-                      No departments match your search criteria.
+                      No programs match your search criteria.
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -162,19 +160,19 @@ const ManageDepartments: React.FC = () => {
         </TableContainer>
       </Container>
 
-      {/* Add New Department Modal */}
-      <AddNewDepartmentModal
+      {/* Add New Course Modal */}
+      <AddNewCourseModal
         open={openModal === ModalType.ADD}
         handleClose={() => handleModalToggle(ModalType.ADD)}
-        onDepartmentAdd={refreshList}
+        onProgramAdd={refreshList}
       />
 
-      {/* Update Department Modal */}
-      <UpdateDepartmentModal
+      {/* Update Course Modal */}
+      <UpdateCourseModal
         open={openModal === ModalType.UPDATE}
         handleClose={() => handleModalToggle(ModalType.UPDATE)}
-        onDepartmentUpdated={refreshList}
-        department={selectedDepartment}
+        onProgramUpdate={refreshList}
+        program={selectedProgram}
       />
 
       <Copyright />
@@ -182,4 +180,4 @@ const ManageDepartments: React.FC = () => {
   );
 };
 
-export default ManageDepartments;
+export default ManageCourses;
