@@ -1,58 +1,93 @@
-import React, { useState } from "react";
-import { Box, Container, IconButton, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Container, IconButton, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import TuneIcon from "@mui/icons-material/Tune";
 import Header from "../../../components/Header/Header";
 import Line from "../../../components/Line/Line";
 import Copyright from "../../../components/Footer/Copyright";
 import AddNewSubjectModal from "../../../components/CurriculumManagement/AddNewSubjectModal";
 import UpdateSubjectModal from "../../../components/CurriculumManagement/UpdateSubjectModal";
 import Sidebar from "../../../components/Sidebar";
-
+import { getAllSubjects, Subject } from "../../../services/Curriculum/SubjectService";
 import styles from "./styles.module.css";
 
+const ModalType = {
+  ADD: 'ADD',
+  UPDATE: 'UPDATE',
+};
+
 const ManageSubjects: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [openModal, setOpenModal] = useState<string | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleSideBarClick = () => {
-        setSidebarOpen(!isSidebarOpen);
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const data = await getAllSubjects();
+        setSubjects(data);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
     };
 
-    const handleSidebarClose = () => {
-        setSidebarOpen(false);
-    };
+    fetchSubjects();
+  }, []);
 
-  // temporary datas just to visualize the style
-  const departments = [
-    { code: "BIT 2132K", name: "Introduction to Computing", department: "Computer Studies", courses: 4, status: "Active" },
-  ];
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  // Sidebar toggle function
+  const toggleSidebar = () => setSidebarOpen(prev => !prev);
+
+  const handleModalToggle = (type: string | null) => {
+    setOpenModal(prev => (prev === type ? null : type));  // Toggle modal
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const refreshList = async () => {
+    try {
+      const data = await getAllSubjects();
+      setSubjects(data);
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    }
+  }
+
+  const handleEditClick = (subject: Subject) => {
+    setSelectedSubject(subject); // Set the selected program
+    handleModalToggle(ModalType.UPDATE); // Open the modal
   };
 
-  const handleUpdateSubject = () => {
+  const convertYearToString = (year: number): string => {
+    switch (year) {
+      case 1:
+        return "1st Year";
+      case 2:
+        return "2nd Year";
+      case 3:
+        return "3rd Year";
+      case 4:
+        return "4th Year";
+      case 5:
+        return "5th Year";
+      default:
+        return "Unknown Year";
+    }
+  };
 
-  }
+  const filteredSubjects = subjects.filter((subject) =>
+    subject.subject_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    subject.program_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const handleAddSubject = () => {
-
-  }
   return (
     <Box className={styles.rootContainer}>
-      <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
+      <Sidebar open={isSidebarOpen} onClose={toggleSidebar} />
       <Container maxWidth="lg" className={styles.container}>
         <Header
           buttons={
             <>
-              <IconButton onClick={handleSideBarClick}>
+              <IconButton onClick={toggleSidebar}>
                 <MenuIcon className={styles.menuIcon} />
               </IconButton>
             </>
@@ -65,8 +100,8 @@ const ManageSubjects: React.FC = () => {
         >
           Manage Subjects
         </Typography>
-    
-        <Line/>
+
+        <Line />
 
         <Box className={styles.actionBar}>
           <Button
@@ -77,7 +112,7 @@ const ManageSubjects: React.FC = () => {
               textTransform: "none",
               ":hover": { backgroundColor: "#d13333" },
             }}
-            onClick={handleOpenModal}
+            onClick={() => handleModalToggle(ModalType.ADD)}
           >
             Add New Subject
           </Button>
@@ -86,69 +121,72 @@ const ManageSubjects: React.FC = () => {
             <TextField
               placeholder="Search..."
               size="small"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               InputProps={{
-                startAdornment: (
-                  <SearchIcon className={styles.searchIcon} />
-                ),
+                startAdornment: <SearchIcon className={styles.searchIcon} />,
               }}
             />
-            <IconButton>
-              <TuneIcon className={styles.tuneIcon} />
-            </IconButton>
           </Box>
         </Box>
 
-        <TableContainer component={Paper} className={styles.tableContainer}>
+        <TableContainer component={Paper} className={styles.tableContainer} sx={{ maxHeight: "60vh", overflowY: "auto" }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>CODE</TableCell>
                 <TableCell>NAME</TableCell>
-                <TableCell>DEPARTMENT</TableCell>
-                <TableCell>COURSES</TableCell>
-                <TableCell>STATUS</TableCell>
+                <TableCell>PROGRAM</TableCell>
+                <TableCell>YEAR</TableCell>
                 <TableCell>ACTION</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {departments.map((dept, index) => (
-                <TableRow key={index}>
-                  <TableCell>{dept.code}</TableCell>
-                  <TableCell>{dept.name}</TableCell>
-                  <TableCell>{dept.department}</TableCell>
-                  <TableCell>{dept.courses}</TableCell>
-                  <TableCell className={dept.status === "Active" ? styles.activeStatus : styles.inactiveStatus}>
-                    {dept.status.toUpperCase()}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="text"
-                      sx={{
-                        color: "#EA4040",
-                        textTransform: "none",
-                        ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
-                      }}
-                      onClick={handleOpenModal} // Define this function to handle the button click event
-                    >
-                      Edit
-                    </Button>
+              {filteredSubjects.length > 0 ? (
+                filteredSubjects.map((subject) => (
+                  <TableRow key={subject.id}>
+                    <TableCell>{subject.subject_name}</TableCell>
+                    <TableCell>{subject.program_name}</TableCell>
+                    <TableCell>{convertYearToString(subject.year)}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="text"
+                        sx={{
+                          color: "#EA4040",
+                          textTransform: "none",
+                          ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
+                        }}
+                        onClick={() => handleEditClick(subject)}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    <Typography variant="body1" sx={{ color: "gray" }}>
+                      No subjects match your search criteria.
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Container>
+
       <AddNewSubjectModal
-        open={isModalOpen}
-        handleClose={handleCloseModal}
-        onSubjectAdd={handleAddSubject}
+        open={openModal === ModalType.ADD}
+        handleClose={() => handleModalToggle(ModalType.ADD)}
+        onSubjectAdd={refreshList}
       />
-      
+
       <UpdateSubjectModal
-        open={isModalOpen}
-        handleClose={handleCloseModal}
-        onSubjectUpdate={ handleUpdateSubject }
+        open={openModal === ModalType.UPDATE}
+        handleClose={() => handleModalToggle(ModalType.UPDATE)}
+        onSubjectUpdate={refreshList}
+        subject={selectedSubject}
       />
       <Copyright />
     </Box>

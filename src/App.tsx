@@ -1,10 +1,12 @@
-import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
-import RoutesWrapper from './routes/Routes'; // Import the routes configuration
+import { BrowserRouter } from 'react-router-dom';
+import RoutesWrapper from './routes/Routes';
+
+console.error = () => { };
 
 function App() {
   return (
-    <BrowserRouter> {/* Wrap your routes with BrowserRouter */}
-      <RoutesWrapper /> {/* Renders all routes with authentication context */}
+    <BrowserRouter>
+      <RoutesWrapper />
     </BrowserRouter>
   );
 }
