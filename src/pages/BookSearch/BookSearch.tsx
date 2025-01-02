@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu"; // Import MenuIcon
+import Sidebar from '../../components/Sidebar'; // Import Sidebar
 import { searchGoogleBooks } from '../../services/GoogleBooksApi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -8,7 +10,7 @@ import searchLibraryOfCongress from '../../services/LibraryOfCongressApi';
 import UserService from '../../services/UserService';
 import { Book } from '../../model/Book';
 import Header from '../../components/Header/Header';
-import Line from '../../components/Line/Line'; // Import the Line component
+import Line from '../../components/Line/Line';
 import Copyright from '../../components/Footer/Copyright';
 import styles from './styles.module.css';
 
@@ -21,6 +23,17 @@ const BookSearch: React.FC = () => {
     const { role } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+
+    // State for Sidebar
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+    const handleSideBarClick = () => {
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarClose = () => {
+        setSidebarOpen(false);
+    };
 
     useEffect(() => {
         if (location.state?.searchState) {
@@ -73,9 +86,19 @@ const BookSearch: React.FC = () => {
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
-
+            {/* Add Sidebar */}
+            <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
-            <Header buttons={<></>} />
+                <Header
+                    buttons={
+                        <>
+                            {/* Add Hamburger Menu */}
+                            <IconButton onClick={handleSideBarClick}>
+                                <MenuIcon style={{ color: "#EA4040" }} />
+                            </IconButton>
+                        </>
+                    }
+                />
                 <Typography
                     variant="h4"
                     gutterBottom
@@ -84,7 +107,7 @@ const BookSearch: React.FC = () => {
                 >
                     Welcome, To BookSearch LIBRARIAN!
                 </Typography>
-                <Line /> {/* Add the red line here */}
+                <Line />
 
                 <div className={styles.searchContainer}>
                     <input
@@ -126,7 +149,6 @@ const BookSearch: React.FC = () => {
                     <BookList books={books} onBookClick={handleBookClick} />
                 )}
             </Container>
-
             <Copyright />
         </Box>
     );
