@@ -1,37 +1,68 @@
+.rootContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
+  flex-grow: 1;
 }
 
-.line-container {
-    display: flex;
-    justify-content: center;
-    width: 50%;
-    margin: 2rem auto;
+.menuIcon {
+  color: #ea4040;
 }
 
-.manage-title {
-    margin-top: 2rem;
-    font-size: 2.5rem;
-    font-weight: bold;
+.title {
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
-.manageButton {
-    text-align: center;
-    background-color: #ea4040;
-    color: #fff;
-    padding: 30px 70px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 300px;
-    height: auto;
-    transition: background-color 0.3s;
-    margin-left: 200px;
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.8rem;
+  }
 }
 
-.manageButton:hover {
-    background-color: #d73939;
+.actionBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  margin-right: 0.5rem;
+}
+
+.tuneIcon {
+  color: #757575;
+}
+
+.tableContainer {
+  margin-top: 1rem;
+}
+
+.activeStatus {
+  color: green;
+  font-weight: bold;
+}
+
+.inactiveStatus {
+  color: red;
+  font-weight: bold;
+}
+
+.editText {
+  color: #007bff;
+  cursor: pointer;
+}
+
+.editText:hover {
+  text-decoration: underline;
 }

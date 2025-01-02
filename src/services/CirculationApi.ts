@@ -71,3 +71,26 @@ export const updateLoanStatus = async (loanId: bigint, status: string) => {
     }
 };
 
+export const checkBookLoanStatus = async (barcode: string): Promise<boolean> => {
+    try {
+        const response = await axios.get(`${BASE_URL}admin/check-book-loan-status/barcode/${barcode}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        return response.data.isLoaned;  // Assuming the backend returns a boolean indicating the loan status
+    } catch (error) {
+        throw new Error("Failed to check book loan status: " + error);
+    }
+};
+
+export const getOverdueLoans = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}admin/overdue`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch overdue loans: " + error);
+    }
+}
+
+

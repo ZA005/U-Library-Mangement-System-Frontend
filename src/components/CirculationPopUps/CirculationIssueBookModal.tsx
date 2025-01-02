@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ModalForm from "../CirculationModal/CirculationModalForm";
-import { fetchBookDetails, fetchBorrowerDetails, saveLoanDetails } from "../../services/CirculationApi";
+import { checkBookLoanStatus, fetchBookDetails, fetchBorrowerDetails, saveLoanDetails } from "../../services/CirculationApi";
 
 interface CirculationIssueBookModalProps {
   open: boolean;
@@ -21,6 +21,19 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   const [department, setDepartment] = useState("");
   const [due, setDue] = useState<Date>(new Date());
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Get the current time in Manila timezone
+  const now = new Date();
+  const manilaTime = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Manila',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).format(now);
 
   const resetState = () => {
     setStep(1);
@@ -53,10 +66,19 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
         setCallNumber(callNumber);
         setTitle(title);
         setAuthors(authors);
-        const now = new Date();
-        const dueDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
-        setDue(dueDate);
-        setStep(3);
+
+        // Check if the book is already loaned out
+        const isBookLoaned = await checkBookLoanStatus(barcode);
+        if (isBookLoaned) {
+          setErrorMessage("This book is already loaned out. Please choose another book.");
+        } else {
+          const manilaDate = new Date(manilaTime.replace(',', ''));
+
+          // Add 24 hours
+          const dueDate = new Date(manilaDate.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
+          setDue(dueDate);
+          setStep(3);
+        }
       } catch (error) {
         console.error("Error fetching book details:", error);
         setErrorMessage("Book details not found. Please verify the Barcode.");
@@ -66,7 +88,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
 
   const handleConfirm = async () => {
     setErrorMessage(null);
-    const now = new Date();
+    console.log("now", manilaTime);
 
     const newCirculationData = {
       accessionNo: accessionNo,
@@ -75,11 +97,21 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
       authorName: Array.isArray(authors) ? authors.join(", ") : authors,
       borrower: libraryCardNumber,
       departmentName: department,
-      borrowDate: now,
+      borrowDate: manilaTime,
       returnDate: null,
-      dueDate: due!,
+      dueDate: new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Manila',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).format(due!),
       status: "Borrowed",
     };
+    console.log("newCirculationData", newCirculationData.dueDate);
     try {
       await saveLoanDetails(newCirculationData);
       handleClose();
@@ -161,18 +193,20 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   };
 
   return (
-    <ModalForm
-      open={open}
-      handleClose={() => {
-        handleClose();
-        resetState();
-      }}
-      title="Issue A Book"
-      fields={getFieldsForStep()}
-      onConfirm={step === 3 ? handleConfirm : handleNext}
-      confirmText={step === 3 ? "Save" : "Next"}
-      errorMessage={errorMessage} // Display error message if present
-    />
+    <>
+      <ModalForm
+        open={open}
+        handleClose={() => {
+          handleClose();
+          resetState();
+        }}
+        title="Issue A Book"
+        fields={getFieldsForStep()}
+        onConfirm={step === 3 ? handleConfirm : handleNext}
+        confirmText={step === 3 ? "Save" : "Next"}
+        errorMessage={errorMessage} // Display error message if present
+      />
+    </>
   );
 };
 

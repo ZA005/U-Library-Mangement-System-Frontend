@@ -6,6 +6,7 @@ import BookForm from '../components/BookForm/BookForm';
 import LandingPage from '../pages/LandingPageAdmin/LandingPage';
 import CirculationDashboard from '../pages/CirculationAdmin/CirculationDashboard';
 import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
+import OverseeOverdue from '../pages/OverseeOverdues/OverseeOverdues';
 
 const AdminRoutes = () => (
   <Routes>
@@ -26,6 +27,8 @@ const AdminRoutes = () => (
       {/* Ciculation Module  */}
       <Route path='circulation/management/page' element={<CirculationDashboard />} />
       <Route path='manage-circulation' element={<ManageCirculation />} />
+      <Route path='oversee-overdue' element={<OverseeOverdue />} />
+
 
 
 
