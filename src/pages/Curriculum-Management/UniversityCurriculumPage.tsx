@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Container, IconButton, Button } from "@mui/material";
+import { getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
+import { getAllDepartments } from "../../services/Curriculum/DepartmentService";
 import Header from "../../components/Header/Header";
 import Copyright from "../../components/Footer/Copyright";
 import Line from "../../components/Line/Line";
@@ -8,59 +10,70 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "../../components/Sidebar";
 import styles from "./styles.module.css";
 
+interface Department {
+    id: number;
+    name: string;
+    status: number;
+}
+
+interface Program {
+    id: number;
+    name: string;
+    department_id: number;
+    status: number;
+}
+
 const UniversityCurriculumPage: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [expandedDepartment, setExpandedDepartment] = useState<string | null>(null);
+    const [expandedDepartment, setExpandedDepartment] = useState<number | null>(null);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [programs, setPrograms] = useState<{ [key: number]: Program[] }>({});
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
-    const handleViewSubjects = (department: string, program: string) => {
-        const route = `/${department.toLowerCase().replace(/\s/g, "-")}/${program.toLowerCase().replace(/\s/g, "-")}`;
-        navigate(route);
-    };
-    const departments = [
-        {
-            name: "Art and Sciences",
-            programs: [],
-        },
-        {
-            name: "Business and Accountancy",
-            programs: [],
-        },
-        {
-            name: "Computer Studies",
-            programs: [
-                "Associate of Computer Technology",
-                "Bachelor of Science in Computer Science",
-                "Bachelor of Science in Information Technology",
-                "Bachelor of Library and Information Science",
-            ],
-        },
-        {
-            name: "Criminal Justice Education",
-            programs: [],
-        },
-        {
-            name: "Education",
-            programs: [],
-        },
-        {
-            name: "Engineering and Architecture",
-            programs: [],
-        },
-        {
-            name: "Nursing",
-            programs: [],
-        },
-    ];
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                setLoading(true);
+                const fetchedDepartments = await getAllDepartments();
+                setDepartments(fetchedDepartments.filter(department => department.status === 1));
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const handleToggle = (departmentName: string) => {
-        if (expandedDepartment === departmentName) {
+        fetchDepartments();
+    }, []);
+
+    const handleToggle = async (departmentId: number) => {
+        if (expandedDepartment === departmentId) {
             setExpandedDepartment(null);
         } else {
-            setExpandedDepartment(departmentName);
+            setExpandedDepartment(departmentId);
+
+            if (!programs[departmentId]) {
+                try {
+                    const fetchedPrograms = await getAllProgramByDepartment(departmentId);
+                    setPrograms((prev) => ({
+                        ...prev,
+                        [departmentId]: fetchedPrograms.filter(program => program.status === 1),
+                    }));
+                } catch (error) {
+                    console.error(`Error fetching programs for department ${departmentId}:`, error);
+                }
+            }
         }
     };
+
+    const handleViewSubjects = (department: string, program: Program) => {
+        const route = `/university/curriculum/${department.toLowerCase().replace(/\s/g, "-")}/${program.name.toLowerCase().replace(/\s/g, "-")}`;
+        navigate(route, { state: { program } });
+    };
+
+
 
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -114,57 +127,61 @@ const UniversityCurriculumPage: React.FC = () => {
                     </Box>
 
                     <Box className={styles.rightContent}>
-                        {departments.map((department) => (
-                            <Box key={department.name} mb={2} width="100%">
-                                <Box
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    borderBottom="1px solid #ccc"
-                                    pb={1}
-                                    mb={1}
-                                >
-                                    <Typography variant="body1" fontWeight="bold">
-                                        {department.name}
-                                    </Typography>
-                                    <Button
-                                        onClick={() => handleToggle(department.name)}
-                                        sx={{ color: "#EA4040", textTransform: "none" }}
+                        {loading ? (
+                            <Typography variant="body2">Loading departments...</Typography>
+                        ) : (
+                            departments.map((department) => (
+                                <Box key={department.id} mb={2} width="100%">
+                                    <Box
+                                        display="flex"
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        borderBottom="1px solid #ccc"
+                                        pb={1}
+                                        mb={1}
                                     >
-                                        {expandedDepartment === department.name ? "Minimize" : "View Courses"}
-                                    </Button>
-                                </Box>
-                                {expandedDepartment === department.name && (
-                                    <Box pl={2}>
-                                        {department.programs.length > 0 ? (
-                                            department.programs.map((program, index) => (
-                                                <Box
-                                                    key={index}
-                                                    display="flex"
-                                                    justifyContent="space-between"
-                                                    alignItems="center"
-                                                    mb={1}
-                                                >
-                                                    <Typography variant="body2">
-                                                        {program}
-                                                    </Typography>
-                                                    <Button
-                                                        sx={{ color: "#EA4040", textTransform: "none" }}
-                                                        onClick={() => handleViewSubjects(department.name, program)}
-                                                    >
-                                                        View Subjects
-                                                    </Button>
-                                                </Box>
-                                            ))
-                                        ) : (
-                                            <Typography variant="body2" color="textSecondary">
-                                                No programs available.
-                                            </Typography>
-                                        )}
+                                        <Typography variant="body1" fontWeight="bold">
+                                            {department.name}
+                                        </Typography>
+                                        <Button
+                                            onClick={() => handleToggle(department.id)}
+                                            sx={{ color: "#EA4040", textTransform: "none" }}
+                                        >
+                                            {expandedDepartment === department.id ? "Minimize" : "View Courses"}
+                                        </Button>
                                     </Box>
-                                )}
-                            </Box>
-                        ))}
+                                    {expandedDepartment === department.id && (
+                                        <Box pl={2}>
+                                            {programs[department.id]?.length > 0 ? (
+                                                programs[department.id].map((program) => (
+                                                    <Box
+                                                        key={program.id}
+                                                        display="flex"
+                                                        justifyContent="space-between"
+                                                        alignItems="center"
+                                                        mb={1}
+                                                    >
+                                                        <Typography variant="body2">
+                                                            {program.name}
+                                                        </Typography>
+                                                        <Button
+                                                            sx={{ color: "#EA4040", textTransform: "none" }}
+                                                            onClick={() => handleViewSubjects(department.name, program)}
+                                                        >
+                                                            View Subjects
+                                                        </Button>
+                                                    </Box>
+                                                ))
+                                            ) : (
+                                                <Typography variant="body2" color="textSecondary">
+                                                    No programs available.
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    )}
+                                </Box>
+                            ))
+                        )}
                     </Box>
                 </Box>
             </Container>
