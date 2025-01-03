@@ -81,9 +81,23 @@ const UniversityCurriculumPage: React.FC = () => {
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header
                     buttons={
-                        <IconButton onClick={() => setSidebarOpen(!isSidebarOpen)}>
-                            <MenuIcon style={{ color: "#EA4040" }} />
-                        </IconButton>
+                        <>
+                            <Button
+                                variant="text"
+                                color="inherit"
+                                onClick={() => { }}
+                                sx={{ color: '#d32f2f' }}
+                            >
+                                Back
+                            </Button>
+
+                            <IconButton onClick={() => setSidebarOpen(!isSidebarOpen)}>
+                                <MenuIcon style={{ color: "#EA4040" }} />
+                            </IconButton>
+                        </>
+
+
+
                     }
                 />
 
@@ -98,7 +112,7 @@ const UniversityCurriculumPage: React.FC = () => {
                 <Line />
 
                 <Box className={styles.container}>
-                    <Box className={styles.leftContent}>
+                    <Box className={styles.leftContent} sx={{ textAlign: "justify" }}>
                         <Typography variant="body1">
                             Welcome to the University Curriculum, your gateway to discovering and managing academic programs across various disciplines. This platform makes it easy for students, faculty, and administrators to explore the structure of each academic field and access the courses that define them.
                         </Typography>
