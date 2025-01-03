@@ -10,13 +10,14 @@ import {
 } from "@mui/material";
 import styles from "./styles.module.css";
 
-type FieldType = "text" | "select";
+
 
 interface Field {
   label: string;
-  type: FieldType;
+  type: string;
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void; // Optional since read-only fields won't need this
+  readOnly: boolean;
   options?: string[]; // For dropdown fields
 }
 
@@ -27,6 +28,7 @@ interface ModalFormProps {
   fields: Field[];
   onConfirm: () => void;
   confirmText: string;
+  errorMessage?: string | null;
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({
@@ -36,6 +38,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
   fields,
   onConfirm,
   confirmText,
+  errorMessage, // Include errorMessage here
 }) => {
   return (
     <Modal open={open} onClose={handleClose}>
@@ -58,7 +61,8 @@ const ModalForm: React.FC<ModalFormProps> = ({
                   label={field.label}
                   variant="outlined"
                   value={field.value}
-                  onChange={(e) => field.onChange(e.target.value)}
+                  onChange={field.readOnly ? undefined : (e) => field.onChange?.(e.target.value)}
+                  InputProps={{ readOnly: field.readOnly }}
                   className={styles.textField}
                 />
               );
@@ -70,7 +74,8 @@ const ModalForm: React.FC<ModalFormProps> = ({
                   label={field.label}
                   variant="outlined"
                   value={field.value}
-                  onChange={(e) => field.onChange(e.target.value)}
+                  onChange={field.readOnly ? undefined : (e) => field.onChange?.(e.target.value)}
+                  InputProps={{ readOnly: field.readOnly }}
                   className={styles.textField}
                 >
                   {field.options.map((option, idx) => (
@@ -83,6 +88,15 @@ const ModalForm: React.FC<ModalFormProps> = ({
             }
             return null;
           })}
+          {errorMessage && (
+            <Typography
+              variant="body2"
+              color="error"
+              className={styles.errorMessage}
+            >
+              {errorMessage}
+            </Typography>
+          )}
           <Button
             variant="contained"
             sx={{
@@ -98,7 +112,6 @@ const ModalForm: React.FC<ModalFormProps> = ({
           <Button
             variant="text"
             sx={{
-              
               color: "#EA4040",
               textTransform: "none",
               ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
@@ -112,5 +125,6 @@ const ModalForm: React.FC<ModalFormProps> = ({
     </Modal>
   );
 };
+
 
 export default ModalForm;

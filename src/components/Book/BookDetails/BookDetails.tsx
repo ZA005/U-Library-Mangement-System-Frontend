@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import UserService from '../../services/UserService';
-import { Book } from '../../model/Book';
-import { getBooksByAuthor } from '../../services/LocalBooksAPI';
+import UserService from '../../../services/UserService';
+import { Book } from '../../../model/Book';
+import { getBooksByAuthor } from '../../../services/LocalBooksAPI';
 import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
 import './BookDetails.css';

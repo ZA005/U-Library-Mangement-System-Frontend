@@ -29,11 +29,6 @@ const AppRoutes = () => (
     <Route path='/curriculum/management/manage/subjects' element={<ManageSubjects />} />
     <Route path="/verify/user" element={<VerifyUser />} />
     <Route path="/verify/user/otp" element={<VerifyOtp />} />
-    {/* ADMIN ROUTES */}
-    <Route path="admin/*" element={<AdminRoutes />} />
-
-    {/* PROTECTED ROUTES */}
-    {/* <Route path="/library" element={<LandingPage />} /> */}
 
 
     {/* ADMIN ROUTES */}
@@ -41,8 +36,6 @@ const AppRoutes = () => (
 
     {/* USER ROUTES */}
     <Route path="user/*" element={<UserRoutes />} />
-
-
 
     {/* Default page for unmatched routes */}
     <Route path="*" element={<PageNotFound />} />
