@@ -30,20 +30,27 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     try {
       const userData = await UserService.login(libraryCardNumber, password);
       console.log(userData);
-
-      if (userData.token) {
-        login(userData.token, userData.role); // Use the context's login function
-        if (userData.role === "LIBRARIAN") {
-          navigate('admin/library');
-        } else if (userData.role === "STUDENT") {
-          navigate('/user/browse');
-        } else {
-          navigate('*'); // Redirect to the home or login page for unexpected roles
-        }
-        onClose(); // Close the modal after successful login
-      } else {
+  
+      // Guard clause: If no token exists, set error and exit early
+      if (!userData.token) {
         setError(userData.message); // Handle error message from the server
+        return; // Exit the function early
       }
+  
+      // Proceed with login logic only if token is present
+      login(userData.token, userData.role); // Use the context's login function
+  
+      // Handle different roles with navigation
+      if (userData.role === "LIBRARIAN") {
+        navigate('admin/library');
+      } else if (userData.role === "STUDENT") {
+        navigate('/user/browse');
+      } else {
+        navigate('*'); // Redirect to the home or login page for unexpected roles
+      }
+  
+      onClose(); // Close the modal after successful login
+  
     } catch (error) {
       console.error(error);
       setError(`An unexpected error occurred`); // Handle unexpected errors
@@ -52,6 +59,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
       }, 5000);
     }
   };
+  
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="login-modal" aria-describedby="login-modal-description">

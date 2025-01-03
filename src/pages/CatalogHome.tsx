@@ -173,7 +173,7 @@ const CatalogHome: React.FC = () => {
             </Box>
 
             <Box
-              width="20vw"
+              maxWidth="20vw"
               sx={{
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
                 padding: 2,
@@ -183,12 +183,18 @@ const CatalogHome: React.FC = () => {
                 gap: 2,
               }}
             >
-              <Typography variant="h5" fontWeight="bold" textAlign="center" marginBottom={2}>
+              <Typography variant="h5" fontWeight="bold" textAlign="center">
                 User Summary
               </Typography>
 
-              <Box sx={{ width: "100%" }}>
-                <Line />
+
+              <Box
+                bgcolor="#CC0000"
+                sx={{
+                  width: "100%",
+                  height: " 1vh"
+                }}
+              >
               </Box>
 
               <SummaryBox

@@ -1,144 +1,93 @@
-/* Container for the book details page */
-.book-details-container {
+.book-details-page {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .book-details-container {
+    flex-grow: 1;
     padding: 20px;
-    padding-bottom: 30px;
-    background-color: #f9f9f9;
+    margin: 20px auto;
+    max-width: 1000px;
+    background: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 1000px;
-    margin: 10px auto;
-    margin-bottom: 100px;
-    flex-grow: 5;
-}
-
-/* Book Thumbnail Styling */
-.book-thumbnail {
-    width: 400px; /* Increased width */
-    height: 600px; /* Increased height */
-    object-fit: cover; /* Ensures the image covers the space without distortion */
-    border-radius: 5px;
+  }
+  
+  .book-details-content {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+  }
+  
+  .book-details-image {
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-right: 30px; /* Adjust the space between the image and the text */
-}
-
- 
-/* Heading Styling */
-.book-title {
+  }
+  
+  .book-details-info {
+    flex: 1;
+    padding-top: 10px;
+  }
+  
+  .book-details-info h1 {
     font-size: 2rem;
-    font-weight: bold;
-    margin-top: 20px;
+    margin-bottom: 10px;
     color: #333;
-}
-
-/* Paragraph Styling */
-.book-details p {
+  }
+  
+  .book-details-info p {
     font-size: 1rem;
     line-height: 1.6;
-    margin-bottom: 10px;
     color: #555;
-}
-
-/* Strong Elements */
-.book-details p strong {
-    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .book-details-info p strong {
     color: #333;
-}
-
-/* Button Container Styling */
-.button-container {
-    margin-top: 20px;
+  }
+  
+  .book-details-toggle {
     display: flex;
-    flex-direction: column;
-    gap: 20px; /* Adjust gap between buttons in container */
     align-items: center;
-}
-
-/* Common Button Styling */
-button {
-    padding: 12px 50px; /* Increased padding to create more space inside the button */
+    cursor: pointer;
+    margin: 20px 0;
+  }
+  
+  .book-details-toggle span {
+    margin-left: 8px;
+  }
+  
+  .book-details-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
     font-size: 1rem;
+    color: #fff;
+    background-color: #ea4040;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #EA4040;
-    color: white;
     transition: background-color 0.3s;
-}
-
-/* Adjust space between buttons (if needed individually) */
-.book-details-actions button {
-    margin-bottom: 20px; /* Increased space between buttons */
-    margin-left: 10px; /* Added left margin for spacing */
-    margin-right: 10px; /* Added right margin for spacing */
-}
-
-/* Button Hover Effect */
-button:hover {
+  }
+  
+  button:hover {
     background-color: #c63737;
-}
-
-/* Conditional Button Styles */
-button.go-back-button {
-    background-color: #007bff;
-    margin-left: -40px; /* Adjust left margin for 'Go Back' button */
-}
-
-button.go-back-button:hover {
+  }
+  
+  .go-back-button {
+    background-color: #ea4040;
+  }
+  
+  .go-back-button:hover {
     background-color: #0056b3;
-}
-
-/* Arrow styling */
-.arrow-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-.arrow-icon {
-    width: 20px;
-    height: 20px;
-    border-left: 3px solid #333;
-    border-bottom: 3px solid #333;
-    transform: rotate(45deg);
-    transition: transform 0.3s ease;
-}
-
-/* Rotate arrow when expanded */
-.arrow-expanded .arrow-icon {
-    transform: rotate(-135deg);
-}
-
-/* Hide Books by Author styling */
-.hide-books-button {
-    background-color: #ff9800;
-    margin-top: 20px;
-}
-
-.hide-books-button:hover {
-    background-color: #e68900;
-}
-
-/* Book list styling */
-.book-list-container {
-    margin-top: 20px;
-    width: 100%;
-}
-
-/* Add space between footer and the content */
-footer {
-    margin-top: 20px;
-}
-
-/* Center the Header content */
-.header-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 10px 0;
   }
   
