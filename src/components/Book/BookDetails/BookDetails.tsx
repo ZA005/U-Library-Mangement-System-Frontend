@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import UserService from '../../services/UserService';
-import { Book } from '../../model/Book';
-import { getBooksByAuthor } from '../../services/LocalBooksAPI';
+import UserService from '../../../services/UserService';
+import { Book } from '../../../model/Book';
+import { getBooksByAuthor } from '../../../services/LocalBooksAPI';
 import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
 import './BookDetails.css';
-import Header from '../Header/Header'; // Import Header
-import Footer from '../Footer/Copyright'; // Import Footer
+import Header from '../../Header/Header'; // Import Header
+import Footer from '../../Footer/Copyright'; // Import Footer
 import { Box } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // Import Arrow icon
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'; // Import Arrow icon
@@ -85,23 +85,23 @@ const BookDetails: React.FC = () => {
       <Header buttons={goBackButton} />
       {/* Content Section */}
       <div className="book-details-container" style={{ flexGrow: 1, paddingBottom: '40px' }}>
-      
+
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-  <img src={book.thumbnail} alt={book.title} className="book-details-image" />
-  <div className="book-details-text">
-    <h1 className="book-details-title">{book.title}</h1>
-    <p className="book-details-paragraph"><strong>Authors:</strong> {book.authors.join(', ')}</p>
-    <p className="book-details-paragraph"><strong>Publisher:</strong> {book.publisher || 'N/A'}</p>
-    <p className="book-details-paragraph"><strong>Published Date:</strong> {book.publishedDate || 'N/A'}</p>
-    <p className="book-details-paragraph"><strong>Page Count:</strong> {book.pageCount || 'N/A'}</p>
-    <p className="book-details-paragraph"><strong>Categories:</strong> {book.categories || 'N/A'}</p>
-    <p className="book-details-paragraph"><strong>Language:</strong> {book.language || 'N/A'}</p>
-    <p className="book-details-paragraph"><strong>ISBN-10:</strong> {book.isbn10 || 'N/A'}</p>
-    <p className="book-details-paragraph"><strong>ISBN-13:</strong> {book.isbn13 || 'N/A'}</p>
-    <p className="book-details-paragraph"><strong>Description:</strong> {book.description || 'No description available.'}</p>
-    <p className="book-details-paragraph"><strong>Item Type:</strong> {book.printType || 'N/A'}</p>
-  </div>
-</div>
+          <img src={book.thumbnail} alt={book.title} className="book-details-image" />
+          <div className="book-details-text">
+            <h1 className="book-details-title">{book.title}</h1>
+            <p className="book-details-paragraph"><strong>Authors:</strong> {book.authors.join(', ')}</p>
+            <p className="book-details-paragraph"><strong>Publisher:</strong> {book.publisher || 'N/A'}</p>
+            <p className="book-details-paragraph"><strong>Published Date:</strong> {book.publishedDate || 'N/A'}</p>
+            <p className="book-details-paragraph"><strong>Page Count:</strong> {book.pageCount || 'N/A'}</p>
+            <p className="book-details-paragraph"><strong>Categories:</strong> {book.categories || 'N/A'}</p>
+            <p className="book-details-paragraph"><strong>Language:</strong> {book.language || 'N/A'}</p>
+            <p className="book-details-paragraph"><strong>ISBN-10:</strong> {book.isbn10 || 'N/A'}</p>
+            <p className="book-details-paragraph"><strong>ISBN-13:</strong> {book.isbn13 || 'N/A'}</p>
+            <p className="book-details-paragraph"><strong>Description:</strong> {book.description || 'No description available.'}</p>
+            <p className="book-details-paragraph"><strong>Item Type:</strong> {book.printType || 'N/A'}</p>
+          </div>
+        </div>
 
 
         {/* Replace button with the arrow icon */}
