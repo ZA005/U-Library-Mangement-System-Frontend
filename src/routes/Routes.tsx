@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import HomeScreen from '../pages/HomeScreen';
 import Register from '../components/RegistrationForm/RegistrationForm';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -11,6 +11,7 @@ import UniversityCurriculumPage from '../pages/Curriculum-Management/UniversityC
 import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';
 import VerifyUser from '../components/Verify/VerifyUser';
+import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
 
@@ -28,6 +29,11 @@ const AppRoutes = () => (
     <Route path='/curriculum/management/manage/subjects' element={<ManageSubjects />} />
     <Route path="/verify/user" element={<VerifyUser />} />
     <Route path="/verify/user/otp" element={<VerifyOtp />} />
+    {/* ADMIN ROUTES */}
+    <Route path="admin/*" element={<AdminRoutes />} />
+
+    {/* PROTECTED ROUTES */}
+    {/* <Route path="/library" element={<LandingPage />} /> */}
 
 
     {/* ADMIN ROUTES */}
@@ -36,8 +42,10 @@ const AppRoutes = () => (
     {/* USER ROUTES */}
     <Route path="user/*" element={<UserRoutes />} />
 
+
+
     {/* Default page for unmatched routes */}
-    <Route path="*" element={<Navigate to="/" />} />
+    <Route path="*" element={<PageNotFound />} />
   </Routes>
 );
 
