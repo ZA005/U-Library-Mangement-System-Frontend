@@ -82,15 +82,31 @@ export const checkBookLoanStatus = async (barcode: string): Promise<boolean> => 
     }
 };
 
-export const getOverdueLoans = async () => {
+// export const getOverdueLoans = async () => {
+//     try {
+//         const response = await axios.get(`${BASE_URL}admin/overdue`, {
+//             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+//         });
+//         return response.data;
+//     } catch (error) {
+//         throw new Error("Failed to fetch overdue loans: " + error);
+//     }
+// }
+
+export const calculateFines = async () => {
+    const response = await axios.post(`${BASE_URL}adminuser/calculate`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    return response.data;
+};
+
+export const getAllFines = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}admin/overdue`, {
+        const response = await axios.get(`${BASE_URL}adminuser/get-all-fines`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data;
     } catch (error) {
-        throw new Error("Failed to fetch overdue loans: " + error);
+        throw new Error("Failed to fetch fines: " + error);
     }
 }
-
-

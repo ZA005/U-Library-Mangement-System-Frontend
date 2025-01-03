@@ -1,20 +1,9 @@
-import React, { useEffect, useState } from 'react';
-
-interface Overdue {
-    loanId: string;
-    borrower: string;
-    borrowDate: string;
-    dueDate: string;
-    returnDate: string;
-    penalty: string;
-    status: string;
-}
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Container,
     IconButton,
     Typography,
-    Button,
     TextField,
     Table,
     TableBody,
@@ -26,30 +15,46 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import Header from '../../components/Header/Header';
+import Header from "../../components/Header/Header";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
-import Copyright from '../../components/Footer/Copyright';
-import { getOverdueLoans } from '../../services/CirculationApi';
+import Copyright from "../../components/Footer/Copyright";
+import { calculateFines, getAllFines } from "../../services/CirculationApi";
+
+interface Fine {
+    fineId: number;
+    loanId: number;
+    borrowDate: string;
+    dueDate: string;
+    fineAmount: number;
+    returnDate: string;
+    user: { userId: number; name: string };
+    paid: boolean;
+}
 
 const OverseeOverdue: React.FC = () => {
-
-    const [overdue, setOverdue] = useState<Overdue[]>([]);
+    const [fines, setFines] = useState<Fine[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const handleSideBarClick = () => {
         console.log("Hamburger menu clicked!");
     };
 
+    // Fetch fines when the component mounts
     useEffect(() => {
-        const fetchLoans = async () => {
+        const fetchFines = async () => {
             try {
-                const overdueData = await getOverdueLoans();
-                setOverdue(overdueData);
+                await calculateFines();
+                const result = await getAllFines(); // Assuming the backend returns an array of fines
+                setFines(result);
             } catch (error) {
-                console.error("Error fetching overdue:", error);
+                console.error("Error calculating fines:", error);
+            } finally {
+                setLoading(false);
             }
         };
-        fetchLoans();
+
+        fetchFines();
     }, []);
 
     return (
@@ -72,7 +77,6 @@ const OverseeOverdue: React.FC = () => {
 
                 <Box className={styles.actionBar}>
                     <Box></Box>
-
                     <Box className={styles.searchBox}>
                         <TextField
                             placeholder="Search..."
@@ -84,60 +88,59 @@ const OverseeOverdue: React.FC = () => {
                     </Box>
                 </Box>
 
-                <TableContainer component={Paper} className={styles.tableContainer}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Loan #</TableCell>
-                                <TableCell>Date Borrowed</TableCell>
-                                <TableCell>Due Date</TableCell>
-                                <TableCell>Date Returned</TableCell>
-                                <TableCell>Penalty</TableCell>
-                                <TableCell>Penalty Status</TableCell>
-                                <TableCell>ACTION</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {overdue.map((due, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{due.loanId}</TableCell>
-                                    <TableCell>{due.borrowDate}</TableCell>
-                                    <TableCell>{due.dueDate}</TableCell>
-                                    <TableCell>{due.returnDate}</TableCell>
-                                    <TableCell>{due.penalty}</TableCell>
-                                    <TableCell>{due.status}</TableCell>
-
-                                    <TableCell>
-                                        <Button
-                                            variant="text"
-                                            sx={{
-                                                color: "#EA4040",
-                                                textTransform: "none",
-                                                ":hover": {
-                                                    backgroundColor: "#f2f2f2",
-                                                    color: "#d13333",
-                                                },
-                                            }}
-                                        // onClick={handleOpenModal}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </TableCell>
+                {loading ? (
+                    <Typography variant="h6" align="center">
+                        Calculating fines...
+                    </Typography>
+                ) : (
+                    <TableContainer component={Paper} className={styles.tableContainer}>
+                        <Table stickyHeader>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Loan #</TableCell>
+                                    <TableCell>Date Borrowed</TableCell>
+                                    <TableCell>Due Date</TableCell>
+                                    <TableCell>Date Returned</TableCell>
+                                    <TableCell>Penalty</TableCell>
+                                    <TableCell>Penalty Status</TableCell>
+                                    <TableCell>ACTION</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {fines.map((fine, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{fine.loanId}</TableCell>
+                                        <TableCell>{new Date(fine.borrowDate).toLocaleString()}</TableCell>
+                                        <TableCell>{new Date(fine.dueDate).toLocaleString()}</TableCell>
+                                        <TableCell>{new Date(fine.returnDate).toLocaleString()}</TableCell>
+                                        <TableCell>{fine.fineAmount + " php"}</TableCell>
+                                        <TableCell>{fine.paid ? "Paid" : "Unpaid"}</TableCell>
+                                        <TableCell>
+                                            <Typography
+                                                variant="button"
+                                                sx={{
+                                                    color: "#EA4040",
+                                                    textTransform: "none",
+                                                    cursor: "pointer",
+                                                    ":hover": {
+                                                        color: "#d13333",
+                                                    },
+                                                }}
+                                            >
+                                                Edit
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
             </Container>
-
-
 
             <Copyright />
         </Box>
     );
 };
 
-
 export default OverseeOverdue;
-
-
