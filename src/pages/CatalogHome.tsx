@@ -4,7 +4,7 @@ import Header from "../components/Header/Header";
 import MenuIcon from "@mui/icons-material/Menu";
 import Line from "../components/Line/Line";
 import Copyright from "../components/Footer/Copyright";
-import BookList from "../components/BookList/BookListComponent";
+import BookList from "../components/Book/BookList/BookListComponent";
 import { getAllBooks } from "../services/LocalBooksAPI";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
@@ -173,48 +173,48 @@ const CatalogHome: React.FC = () => {
             </Box>
 
             <Box
-                maxWidth="20vw"
-                sx={{
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
-                    padding: 2,
-                    marginTop: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                }}
-                >
-                <Typography variant="h5" fontWeight="bold" textAlign="center">
-                    User Summary
-                </Typography>
-                
-                
-                <Box
+              maxWidth="20vw"
+              sx={{
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                padding: 2,
+                marginTop: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
+              <Typography variant="h5" fontWeight="bold" textAlign="center">
+                User Summary
+              </Typography>
+
+
+              <Box
                 bgcolor="#CC0000"
                 sx={{
-                    width: "100%",
-                    height:" 1vh"
+                  width: "100%",
+                  height: " 1vh"
                 }}
-                >
-                </Box>
+              >
+              </Box>
 
-                <SummaryBox
-                    icon={<LibraryBooksIcon sx={{ fontSize: 40, color: "green" }} />}
-                    value={5}
-                    label="Checkouts"
-                    color="green"
-                />
-                <SummaryBox
-                    icon={<AssignmentReturnIcon sx={{ fontSize: 40, color: "orange" }} />}
-                    value={3}
-                    label="Holds Pending"
-                    color="orange"
-                />
-                <SummaryBox
-                    icon={<MonetizationOnIcon sx={{ fontSize: 40, color: "red" }} />}
-                    value={25}
-                    label="Fines and Charges (₱)"
-                    color="red"
-                />
+              <SummaryBox
+                icon={<LibraryBooksIcon sx={{ fontSize: 40, color: "green" }} />}
+                value={5}
+                label="Checkouts"
+                color="green"
+              />
+              <SummaryBox
+                icon={<AssignmentReturnIcon sx={{ fontSize: 40, color: "orange" }} />}
+                value={3}
+                label="Holds Pending"
+                color="orange"
+              />
+              <SummaryBox
+                icon={<MonetizationOnIcon sx={{ fontSize: 40, color: "red" }} />}
+                value={25}
+                label="Fines and Charges (₱)"
+                color="red"
+              />
             </Box>
 
           </Box>

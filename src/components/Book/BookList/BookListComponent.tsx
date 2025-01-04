@@ -1,5 +1,5 @@
 import React from 'react';
-import { Book } from '../../model/Book';
+import { Book } from '../../../model/Book';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography, Card, CardContent, CardMedia, Link, Container } from '@mui/material';
 

@@ -1,15 +1,15 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import UserService from '../../services/UserService';
-import { Book } from '../../model/Book';
-import { getBooksByAuthor } from '../../services/LocalBooksAPI';
-import { useEffect, useState } from 'react';
+import UserService from '../../../services/UserService';
+import { Book } from '../../../model/Book';
+import { getBooksByAuthor } from '../../../services/LocalBooksAPI';
+import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
-import Header from '../Header/Header';
-import Footer from '../Footer/Copyright';
+import Header from '../../Header/Header';
+import Footer from '../../Footer/Copyright';
 import { Box, Button, Typography, CardMedia, CardContent, Collapse } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import AddBookReferenceModal from '../CurriculumManagement/AddBookReferenceModal';
+import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
 
 const BookDetails: React.FC = () => {
   const { state } = useLocation();

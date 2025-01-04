@@ -5,7 +5,7 @@ import Sidebar from '../../components/Sidebar'; // Import Sidebar
 import { searchGoogleBooks } from '../../services/GoogleBooksApi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import BookList from '../../components/BookList/BookListComponent';
+import BookList from '../../components/Book/BookList/BookListComponent';
 import searchLibraryOfCongress from '../../services/LibraryOfCongressApi';
 import UserService from '../../services/UserService';
 import { Book } from '../../model/Book';

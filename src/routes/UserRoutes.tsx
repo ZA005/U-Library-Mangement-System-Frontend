@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
 import ProtectedRoute from './ProtectedRoute';
 import CatalogHome from '../pages/CatalogHome';
-import BookDetails from '../components/BookDetails/BookDetails';
+import BookDetails from '../components/Book/BookDetails/BookDetails';
 
 const UserRoutes = () => (
   <Routes>
