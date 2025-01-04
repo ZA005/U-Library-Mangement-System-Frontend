@@ -17,12 +17,12 @@ const CurriculumManagement: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSideBarClick = () => {
-        setSidebarOpen(!isSidebarOpen);
-    };
+    setSidebarOpen(!isSidebarOpen);
+  };
 
-    const handleSidebarClose = () => {
-        setSidebarOpen(false);
-    };
+  const handleSidebarClose = () => {
+    setSidebarOpen(false);
+  };
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
@@ -50,7 +50,7 @@ const CurriculumManagement: React.FC = () => {
 
         <Box className={styles.container}>
           {/* Left Content */}
-          <Box className={styles.leftContent}>
+          <Box className={styles.leftContent} sx={{ textAlign: "justify" }}>
             <Typography variant="body1">
               This is your all-in-one tool designed to simplify how you manage
               and organize your library's academic curriculum. Whether you're an
@@ -64,33 +64,26 @@ const CurriculumManagement: React.FC = () => {
             <ul>
               <li className={styles.listItem}>
                 <Typography variant="body1">
-                  <strong>Manage Departments:</strong> Keep track of all
-                  departments and ensure their resources are well-structured and
-                  easy to find.
+                  <strong>Manage Departments:</strong> Easily create, view, update, and deactivate departments. Keep everything organized and ensure all department details are up to date and accessible.
                 </Typography>
               </li>
               <li className={styles.listItem}>
                 <Typography variant="body1">
-                  <strong>Manage Courses:</strong> Organize courses, link them
-                  to the right materials, and ensure students have everything
-                  they need.
+                  <strong>Manage Courses:</strong> Add, view, update, or deactivate courses as needed. Ensure each course is linked to the correct materials and available for students to access.
                 </Typography>
               </li>
               <li className={styles.listItem}>
                 <Typography variant="body1">
-                  <strong>Manage Subjects:</strong> Align subjects with the
-                  curriculum and make sure every topic is covered with the right
-                  resources.
+                  <strong>Manage Subjects:</strong> Create and organize subjects, update their information when necessary, and deactivate any subjects that are no longer relevant to the curriculum.
                 </Typography>
               </li>
               <li className={styles.listItem}>
                 <Typography variant="body1">
-                  <strong>Manage Book Reference:</strong> Build and maintain a
-                  complete catalog of books and references to support teaching
-                  and learning.
+                  <strong>Manage Book Reference:</strong> Build and maintain a collection of books and references, making it easy to add new ones, update existing ones, or remove outdated resources.
                 </Typography>
               </li>
             </ul>
+
           </Box>
 
           {/* Right Content */}
@@ -101,7 +94,7 @@ const CurriculumManagement: React.FC = () => {
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={ () => navigate('/curriculum/management/manage/departments') }
+                onClick={() => navigate('/admin/curriculum/management/departments')}
               >
                 Manage Departments
               </button>
@@ -113,7 +106,7 @@ const CurriculumManagement: React.FC = () => {
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={ () => navigate('/curriculum/management/manage/courses') }
+                onClick={() => navigate('/admin/curriculum/management/programs')}
               >Manage Courses</button>
             </Box>
 
@@ -123,7 +116,7 @@ const CurriculumManagement: React.FC = () => {
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={ () => navigate('/curriculum/management/manage/subjects') }
+                onClick={() => navigate('/admin/curriculum/management/subjects')}
               >Manage Subjects</button>
             </Box>
 
@@ -131,7 +124,10 @@ const CurriculumManagement: React.FC = () => {
               <Icon className={styles.icon}>
                 <AutoStoriesIcon />
               </Icon>
-              <button className={styles.manageButton}>
+              <button
+                className={styles.manageButton}
+                onClick={() => navigate('/admin/curriculum/management/reference')}
+              >
                 Manage Book Reference
               </button>
             </Box>

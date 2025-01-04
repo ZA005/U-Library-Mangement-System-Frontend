@@ -83,7 +83,8 @@ const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps> = ({
             type: "text" as const,
             value: departmentName,
             onChange: setDepartmentName,
-            required: true
+            required: true,
+            disabled: false,
           },
           {
             label: "Status",
@@ -91,7 +92,8 @@ const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps> = ({
             value: status,
             onChange: setStatus,
             options: ["Active", "Inactive"],
-            required: true
+            required: true,
+            disabled: false,
           },
         ]}
         onConfirm={handleConfirm}

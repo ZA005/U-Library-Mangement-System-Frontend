@@ -38,7 +38,7 @@ const AddNewCourseModal: React.FC<AddNewCourseModalProps> = ({
     if (!open) {
       resetFields()
     }
-  }, [error, openSnackbar]);
+  }, [open, error, openSnackbar]);
 
   const handleConfirm = async () => {
     if (isSubmitting) return;

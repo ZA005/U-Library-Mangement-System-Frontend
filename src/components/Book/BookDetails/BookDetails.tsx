@@ -4,20 +4,24 @@ import { Book } from '../../../model/Book';
 import { getBooksByAuthor } from '../../../services/LocalBooksAPI';
 import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
-import './BookDetails.css';
-import Header from '../Header/Header';
-import Footer from '../Footer/Copyright';
-import { Box } from '@mui/material';
+import Header from '../../Header/Header';
+import Footer from '../../Footer/Copyright';
+import { Box, Button, Typography, CardMedia, CardContent, Collapse } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
 
 const BookDetails: React.FC = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [showBooks, setShowBooks] = useState(false);
   const [booksByAuthor, setBooksByAuthor] = useState<Book[] | null>(null);
+  const [isAddBookRefModalOpen, setIsAddBookRefModalOpen] = useState(false);
+  // const [urlPath, setURLPath] = useState("");
 
   const book: Book = state?.book;
+  const handleAddBookRefModalOpen = () => setIsAddBookRefModalOpen(true);
+  const handleAddBookRefModalClose = () => setIsAddBookRefModalOpen(false);
 
   const handleToggleBooksByAuthor = async () => {
     setShowBooks((prev) => !prev);
@@ -30,7 +34,6 @@ const BookDetails: React.FC = () => {
       }
     }
   };
-
   const handleAddCopies = () => navigate('/admin/book-form', { state: { book } });
 
   const handleEditTitle = () => {
@@ -56,53 +59,73 @@ const BookDetails: React.FC = () => {
   };
 
   return (
-    <div className="book-details-page">
-      <Header buttons={<button className="go-back-button" onClick={handleGoBack}>Go Back</button>} />
-      <div className="book-details-container">
-        <div className="book-details-content">
-          <img
-            src={book.thumbnail}
-            alt={book.title}
-            className="book-details-image"
-          />
-          <div className="book-details-info">
-            <h1>{book.title}</h1>
-            <p><strong>Authors:</strong> {book.authors.join(', ')}</p>
-            <p><strong>Publisher:</strong> {book.publisher || 'N/A'}</p>
-            <p><strong>Published Date:</strong> {book.publishedDate || 'N/A'}</p>
-            <p><strong>Page Count:</strong> {book.pageCount || 'N/A'}</p>
-            <p><strong>Categories:</strong> {book.categories || 'N/A'}</p>
-            <p><strong>Language:</strong> {book.language || 'N/A'}</p>
-            <p><strong>ISBN-10:</strong> {book.isbn10 || 'N/A'}</p>
-            <p><strong>ISBN-13:</strong> {book.isbn13 || 'N/A'}</p>
-            <p><strong>Description:</strong> {book.description || 'No description available.'}</p>
-            <p><strong>Item Type:</strong> {book.printType || 'N/A'}</p>
-          </div>
-        </div>
+    <>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Header buttons={<Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleGoBack}>Go Back</Button>} />
+        <Box sx={{ flexGrow: 1, padding: 3, margin: '20px auto', maxWidth: '1000px', backgroundColor: '#f9f9f9', borderRadius: 2, boxShadow: 1 }}>
+          <Box sx={{ display: 'flex', gap: 3, marginBottom: 3 }}>
+            <CardMedia
+              component="img"
+              image={book.thumbnail}
+              alt={book.title}
+              sx={{ width: 300, height: 400, objectFit: 'cover', borderRadius: 2, boxShadow: 1 }}
+            />
+            <CardContent sx={{ flex: 1 }}>
+              <Typography variant="h4" sx={{ marginBottom: 2 }}>{book.title}</Typography>
+              <Typography variant="body1"><strong>Authors:</strong> {book.authors.join(', ')}</Typography>
+              <Typography variant="body1"><strong>Publisher:</strong> {book.publisher || 'N/A'}</Typography>
+              <Typography variant="body1"><strong>Published Date:</strong> {book.publishedDate || 'N/A'}</Typography>
+              <Typography variant="body1"><strong>Page Count:</strong> {book.pageCount || 'N/A'}</Typography>
+              <Typography variant="body1"><strong>Categories:</strong> {book.categories || 'N/A'}</Typography>
+              <Typography variant="body1"><strong>Language:</strong> {book.language || 'N/A'}</Typography>
+              <Typography variant="body1"><strong>ISBN-10:</strong> {book.isbn10 || 'N/A'}</Typography>
+              <Typography variant="body1"><strong>ISBN-13:</strong> {book.isbn13 || 'N/A'}</Typography>
+              <Typography variant="body1"><strong>Description:</strong> {book.description || 'No description available.'}</Typography>
+              <Typography variant="body1"><strong>Item Type:</strong> {book.printType || 'N/A'}</Typography>
+            </CardContent>
+          </Box>
 
-        <div className="book-details-toggle" onClick={handleToggleBooksByAuthor}>
-          {showBooks ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-          <span>{showBooks ? 'Hide Books by This Author' : 'More on This Author'}</span>
-        </div>
+          <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginY: 3 }} onClick={handleToggleBooksByAuthor}>
+            {showBooks ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+            <Typography sx={{ marginLeft: 1 }}>{showBooks ? 'Hide Books by This Author' : 'More on This Author'}</Typography>
+          </Box>
 
-        {showBooks && booksByAuthor && (
-          <BookList books={booksByAuthor} onBookClick={handleBookClick} />
-        )}
+          <Collapse in={showBooks}>
+            {booksByAuthor && <BookList books={booksByAuthor} onBookClick={handleBookClick} />}
+          </Collapse>
 
-        <div className="book-details-actions">
-          {UserService.isAdmin() && (
-            <>
-              <button onClick={handleAddCopies}>Add Copies</button>
-              <button onClick={handleEditTitle}>Edit Title</button>
-            </>
-          )}
-          <button onClick={handleReserve}>Reserve item</button>
-          <button onClick={handleBorrow}>Borrow item</button>
-          <button onClick={handleAddToWishlist}>Add to Wishlist</button>
-        </div>
-      </div>
-      <Footer />
-    </div>
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 3 }}>
+            {UserService.isAdmin() && (
+              <>
+                <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddCopies}>Add Copies</Button>
+                <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleEditTitle}>Edit Title</Button>
+                <Button
+                  sx={{ backgroundColor: '#ea4040', color: 'white' }}
+                  onClick={handleAddBookRefModalOpen}
+                >
+                  Add As Book Reference
+                </Button>
+              </>
+            )}
+            <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleReserve}>Reserve item</Button>
+            <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleBorrow}>Borrow item</Button>
+            <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddToWishlist}>Add to Wishlist</Button>
+          </Box>
+        </Box>
+        <Footer />
+      </Box>
+
+      <AddBookReferenceModal
+        open={isAddBookRefModalOpen}
+        handleClose={handleAddBookRefModalClose}
+        // onBookRefAdd={handleBookReferenceAdded}
+        // bookId={book.id}
+        bookName={book.title}
+        urlPath={`/user/book/${book.id}`}
+      />
+
+    </>
+
   );
 };
 

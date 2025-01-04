@@ -114,7 +114,8 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({
             type: "text",
             value: courseName,
             onChange: setCourseName,
-            required: true
+            required: true,
+            disabled: false,
           },
           {
             label: "Associated Department",
@@ -122,7 +123,8 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({
             value: departmentName,
             onChange: setDepartmentName,
             options: departments.map((dept) => dept.name),
-            required: true
+            required: true,
+            disabled: false,
           },
           {
             label: "Status",
@@ -130,7 +132,8 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({
             value: status,
             onChange: setStatus,
             options: ["Active", "Inactive"],
-            required: true
+            required: true,
+            disabled: false,
           },
         ]}
         onConfirm={handleConfirm}
