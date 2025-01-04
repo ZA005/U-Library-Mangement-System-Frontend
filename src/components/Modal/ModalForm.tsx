@@ -19,6 +19,8 @@ interface Field {
   onChange: (value: string) => void;
   options?: string[];
   required?: boolean;
+  disabled?: boolean;
+  readonly?: boolean;
 }
 
 interface ModalFormProps {

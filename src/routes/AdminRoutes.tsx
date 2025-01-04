@@ -6,6 +6,10 @@ import BookForm from '../components/BookForm/BookForm';
 import LandingPage from '../pages/LandingPageAdmin/LandingPage';
 import CirculationDashboard from '../pages/CirculationAdmin/CirculationDashboard';
 import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
+import ManageCourses from '../pages/Curriculum-Management/Managers/ManagePrograms';
+import ManageDepartments from '../pages/Curriculum-Management/Managers/ManageDepartments';
+import ManageSubjects from '../pages/Curriculum-Management/Managers/ManageSubjects';
+import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageBookReference';
 
 const AdminRoutes = () => (
   <Routes>
@@ -22,6 +26,10 @@ const AdminRoutes = () => (
 
       {/* Curriculum Module  */}
       <Route path="curriculum/management/page" element={<CurriculumManagement />} />
+      <Route path='/curriculum/management/departments' element={<ManageDepartments />} />
+      <Route path='/curriculum/management/programs' element={<ManageCourses />} />
+      <Route path='/curriculum/management/subjects' element={<ManageSubjects />} />
+      <Route path='/curriculum/management/reference' element={<ManageBookReference />} />
 
       {/* Ciculation Module  */}
       <Route path='circulation/management/page' element={<CirculationDashboard />} />

@@ -183,7 +183,8 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
             type: "text",
             value: subjectName,
             onChange: setSubjectName,
-            required: true
+            required: true,
+            disabled: false,
           },
           {
             label: "Associated Department",
@@ -191,7 +192,8 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
             value: departmentName,
             onChange: handleDepartmentChange,
             options: departments.map((dept) => dept.name),
-            required: true
+            required: true,
+            disabled: false,
           },
           {
             label: "Associated Course",
@@ -199,7 +201,8 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
             value: programName,
             onChange: setProgramName,
             options: programs.map((program) => program.name),
-            required: true
+            required: true,
+            disabled: false,
           },
           {
             label: "Year",
@@ -207,7 +210,8 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
             value: year,
             onChange: setYear,
             options: ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"],
-            required: true
+            required: true,
+            disabled: false,
           },
         ]}
         onConfirm={handleConfirm}

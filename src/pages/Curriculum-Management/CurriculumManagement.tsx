@@ -94,7 +94,7 @@ const CurriculumManagement: React.FC = () => {
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={() => navigate('/curriculum/management/manage/departments')}
+                onClick={() => navigate('/admin/curriculum/management/departments')}
               >
                 Manage Departments
               </button>
@@ -106,7 +106,7 @@ const CurriculumManagement: React.FC = () => {
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={() => navigate('/curriculum/management/manage/courses')}
+                onClick={() => navigate('/admin/curriculum/management/programs')}
               >Manage Courses</button>
             </Box>
 
@@ -116,7 +116,7 @@ const CurriculumManagement: React.FC = () => {
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={() => navigate('/curriculum/management/manage/subjects')}
+                onClick={() => navigate('/admin/curriculum/management/subjects')}
               >Manage Subjects</button>
             </Box>
 
@@ -124,7 +124,10 @@ const CurriculumManagement: React.FC = () => {
               <Icon className={styles.icon}>
                 <AutoStoriesIcon />
               </Icon>
-              <button className={styles.manageButton}>
+              <button
+                className={styles.manageButton}
+                onClick={() => navigate('/admin/curriculum/management/reference')}
+              >
                 Manage Book Reference
               </button>
             </Box>
