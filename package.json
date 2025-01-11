@@ -16,6 +16,7 @@
     "@mui/material": "^6.1.7",
     "axios": "^1.7.7",
     "html2canvas": "^1.4.1",
+    "papaparse": "^5.5.1",
     "qrcode.react": "^4.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@types/papaparse": "^5.3.15",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@types/react-slick": "^0.23.13",

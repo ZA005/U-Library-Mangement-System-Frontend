@@ -10,6 +10,7 @@ import VerifyUser from '../components/Verify/VerifyUser';
 import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
+import AcquiredItems from '../pages/AccessionRecord/AcquiredItems';
 
 const AppRoutes = () => (
   <Routes>
@@ -21,6 +22,7 @@ const AppRoutes = () => (
     <Route path="/university/curriculum/:departmentName/:programName" element={<ProgramPage />} />
     <Route path="/verify/user" element={<VerifyUser />} />
     <Route path="/verify/user/otp" element={<VerifyOtp />} />
+    <Route path="/accesionRecord" element={<AcquiredItems />} />
 
 
     {/* ADMIN ROUTES */}
