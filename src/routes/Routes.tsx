@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom';
 import HomeScreen from '../pages/HomeScreen';
 import Register from '../components/RegistrationForm/RegistrationForm';
 import { AuthProvider } from '../contexts/AuthContext';
-import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 import UniversityCurriculumPage from '../pages/Curriculum-Management/UniversityCurriculumPage';
 import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';
@@ -10,19 +9,16 @@ import VerifyUser from '../components/Verify/VerifyUser';
 import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
-import AcquiredItems from '../pages/AccessionRecord/AcquiredItems';
 
 const AppRoutes = () => (
   <Routes>
     {/* PUBLIC ROUTES */}
     <Route path="/" element={<HomeScreen />} />
     <Route path="/register" element={<Register />} />
-    <Route path='/marc-record/add' element={<AddMARCRecord />} />
     <Route path='/university/curriculum' element={<UniversityCurriculumPage />} />
     <Route path="/university/curriculum/:departmentName/:programName" element={<ProgramPage />} />
     <Route path="/verify/user" element={<VerifyUser />} />
     <Route path="/verify/user/otp" element={<VerifyOtp />} />
-    <Route path="/accesionRecord" element={<AcquiredItems />} />
 
 
     {/* ADMIN ROUTES */}

@@ -3,11 +3,11 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8080/sru";
 
-export const searchGoogleBooks = async (query: string, token: string) => {
+export const searchGoogleBooks = async (query: string) => {
     try {
         const response = await axios.get(`${BASE_URL}/googlebooks/search`, {
             params: { query },
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         // Check if there are items in the response
         const books = response.data.items.map((item: any) => ({

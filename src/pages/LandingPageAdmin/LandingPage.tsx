@@ -98,7 +98,7 @@ const LandingPage: React.FC = () => {
                     <Box className={styles.rightContent}>
                         <Box className={styles.buttonContainer}>
                             <button className={styles.manageButton}
-                                onClick={() => navigate('/admin/catalog/management/search-title')}>
+                                onClick={() => navigate('/admin/catalog/management')}>
                                 Cataloging
                             </button>
                         </Box>

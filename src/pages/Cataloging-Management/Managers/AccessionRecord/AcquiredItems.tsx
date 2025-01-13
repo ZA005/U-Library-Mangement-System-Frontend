@@ -1,28 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
-import { Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Container, IconButton } from '@mui/material';
+import {
+    Button,
+    Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Box,
+    Container,
+    IconButton,
+    Select,
+    MenuItem,
+} from '@mui/material';
 import styles from './styles.module.css';
-import Header from '../../components/Header/Header';
+import Header from '../../../../components/Header/Header';
 import MenuIcon from '@mui/icons-material/Menu';
-import Sidebar from '../../components/Sidebar';
-import Line from '../../components/Line/Line';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
+import Sidebar from '../../../../components/Sidebar';
+import Line from '../../../../components/Line/Line';
+import { useNavigate } from 'react-router-dom';
+import Copyright from '../../../../components/Footer/Copyright';
 
 interface Item {
     [key: string]: string;
 }
 
-interface RowData {
-    [key: string]: Item;
-}
-
 const AcquiredItems: React.FC = () => {
     const [file, setFile] = useState<File | null>(null);
-    const [fileName, setFileName] = useState<string>(''); // State to store file name
+    const [fileName, setFileName] = useState<string>('');
     const [array, setArray] = useState<Item[]>([]);
-    const [data, setData] = useState<RowData>({}); // Store row data in a separate object
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('');
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const savedArray = localStorage.getItem('csvData');
+        const savedFileName = localStorage.getItem('csvFileName');
+
+        if (savedArray) {
+            setArray(JSON.parse(savedArray));
+        }
+        if (savedFileName) {
+            setFileName(savedFileName);
+        }
+    }, []);
 
     const handleSideBarClick = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -32,29 +57,34 @@ const AcquiredItems: React.FC = () => {
         setSidebarOpen(false);
     };
 
+    const handleSelectChange = (value: string, item: Item) => {
+        setSelectedOption(value);
+        if (value === 'searchGoogleBooks') {
+            navigate('/admin/catalog/management/search-title', {
+                state: { query: item.Title, books: item, source: 'Google Books' },
+            });
+        } else if (value === 'addToCatalog') {
+            navigate('/admin/catalog/management/marc-record/add', { state: { item } });
+        }
+    };
+
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         if (e.target.files) {
             const selectedFile = e.target.files[0];
             setFile(selectedFile);
-            setFileName(selectedFile.name); // Update the file name state when file is selected
+            setFileName(selectedFile.name);
         }
     };
 
     const csvFileToArray = (csvString: string): void => {
         Papa.parse(csvString, {
             complete: (result) => {
-                const parsedData = result.data as Item[]; // Access the parsed rows as Item[]
+                const parsedData = result.data as Item[];
                 setArray(parsedData);
-
-                // Storing each row in the `data` object for separate access
-                const rowData: RowData = {};
-                parsedData.forEach((item, index) => {
-                    rowData[`row-${index}`] = item;
-                });
-                setData(rowData); // Store each row data in the `data` object
+                localStorage.setItem('csvData', JSON.stringify(parsedData));
             },
-            header: true, // Automatically use the first row as headers
-            skipEmptyLines: true, // Skip empty lines in the CSV
+            header: true,
+            skipEmptyLines: true,
         });
     };
 
@@ -66,7 +96,8 @@ const AcquiredItems: React.FC = () => {
 
             fileReader.onload = function (event) {
                 const text = event.target?.result as string;
-                csvFileToArray(text); // Parse CSV string
+                csvFileToArray(text);
+                localStorage.setItem('csvFileName', fileName);
             };
 
             fileReader.readAsText(file);
@@ -81,47 +112,35 @@ const AcquiredItems: React.FC = () => {
             <Container maxWidth="lg" className={styles.container}>
                 <Header
                     buttons={
-                        <>
-                            <IconButton onClick={handleSideBarClick}>
-                                <MenuIcon className={styles.menuIcon} />
-                            </IconButton>
-                        </>
+                        <IconButton onClick={handleSideBarClick}>
+                            <MenuIcon className={styles.menuIcon} />
+                        </IconButton>
                     }
                 />
-
                 <Typography variant="h4" gutterBottom className={styles.title}>
                     Accession Record
                 </Typography>
                 <Line />
-
                 <Box className={styles.actionBar}>
                     <form onSubmit={handleOnSubmit}>
-                        {/* Custom file input using <label> and <input> */}
                         <label htmlFor="btn-upload">
                             <input
                                 id="btn-upload"
                                 name="btn-upload"
                                 type="file"
-                                style={{ display: 'none' }} // Hide the default input
-                                accept=".csv" // Only accept CSV files
-                                onChange={handleOnChange} // Handle file selection
+                                style={{ display: 'none' }}
+                                accept=".csv"
+                                onChange={handleOnChange}
                             />
-                            <Button
-                                variant="outlined"
-                                component="span"
-                                className="btn-choose" // Optional class for styling
-                            >
+                            <Button variant="outlined" component="span" className="btn-choose">
                                 Choose File
                             </Button>
                         </label>
-
-                        {/* Show file name next to the Choose File button */}
                         {fileName && (
                             <Typography variant="body1" sx={{ marginLeft: 2 }}>
                                 {fileName}
                             </Typography>
                         )}
-
                         <Button
                             variant="contained"
                             sx={{
@@ -129,7 +148,7 @@ const AcquiredItems: React.FC = () => {
                                 color: '#fff',
                                 textTransform: 'none',
                                 ':hover': { backgroundColor: '#d13333' },
-                                marginLeft: 2, // Add some margin to the "Import" button
+                                marginLeft: 2,
                             }}
                             type="submit"
                         >
@@ -137,21 +156,21 @@ const AcquiredItems: React.FC = () => {
                         </Button>
                     </form>
                 </Box>
-
                 <br />
-
                 <TableContainer
                     component={Paper}
                     className={styles.tableContainer}
-                    sx={{ maxHeight: "60vh", overflowY: "auto" }}
+                    sx={{ maxHeight: '60vh', overflowY: 'auto' }}
                 >
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
                                 {headerKeys.map((key) => (
-                                    <TableCell key={key}><strong>{key}</strong></TableCell>
+                                    <TableCell key={key}>
+                                        <strong>{key}</strong>
+                                    </TableCell>
                                 ))}
-                                <TableCell><strong>ACTION</strong></TableCell>
+                                <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -162,19 +181,25 @@ const AcquiredItems: React.FC = () => {
                                             <TableCell key={idx}>{val}</TableCell>
                                         ))}
                                         <TableCell>
-                                            <Box >
-                                                <IconButton><SearchIcon className={styles.searchIcon} /></IconButton>
-                                                <IconButton><AddIcon className={styles.addIcon} /></IconButton>
-                                            </Box>
-
-
+                                            <Select
+                                                value={selectedOption}
+                                                onChange={(e) => handleSelectChange(e.target.value, item)}
+                                                displayEmpty
+                                                className={styles.select}
+                                            >
+                                                <MenuItem value="" disabled>
+                                                    Action
+                                                </MenuItem>
+                                                <MenuItem value="searchGoogleBooks">Search Google Books</MenuItem>
+                                                <MenuItem value="addToCatalog">Add to Catalog</MenuItem>
+                                            </Select>
                                         </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={headerKeys.length} align="center">
-                                        <Typography variant="body1" sx={{ color: "gray" }}>
+                                    <TableCell colSpan={headerKeys.length + 1} align="center">
+                                        <Typography variant="body1" sx={{ color: 'gray' }}>
                                             No data available.
                                         </Typography>
                                     </TableCell>
@@ -184,6 +209,7 @@ const AcquiredItems: React.FC = () => {
                     </Table>
                 </TableContainer>
             </Container>
+            <Copyright />
         </Box>
     );
 };

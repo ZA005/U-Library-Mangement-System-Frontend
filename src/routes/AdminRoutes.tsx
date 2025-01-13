@@ -11,6 +11,9 @@ import ManageCourses from '../pages/Curriculum-Management/Managers/ManageProgram
 import ManageDepartments from '../pages/Curriculum-Management/Managers/ManageDepartments';
 import ManageSubjects from '../pages/Curriculum-Management/Managers/ManageSubjects';
 import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageBookReference';
+import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
+import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/CatalogingAdmin';
+import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 
 const AdminRoutes = () => (
   <Routes>
@@ -21,9 +24,13 @@ const AdminRoutes = () => (
       <Route path="library" element={<LandingPage />} />
 
       {/* Cataloging Module  */}
+      <Route path="catalog/management" element={<CatalogingAdmin />} />
+      <Route path="catalog/management/accesion-record" element={<AcquiredItems />} />
+      <Route path='catalog/management/marc-record/add' element={<AddMARCRecord />} />
       <Route path="catalog/management/search-title" element={<BookSearch />} />
       {/* <Route path="book/:bookId" element={<BookDetails />} /> */}
       <Route path="book-form" element={<BookForm />} />
+
 
       {/* Curriculum Module  */}
       <Route path="curriculum/management/page" element={<CurriculumManagement />} />

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { generateCallNumber, saveBook } from '../../../services/GoogleBooksApi';
-import { fetchLastAccessionNumber } from '../../../services/LocalBooksAPI';
+import { generateCallNumber, saveBook } from '../../../services/Cataloging/GoogleBooksApi';
+import { fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
 
 interface Book {
     id: string;

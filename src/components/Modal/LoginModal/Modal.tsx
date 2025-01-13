@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Modal, TextField, IconButton, InputAdornment } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Visibility from '@mui/icons-material/Visibility'; // Keeping only this one icon for toggling
+import Visibility from '@mui/icons-material/Visibility';
 import AccountCircle from '@mui/icons-material/LibraryBooks';
 import LockIcon from '@mui/icons-material/Lock';
 import './LoginModal.css';
@@ -16,55 +16,61 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { login } = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
-  const [libraryCardNumber, setLibraryCardNumber] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [libraryCardNumber, setLibraryCardNumber] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  // Toggle between password visibility
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  const handleLogin = async (): Promise<void> => {
+  const handleLogin = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
+    setError(null); // Reset error state before new login attempt
+
+    if (!libraryCardNumber || !password) {
+      setError('Both library card number and password are required.');
+      return;
+    }
+
     try {
       const userData = await UserService.login(libraryCardNumber, password);
-      console.log(userData);
-  
-      // Guard clause: If no token exists, set error and exit early
+
+      // Check for server-provided error messages
       if (!userData.token) {
-        setError(userData.message); // Handle error message from the server
-        return; // Exit the function early
+        setError('Login failed. Please check your library card number and password.');
+        return;
       }
-  
-      // Proceed with login logic only if token is present
-      login(userData.token, userData.role); // Use the context's login function
-  
-      // Handle different roles with navigation
-      if (userData.role === "LIBRARIAN") {
-        navigate('admin/library');
-      } else if (userData.role === "STUDENT") {
-        navigate('/user/browse');
+
+      login(userData.token, userData.role);
+
+      if (userData.role === 'LIBRARIAN') navigate('/admin/library');
+      else if (userData.role === 'STUDENT') navigate('/user/browse');
+      else navigate('/'); // Default fallback
+
+      onClose();
+    } catch (error: unknown) {
+      console.error('Login Error:', error);
+
+      // Handle specific error cases
+      const err = error as { response?: { status: number, data?: { message: string } } };
+      if (err.response?.status === 401) {
+        setError('Invalid credentials. Please check your library card number and password.');
+      } else if (err.response?.status === 500) {
+        setError('Internal server error. Our team is working on it. Please try again later.');
+      } else if (err.response?.status === 400) {
+        setError('Bad request. Please ensure the data you entered is correct.');
+      } else if (err.response?.status === 404) {
+        setError('The server could not be found. Please check your internet connection or try again later.');
       } else {
-        navigate('*'); // Redirect to the home or login page for unexpected roles
+        setError('An unexpected error occurred. Please try again later.');
       }
-  
-      onClose(); // Close the modal after successful login
-  
-    } catch (error) {
-      console.error(error);
-      setError(`An unexpected error occurred`); // Handle unexpected errors
-      setTimeout(() => {
-        setError(null); // Reset error after a timeout
-      }, 5000);
     }
   };
-  
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="login-modal" aria-describedby="login-modal-description">
       <Box className="outer-container">
-        {/* Header with logo and text aligned to the left */}
         <Box className="header-container">
           <img src="/src/assets/images/lms-logo.png" alt="Library Logo" className="modal-logo" />
           <Box>
@@ -73,16 +79,11 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
           </Box>
         </Box>
 
-        {/* Modal content */}
         <Box className="modal-box">
-          {/* Login header with the red line beside */}
           <Box className="login-header">
             <Typography variant="h6" className="login-text">Login</Typography>
           </Box>
 
-          {error && <p className="error-message">{error}</p>}
-
-          {/* Input fields */}
           <form onSubmit={handleLogin}>
             <TextField
               label="Library Card Number"
@@ -90,8 +91,8 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
               fullWidth
               margin="normal"
               className="modal-input"
-              value={libraryCardNumber} // Controlled input
-              onChange={(e) => setLibraryCardNumber(e.target.value)} // Handle input change
+              value={libraryCardNumber}
+              onChange={(e) => setLibraryCardNumber(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -103,13 +104,13 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
 
             <TextField
               label="Password"
-              type={showPassword ? 'text' : 'password'} // Toggles the input type
+              type={showPassword ? 'text' : 'password'}
               variant="outlined"
               fullWidth
               margin="normal"
               className="modal-input"
-              value={password} // Controlled input
-              onChange={(e) => setPassword(e.target.value)} // Handle input change
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -119,41 +120,42 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={togglePasswordVisibility} edge="end">
-                      <Visibility /> {/* Only one visibility icon */}
+                      <Visibility />
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
 
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ backgroundColor: '#d32f2f', color: '#fff', mt: 2 }}
+            >
+              Sign In
+            </Button>
           </form>
 
-
-          {error && <div className="error">{error}</div>} {/* Error message */}
-
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: '#d32f2f', color: '#fff', width: '100%', mt: 2 }}
-            onClick={handleLogin}
-
-          >
-            Sign In
-          </Button>
-
-          <Typography variant="body2" className="modal-footer">
+          <Typography variant="body2" className="modal-footer" sx={{ mt: 2 }}>
             Don't have an account?{' '}
             <Button
               color="inherit"
               sx={{ color: '#d32f2f', textDecoration: 'underline' }}
               onClick={() => {
-                onClose(); // Close the login modal
+                onClose();
                 navigate('/register');
               }}
             >
               Sign up
             </Button>
           </Typography>
-
         </Box>
       </Box>
     </Modal>
