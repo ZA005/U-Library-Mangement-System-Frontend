@@ -118,7 +118,7 @@ const AcquiredItems: React.FC = () => {
                     }
                 />
                 <Typography variant="h4" gutterBottom className={styles.title}>
-                    Accession Record
+                    Accession
                 </Typography>
                 <Line />
                 <Box className={styles.actionBar}>

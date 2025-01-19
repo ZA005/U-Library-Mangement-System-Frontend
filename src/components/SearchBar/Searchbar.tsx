@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, CircularProgress, FormControl } from '@mui/material';
+import { Button, CircularProgress, FormControl, Stack } from '@mui/material';
+import { Book } from '../../model/Book';
 import UserService from '../../services/UserService';
 import styles from './styles.module.css';
-import { Book } from '../../model/Book';
 import { searchGoogleBooks } from '../../services/Cataloging/GoogleBooksApi';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchBarProps {
     initialQuery?: string;
     initialSource?: string;
+    onSearch: (books: Book[]) => void;  // Prop for the callback to update books in parent
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'Main Library' }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'Main Library', onSearch }) => {
     const [query, setQuery] = useState(initialQuery);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -23,6 +24,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         setSource(initialSource);
     }, [initialQuery, initialSource]);
 
+    const handleAdvancedSearch = () => {
+        navigate('/user/advanced/search');
+    };
+
     const handleSearch = async () => {
         setLoading(true);
         setError(null);
@@ -32,15 +37,24 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
             setLoading(false);
             return;
         }
+
         let result: Book[] = [];
         try {
             if (source === 'Google Books') {
-
+                // Call the Google Books API
                 result = await searchGoogleBooks(query);
+                navigate('/admin/catalog/management/search-title', { state: { query, books: result, source } });
             }
-            // Add Library Of Congress logic if needed
-            navigate('/admin/catalog/management/search-title', { state: { query, books: result, source } });
-            console.error(error);
+            // else {
+            //     // Call your local API for the search query
+            //     const response = await getBooksByAdvancedSearch({ title: query });
+            //     result = response || [];
+            // }
+
+            onSearch(result); // Pass the results back to the parent using the callback
+        } catch (error) {
+            console.error("Error fetching books:", error);
+            setError('An error occurred while searching. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -54,37 +68,47 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
 
     return (
         <div className={styles.searchContainer}>
-            <input
-                type="text"
-                placeholder="Search for a book..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className={styles.searchInput}
-            />
-            <FormControl variant="outlined" className={styles.sourceSelect}>
-                <select
-                    id="source"
-                    value={source}
-                    onChange={(e) => setSource(e.target.value)}
-                    disabled={UserService.isUser()}
-                    className={styles.sourceSelect}
+            <Stack direction="row" spacing={2} alignItems="center">
+                <input
+                    type="text"
+                    placeholder="Search for a book..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className={styles.searchInput}
+                />
+                <FormControl variant="outlined" className={styles.sourceSelect}>
+                    <select
+                        id="source"
+                        value={source}
+                        onChange={(e) => setSource(e.target.value)}
+                        disabled={UserService.isUser()}
+                        className={styles.sourceSelect}
+                    >
+                        <option value="Main Library">Main Library</option>
+                        <option value="Google Books">Google Books</option>
+                        <option value="Library Of Congress">Library Of Congress</option>
+                    </select>
+                </FormControl>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSearch}
+                    disabled={loading || !query}
+                    className={styles.searchButton}
+                    endIcon={loading && <CircularProgress size={20} color="inherit" />}
                 >
-                    <option value="Main Library">Main Library</option>
-                    <option value="Google Books">Google Books</option>
-                    <option value="Library Of Congress">Library Of Congress</option>
-                </select>
-            </FormControl>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSearch}
-                disabled={loading || !query}
-                className={styles.searchButton}
-                endIcon={loading && <CircularProgress size={20} color="inherit" />}
-            >
-                {loading ? 'Searching...' : 'Search'}
-            </Button>
+                    {loading ? 'Searching...' : 'Search'}
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleAdvancedSearch}
+                    className={styles.searchButton}
+                >
+                    Advanced Search
+                </Button>
+            </Stack>
             {error && <p className={styles.errorText}>{error}</p>}
         </div>
     );

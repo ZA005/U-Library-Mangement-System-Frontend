@@ -243,17 +243,17 @@ const BookForm: React.FC = () => {
                         <option value="Law Library">Law Library</option>
                         <option value="Engineering and Architecture Library">Engineering and Architecture Library</option>
                         <option value="High School Library">High School Library</option>
-                        <option value="Elementary Libray">High School Library</option>
+                        <option value="Elementary Library">Elementary Libray</option>
                     </select>
                 </div>
 
                 {/* Circulation Type */}
                 <div style={{ marginBottom: '10px' }}>
-                    <label>Circulation Type: </label>
+                    <label>Section: </label>
                     <select value={circulationType} onChange={(e) => setCirculationType(e.target.value)}>
                         <option value="">Select</option>
                         <option value="General Reference">General Reference</option>
-                        <option value="Cilculation">Cilculation</option>
+                        <option value="Circulation">Circulation</option>
                         <option value="Periodical">Periodical</option>
                         <option value="Filipiniana">Filipiniana</option>
                         <option value="Special Collection">Special Collection</option>
