@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
@@ -13,24 +13,32 @@ const VerifyUser: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // useEffect(() => {
+    
+  // })
+
   const handleSubmit = async (): Promise<void> => {
     // e.preventDefault();
     setError(null);
     setLoading(true);
-
+    console.log(studentId)
     try {
-      const data = await UserService.verifyUser(studentId);
+    const userData = await UserService.verifyUser(studentId);
+
+      console.log('email', userData); 
       // Check if the data contains student information, meaning verification was successful
-      if (data && data.id) {
+      if (userData && userData.id) {
         // If the OTP is sent, navigate to the OTP verification page with the studentId
-        localStorage.setItem('emailAdd', data.emailAdd);
-        navigate('/verify-otp');
+        localStorage.setItem('emailAdd', userData.emailAdd);
+        console.log('email', userData.emailAdd); 
+        navigate('/verify/user/otp' , { state: { userData } });
       } else {
         // If the student is not found or enrolled, show an error
         setError('Student not found or not currently enrolled.');
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      console.log(error);
       setError('Error verifying student ID.');
     } finally {
       // Set loading to false when the process completes
