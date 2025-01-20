@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 interface SearchBarProps {
     initialQuery?: string;
     initialSource?: string;
-    onSearch: (books: Book[]) => void;  // Prop for the callback to update books in parent
+    onSearch: (books: Book[], source: string, query: string | object) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'Main Library', onSearch }) => {
@@ -24,9 +24,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         setSource(initialSource);
     }, [initialQuery, initialSource]);
 
-    const handleAdvancedSearch = () => {
-        navigate('/user/advanced/search');
-    };
 
     const handleSearch = async () => {
         setLoading(true);
@@ -38,8 +35,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
             return;
         }
 
-        let result: Book[] = [];
         try {
+            let result: Book[] = [];
             if (source === 'Google Books') {
                 // Call the Google Books API
                 result = await searchGoogleBooks(query);
@@ -51,7 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
             //     result = response || [];
             // }
 
-            onSearch(result); // Pass the results back to the parent using the callback
+            onSearch(result, source, query); // Pass the results back to the parent using the callback
         } catch (error) {
             console.error("Error fetching books:", error);
             setError('An error occurred while searching. Please try again.');
@@ -103,7 +100,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                 <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={handleAdvancedSearch}
+                    onClick={() => navigate('/user/advanced/search')}
                     className={styles.searchButton}
                 >
                     Advanced Search
