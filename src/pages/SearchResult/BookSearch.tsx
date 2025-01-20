@@ -39,9 +39,12 @@ const BookSearch: React.FC = () => {
 
     // Generate dynamic message based on search results
     const generateSearchMessage = () => {
+
         const criteria = query.criteria
             ?.map((criterion: any) => `${criterion.idx}: ${criterion.searchTerm}`)
             .join(` ${query.criteria?.[0]?.operator || "AND"} `);
+
+        console.log('Books', books)
 
         if (books.length === 0) {
             return `No results match your search for ${criteria || "your criteria"} in ${source}.`;
