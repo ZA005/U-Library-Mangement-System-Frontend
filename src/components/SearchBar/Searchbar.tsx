@@ -25,6 +25,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
     }, [initialQuery, initialSource]);
 
 
+
+
     const handleSearch = async () => {
         setLoading(true);
         setError(null);
@@ -41,6 +43,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                 // Call the Google Books API
                 result = await searchGoogleBooks(query);
                 navigate('/admin/catalog/management/search-title', { state: { query, books: result, source } });
+                onSearch(result, source, query);
             }
             // else {
             //     // Call your local API for the search query
@@ -48,7 +51,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
             //     result = response || [];
             // }
 
-            onSearch(result, source, query); // Pass the results back to the parent using the callback
+            // onSearch(result, source, query);
         } catch (error) {
             console.error("Error fetching books:", error);
             setError('An error occurred while searching. Please try again.');
@@ -84,7 +87,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                     >
                         <option value="Main Library">Main Library</option>
                         <option value="Google Books">Google Books</option>
-                        <option value="Library Of Congress">Library Of Congress</option>
+                        {/* <option value="Library Of Congress">Library Of Congress</option> */}
                     </select>
                 </FormControl>
                 <Button
