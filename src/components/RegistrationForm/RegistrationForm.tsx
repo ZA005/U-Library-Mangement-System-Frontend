@@ -99,7 +99,7 @@ const RegisterForm: React.FC = () => {
           password: '',
           role: '',
         });
-        navigate('/register/card', { state: { ...formData, libraryCardNumber } });
+        navigate('user/library/card/', { state: { ...formData, libraryCardNumber } });
       } else {
         console.error('Registration failed:', response);
         setError(response.message || 'Error submitting form.');

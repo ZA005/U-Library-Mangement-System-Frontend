@@ -89,19 +89,27 @@
     display: flex;
     align-items: center;
     width: 100%;
-    margin-bottom: 2vh;
+    margin-bottom: 1.5vh;
+
   }
   
   .icon {
     display: flex;
     color: #fff;
     background-color: #ea4040;
-    padding: 2vh;
+    padding: 3vh; /* Increase padding for bigger icon */
     border-radius: 10%;
-  }
-  
-  .manageButton {
-    text-align: right;
+    margin-right: 5px; /* Reduce the space between the icon and the button */
+    margin-left: 100px; /* Move the icon to the left */
+    height: 90px; /* Make icon height same as button */
+    width: 90px; /* Ensure icon is square and same width */
+    align-items: center; /* Center the icon inside the circle */
+    justify-content: center; /* Center the icon inside the circle */
+    font-size: 5rem; /* Increase icon size */
+}
+
+.manageButton {
+    text-align: center;
     background-color: #ea4040;
     color: #fff;
     padding: 30px 70px;
@@ -113,8 +121,10 @@
     height: auto; /* Let the height adjust based on content */
     text-align: center; /* Center align text inside button */
     transition: background-color 0.3s;
-    margin-left: 200px;
+    margin-left: 20px; /* Move button slightly to the left */
 }
+
+
 
 .manageButton:hover {
     background-color: #d73939;

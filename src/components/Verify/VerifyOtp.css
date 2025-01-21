@@ -1,32 +1,55 @@
-/* src/pages/VerifyOtp.css */
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+/* Styling for the main verification box */
+.verify-otp-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+/* OTP input boxes */
+.otp-input {
+  width: 50px;
+  height: 50px;
+  font-size: 18px;
+  text-align: center;
+  margin: 0 4px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
 }
 
+.otp-input:focus {
+  border-color: #cc0000;
+  box-shadow: 0 0 4px rgba(204, 0, 0, 0.5);
+}
+
+/* Button styling */
 .send-otp-button {
   background-color: #cc0000 !important;
   color: white !important;
   margin-top: 16px;
+  font-weight: bold;
+  text-transform: none;
+  height: 48px;
+  border-radius: 8px;
 }
 
 .send-otp-button:hover {
   background-color: darkred !important;
 }
 
-.footer {
+/* Footer styling */
+footer {
   margin-top: auto;
   background-color: #3d3d3d;
   color: white;
   text-align: center;
   padding: 10px 0;
+}
+
+/* Styling for the positioned icon */
+.otp-icon {
+  z-index: 10; /* Ensures the icon is above the box */
+  position: absolute;
+  top: -500px; /* Adjust the icon's vertical position */
 }
