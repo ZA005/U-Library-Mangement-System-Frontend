@@ -84,6 +84,8 @@ const BookSearch: React.FC = () => {
                     })
                     .join(" AND ");
 
+        console.log('Books', books)
+
         if (books.length === 0) {
             return `No results match your search for ${criteria || "your query"} in ${source}.`;
         } else {
