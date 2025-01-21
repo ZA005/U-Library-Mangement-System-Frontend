@@ -17,18 +17,18 @@ const BookSearch: React.FC = () => {
     const location = useLocation();
     const state = location.state as { query: any; books: Book[]; source: string };
 
-    const [query, setQuery] = useState(state?.query || {});
-    const [source, setSource] = useState(state?.source || 'Main Library');
-    const [books, setBooks] = useState<Book[]>(state?.books || []); // Store fetched books
+    const [query, setQuery] = useState(state?.query || null);
+    const [source, setSource] = useState(state?.source || "All libraries");
+    const [books, setBooks] = useState<Book[]>(state?.books || []);
     const [loading, setLoading] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [isNavigationSearch, setIsNavigationSearch] = useState(!!state?.query);
 
     const navigate = useNavigate();
 
     const handleSideBarClick = () => setSidebarOpen(!isSidebarOpen);
     const handleSidebarClose = () => setSidebarOpen(false);
 
-    // Function to handle the book click
     const handleBookClick = (book: Book) => {
         navigate(`/user/book/${book.id}`, {
             state: { book, searchState: { query, books, source } },
@@ -39,42 +39,55 @@ const BookSearch: React.FC = () => {
         setBooks(newBooks);
         setSource(newSource);
         setQuery(newQuery);
+        setIsNavigationSearch(false); // Ensure subsequent searches are treated as user-triggered
     };
+    // const updateBooks = (newBooks: Book[]) => {
+    //     setBooks(newBooks);
+    //     setSource(source);
+    //     setQuery(query);
+    //     setIsNavigationSearch(false);
+    // };
+
     const fetchBooks = async (searchQuery: any, searchSource: string) => {
         setLoading(true);
         try {
             let result: Book[] = [];
-            if (searchSource === 'Google Books') {
-                // Fetch books from Google Books
+            if (searchSource === "Google Books") {
                 result = await searchGoogleBooks(searchQuery);
-            } else if (searchSource === 'Main Library' && typeof searchQuery === 'object') {
-                // Handle advanced search
+            } else if (searchSource !== "Google Books" && typeof searchQuery === "object") {
                 result = await getBooksByAdvancedSearch(searchQuery);
             }
             setBooks(result);
         } catch (error) {
-            console.error('Error fetching books:', error);
+            console.error("Error fetching books:", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        if (query) {
+        if (isNavigationSearch && query) {
             fetchBooks(query, source);
         }
-    }, [query, source]);
+    }, [isNavigationSearch, query, source]); // Only fetch when it's a navigation search
 
     const generateSearchMessage = () => {
         const criteria =
-            typeof query === 'string'
+            typeof query === "string"
                 ? query
-                : query.criteria?.map((criterion: any) => `${criterion.idx}: ${criterion.searchTerm}`).join(' AND ');
+                : query?.criteria
+                    ?.map((criterion: any) => {
+                        if (criterion.idx === "q") {
+                            return `inkeyword: ${criterion.searchTerm}`;
+                        }
+                        return `${criterion.idx}: ${criterion.searchTerm}`;
+                    })
+                    .join(" AND ");
 
         if (books.length === 0) {
-            return `No results match your search for ${criteria || 'your query'} in ${source}.`;
+            return `No results match your search for ${criteria || "your query"} in ${source}.`;
         } else {
-            return `${books.length} result(s) found for '${criteria || 'your query'}' in ${source}.`;
+            return `${books.length} result(s) found for '${criteria || "your query"}' in ${source}.`;
         }
     };
 
@@ -103,10 +116,11 @@ const BookSearch: React.FC = () => {
                 </Box>
                 <Line />
                 <SearchBar
-                    initialQuery={typeof query === 'string' ? query : ''}
+                    initialQuery={typeof query === "string" ? query : ""}
                     initialSource={source}
                     onSearch={handleSearch}
                 />
+                {/* <SearchBar onSearch={updateBooks} /> */}
 
                 {/* Display Search Results Summary */}
                 {!loading && (

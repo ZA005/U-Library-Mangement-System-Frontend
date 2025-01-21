@@ -14,7 +14,7 @@ interface TabCheckboxGroupProps {
 const tabData = [
     {
         label: "Item type",
-        options: ["Audio Visual", "TextBook"],
+        options: ["Audio Visual", "BOOK"],
     },
     {
         label: "Sections",
