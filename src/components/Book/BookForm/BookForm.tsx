@@ -35,7 +35,6 @@ const BookForm: React.FC = () => {
     const [subjects, setSubjects] = useState('');
     const [numberOfCopies, setNumberOfCopies] = useState(1);
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
-    const token = localStorage.getItem('token');
 
 
 
@@ -76,17 +75,15 @@ const BookForm: React.FC = () => {
             const title = book.title;
 
 
-            if (!token) {
-                return;
-            }
 
-            const callNumber = await generateCallNumber(category, authors, publishedDate, title, token);
+
+            const callNumber = await generateCallNumber(category, authors, publishedDate, title);
             setCallNumber(callNumber); // Update the state with the generated call number
         } catch (error) {
             alert('Error generating call number. Please try again.');
             console.error(error);
         }
-    }, [state.book.categories, state.book.publishedDate, book.authors, book.title, token]);
+    }, [state.book.categories, state.book.publishedDate, book.authors, book.title]);
 
     useEffect(() => {
         if (!book.callNumber) {
@@ -138,14 +135,10 @@ const BookForm: React.FC = () => {
         }));
 
         try {
-            if (!token) {
-                alert("Authentication token is missing. Please log in again.");
-                return;
-            }
 
             // Save each book entry
             for (const bookData of booksToSave) {
-                await saveBook(bookData, token);
+                await saveBook(bookData);
             }
 
             alert('Book details saved successfully!');
