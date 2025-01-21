@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // src/api/BookAPI.ts
 import axios from "axios";
@@ -32,4 +33,20 @@ export const fetchLastAccessionNumber = async (locationPrefix: string): Promise<
         throw error;
     }
 };
+
+export const getBooksByAdvancedSearch = async (searchParams: any) => {
+    console.log(searchParams);
+    try {
+        const response = await axios.post(`${BASE_URL}advance-search`, searchParams, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching books by advanced search:", error);
+        throw new Error("Failed to fetch books by advanced search.");
+    }
+};
+
 

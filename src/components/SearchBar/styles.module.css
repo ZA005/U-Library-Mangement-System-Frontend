@@ -1,0 +1,124 @@
+/* Page layout */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures the container spans the full height of the viewport */
+}
+
+.content {
+  flex: 1; /* Expands to fill available space between header and footer */
+}
+
+.rootContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  padding: 20px;
+  flex: 1;
+}
+
+.greeting {
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sourceContainer {
+  margin-bottom: 20px;
+}
+
+.sourceLabel {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.sourceSelect {
+  padding: 8px;
+  width: 200px;
+}
+
+.searchContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+  width: 100%;
+}
+
+.searchInput {
+  width: 700px; /* Match the width of the BookListComponent */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-left: -100px; /* Move the input to the left by 20px */
+}
+
+.searchButton {
+  padding: 10px 20px;
+  background-color: #ea4040;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.searchButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.logoutButton {
+  padding: 8px 16px;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Centered container for search bar and book list */
+.centeredContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto;
+  max-width: 1200px; /* Expanding width */
+  gap: 20px;
+  width: 100%;
+}
+
+/* Dropdown and button styles */
+.sourceSelect {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Adjustments for BookListContainer */
+.bookListContainer {
+  width: 700px; /* Same width as the search input */
+}
+
+/* Make the search container and book list align */
+.centeredContainer .searchContainer,
+.centeredContainer .bookListContainer {
+  width: 700px; /* Ensure both elements have the same width */
+}

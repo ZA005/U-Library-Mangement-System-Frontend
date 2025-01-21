@@ -19,12 +19,13 @@ const VerifyUser: React.FC = () => {
     setLoading(true);
 
     try {
-      const data = await UserService.verifyUser(studentId);
-      // Check if the data contains student information, meaning verification was successful
-      if (data && data.id) {
+      const userData = await UserService.verifyUser(studentId);
+      // Check if the data contains student information, meaning verification was 
+      // successful
+      if (userData && userData.id) {
         // If the OTP is sent, navigate to the OTP verification page with the studentId
-        localStorage.setItem('emailAdd', data.emailAdd);
-        navigate('/verify-otp');
+        localStorage.setItem('emailAdd', userData.emailAdd);
+        navigate('/verify/user/otp', { state: { userData } });
       } else {
         // If the student is not found or enrolled, show an error
         setError('Student not found or not currently enrolled.');

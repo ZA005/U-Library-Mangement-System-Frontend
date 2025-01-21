@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ModalForm from "../CirculationModal/CirculationModalForm";
-import { checkBookLoanStatus, fetchBookDetails, fetchBorrowerDetails, saveLoanDetails } from "../../../services/CirculationApi";
+import { checkBookLoanStatus, fetchBookDetails, fetchBorrowerDetails, saveLoanDetails } from "../../../services/Circulation/CirculationApi";
 
 interface CirculationIssueBookModalProps {
   open: boolean;

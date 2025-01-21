@@ -56,7 +56,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
         <DrawerHeader />
         <List>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate("/admin/library")}>
               <ListItemIcon>
                 <HomeIcon sx={{ color: "#FFF" }} />
               </ListItemIcon>

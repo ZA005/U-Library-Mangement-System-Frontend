@@ -1,0 +1,337 @@
+import React, { useState, useEffect } from 'react';
+import Papa from 'papaparse';
+import {
+    Alert,
+    Button,
+    Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Box,
+    Container,
+    IconButton,
+    Select,
+    MenuItem,
+    Input,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Pagination,
+    Snackbar,
+} from '@mui/material';
+import styles from './styles.module.css';
+import Header from '../../../../components/Header/Header';
+import MenuIcon from '@mui/icons-material/Menu';
+import Sidebar from '../../../../components/Sidebar';
+import Line from '../../../../components/Line/Line';
+import { useNavigate } from 'react-router-dom';
+import Copyright from '../../../../components/Footer/Copyright';
+import { useSnackbar } from '../../../../hooks/useSnackbar';
+import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords } from '../../../../services/AcquisitionService';
+
+const AcquiredItems: React.FC = () => {
+    const [array, setArray] = useState<AcquisitionRecord[]>([]);
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [canImport, setCanImport] = useState<boolean>(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+    const [page, setPage] = useState<number>(1);
+    const itemsPerPage = 5;
+
+    const navigate = useNavigate();
+
+    const {
+        snackbarOpen,
+        snackbarMessage,
+        snackbarStatus,
+        openSnackbar,
+        closeSnackbar,
+    } = useSnackbar();
+
+    useEffect(() => {
+        const loadPendingRecords = async () => {
+            try {
+                setIsLoading(true);
+                const records = await fetchAllPendingCatalogRecords();
+                setArray(records);
+                setCanImport(records.length === 0);
+            } catch (error) {
+                if (error instanceof Error) {
+                    setErrorMessage(`Error loading records from server: ${error.message}`);
+                } else {
+                    setErrorMessage('An unexpected error occurred while loading records.');
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadPendingRecords();
+    }, []);
+
+    const handleSideBarClick = () => {
+        if (!isLoading) setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarClose = () => {
+        if (!isLoading) setSidebarOpen(false);
+    };
+
+    const handleSelectChange = (value: string, item: AcquisitionRecord) => {
+        if (!isLoading) {
+            setSelectedOption(value);
+            if (value === 'searchGoogleBooks') {
+                navigate('/admin/catalog/management/search-title', {
+                    state: { query: item.book_title, books: item, source: 'Google Books' },
+                });
+            } else if (value === 'addToCatalog') {
+                navigate('/admin/catalog/management/marc-record/add', { state: { item } });
+            }
+        }
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!canImport) {
+            setErrorMessage('Please catalog all pending records before importing new ones.');
+            return;
+        }
+
+        if (e.target.files) {
+            const selectedFile = e.target.files[0];
+            setFileToUpload(selectedFile);
+            setErrorMessage(null);
+            setOpenDialog(true);
+        }
+    };
+
+    const handleConfirmUpload = async () => {
+        if (fileToUpload) {
+            setIsLoading(true);
+            setOpenDialog(false);
+
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const csvString = event.target?.result as string;
+                await validateAndParseCSV(csvString);
+            };
+            reader.readAsText(fileToUpload);
+        }
+    };
+
+    const handleCancelUpload = () => {
+        setOpenDialog(false);
+        setFileToUpload(null);
+    };
+
+    const validateAndParseCSV = async (csvString: string) => {
+        Papa.parse(csvString, {
+            header: true,
+            skipEmptyLines: true,
+            complete: async (result) => {
+                const expectedHeaders = [
+                    'book_title', 'isbn', 'publisher', 'edition', 'series',
+                    'purchase_price', 'purchase_date', 'acquired_date', 'vendor_name',
+                    'vendor_location', 'funding_source'
+                ];
+
+                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
+                    const parsedData = result.data as unknown as AcquisitionRecord[];
+                    try {
+                        await addRecords(parsedData);
+                        openSnackbar("CSV Parsed Successfully!", "success");
+                        const allRecords = await fetchAllPendingCatalogRecords();
+                        setArray(allRecords);
+                        setCanImport(allRecords.length === 0);
+                    } catch (error) {
+                        if (error instanceof Error) {
+                            setErrorMessage(`Failed to add records to the server: ${error.message}`);
+                            openSnackbar("Failed to add records to the server!", "error");
+                        } else {
+                            setErrorMessage('An unexpected error occurred while adding records.');
+                            openSnackbar("An unexpected error occurred while adding records!", "error");
+                        }
+                    }
+                } else {
+                    setErrorMessage('CSV file headers do not match the expected format or the file is empty.');
+                }
+                setIsLoading(false);
+            },
+            error: (err) => {
+                setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
+                setIsLoading(false);
+            }
+        });
+    };
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
+
+    return (
+        <Box className={styles.rootContainer}>
+            <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
+            <Container maxWidth="lg" className={styles.container}>
+                <Header
+                    buttons={
+                        <IconButton onClick={handleSideBarClick} disabled={isLoading}>
+                            <MenuIcon className={styles.menuIcon} />
+                        </IconButton>
+                    }
+                />
+                <Typography variant="h4" gutterBottom className={styles.title}>
+                    Accession
+                </Typography>
+                <Line />
+                <Box className={styles.actionBar}>
+                    <Button
+                        variant="outlined"
+                        component="label"
+                        disabled={isLoading || !canImport}
+                        startIcon={!canImport && <Typography variant="body2" color="error" sx={{ mt: -0.5 }}>!</Typography>}
+                    >
+                        Choose File
+                        <Input
+                            type="file"
+                            inputProps={{ accept: '.csv' }}
+                            sx={{ display: 'none' }}
+                            onChange={handleFileChange}
+                            disabled={isLoading || !canImport}
+                        />
+                    </Button>
+                    {!canImport && (
+                        <Typography variant="body2" color="error" sx={{ ml: 2, mt: 1 }}>
+                            Catalog all pending records first.
+                        </Typography>
+                    )}
+                </Box>
+                {errorMessage && (
+                    <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
+                        {errorMessage}
+                    </Typography>
+                )}
+                {isLoading && (
+                    <Box
+                        position="fixed" top="0" left="0" width="100%" height="100%"
+                        bgcolor="rgba(0, 0, 0, 0.5)" zIndex="1000"
+                        display="flex" justifyContent="center" alignItems="center"
+                    >
+                        <CircularProgress size={60} />
+                        <Typography variant="body1" sx={{ color: 'white', marginLeft: 2 }}>
+                            Importing CSV, please wait...
+                        </Typography>
+                    </Box>
+                )}
+                {array.length === 0 && !isLoading && !errorMessage ? (
+                    <Box sx={{ textAlign: 'center', marginTop: '20px' }}>
+                        <Typography variant="body1">
+                            No pending records to catalog. You can import new records with the "Choose File" button above.
+                        </Typography>
+                    </Box>
+                ) : (
+                    <TableContainer
+                        component={Paper}
+                        className={styles.tableContainer}
+                        sx={{
+                            maxHeight: '80vh',
+                            overflowY: 'auto',
+                            overflowX: 'auto',
+                            pointerEvents: isLoading ? 'none' : 'auto'
+                        }}
+                    >
+                        <Table stickyHeader>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ minWidth: '150px' }}><strong>Book Title</strong></TableCell>
+                                    <TableCell><strong>ISBN</strong></TableCell>
+                                    <TableCell><strong>Publisher</strong></TableCell>
+                                    <TableCell><strong>Edition</strong></TableCell>
+                                    <TableCell><strong>Series</strong></TableCell>
+                                    <TableCell><strong>Price</strong></TableCell>
+                                    <TableCell><strong>Purchase Date</strong></TableCell>
+                                    <TableCell><strong>Acquired Date</strong></TableCell>
+                                    <TableCell><strong>Vendor Name</strong></TableCell>
+                                    <TableCell><strong>Vendor Location</strong></TableCell>
+                                    <TableCell><strong>Funding Source</strong></TableCell>
+                                    <TableCell></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {array.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((item, index) => (
+                                    <TableRow key={item.id || index}>
+                                        {/* Exclude 'id' from mapping */}
+                                        {Object.entries(item).filter(([key]) => key !== 'id' && key !== 'status').map(([, value], idx) => (
+                                            <TableCell key={idx}>{value}</TableCell>
+                                        ))}
+                                        <TableCell>
+                                            <Select
+                                                value={selectedOption}
+                                                onChange={(e) => handleSelectChange(e.target.value, item)}
+                                                displayEmpty
+                                                className={styles.select}
+                                                disabled={isLoading}
+                                            >
+                                                <MenuItem value="" disabled>
+                                                    Action
+                                                </MenuItem>
+                                                <MenuItem value="searchGoogleBooks">Search Google Books</MenuItem>
+                                                <MenuItem value="addToCatalog">Add to Catalog</MenuItem>
+                                            </Select>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
+                <Box display="flex" justifyContent="center" mt={2}>
+                    <Pagination
+                        count={Math.ceil(array.length / itemsPerPage)}
+                        page={page}
+                        onChange={handlePageChange}
+                    />
+                </Box>
+            </Container>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={closeSnackbar}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
+            >
+                <Alert onClose={closeSnackbar} severity={snackbarStatus}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+            <Dialog
+                open={openDialog}
+                onClose={handleCancelUpload}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Confirm CSV Import"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to import this CSV file? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelUpload}>Cancel</Button>
+                    <Button onClick={handleConfirmUpload} autoFocus>
+                        Upload
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Copyright />
+        </Box>
+    );
+};
+
+export default AcquiredItems;
