@@ -93,6 +93,19 @@ const AcquiredItems: React.FC = () => {
                 navigate('/admin/catalog/management/search-title', {
                     state: { query: item.book_title, books: item, source: 'Google Books' },
                 });
+            } else if (value === "searchLocalCatalog") {
+                // Navigate to BookSearch.tsx with local catalog search parameters
+                const advancedSearchParams = {
+                    criteria: [
+                        { idx: "q", searchTerm: item.book_title, operator: "AND" },
+                        { idx: "isbn", searchTerm: item.isbn, operator: "AND" },
+                        { idx: "inpublisher", searchTerm: item.publisher, operator: "AND" },
+                    ],
+                    individualLibrary: null,
+                };
+                navigate("/admin/catalog/management/search-title", {
+                    state: { query: advancedSearchParams, books: [], source: "All libraries" },
+                });
             } else if (value === 'addToCatalog') {
                 navigate('/admin/catalog/management/marc-record/add', { state: { item } });
             }
@@ -283,7 +296,9 @@ const AcquiredItems: React.FC = () => {
                                                     Action
                                                 </MenuItem>
                                                 <MenuItem value="searchGoogleBooks">Search Google Books</MenuItem>
+                                                <MenuItem value="searchLocalCatalog">Search Local Catalog</MenuItem>
                                                 <MenuItem value="addToCatalog">Add to Catalog</MenuItem>
+
                                             </Select>
                                         </TableCell>
                                     </TableRow>

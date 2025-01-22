@@ -48,19 +48,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   margin-bottom: 20px;
   gap: 10px;
   width: 100%;
-}
-
-.searchInput {
-  width: 700px; /* Match the width of the BookListComponent */
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  margin-left: -100px; /* Move the input to the left by 20px */
 }
 
 .searchButton {
@@ -121,4 +112,12 @@
 .centeredContainer .searchContainer,
 .centeredContainer .bookListContainer {
   width: 700px; /* Ensure both elements have the same width */
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+}
+.searchIcon {
+  margin-right: 0.5rem;
 }

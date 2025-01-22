@@ -24,7 +24,7 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
     };
 
     const handleAddCriterion = () => {
-        setCriteria([...criteria, { idx: "keyword", searchTerm: "", operator: "AND" }]);
+        setCriteria([...criteria, { idx: "q", searchTerm: "", operator: "AND" }]);
     };
 
     const handleRemoveCriterion = (index: number) => {
@@ -59,14 +59,14 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                         <InputLabel>Search Criteria</InputLabel>
                         <Select
                             label="Search Criteria"
-                            value={param.idx || "keyword"}
+                            value={param.idx || "q"}
                             onChange={(e) => handleCriteriaChange(e, index, "idx")}
                         >
-                            <MenuItem value="keyword">Keyword</MenuItem>
-                            <MenuItem value="title">Title</MenuItem>
-                            <MenuItem value="author">Author</MenuItem>
-                            <MenuItem value="publisher">Publisher</MenuItem>
-                            <MenuItem value="subjects">Subject</MenuItem>
+                            <MenuItem value="q">Keyword</MenuItem>
+                            <MenuItem value="intitle">Title</MenuItem>
+                            <MenuItem value="inauthor">Author</MenuItem>
+                            <MenuItem value="inpublisher">Publisher</MenuItem>
+                            <MenuItem value="insubjects">Subject</MenuItem>
                             <MenuItem value="isbn">ISBN</MenuItem>
                         </Select>
                     </FormControl>

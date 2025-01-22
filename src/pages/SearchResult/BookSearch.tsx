@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Container, IconButton, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Book } from "../../model/Book";
@@ -9,47 +9,87 @@ import Header from "../../components/Header/Header";
 import MenuIcon from "@mui/icons-material/Menu";
 import Line from "../../components/Line/Line";
 import Sidebar from "../../components/Sidebar";
+import SearchBar from "../../components/SearchBar/Searchbar";
+import { searchGoogleBooks } from "../../services/Cataloging/GoogleBooksApi";
+import { getBooksByAdvancedSearch } from "../../services/Cataloging/LocalBooksAPI";
 
 const BookSearch: React.FC = () => {
     const location = useLocation();
     const state = location.state as { query: any; books: Book[]; source: string };
 
-    const [query] = useState(state?.query || {});
-    const [source] = useState(state?.source || "Main Library");
-    const [books] = useState<Book[]>(state?.books || []); // Store fetched books
-    const [loading] = useState(false);
+    const [query, setQuery] = useState(state?.query || null);
+    const [source, setSource] = useState(state?.source || "All libraries");
+    const [books, setBooks] = useState<Book[]>(state?.books || []);
+    const [loading, setLoading] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [isNavigationSearch, setIsNavigationSearch] = useState(!!state?.query);
 
     const navigate = useNavigate();
 
-    const handleSideBarClick = () => {
-        setSidebarOpen(!isSidebarOpen);
-    };
+    const handleSideBarClick = () => setSidebarOpen(!isSidebarOpen);
+    const handleSidebarClose = () => setSidebarOpen(false);
 
-    const handleSidebarClose = () => {
-        setSidebarOpen(false);
-    };
-
-    // Function to handle the book click
     const handleBookClick = (book: Book) => {
         navigate(`/user/book/${book.id}`, {
             state: { book, searchState: { query, books, source } },
         });
     };
 
-    // Generate dynamic message based on search results
-    const generateSearchMessage = () => {
+    const handleSearch = (newBooks: Book[], newSource: string, newQuery: string | object) => {
+        setBooks(newBooks);
+        setSource(newSource);
+        setQuery(newQuery);
+        setIsNavigationSearch(false); // Ensure subsequent searches are treated as user-triggered
+    };
+    // const updateBooks = (newBooks: Book[]) => {
+    //     setBooks(newBooks);
+    //     setSource(source);
+    //     setQuery(query);
+    //     setIsNavigationSearch(false);
+    // };
 
-        const criteria = query.criteria
-            ?.map((criterion: any) => `${criterion.idx}: ${criterion.searchTerm}`)
-            .join(` ${query.criteria?.[0]?.operator || "AND"} `);
+    const fetchBooks = async (searchQuery: any, searchSource: string) => {
+        setLoading(true);
+        try {
+            let result: Book[] = [];
+            if (searchSource === "Google Books") {
+                result = await searchGoogleBooks(searchQuery);
+            } else if (searchSource !== "Google Books" && typeof searchQuery === "object") {
+                result = await getBooksByAdvancedSearch(searchQuery);
+            }
+            setBooks(result);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isNavigationSearch && query) {
+            fetchBooks(query, source);
+        }
+    }, [isNavigationSearch, query, source]); // Only fetch when it's a navigation search
+
+    const generateSearchMessage = () => {
+        const criteria =
+            typeof query === "string"
+                ? query
+                : query?.criteria
+                    ?.map((criterion: any) => {
+                        if (criterion.idx === "q") {
+                            return `inkeyword: ${criterion.searchTerm}`;
+                        }
+                        return `${criterion.idx}: ${criterion.searchTerm}`;
+                    })
+                    .join(" AND ");
 
         console.log('Books', books)
 
         if (books.length === 0) {
-            return `No results match your search for ${criteria || "your criteria"} in ${source}.`;
+            return `No results match your search for ${criteria || "your query"} in ${source}.`;
         } else {
-            return `${books.length} result(s) found for '${criteria || "your criteria"}' in ${source}.`;
+            return `${books.length} result(s) found for '${criteria || "your query"}' in ${source}.`;
         }
     };
 
@@ -77,16 +117,24 @@ const BookSearch: React.FC = () => {
                     </Typography>
                 </Box>
                 <Line />
+                <SearchBar
+                    initialQuery={typeof query === "string" ? query : ""}
+                    initialSource={source}
+                    onSearch={handleSearch}
+                />
+                {/* <SearchBar onSearch={updateBooks} /> */}
 
                 {/* Display Search Results Summary */}
-                <Typography variant="h6" sx={{ marginBottom: 3 }}>
-                    {generateSearchMessage()}
-                </Typography>
+                {!loading && (
+                    <Typography variant="h6" sx={{ marginBottom: 3 }}>
+                        {generateSearchMessage()}
+                    </Typography>
+                )}
 
                 {loading ? (
                     <Typography>Loading...</Typography>
                 ) : books.length === 0 ? (
-                    <Typography>No books match your search.</Typography>
+                    <Typography>No results found</Typography>
                 ) : (
                     <BookList books={books} onBookClick={handleBookClick} />
                 )}

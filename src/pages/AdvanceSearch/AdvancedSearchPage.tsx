@@ -28,7 +28,7 @@ const AdvancedSearchPage: React.FC = () => {
 
     // Define searchParams state with proper typing
     const [searchParams, setSearchParams] = useState({
-        criteria: [{ idx: "keyword", searchTerm: "", operator: "AND" }],
+        criteria: [{ idx: "q", searchTerm: "", operator: "AND" }],
         yearRange: "",
         language: "No limit",
         isAvailableOnly: false,
@@ -71,13 +71,13 @@ const AdvancedSearchPage: React.FC = () => {
                 state: {
                     query: requestBody,
                     books: response || [],
-                    source: "Main Library",
+                    source: "All libraries",
                 },
             });
         } catch (error) {
             console.error("Error fetching search results:", error);
             navigate("/admin/catalog/management/search-title", {
-                state: { query: requestBody, books: [], source: "Main Library" },
+                state: { query: requestBody, books: [], source: "All libraries" },
             });
         }
     };
