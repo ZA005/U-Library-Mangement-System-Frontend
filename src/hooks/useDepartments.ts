@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import { getAllDepartments, Department } from "../services/Curriculum/DepartmentService";
 
 export const useDepartments = (open: boolean) => {
-    const [departments, setDepartments] = useState<Department[]>([]); // State to hold fetched departments
-    const [loading, setLoading] = useState<boolean>(false); // State to track loading status
-    const [error, setError] = useState<string | null>(null); // State to track any errors
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!open) return; // Fetch only when the modal is open
+        if (!open) return;
 
         const fetchDepartments = async () => {
             setLoading(true);
@@ -25,7 +25,7 @@ export const useDepartments = (open: boolean) => {
         };
 
         fetchDepartments();
-    }, [open]); // Re-run when `open` changes
+    }, [open]);
 
     return { departments, loading, error };
 };
