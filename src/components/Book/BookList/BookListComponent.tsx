@@ -6,9 +6,10 @@ import { Box, Button, Typography, Card, CardContent, CardMedia, Link, Container 
 interface BookListProps {
   books: Book[];
   onBookClick: (book: Book) => void;
+  source: string;
 }
 
-const BookList: React.FC<BookListProps> = ({ books, onBookClick }) => {
+const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
   const navigate = useNavigate();
 
   // Static availability for each book (you can adjust these as needed)
@@ -93,50 +94,56 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick }) => {
                 </Typography>
 
                 {/* Static Availability status */}
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 'bold',
-                    color: availabilityStatus(book) === 'Available' ? 'success.main' : 'error.main',
-                  }}
-                >
-                  {availabilityStatus(book)}
-                </Typography>
+
+                {source !== "Google Books" && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 'bold',
+                      color: availabilityStatus(book) === 'Available' ? 'success.main' : 'error.main',
+                    }}
+                  >
+                    {availabilityStatus(book)}
+                  </Typography>
+                )}
+
               </CardContent>
 
               {/* Action buttons */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-end',
-                  p: 1,
-                  gap: 1,
-                  borderTop: 1,
-                  borderColor: 'divider',
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCheckout(book);
+              {source !== "Google Books" && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    p: 1,
+                    gap: 1,
+                    borderTop: 1,
+                    borderColor: 'divider',
                   }}
                 >
-                  Checkout
-                </Button>
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePlaceHold(book);
-                  }}
-                >
-                  Place Hold
-                </Button>
-              </Box>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCheckout(book);
+                    }}
+                  >
+                    Checkout
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlaceHold(book);
+                    }}
+                  >
+                    Place Hold
+                  </Button>
+                </Box>
+              )}
             </Card>
           ))}
         </Box>

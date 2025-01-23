@@ -26,6 +26,9 @@ const AdvancedSearchPage: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
 
+    // Track the error state for the year range
+    const [yearRangeError, setYearRangeError] = useState(false);
+
     // Define searchParams state with proper typing
     const [searchParams, setSearchParams] = useState({
         criteria: [{ idx: "q", searchTerm: "", operator: "AND" }],
@@ -170,6 +173,7 @@ const AdvancedSearchPage: React.FC = () => {
                         setLanguage={(value) =>
                             setSearchParams((prev) => ({ ...prev, language: value }))
                         }
+                        setYearRangeError={setYearRangeError} // Pass the error setter function
                     />
 
                     {/* Location and Availability Section */}
@@ -194,7 +198,12 @@ const AdvancedSearchPage: React.FC = () => {
 
                     {/* Action Buttons */}
                     <Box display="flex" justifyContent="space-between" marginTop={3}>
-                        <Button variant="contained" color="primary" onClick={handleSearch}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSearch}
+                            disabled={yearRangeError} // Disable the button if there's an error
+                        >
                             Search
                         </Button>
                         <Button variant="outlined" color="secondary" onClick={resetSearch}>

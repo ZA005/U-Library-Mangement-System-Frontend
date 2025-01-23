@@ -72,26 +72,54 @@ const BookSearch: React.FC = () => {
     }, [isNavigationSearch, query, source]); // Only fetch when it's a navigation search
 
     const generateSearchMessage = () => {
-        const criteria =
-            typeof query === "string"
-                ? query
-                : query?.criteria
-                    ?.map((criterion: any) => {
-                        if (criterion.idx === "q") {
-                            return `inkeyword: ${criterion.searchTerm}`;
-                        }
-                        return `${criterion.idx}: ${criterion.searchTerm}`;
-                    })
-                    .join(" AND ");
+        // Start building the criteria message
+        const criteria = [];
 
-        console.log('Books', books)
-
-        if (books.length === 0) {
-            return `No results match your search for ${criteria || "your query"} in ${source}.`;
+        // Check if query is a string, if so, use it directly
+        if (typeof query === "string") {
+            criteria.push(query);
         } else {
-            return `${books.length} result(s) found for '${criteria || "your query"}' in ${source}.`;
+            // Add filtered criteria (ignore null, isAvailableOnly, and sortOrder)
+            query?.criteria?.forEach((criterion: any) => {
+                if (criterion.searchTerm !== null && criterion.idx !== "isAvailableOnly" && criterion.idx !== "sortOrder") {
+                    if (criterion.idx === "q") {
+                        criteria.push(`inkeyword: ${criterion.searchTerm}`);
+                    } else {
+                        criteria.push(`${criterion.idx}: ${criterion.searchTerm}`);
+                    }
+                }
+            });
+
+            // Add other relevant fields if they have values
+            if (query?.yearRange) {
+                criteria.push(`yearRange: ${query.yearRange}`);
+            }
+            if (query?.language) {
+                criteria.push(`language: ${query.language}`);
+            }
+            if (query?.itemType?.length > 0) {
+                criteria.push(`itemType: ${query.itemType.join(", ")}`);
+            }
+            if (query?.sections?.length > 0) {
+                criteria.push(`sections: ${query.sections.join(", ")}`);
+            }
+            if (query?.collection) {
+                criteria.push(`collection: ${query.collection}`);
+            }
+        }
+
+        const criteriaString = criteria.join(" AND ");
+
+        console.log('Books', books);
+
+        // Return the result message
+        if (books.length === 0) {
+            return `No results match your search for ${criteriaString || "your query"} in ${source}.`;
+        } else {
+            return `${books.length} result(s) found for '${criteriaString || "your query"}' in ${source}.`;
         }
     };
+
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -136,7 +164,7 @@ const BookSearch: React.FC = () => {
                 ) : books.length === 0 ? (
                     <Typography>No results found</Typography>
                 ) : (
-                    <BookList books={books} onBookClick={handleBookClick} />
+                    <BookList books={books} onBookClick={handleBookClick} source={source} />
                 )}
             </Container>
         </Box>

@@ -25,7 +25,7 @@ const BookForm: React.FC = () => {
     const [barcode, setBarcode] = useState('');
     const [callNumber, setCallNumber] = useState('');
     const [purchasePrice, setPurchasePrice] = useState('');
-    const [circulationType, setCirculationType] = useState('');
+    const [section, setSection] = useState('');
     const [dateAcquired, setDateAcquired] = useState('');
     const [categories, setCategories] = useState(book.categories || '');
     const [notes, setNotes] = useState('');
@@ -115,7 +115,7 @@ const BookForm: React.FC = () => {
             purchasePrice,
             status,
             barcode,
-            circulationType,
+            section,
             dateAcquired,
             categories: Array.isArray(categories) ? categories : categories?.split(','),
             notes,
@@ -240,10 +240,10 @@ const BookForm: React.FC = () => {
                     </select>
                 </div>
 
-                {/* Circulation Type */}
+                {/* Section */}
                 <div style={{ marginBottom: '10px' }}>
                     <label>Section: </label>
-                    <select value={circulationType} onChange={(e) => setCirculationType(e.target.value)}>
+                    <select value={section} onChange={(e) => setSection(e.target.value)}>
                         <option value="">Select</option>
                         <option value="General Reference">General Reference</option>
                         <option value="Circulation">Circulation</option>
