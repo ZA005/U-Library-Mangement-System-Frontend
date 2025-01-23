@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import searchLibraryOfCongress from "../services/LibraryOfCongressApi";
+import searchLibraryOfCongress from "../services/Cataloging/LibraryOfCongressApi";
 
 const MetadataSearch: React.FC = () => {
     const [query, setQuery] = useState("");
     const [metadata, setMetadata] = useState<Array<Record<string, string>> | null>(null);
     //Get the token of the librarian
-        const token = localStorage.getItem('token');
-        if (!token) {
-    
-            return;
-        }
+    const token = localStorage.getItem('token');
+    if (!token) {
+
+        return;
+    }
     const handleSearch = async () => {
         try {
             const result = await searchLibraryOfCongress(query, token);

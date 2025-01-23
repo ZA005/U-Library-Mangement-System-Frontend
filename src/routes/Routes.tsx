@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom';
 import HomeScreen from '../pages/HomeScreen';
 import Register from '../components/RegistrationForm/RegistrationForm';
 import { AuthProvider } from '../contexts/AuthContext';
-import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 import UniversityCurriculumPage from '../pages/Curriculum-Management/UniversityCurriculumPage';
 import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';

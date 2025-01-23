@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ModalForm from "../CirculationModal/CirculationModalForm";
 import { Loan } from "../../../model/Loan";
-import { updateLoanStatus } from "../../../services/CirculationApi";
+import { updateLoanStatus } from "../../../services/Circulation/CirculationApi";
 
 interface CirculationUpdateModalProps {
   open: boolean;

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { generateCallNumber, saveBook } from '../../../services/GoogleBooksApi';
-import { fetchLastAccessionNumber } from '../../../services/LocalBooksAPI';
+import { generateCallNumber, saveBook } from '../../../services/Cataloging/GoogleBooksApi';
+import { fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
 
 interface Book {
     id: string;
@@ -35,7 +35,6 @@ const BookForm: React.FC = () => {
     const [subjects, setSubjects] = useState('');
     const [numberOfCopies, setNumberOfCopies] = useState(1);
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
-    const token = localStorage.getItem('token');
 
 
 
@@ -76,17 +75,15 @@ const BookForm: React.FC = () => {
             const title = book.title;
 
 
-            if (!token) {
-                return;
-            }
 
-            const callNumber = await generateCallNumber(category, authors, publishedDate, title, token);
+
+            const callNumber = await generateCallNumber(category, authors, publishedDate, title);
             setCallNumber(callNumber); // Update the state with the generated call number
         } catch (error) {
             alert('Error generating call number. Please try again.');
             console.error(error);
         }
-    }, [state.book.categories, state.book.publishedDate, book.authors, book.title, token]);
+    }, [state.book.categories, state.book.publishedDate, book.authors, book.title]);
 
     useEffect(() => {
         if (!book.callNumber) {
@@ -138,14 +135,10 @@ const BookForm: React.FC = () => {
         }));
 
         try {
-            if (!token) {
-                alert("Authentication token is missing. Please log in again.");
-                return;
-            }
 
             // Save each book entry
             for (const bookData of booksToSave) {
-                await saveBook(bookData, token);
+                await saveBook(bookData);
             }
 
             alert('Book details saved successfully!');
@@ -243,17 +236,17 @@ const BookForm: React.FC = () => {
                         <option value="Law Library">Law Library</option>
                         <option value="Engineering and Architecture Library">Engineering and Architecture Library</option>
                         <option value="High School Library">High School Library</option>
-                        <option value="Elementary Libray">High School Library</option>
+                        <option value="Elementary Library">Elementary Libray</option>
                     </select>
                 </div>
 
                 {/* Circulation Type */}
                 <div style={{ marginBottom: '10px' }}>
-                    <label>Circulation Type: </label>
+                    <label>Section: </label>
                     <select value={circulationType} onChange={(e) => setCirculationType(e.target.value)}>
                         <option value="">Select</option>
                         <option value="General Reference">General Reference</option>
-                        <option value="Cilculation">Cilculation</option>
+                        <option value="Circulation">Circulation</option>
                         <option value="Periodical">Periodical</option>
                         <option value="Filipiniana">Filipiniana</option>
                         <option value="Special Collection">Special Collection</option>

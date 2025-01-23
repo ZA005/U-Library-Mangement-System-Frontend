@@ -22,7 +22,7 @@ import Copyright from "../../components/Footer/Copyright";
 import CirculationIssueBookModal from "../../components/Circulation/CirculationPopUps/CirculationIssueBookModal";
 import CirculationUpdateModal from "../../components/Circulation/CirculationPopUps/CirculationUpdateModal";
 import styles from "./styles.module.css";
-import { getAllLoans, getLoanById } from "../../services/CirculationApi";
+import { getAllLoans, getLoanById } from "../../services/Circulation/CirculationApi";
 import { Loan } from "../../model/Loan";
 
 const ManageCirculation: React.FC = () => {
