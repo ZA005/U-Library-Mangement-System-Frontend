@@ -6,7 +6,7 @@ import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
 import Header from '../../Header/Header';
 import Footer from '../../Footer/Copyright';
-import { Box, Button, Typography, CardMedia, CardContent, Collapse, Container } from '@mui/material';
+import { Box, Button, Typography, CardMedia, Collapse } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
@@ -22,7 +22,6 @@ const BookDetails: React.FC = () => {
 
   const book: Book = state?.book;
   const source = state?.source;
-  console.log("SOURCE: " + source);
   const handleAddBookRefModalOpen = () => setIsAddBookRefModalOpen(true);
   const handleAddBookRefModalClose = () => setIsAddBookRefModalOpen(false);
 
