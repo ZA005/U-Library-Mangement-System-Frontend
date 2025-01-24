@@ -107,7 +107,9 @@ const AcquiredItems: React.FC = () => {
                     state: { query: advancedSearchParams, books: [], source: "All libraries" },
                 });
             } else if (value === 'addToCatalog') {
-                navigate('/admin/catalog/management/marc-record/add', { state: { item } });
+                navigate('/admin/catalog/management/marc-record/add', {
+                    state: { bookData: item }
+                });
             }
         }
     };
@@ -297,7 +299,7 @@ const AcquiredItems: React.FC = () => {
                                                 </MenuItem>
                                                 <MenuItem value="searchGoogleBooks">Search Google Books</MenuItem>
                                                 <MenuItem value="searchLocalCatalog">Search Local Catalog</MenuItem>
-                                                <MenuItem value="addToCatalog">Add to Catalog</MenuItem>
+                                                <MenuItem value="addToCatalog">Fast Catalog</MenuItem>
 
                                             </Select>
                                         </TableCell>
