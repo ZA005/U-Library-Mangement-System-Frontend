@@ -57,7 +57,7 @@ const BookDetails: React.FC = () => {
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Header buttons={<Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleGoBack}>Go Back</Button>} />
-        
+
         <Box sx={{ flexGrow: 1, padding: 2, margin: '20px auto', maxWidth: 900, backgroundColor: '#f9f9f9', borderRadius: 3, boxShadow: 2, position: 'relative' }}>
           {/* Larger Bookmark Icon */}
           <BookmarkIcon sx={{ color: 'red', fontSize: 100, position: 'absolute', top: -5, right: 30 }} />
@@ -112,7 +112,7 @@ const BookDetails: React.FC = () => {
           </Box>
 
 
-        </Container>
+        </Box>
         <Footer />
       </Box>
 

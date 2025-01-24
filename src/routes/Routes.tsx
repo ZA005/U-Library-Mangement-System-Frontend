@@ -5,7 +5,7 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import UniversityCurriculumPage from '../pages/Curriculum-Management/UniversityCurriculumPage';
 import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';
-/*import VerifyUser from '../components/Verify/VerifyUser';*/
+import VerifyUser from '../components/Verify/VerifyUser';
 import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
