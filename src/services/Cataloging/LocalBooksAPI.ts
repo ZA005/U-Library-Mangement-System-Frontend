@@ -25,14 +25,31 @@ export const getBooksByAuthor = async (authorName: string) => {
 
 export const fetchLastAccessionNumber = async (locationPrefix: string): Promise<string> => {
     try {
-        const response = await fetch(`${BASE_URL}last-accession-number?locationPrefix=${locationPrefix}`);
-        const data = await response.text(); // Since the backend returns a plain string
-        return data;
+        const response = await axios.get(`${BASE_URL}last-accession-number`, {
+            params: { locationPrefix },
+        });
+        return response.data; // Returns the last accession number as a string
     } catch (error) {
-        console.error('Error fetching last accession number:', error);
-        throw error;
+        console.error("Error fetching last accession number:", error);
+        throw new Error("Failed to fetch last accession number.");
     }
 };
+
+export const fetchCopyNumBookExist = async (title: string, isbn10: string, isbn13: string, locationPrefix: string): Promise<string> => {
+    try {
+        const response = await axios.get(`${BASE_URL}latest-accession`, {
+            params: { title, isbn10, isbn13, locationPrefix },
+        });
+        return response.data; // Returns the latest accession number as a string
+    } catch (error) {
+        console.error("Error fetching latest accession number:", error);
+        throw new Error("Failed to fetch latest accession number.");
+    }
+};
+
+
+
+
 
 export const getBooksByAdvancedSearch = async (searchParams: any) => {
     console.log(searchParams);

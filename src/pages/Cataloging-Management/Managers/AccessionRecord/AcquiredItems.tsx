@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import {
@@ -99,22 +100,19 @@ const AcquiredItems: React.FC = () => {
     const handleSelectChange = (value: string, item: AcquisitionRecord) => {
         if (!isLoading) {
             setSelectedOption(value);
-            if (value === 'searchGoogleBooks') {
-                navigate('/admin/catalog/management/search-title', {
-                    state: { query: item.book_title, books: item, source: 'Google Books' },
-                });
-            } else if (value === "searchLocalCatalog") {
+            if (value === "copyCatalog") {
                 // Navigate to BookSearch.tsx with local catalog search parameters
                 const advancedSearchParams = {
                     criteria: [
                         { idx: "q", searchTerm: item.book_title, operator: "AND" },
+                        { idx: "intitle", searchTerm: item.book_title, operator: "AND" },
                         { idx: "isbn", searchTerm: item.isbn, operator: "AND" },
                         { idx: "inpublisher", searchTerm: item.publisher, operator: "AND" },
                     ],
                     individualLibrary: null,
                 };
                 navigate("/admin/catalog/management/search-title", {
-                    state: { query: advancedSearchParams, books: [], source: "All libraries" },
+                    state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams },
                 });
             } else if (value === 'addToCatalog') {
                 navigate('/admin/catalog/management/marc-record/add', {
@@ -194,14 +192,14 @@ const AcquiredItems: React.FC = () => {
                 }
                 setIsLoading(false);
             },
-            error: (err) => {
+            error: (err: { message: any; }) => {
                 setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
                 setIsLoading(false);
             }
         });
     };
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
@@ -311,8 +309,7 @@ const AcquiredItems: React.FC = () => {
                                                 <MenuItem value="" disabled>
                                                     Action
                                                 </MenuItem>
-                                                <MenuItem value="searchGoogleBooks">Search Google Books</MenuItem>
-                                                <MenuItem value="searchLocalCatalog">Search Local Catalog</MenuItem>
+                                                <MenuItem value="copyCatalog">Copy Catalog</MenuItem>
                                                 <MenuItem value="addToCatalog">Fast Catalog</MenuItem>
 
                                             </Select>

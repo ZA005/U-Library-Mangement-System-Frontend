@@ -16,7 +16,7 @@ export interface Book {
     barcode: string;
     callNumber: string;
     purchasePrice: string;
-    circulationType: string;
+    section: string;
     dateAcquired: Date;
     notes: string;
     sublocation: string;
