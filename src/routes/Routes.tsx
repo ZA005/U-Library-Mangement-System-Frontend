@@ -12,7 +12,7 @@ import UserRoutes from './UserRoutes';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
 
 const AppRoutes = () => {
-  const { isAuthenticated, role } = useAuth(); // Access authentication state from AuthContext
+  const { isAuthenticated, role } = useAuth();
   const getDefaultRoute = () => {
     if (role === 'STUDENT') return <Navigate to="/user/browse" />;
     if (role === 'LIBRARIAN') return <Navigate to="/admin/library" />;
