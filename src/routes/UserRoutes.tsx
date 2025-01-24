@@ -10,7 +10,7 @@ const UserRoutes = () => (
     <Route
       element={<ProtectedRoute allowedRoles={['STUDENT', 'LIBRARIAN']} redirectPath="*" />}
     >
-      <Route path="library/card/" element={<LibraryCardGenerationPage />} />
+      
       <Route path='browse' element={<CatalogHome />} />
       <Route path="book/:bookId" element={<BookDetails />} />
       <Route path='advanced/search' element={<AdvancedSearchPage />} />

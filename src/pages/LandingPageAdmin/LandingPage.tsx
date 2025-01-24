@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Box, Container, IconButton, Typography, } from "@mui/material";
+import { Box, Container, Icon, IconButton, Typography } from "@mui/material";
 import Header from '../../components/Header/Header';
 import MenuIcon from "@mui/icons-material/Menu";
 import Footer from '../../components/Footer/Footer';
 import Line from "../../components/Line/Line";
+import ManageCirculationIcon from "@mui/icons-material/AllInbox"; // Example Icon for Cataloging
+import ManageReservationIcon from "@mui/icons-material/EventNote"; // Example Icon for Circulation
+import SchoolIcon from "@mui/icons-material/School"; // Icon for Curriculum Management
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd"; // Icon for Acquisition
 import styles from "./styles.module.css";
 import Sidebar from '../../components/Sidebar';
 
@@ -26,11 +30,9 @@ const LandingPage: React.FC = () => {
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header
                     buttons={
-                        <>
-                            <IconButton onClick={handleSideBarClick}>
-                                <MenuIcon style={{ color: "#EA4040" }} />
-                            </IconButton>
-                        </>
+                        <IconButton onClick={handleSideBarClick}>
+                            <MenuIcon style={{ color: "#EA4040" }} />
+                        </IconButton>
                     }
                 />
 
@@ -50,14 +52,13 @@ const LandingPage: React.FC = () => {
                         <Typography variant="body1">
                             Welcome! This is the Admins Dashboard, your central hub for managing the Library Management System (LMS).
                         </Typography>
-
                         <Typography variant="body1">
                             With just a few clicks, you can:
                         </Typography>
                         <ul>
                             <li className={styles.listItem}>
                                 <Typography variant="body1">
-                                    <strong>Cataloguing:</strong> Organize and maintain the library's collection for easy access.
+                                    <strong>Cataloging:</strong> Organize and maintain the library's collection for easy access.
                                 </Typography>
                             </li>
                             <li className={styles.listItem}>
@@ -76,34 +77,26 @@ const LandingPage: React.FC = () => {
                                 </Typography>
                             </li>
                         </ul>
-
-                        {/* Additional Links */}
-                        <Box className={styles.linksContainer}>
-                            <Box className={styles.additionalLinks}>
-                                <ul>
-                                    <li><a href="/help" onClick={() => navigate("/advanced-search")}>Need help? Click here for help!</a></li>
-                                    <li><a href="/advanced-search" onClick={() => navigate("/advanced-search")}>Advanced Search</a></li>
-                                    <li><a href="/about-lms" onClick={() => navigate("/about-lms")}>About LMS</a></li>
-                                    <li><a href="/lms-administration" onClick={() => navigate("/lms-administration")}>LMS Administration</a></li>
-                                    <li><a href="/authorities" onClick={() => navigate("/authorities")}>Authorities</a></li>
-                                    <li><a href="/patrons" onClick={() => navigate("/patrons")}>Patrons</a></li>
-                                    <li><a href="/serials" onClick={() => navigate("/serials")}>Serials</a></li>
-                                </ul>
-                            </Box>
-                        </Box>
                     </Box>
-
 
                     {/* Right Content */}
                     <Box className={styles.rightContent}>
                         <Box className={styles.buttonContainer}>
-                            <button className={styles.manageButton}
-                                onClick={() => navigate('/admin/catalog/management')}>
+                            <Icon className={styles.icon}>
+                                <ManageCirculationIcon />
+                            </Icon>
+                            <button
+                                className={styles.manageButton}
+                                onClick={() => navigate('/admin/catalog/management/search-title')}
+                            >
                                 Cataloging
                             </button>
                         </Box>
 
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <ManageReservationIcon />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={() => navigate('/admin/circulation/management/page')}
@@ -112,8 +105,10 @@ const LandingPage: React.FC = () => {
                             </button>
                         </Box>
 
-
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <SchoolIcon />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={() => navigate('/admin/curriculum/management/page')}
@@ -122,10 +117,12 @@ const LandingPage: React.FC = () => {
                             </button>
                         </Box>
 
-
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <LibraryAddIcon />
+                            </Icon>
                             <button className={styles.manageButton}>
-                                Aquisition
+                                Acquisition
                             </button>
                         </Box>
                     </Box>

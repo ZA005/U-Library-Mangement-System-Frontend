@@ -23,6 +23,7 @@ class UserService {
     }
 
     static async verifyUser(id: string) {
+        console.log(`${UserService.BASE_URL}/verify/${id}`);
         const response = await axios.get(`${UserService.BASE_URL}/verify/${id}`);
         console.log('Verify Student Response:', response); //Debugging
         return response.data;
