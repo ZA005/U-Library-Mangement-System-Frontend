@@ -31,12 +31,13 @@ import Header from '../../../../components/Header/Header';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../../../../components/Sidebar';
 import Line from '../../../../components/Line/Line';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Copyright from '../../../../components/Footer/Copyright';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
-import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords } from '../../../../services/AcquisitionService';
+import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords, updateStatus } from '../../../../services/AcquisitionService';
 
 const AcquiredItems: React.FC = () => {
+    const location = useLocation();
     const [array, setArray] = useState<AcquisitionRecord[]>([]);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
@@ -59,9 +60,17 @@ const AcquiredItems: React.FC = () => {
     } = useSnackbar();
 
     useEffect(() => {
-        const loadPendingRecords = async () => {
+        const loadData = async () => {
+            setIsLoading(true);
             try {
-                setIsLoading(true);
+                if (location.state?.id) {
+                    const success = await updateStatus(location.state.id);
+                    if (success) {
+                        openSnackbar(`${location.state.title} has been successfully cataloged`, 'success');
+                    } else {
+                        openSnackbar(`Failed to catalog ${location.state.title}`, 'error');
+                    }
+                }
                 const records = await fetchAllPendingCatalogRecords();
                 setArray(records);
                 setCanImport(records.length === 0);
@@ -75,8 +84,9 @@ const AcquiredItems: React.FC = () => {
                 setIsLoading(false);
             }
         };
-        loadPendingRecords();
-    }, []);
+
+        loadData();
+    }, [location.state, openSnackbar]);
 
     const handleSideBarClick = () => {
         if (!isLoading) setSidebarOpen(!isSidebarOpen);
