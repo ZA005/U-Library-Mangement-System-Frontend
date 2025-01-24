@@ -3,11 +3,11 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8080/sru";
 
-export const searchGoogleBooks = async (query: string, token: string) => {
+export const searchGoogleBooks = async (query: string) => {
     try {
         const response = await axios.get(`${BASE_URL}/googlebooks/search`, {
             params: { query },
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         // Check if there are items in the response
         const books = response.data.items.map((item: any) => ({
@@ -34,10 +34,10 @@ export const searchGoogleBooks = async (query: string, token: string) => {
     }
 };
 
-export const saveBook = async (bookData: any, token: string) => {
+export const saveBook = async (bookData: any) => {
     try {
         const response = await axios.post(`${BASE_URL}/save`, bookData, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         console.log('response:', response);
         return response.data;
@@ -52,14 +52,13 @@ export const generateCallNumber = async (
     authors: string[],
     publishedDate: string,
     title: string,
-    token: string
 ) => {
     try {
         const response = await axios.post(
             `${BASE_URL}/generate-call-number`,
             { category, authors, publishedDate, title }, // Request body
             {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             }
         );
         return response.data;

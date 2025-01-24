@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Line from "../components/Line/Line";
 import Copyright from "../components/Footer/Copyright";
 import BookList from "../components/Book/BookList/BookListComponent";
-import { getAllBooks } from "../services/LocalBooksAPI";
+import { getAllBooks } from "../services/Cataloging/LocalBooksAPI";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { Book } from "../model/Book";

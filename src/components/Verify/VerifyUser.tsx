@@ -24,6 +24,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
       if (data && data.id) {
         localStorage.setItem('emailAdd', data.emailAdd);
         navigate('/verify/user/otp');
+
       } else {
         setError('Student not found or not currently enrolled.');
       }

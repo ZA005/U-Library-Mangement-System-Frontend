@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserService from '../../../services/UserService';
 import { Book } from '../../../model/Book';
-import { getBooksByAuthor } from '../../../services/LocalBooksAPI';
+import { getBooksByAuthor } from '../../../services/Cataloging/LocalBooksAPI';
 import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
 import Header from '../../Header/Header';
 import Footer from '../../Footer/Copyright';
-import { Box, Button, Typography, CardMedia, CardContent, Collapse } from '@mui/material';
+import { Box, Button, Typography, CardMedia, CardContent, Collapse, Container } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
@@ -110,7 +110,9 @@ const BookDetails: React.FC = () => {
             <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleBorrow}>Borrow item</Button>
             <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddToWishlist}>Add to Wishlist</Button>
           </Box>
-        </Box>
+
+
+        </Container>
         <Footer />
       </Box>
 

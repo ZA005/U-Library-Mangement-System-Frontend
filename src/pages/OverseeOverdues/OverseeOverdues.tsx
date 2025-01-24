@@ -19,7 +19,7 @@ import Header from "../../components/Header/Header";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
 import Copyright from "../../components/Footer/Copyright";
-import { calculateFines, getAllFines } from "../../services/CirculationApi";
+import { calculateFines, getAllFines } from "../../services/Circulation/CirculationApi";
 
 interface Fine {
     fineId: number;
