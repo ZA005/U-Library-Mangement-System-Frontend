@@ -88,7 +88,7 @@ const BookDetails: React.FC = () => {
                 <Typography variant="body1"><strong>Item Type:</strong> {book.printType || 'N/A'}</Typography>
               </CardContent>
             </Box>
-            {source !== "Google Books" && (
+            {source !== "Z39.50/SRU" && (
               <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginY: 3 }} onClick={handleToggleBooksByAuthor}>
                 {showBooks ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
                 <Typography sx={{ marginLeft: 1 }}>{showBooks ? 'Hide Books by This Author' : 'More on This Author'}</Typography>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { Box, Button, CircularProgress, FormControl, IconButton, InputLabel, Menu, MenuItem, Select, Stack, TextField } from '@mui/material';
 import TuneIcon from "@mui/icons-material/Tune";
@@ -5,15 +6,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Book } from '../../model/Book';
 import UserService from '../../services/UserService';
 import styles from './styles.module.css';
-import { searchGoogleBooks } from '../../services/Cataloging/GoogleBooksApi';
 import { useNavigate } from 'react-router-dom';
 import { getBooksByAdvancedSearch } from '../../services/Cataloging/LocalBooksAPI';
-// import Z3950SRUSearch from '../Modal/SRUSearch/Z3950SRUSearch';
+import Z3950SRUSearch from '../Modal/SRUSearch/Z3950SRUSearch';
 
 interface SearchBarProps {
     initialQuery?: string;
     initialSource?: string;
     onSearch: (books: Book[], source: string, query: string | object) => void;
+    modalParams?: any;
+
 }
 
 const searchIndexLabels: { [key: string]: string } = {
@@ -25,78 +27,82 @@ const searchIndexLabels: { [key: string]: string } = {
     isbn: "ISBN"
 };
 
-const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'All libraries', onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'All libraries', onSearch, modalParams }) => {
     const [query, setQuery] = useState(initialQuery);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [searchIndex, setSearchIndex] = useState("q");
-    // const [library, setLibrary] = useState("All libraries");
     const [source, setSource] = useState(initialSource);
     const navigate = useNavigate();
-    // const [modalOpen, setModalOpen] = useState(false);
-
+    const [modalOpen, setModalOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        keyword: '',
+        title: '',
+        author: '',
+        publisher: '',
+        isbn: '',
+        lccn: '',
+    });
 
     useEffect(() => {
         setQuery(initialQuery);
-        setSource(initialSource);
+        if (initialSource !== "Z39.50/SRU") {
+            setSource(initialSource);
+        }
     }, [initialQuery, initialSource]);
 
 
-    // To be implemented if still have time
-    // const handleOpenSRUModal = () => {
-    //     setModalOpen(true);
-    // };
+    const handleOpenSRUModal = () => {
+        if (modalParams) {
+            setFormDataFromParams(modalParams);
+        }
+        setModalOpen(true);
+    };
 
-    // const handleCloseModal = () => {
-    //     setModalOpen(false);
-    // };
-    // const handleFormSubmit = (formData: any) => {
-    //     console.log("Form Data Submitted:", formData);
-    //     // Handle the form data here, e.g., make API request or filter books
-    // };
+    // Helper function to populate modal fields from modalParams
+    const setFormDataFromParams = (params: any) => {
+        const newFormData = {
+            keyword: params.criteria?.find((criterion: any) => criterion.idx === "q")?.searchTerm || "",
+            title: params.criteria?.find((criterion: any) => criterion.idx === "intitle")?.searchTerm || "",
+            author: params.criteria?.find((criterion: any) => criterion.idx === "inauthor")?.searchTerm || "",
+            publisher: params.criteria?.find((criterion: any) => criterion.idx === "inpublisher")?.searchTerm || "",
+            isbn: params.criteria?.find((criterion: any) => criterion.idx === "isbn")?.searchTerm || "",
+            lccn: "",
+        };
+        setFormData(newFormData);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
 
     const handleSearch = async () => {
         setLoading(true);
         setError(null);
 
-        if (!query.trim()) {
-            setError("Please enter a search query.");
-            setLoading(false);
-            return;
-        }
-
         try {
             let result: Book[] = [];
-            let formattedQuery: string | object;
-
-            if (source === "Google Books") {
-                // Simple query for Google Books
-                formattedQuery = query; // Just pass the string query
-                result = await searchGoogleBooks(query);
-            } else {
-                // Advanced search for other libraries
-                const advancedSearchParams = {
-                    criteria: [
-                        {
-                            idx: searchIndex,
-                            searchTerm: query,
-                            operator: "AND",
-                        },
-                    ],
-                    individualLibrary: source === "All libraries" ? null : source,
-                };
-                formattedQuery = advancedSearchParams; // Pass advanced query parameters
-                result = await getBooksByAdvancedSearch(advancedSearchParams);
-            }
+            // Advanced search for other libraries
+            const advancedSearchParams = {
+                criteria: [
+                    {
+                        idx: searchIndex,
+                        searchTerm: query,
+                        operator: "AND",
+                    },
+                ],
+                individualLibrary: source === "All libraries" ? null : source,
+            };
+            result = await getBooksByAdvancedSearch(advancedSearchParams);
 
             // Navigate to the BookSearch page with the search results
             navigate("/admin/catalog/management/search-title", {
-                state: { query: formattedQuery, books: result, source },
+                state: { query: advancedSearchParams, books: result, source },
             });
 
             // Update the parent with the search results
-            onSearch(result, source, formattedQuery);
+            onSearch(result, source, advancedSearchParams);
         } catch (error) {
             console.error("Error fetching books:", error);
             setError("An error occurred while searching. Please try again.");
@@ -180,7 +186,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                                         onChange={(e) => setSource(e.target.value)}
                                     >
                                         <MenuItem value="All libraries">All libraries</MenuItem>
-                                        <MenuItem value="Google Books">Google Books</MenuItem>
                                         <MenuItem value="eLibrary">eLibrary</MenuItem>
                                         <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
                                         <MenuItem value="Law Library">Law Library</MenuItem>
@@ -194,33 +199,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                     </Box>
 
                 </Box>
-                {/* <Box>
-                    <input
-                        type="text"
-                        placeholder="Search for a book..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        className={styles.searchInput}
-                    />
-                    <IconButton>
-                        <TuneIcon className={styles.tuneIcon} />
-                    </IconButton>
-                </Box> */}
 
-                {/* <FormControl variant="outlined" className={styles.sourceSelect}>
-                    <select
-                        id="source"
-                        value={source}
-                        onChange={(e) => setSource(e.target.value)}
-                        disabled={UserService.isUser()}
-                        className={styles.sourceSelect}
-                    >
-                        <option value="Main Library">Main Library</option>
-                        <option value="Google Books">Google Books</option>
-                         <option value="Library Of Congress">Library Of Congress</option> 
-                    </select>
-                </FormControl> */}
 
                 <Button
                     variant="contained"
@@ -242,7 +221,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                 </Button>
 
                 {/* To be implemented */}
-                {/* <Button
+                <Button
                     startIcon={<SearchIcon />}
                     sx={{
                         color: "inherit",
@@ -262,8 +241,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                 <Z3950SRUSearch
                     open={modalOpen}
                     onClose={handleCloseModal}
-                    onSubmit={handleFormSubmit}
-                /> */}
+                    onSubmit={(books, source, query) => {
+                        onSearch(books, source, query);
+                    }}
+                    initialFormData={formData}
+                />
             </Stack>
             {error && <p className={styles.errorText}>{error}</p>}
         </div>

@@ -121,7 +121,7 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
                   </Typography>
 
                   {/* Availability status based on duplicates */}
-                  {source !== "Google Books" && (
+                  {source !== "Z39.50/SRU" && (
                     <Typography
                       variant="body2"
                       sx={{
@@ -135,7 +135,7 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
                 </CardContent>
 
                 {/* Action buttons */}
-                {source !== "Google Books" && (
+                {source !== "Z39.50/SRU" && (
                   <Box
                     sx={{
                       display: 'flex',

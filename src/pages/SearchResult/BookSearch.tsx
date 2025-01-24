@@ -10,12 +10,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Line from "../../components/Line/Line";
 import Sidebar from "../../components/Sidebar";
 import SearchBar from "../../components/SearchBar/Searchbar";
-import { searchGoogleBooks } from "../../services/Cataloging/GoogleBooksApi";
 import { getBooksByAdvancedSearch } from "../../services/Cataloging/LocalBooksAPI";
 
 const BookSearch: React.FC = () => {
     const location = useLocation();
-    const state = location.state as { query: any; books: Book[]; source: string };
+    const state = location.state as { query: any; books: Book[]; source: string; modalParams?: any };
 
     const [query, setQuery] = useState(state?.query || null);
     const [source, setSource] = useState(state?.source || "All libraries");
@@ -39,22 +38,15 @@ const BookSearch: React.FC = () => {
         setBooks(newBooks);
         setSource(newSource);
         setQuery(newQuery);
-        setIsNavigationSearch(false); // Ensure subsequent searches are treated as user-triggered
+        setIsNavigationSearch(false);
     };
-    // const updateBooks = (newBooks: Book[]) => {
-    //     setBooks(newBooks);
-    //     setSource(source);
-    //     setQuery(query);
-    //     setIsNavigationSearch(false);
-    // };
+
 
     const fetchBooks = async (searchQuery: any, searchSource: string) => {
         setLoading(true);
         try {
             let result: Book[] = [];
-            if (searchSource === "Google Books") {
-                result = await searchGoogleBooks(searchQuery);
-            } else if (searchSource !== "Google Books" && typeof searchQuery === "object") {
+            if (searchSource !== "Z39.50/SRU" && typeof searchQuery === "object") {
                 result = await getBooksByAdvancedSearch(searchQuery);
             }
             setBooks(result);
@@ -110,8 +102,6 @@ const BookSearch: React.FC = () => {
 
         const criteriaString = criteria.join(" AND ");
 
-        console.log('Books', books);
-
         // Return the result message
         if (books.length === 0) {
             return `No results match your search for ${criteriaString || "your query"} in ${source}.`;
@@ -149,8 +139,8 @@ const BookSearch: React.FC = () => {
                     initialQuery={typeof query === "string" ? query : ""}
                     initialSource={source}
                     onSearch={handleSearch}
+                    modalParams={state?.modalParams}
                 />
-                {/* <SearchBar onSearch={updateBooks} /> */}
 
                 {/* Display Search Results Summary */}
                 {!loading && (

@@ -91,20 +91,21 @@ const AcquiredItems: React.FC = () => {
             setSelectedOption(value);
             if (value === 'searchGoogleBooks') {
                 navigate('/admin/catalog/management/search-title', {
-                    state: { query: item.book_title, books: item, source: 'Google Books' },
+                    state: { query: item.book_title, books: item, source: 'Z39.50/SRU' },
                 });
-            } else if (value === "searchLocalCatalog") {
+            } else if (value === "copyCatalog") {
                 // Navigate to BookSearch.tsx with local catalog search parameters
                 const advancedSearchParams = {
                     criteria: [
                         { idx: "q", searchTerm: item.book_title, operator: "AND" },
+                        { idx: "intitle", searchTerm: item.book_title, operator: "AND" },
                         { idx: "isbn", searchTerm: item.isbn, operator: "AND" },
                         { idx: "inpublisher", searchTerm: item.publisher, operator: "AND" },
                     ],
                     individualLibrary: null,
                 };
                 navigate("/admin/catalog/management/search-title", {
-                    state: { query: advancedSearchParams, books: [], source: "All libraries" },
+                    state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams },
                 });
             } else if (value === 'addToCatalog') {
                 navigate('/admin/catalog/management/marc-record/add', {
@@ -158,7 +159,7 @@ const AcquiredItems: React.FC = () => {
                     'vendor_location', 'funding_source'
                 ];
 
-                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
+                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0] as object)) === JSON.stringify(expectedHeaders)) {
                     const parsedData = result.data as unknown as AcquisitionRecord[];
                     try {
                         await addRecords(parsedData);
@@ -180,14 +181,14 @@ const AcquiredItems: React.FC = () => {
                 }
                 setIsLoading(false);
             },
-            error: (err) => {
+            error: (err: { message: unknown; }) => {
                 setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
                 setIsLoading(false);
             }
         });
     };
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
@@ -297,8 +298,7 @@ const AcquiredItems: React.FC = () => {
                                                 <MenuItem value="" disabled>
                                                     Action
                                                 </MenuItem>
-                                                <MenuItem value="searchGoogleBooks">Search Google Books</MenuItem>
-                                                <MenuItem value="searchLocalCatalog">Search Local Catalog</MenuItem>
+                                                <MenuItem value="copyCatalog">Copy Catalog</MenuItem>
                                                 <MenuItem value="addToCatalog">Fast Catalog</MenuItem>
 
                                             </Select>
