@@ -31,12 +31,13 @@ import Header from '../../../../components/Header/Header';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../../../../components/Sidebar';
 import Line from '../../../../components/Line/Line';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Copyright from '../../../../components/Footer/Copyright';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
-import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords } from '../../../../services/AcquisitionService';
+import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords, updateStatus } from '../../../../services/AcquisitionService';
 
 const AcquiredItems: React.FC = () => {
+    const location = useLocation();
     const [array, setArray] = useState<AcquisitionRecord[]>([]);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
@@ -59,9 +60,17 @@ const AcquiredItems: React.FC = () => {
     } = useSnackbar();
 
     useEffect(() => {
-        const loadPendingRecords = async () => {
+        const loadData = async () => {
+            setIsLoading(true);
             try {
-                setIsLoading(true);
+                if (location.state?.id) {
+                    const success = await updateStatus(location.state.id);
+                    if (success) {
+                        openSnackbar(`${location.state.title} has been successfully cataloged`, 'success');
+                    } else {
+                        openSnackbar(`Failed to catalog ${location.state.title}`, 'error');
+                    }
+                }
                 const records = await fetchAllPendingCatalogRecords();
                 setArray(records);
                 setCanImport(records.length === 0);
@@ -75,8 +84,9 @@ const AcquiredItems: React.FC = () => {
                 setIsLoading(false);
             }
         };
-        loadPendingRecords();
-    }, []);
+
+        loadData();
+    }, [location.state, openSnackbar]);
 
     const handleSideBarClick = () => {
         if (!isLoading) setSidebarOpen(!isSidebarOpen);
@@ -91,9 +101,9 @@ const AcquiredItems: React.FC = () => {
             setSelectedOption(value);
             if (value === 'searchGoogleBooks') {
                 navigate('/admin/catalog/management/search-title', {
-                    state: { query: item.book_title, books: item, source: 'Z39.50/SRU' },
+                    state: { query: item.book_title, books: item, source: 'Google Books' },
                 });
-            } else if (value === "copyCatalog") {
+            } else if (value === "searchLocalCatalog") {
                 // Navigate to BookSearch.tsx with local catalog search parameters
                 const advancedSearchParams = {
                     criteria: [
@@ -126,6 +136,7 @@ const AcquiredItems: React.FC = () => {
             setFileToUpload(selectedFile);
             setErrorMessage(null);
             setOpenDialog(true);
+            (e.target as HTMLInputElement).value = '';
         }
     };
 
@@ -149,17 +160,29 @@ const AcquiredItems: React.FC = () => {
     };
 
     const validateAndParseCSV = async (csvString: string) => {
+        const expectedHeaders = [
+            'book_title', 'isbn', 'publisher', 'edition', 'series',
+            'purchase_price', 'purchase_date', 'acquired_date', 'vendor',
+            'vendor_location', 'funding_source'
+        ];
+
+        const resetStates = () => {
+            setOpenDialog(false);
+            setFileToUpload(null);
+        };
+
+        const handleError = (message: string, snackbarMsg: string) => {
+            setErrorMessage(message);
+            openSnackbar(snackbarMsg, 'error');
+            resetStates();
+            setIsLoading(false);
+        };
+
         Papa.parse(csvString, {
             header: true,
             skipEmptyLines: true,
             complete: async (result) => {
-                const expectedHeaders = [
-                    'book_title', 'isbn', 'publisher', 'edition', 'series',
-                    'purchase_price', 'purchase_date', 'acquired_date', 'vendor_name',
-                    'vendor_location', 'funding_source'
-                ];
-
-                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0] as object)) === JSON.stringify(expectedHeaders)) {
+                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
                     const parsedData = result.data as unknown as AcquisitionRecord[];
                     try {
                         await addRecords(parsedData);
@@ -168,27 +191,30 @@ const AcquiredItems: React.FC = () => {
                         setArray(allRecords);
                         setCanImport(allRecords.length === 0);
                     } catch (error) {
-                        if (error instanceof Error) {
-                            setErrorMessage(`Failed to add records to the server: ${error.message}`);
-                            openSnackbar("Failed to add records to the server!", "error");
-                        } else {
-                            setErrorMessage('An unexpected error occurred while adding records.');
-                            openSnackbar("An unexpected error occurred while adding records!", "error");
-                        }
+                        handleError(
+                            error instanceof Error ? `Failed to add records to the server: ${error.message}` : 'An unexpected error occurred while adding records.',
+                            error instanceof Error ? "Failed to add records to the server!" : "An unexpected error occurred while adding records!"
+                        );
+                        return;
                     }
                 } else {
-                    setErrorMessage('CSV file headers do not match the expected format or the file is empty.');
+                    handleError('CSV file headers do not match the expected format or the file is empty.', 'CSV file headers incorrect or file empty!');
+                    return;
                 }
                 setIsLoading(false);
+                // console.log('After processing:', openDialog, fileToUpload);
             },
-            error: (err: { message: unknown; }) => {
-                setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
-                setIsLoading(false);
+            error: (err) => {
+                handleError(`An error occurred while parsing the CSV file: ${err.message}`, `Error parsing CSV file!`);
             }
         });
     };
 
-    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    useEffect(() => {
+        // console.log('State update:', openDialog, fileToUpload);
+    }, [openDialog, fileToUpload]);
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 

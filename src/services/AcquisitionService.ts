@@ -62,3 +62,33 @@ export const fetchAllPendingCatalogRecords = async (): Promise<AcquisitionRecord
         }
     }
 };
+
+export const updateStatus = async (id: number): Promise<boolean> => {
+    try {
+        const response = await axios.post(`${BASE_URL}/update-status/${id}`, null, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (response.status === 200) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            let errorMessage = "Failed to update status";
+            if (error.response) {
+                errorMessage += `: ${error.response.status} - ${error.response.data}`;
+            } else if (error.request) {
+                errorMessage += ": No response received from the server";
+            } else {
+                errorMessage += `: ${error.message}`;
+            }
+            console.error("Error updating status:", errorMessage);
+            throw new Error(errorMessage);
+        } else {
+            console.error("Error updating status:", error);
+            throw new Error('An unexpected error occurred while updating status');
+        }
+    }
+};
