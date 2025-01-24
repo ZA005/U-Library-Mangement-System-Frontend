@@ -99,11 +99,7 @@ const AcquiredItems: React.FC = () => {
     const handleSelectChange = (value: string, item: AcquisitionRecord) => {
         if (!isLoading) {
             setSelectedOption(value);
-            if (value === 'searchGoogleBooks') {
-                navigate('/admin/catalog/management/search-title', {
-                    state: { query: item.book_title, books: item, source: 'Google Books' },
-                });
-            } else if (value === "searchLocalCatalog") {
+            if (value === "copyCatalog") {
                 // Navigate to BookSearch.tsx with local catalog search parameters
                 const advancedSearchParams = {
                     criteria: [
@@ -182,6 +178,12 @@ const AcquiredItems: React.FC = () => {
             header: true,
             skipEmptyLines: true,
             complete: async (result) => {
+                const expectedHeaders = [
+                    'book_title', 'isbn', 'publisher', 'edition', 'series',
+                    'purchase_price', 'purchase_date', 'acquired_date', 'vendor_name',
+                    'vendor_location', 'funding_source'
+                ];
+
                 if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
                     const parsedData = result.data as unknown as AcquisitionRecord[];
                     try {
@@ -205,7 +207,8 @@ const AcquiredItems: React.FC = () => {
                 // console.log('After processing:', openDialog, fileToUpload);
             },
             error: (err) => {
-                handleError(`An error occurred while parsing the CSV file: ${err.message}`, `Error parsing CSV file!`);
+                setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
+                setIsLoading(false);
             }
         });
     };
@@ -214,7 +217,7 @@ const AcquiredItems: React.FC = () => {
         // console.log('State update:', openDialog, fileToUpload);
     }, [openDialog, fileToUpload]);
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
