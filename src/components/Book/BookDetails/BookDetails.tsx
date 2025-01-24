@@ -11,15 +11,18 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
 
+
 const BookDetails: React.FC = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [showBooks, setShowBooks] = useState(false);
   const [booksByAuthor, setBooksByAuthor] = useState<Book[] | null>(null);
   const [isAddBookRefModalOpen, setIsAddBookRefModalOpen] = useState(false);
-  // const [urlPath, setURLPath] = useState("");
+
 
   const book: Book = state?.book;
+  const source = state?.source;
+  console.log("SOURCE: " + source);
   const handleAddBookRefModalOpen = () => setIsAddBookRefModalOpen(true);
   const handleAddBookRefModalClose = () => setIsAddBookRefModalOpen(false);
 
@@ -49,7 +52,7 @@ const BookDetails: React.FC = () => {
   const handleAddToWishlist = () => alert(`Book "${book.title}" added to your wishlist.`);
 
   const handleBookClick = (book: Book) =>
-    navigate(`/user/book/${book.id}`, { state: { book } });
+    navigate(`/user/book/${book.id}`, { state: { book, source } });
 
   const handleGoBack = () => {
     const path = UserService.isAdmin()
@@ -85,15 +88,20 @@ const BookDetails: React.FC = () => {
                 <Typography variant="body1"><strong>Item Type:</strong> {book.printType || 'N/A'}</Typography>
               </CardContent>
             </Box>
+            {source !== "Google Books" && (
+              <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginY: 3 }} onClick={handleToggleBooksByAuthor}>
+                {showBooks ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                <Typography sx={{ marginLeft: 1 }}>{showBooks ? 'Hide Books by This Author' : 'More on This Author'}</Typography>
+              </Box>
+            )}
 
-            <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginY: 3 }} onClick={handleToggleBooksByAuthor}>
-              {showBooks ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-              <Typography sx={{ marginLeft: 1 }}>{showBooks ? 'Hide Books by This Author' : 'More on This Author'}</Typography>
-            </Box>
+
 
             <Collapse in={showBooks}>
-              {booksByAuthor && <BookList books={booksByAuthor} onBookClick={handleBookClick} />}
+              {booksByAuthor && <BookList books={booksByAuthor} onBookClick={handleBookClick} source={source} />}
             </Collapse>
+
+
 
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 3 }}>
               {UserService.isAdmin() && (

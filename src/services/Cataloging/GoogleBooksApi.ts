@@ -67,8 +67,3 @@ export const generateCallNumber = async (
         throw error;
     }
 };
-
-
-
-
-

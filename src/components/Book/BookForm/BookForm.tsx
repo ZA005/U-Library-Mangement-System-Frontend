@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { generateCallNumber, saveBook } from '../../../services/Cataloging/GoogleBooksApi';
-import { fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
+import { fetchCopyNumBookExist, fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
 
 interface Book {
     id: string;
@@ -11,6 +11,8 @@ interface Book {
     callNumber?: string;
     thumbnail: string;
     categories?: string
+    isbn10: string;
+    isbn13: string;
 }
 
 const BookForm: React.FC = () => {
@@ -47,24 +49,30 @@ const BookForm: React.FC = () => {
             'High School Library': 'HS',
             'Elementary Library': 'EL',
         };
+
         const prefix = locationPrefixes[location] || 'UNK';
+
         try {
-            const lastAccessionNumber = await fetchLastAccessionNumber(prefix);
-            const lastNumber = parseInt(lastAccessionNumber.split('-')[1], 10) || 0;
+            // Fetch the generated accession numbers from the backend
+            const response = await fetchCopyNumBookExist(book.title, book.isbn10, book.isbn13, prefix);
 
-            const baseNumber = (lastNumber + 1).toString().padStart(6, '0');
-            const baseAccessionNumber = `${prefix}-${baseNumber}`;
-
-            const numbers = Array.from({ length: numberOfCopies }, (_, index) =>
-                `${baseAccessionNumber} c.${index + 1}`
-            );
-
-            setAccessionNumbers(numbers);
+            if (response !== "NOTFOUND") {
+                console.log("Generated Accession Numbers:", response);
+                // setAccessionNumbers(response); // Backend returns a list of accession numbers
+            } else {
+                alert('No accession numbers found for this book. Please try again.');
+            }
         } catch (error) {
-            console.error('Error generating accession numbers:', error);
-            alert('Failed to generate accession numbers. Please try again.');
+            console.error('Error fetching accession numbers:', error);
+            alert('Failed to fetch accession numbers. Please try again.');
         }
-    }, [location, numberOfCopies]);
+    }, [location, book.title, book.isbn10, book.isbn13]);
+
+
+
+
+
+
 
 
     const handleGenerateCallNumber = useCallback(async () => {
@@ -73,10 +81,6 @@ const BookForm: React.FC = () => {
             const authors = book.authors;
             const publishedDate = state.book.publishedDate;
             const title = book.title;
-
-
-
-
             const callNumber = await generateCallNumber(category, authors, publishedDate, title);
             setCallNumber(callNumber); // Update the state with the generated call number
         } catch (error) {
@@ -92,7 +96,6 @@ const BookForm: React.FC = () => {
     }, [book.callNumber, handleGenerateCallNumber]);
 
     useEffect(() => {
-        console.log('useEffect for generateAccessionNumbers triggered');
         if (location && numberOfCopies > 0) {
             generateAccessionNumbers();
         }

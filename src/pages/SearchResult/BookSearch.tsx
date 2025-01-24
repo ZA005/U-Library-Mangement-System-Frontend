@@ -31,7 +31,7 @@ const BookSearch: React.FC = () => {
 
     const handleBookClick = (book: Book) => {
         navigate(`/user/book/${book.id}`, {
-            state: { book, searchState: { query, books, source } },
+            state: { book, searchState: { query, books, source }, source },
         });
     };
 
