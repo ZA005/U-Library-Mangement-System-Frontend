@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import {
@@ -184,7 +185,7 @@ const AcquiredItems: React.FC = () => {
                     'vendor_location', 'funding_source'
                 ];
 
-                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
+                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0] as object)) === JSON.stringify(expectedHeaders)) {
                     const parsedData = result.data as unknown as AcquisitionRecord[];
                     try {
                         await addRecords(parsedData);
@@ -206,7 +207,7 @@ const AcquiredItems: React.FC = () => {
                 setIsLoading(false);
                 // console.log('After processing:', openDialog, fileToUpload);
             },
-            error: (err) => {
+            error: (err: { message: any; }) => {
                 setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
                 setIsLoading(false);
             }
