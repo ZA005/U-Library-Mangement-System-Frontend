@@ -1,12 +1,29 @@
-/* eslint-disable @typescript-eslint/prefer-as-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-// TO BE IMPLEMENTED
-
 import React, { useEffect, useState } from 'react';
-import { Modal, TextField, Box, Button, Grid, Typography } from '@mui/material';
+import {
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Button,
+    Stack,
+} from "@mui/material";
+import styles from "../styles.module.css";
 import { newSearchGoogleBooks } from '../../../services/Cataloging/GoogleBooksApi';
 import { Book } from '../../../model/Book';
+
+type FieldType = "text" | "select";
+
+interface Field {
+    label: string;
+    type: FieldType;
+    value: string;
+    onChange: (value: string) => void;
+    options?: string[];
+    required?: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+}
 
 interface Z3950SRUSearchProps {
     open: boolean;
@@ -25,69 +42,111 @@ const Z3950SRUSearch: React.FC<Z3950SRUSearchProps> = ({ open, onClose, onSubmit
         lccn: '',
     });
 
+    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+
     useEffect(() => {
         if (initialFormData) {
             setFormData(initialFormData);
         }
     }, [initialFormData]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+    useEffect(() => {
+        const initialErrors: { [key: string]: string } = {};
+        Object.entries(formData).forEach(([key, value]) => {
+            if (!value) {
+                initialErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
+            }
+        });
+        setFieldErrors(initialErrors);
+    }, [formData]);
+
+    const handleFieldChange = (value: string, key: string) => {
+        setFormData((prev: any) => ({
+            ...prev,
+            [key]: value
+        }));
+
+        const newErrors = { ...fieldErrors };
+        if (!value) {
+            newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
+        } else {
+            delete newErrors[key];
+        }
+        setFieldErrors(newErrors);
     };
 
 
-
-    const handleSubmit = async (formData: any) => {
+    const handleSubmit = async () => {
         try {
             const books = await newSearchGoogleBooks(formData);
             console.log("Books Found:", books);
             onSubmit(books, "Z39.50/SRU", formData);
         } catch (error) {
-            console.log("Error searching Z39.50/SRU:", error);
-            // Optionally, handle errors by showing them in the modal or passing an error message
+            console.log("Error searching Google Books:", error);
         }
-        onClose(); // Close modal after submit
+        onClose();
+
     };
+
+    const fields: Field[] = [
+        { label: "Keyword", type: "text", value: formData.keyword, onChange: value => handleFieldChange(value, "keyword"), required: true },
+        { label: "Title", type: "text", value: formData.title, onChange: value => handleFieldChange(value, "title") },
+        { label: "Author", type: "text", value: formData.author, onChange: value => handleFieldChange(value, "author") },
+        { label: "Publisher", type: "text", value: formData.publisher, onChange: value => handleFieldChange(value, "publisher") },
+        { label: "ISBN", type: "text", value: formData.isbn, onChange: value => handleFieldChange(value, "isbn") },
+        { label: "LCCN", type: "text", value: formData.lccn, onChange: value => handleFieldChange(value, "lccn") },
+    ];
 
     return (
         <Modal open={open} onClose={onClose}>
-            <Box sx={modalStyle}>
-                <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                    Search Criteria
-                </Typography>
-                <Grid container spacing={2}>
-                    {Object.keys(formData).map((key) => (
-                        <Grid item xs={12} key={key}>
-                            <TextField
-                                label={key.charAt(0).toUpperCase() + key.slice(1)}
-                                name={key}
-                                value={formData[key as keyof typeof formData]}
-                                onChange={handleChange}
-                                fullWidth
-                            />
-                        </Grid>
+            <Box className={styles.modalBox}>
+                <Stack spacing={2}>
+                    <Typography
+                        variant="h6"
+                        component="h2"
+                        fontWeight="bold"
+                        className={styles.modalHeader}
+                    >
+                        <span className={styles.modalHeaderLine} />
+                        Search Criteria
+                    </Typography>
+                    {fields.map((field, index) => (
+                        <TextField
+                            key={index}
+                            label={field.label}
+                            variant="outlined"
+                            value={field.value}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            className={styles.textField}
+                        />
                     ))}
-                </Grid>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
-                    <Button onClick={onClose} sx={{ marginRight: 2 }}>Cancel</Button>
-                    <Button onClick={() => handleSubmit(formData)}>Search</Button>
-
-                </Box>
+                    <Button
+                        variant="contained"
+                        sx={{
+                            backgroundColor: "#EA4040",
+                            color: "#fff",
+                            textTransform: "none",
+                            ":hover": { backgroundColor: "#d13333" },
+                        }}
+                        onClick={handleSubmit}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        variant="text"
+                        sx={{
+                            color: "#EA4040",
+                            textTransform: "none",
+                            ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
+                        }}
+                        onClick={onClose}
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
             </Box>
         </Modal>
     );
 };
 
 export default Z3950SRUSearch;
-
-const modalStyle = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    borderRadius: 1,
-    boxShadow: 24,
-    p: 3,
-};
