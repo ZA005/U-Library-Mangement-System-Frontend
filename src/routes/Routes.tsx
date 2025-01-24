@@ -5,14 +5,14 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import UniversityCurriculumPage from '../pages/Curriculum-Management/UniversityCurriculumPage';
 import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';
-/*import VerifyUser from '../components/Verify/VerifyUser';*/
+import VerifyUser from '../components/Verify/VerifyUser';
 import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
 
 const AppRoutes = () => {
-  const { isAuthenticated, role } = useAuth(); // Access authentication state from AuthContext
+  const { isAuthenticated, role } = useAuth();
   const getDefaultRoute = () => {
     if (role === 'STUDENT') return <Navigate to="/user/browse" />;
     if (role === 'LIBRARIAN') return <Navigate to="/admin/library" />;

@@ -121,7 +121,7 @@ const BookDetails: React.FC = () => {
           </Box>
 
 
-        </Container>
+        </Box>
         <Footer />
       </Box>
 
