@@ -130,11 +130,15 @@ const AcquiredItems: React.FC = () => {
             return;
         }
 
-        if (e.target.files) {
+        if (e.target.files && e.target.files.length > 0) {
             const selectedFile = e.target.files[0];
             setFileToUpload(selectedFile);
             setErrorMessage(null);
             setOpenDialog(true);
+        } else {
+            // No file was selected or selection was canceled
+            setFileToUpload(null); // Clear any previously selected file
+            setOpenDialog(false); // Close the dialog if it was open
         }
     };
 
