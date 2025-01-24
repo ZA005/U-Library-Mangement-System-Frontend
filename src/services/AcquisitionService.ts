@@ -15,11 +15,13 @@ export interface AcquisitionRecord {
     funding_source: string;
 }
 
-const BASE_URL = "http://localhost:8080/";
+const BASE_URL = "http://localhost:8080/adminuser";
 
 export const addRecords = async (records: AcquisitionRecord[]): Promise<AcquisitionRecord[]> => {
     try {
-        const response = await axios.post<AcquisitionRecord[]>(`${BASE_URL}public/acquisition`, records);
+        const response = await axios.post<AcquisitionRecord[]>(`${BASE_URL}/add-record`, records, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -42,7 +44,9 @@ export const addRecords = async (records: AcquisitionRecord[]): Promise<Acquisit
 
 export const fetchAllPendingCatalogRecords = async (): Promise<AcquisitionRecord[]> => {
     try {
-        const response = await axios.get<AcquisitionRecord[]>(`${BASE_URL}public/acquisition`);
+        const response = await axios.get<AcquisitionRecord[]>(`${BASE_URL}/pending`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
