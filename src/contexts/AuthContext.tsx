@@ -14,6 +14,17 @@ interface AuthContextType {
     logout: () => void;
 }
 
+// Helper function to decode the JWT token and extract the expiration time
+const decodeJwt = (token: string) => {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 /**
@@ -26,18 +37,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [role, setRole] = useState<string | null>(null);
     const [isInitialized, setIsInitialized] = useState(false); // Tracks if context has been initialized.
 
+    // check if the token is expired
+    const isTokenExpired = (token: string) => {
+        const decodedToken = decodeJwt(token);
+        const exp = decodedToken.exp * 1000; // exp is in seconds, convert to milliseconds
+        const currentTime = new Date().getTime();
+        return currentTime >= exp;
+    };
     /**
      * useEffect runs once during the component's lifecycle (on mount).
      * It reads token and role from local storage and sets the state accordingly.
      * The isInitialized flag ensures the app doesn't render sensitive components until context is ready.
      */
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         const savedRole = localStorage.getItem("role");
+
         if (token && savedRole) {
-            setIsAuthenticated(true);
-            setRole(savedRole);
+            if (isTokenExpired(token)) {
+                logout(); // Logout if token is expired
+            } else {
+                setIsAuthenticated(true);
+                setRole(savedRole);
+            }
         }
+
         setIsInitialized(true); // Mark initialization complete.
     }, []);
 
@@ -46,13 +71,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
      * @param token - Authentication token for the user.
      * @param role - Role of the user (e.g., LIBRARIAN).
      */
+
     const login = (token: string, role: string) => {
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
         setIsAuthenticated(true);
         setRole(role);
-    };
 
+        // Check if token is expired right after login
+        if (isTokenExpired(token)) {
+            logout(); // Token expired immediately after login, log out the user
+        }
+    };
     /**
      * logout function clears the authentication data from local storage and resets the state.
      */
