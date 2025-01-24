@@ -218,9 +218,9 @@ export const marcSections = [
         marcFields: [
             {
                 marcNumber: "700",
-                marcName: "Personal Name",
+                marcName: "Other Author/s",
                 subfields: [
-                    { subfieldCode: "a", label: "Persnal Name", required: true },
+                    { subfieldCode: "a", label: "Other Author/s", required: true },
                 ],
             },
         ],
