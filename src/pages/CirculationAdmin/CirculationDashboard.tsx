@@ -1,9 +1,12 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, Icon } from "@mui/material";
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Line from "../../components/Line/Line";
+import ManageCirculationIcon from "@mui/icons-material/AllInbox"; // Example Icon
+import ManageReservationIcon from "@mui/icons-material/EventNote"; // Example Icon
+import OverseeOverdueIcon from "@mui/icons-material/Warning"; // Example Icon
 import styles from "./styles.module.css";
 
 const CirculationDashboard: React.FC = () => {
@@ -33,7 +36,7 @@ const CirculationDashboard: React.FC = () => {
                     {/* Left Content */}
                     <Box className={styles.leftContent}>
                         <Typography variant="body1">
-                            📚What is Circulation? Circulation is at the heart of library operations, ensuring the smooth flow of books and resources between the library and its users. Whether you're issuing, returning, or reserving materials, this system simplifies and automates the process for efficiency and accuracy.
+                            📚 What is Circulation? Circulation is at the heart of library operations, ensuring the smooth flow of books and resources between the library and its users. Whether you're issuing, returning, or reserving materials, this system simplifies and automates the process for efficiency and accuracy.
                         </Typography>
 
                         <Typography variant="body1">
@@ -74,6 +77,9 @@ const CirculationDashboard: React.FC = () => {
                     {/* Right Content */}
                     <Box className={styles.rightContent}>
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <ManageCirculationIcon />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={handleManageCirculation}
@@ -83,6 +89,9 @@ const CirculationDashboard: React.FC = () => {
                         </Box>
 
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <ManageReservationIcon />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={handleManageReservation}
@@ -92,6 +101,9 @@ const CirculationDashboard: React.FC = () => {
                         </Box>
 
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <OverseeOverdueIcon />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={handleOverseeOverdues}

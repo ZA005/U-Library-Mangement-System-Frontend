@@ -28,7 +28,7 @@ const FilterAccordion: React.FC<{ title: string; content: string }> = ({ title, 
     </AccordionDetails>
   </Accordion>
 );
-
+ 
 const CatalogHome: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [error, setError] = useState<string | null>(null);

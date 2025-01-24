@@ -1,4 +1,4 @@
-// screens/HomeScreen.tsx
+// src/screens/HomeScreen.tsx
 import React, { useState } from 'react';
 import { Container, Box, Typography, Button } from '@mui/material';
 import Header from '../components/Header/Header';
@@ -8,23 +8,27 @@ import Footer from '../components/Footer/Footer';
 import Line from '../components/Line/Line';
 import { useNavigate } from 'react-router-dom';
 import Login from '../components/Modal/LoginModal/Modal';
-
+import VerifyUser from '../components/Verify/VerifyUser';
 
 const HomeScreen: React.FC = () => {
-
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
+  const [openVerifyUser, setOpenVerifyUser] = useState(false);
 
   const handleLogin = () => {
-    setOpen(true);
+    setOpenLogin(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseLogin = () => {
+    setOpenLogin(false);
   };
 
   const handleSignUp = () => {
-    navigate('/verify/user');
+    setOpenVerifyUser(true); // Open the Verify User modal
+  };
+
+  const handleCloseVerifyUser = () => {
+    setOpenVerifyUser(false); // Close the Verify User modal
   };
 
   return (
@@ -51,6 +55,7 @@ const HomeScreen: React.FC = () => {
           }
         />
         <Typography variant="h4">Library Management System</Typography>
+        
         <Line />
         <Carousel />
         <ActionButtons />
@@ -59,7 +64,10 @@ const HomeScreen: React.FC = () => {
       <Footer />
 
       {/* Login Modal */}
-      <Login open={open} onClose={handleClose} />
+      <Login open={openLogin} onClose={handleCloseLogin} />
+
+      {/* Verify User Modal */}
+      <VerifyUser open={openVerifyUser} onClose={handleCloseVerifyUser} />
     </Box>
   );
 };
