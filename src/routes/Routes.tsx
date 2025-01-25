@@ -52,7 +52,7 @@ const AppRoutes = () => {
       <Route
         path="user/*"
         element={
-          role === 'USER' || role === 'LIBRARIAN' ? (
+          role === 'STUDENT' || role === 'LIBRARIAN' ? (
             <UserRoutes />
           ) : (
             <Navigate to="/" replace />
