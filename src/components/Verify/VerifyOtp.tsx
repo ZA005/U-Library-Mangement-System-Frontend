@@ -43,9 +43,11 @@ const VerifyOtp: React.FC = () => {
   };
 
   return (
+    
     <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Header buttons={null} />
       <Container maxWidth="sm" sx={{ flexGrow: 1 }}>
-        <Header buttons={null} />
+        
         <Box
           sx={{
             display: "flex",

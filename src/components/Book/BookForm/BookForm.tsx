@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { generateCallNumber, saveBook } from '../../../services/Cataloging/GoogleBooksApi';
 import { fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
+import './BookForm.css';
+
 
 interface Book {
     id: string;
