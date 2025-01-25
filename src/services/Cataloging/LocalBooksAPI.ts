@@ -67,3 +67,16 @@ export const getBooksByAdvancedSearch = async (searchParams: any) => {
 };
 
 
+export const getLastAccessionNumber = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}last-added-accession`, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data; // Return the last added accession number
+    } catch (e) {
+        console.error("Error fetching last added accession number:", e);
+        throw e; // Optionally, you can throw the error for further handling
+    }
+};
