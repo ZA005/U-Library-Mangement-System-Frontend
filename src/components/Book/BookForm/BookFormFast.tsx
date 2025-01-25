@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton } from '@mui/material';
+import {
+    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
+} from '@mui/material';
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../Header/Header';
 import MenuIcon from "@mui/icons-material/Menu";
@@ -30,23 +32,25 @@ const BookFormFast: React.FC = () => {
     const [location, setLocation] = useState('');
     const [section, setSection] = useState('');
     const [categories, setCategories] = useState('');
-    const [notes, setNotes] = useState('');
+    const [description, setDescription] = useState('');
     const [ddcNumber, setDDCNumber] = useState('');
 
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
     const ddcClasses = [
-        { value: '000', label: 'Generalities' },
-        { value: '100', label: 'Philosophy and psychology' },
-        { value: '200', label: 'Religion' },
-        { value: '300', label: 'Social sciences' },
-        { value: '400', label: 'Language' },
-        { value: '500', label: 'Natural sciences and mathematics' },
-        { value: '600', label: 'Technology (Applied sciences)' },
-        { value: '700', label: 'The arts (Fine and decorative arts)' },
-        { value: '800', label: 'Literature and rhetoric' },
-        { value: '900', label: 'Geography and history' }
+        { value: '000', label: '[000] General Information' },
+        { value: '100', label: '[100] Philosophy and Psychology' },
+        { value: '200', label: '[200] Religion' },
+        { value: '300', label: '[300] Social Sciences' },
+        { value: '400', label: '[400] Language' },
+        { value: '500', label: '[500] Natural Sciences and Mathematics' },
+        { value: '600', label: '[600] Technology' },
+        { value: '700', label: '[700] Art and Recreation' },
+        { value: '800', label: '[800] Literature' },
+        { value: '900', label: '[900] Geography and History' }
     ];
 
-    const callNumber = useGenerateCallNumber({ bookTitle: bookData?.book_title || '', author, ddcNumber });
+    const callNumber = useGenerateCallNumber({ bookTitle: bookData?.book_title || '', author, ddcNumber, publishedDate: bookData?.published_date });
 
     const accessionNumber = useGenerateAccessionNumber({ location, copies: numberOfCopies });
 
@@ -59,61 +63,80 @@ const BookFormFast: React.FC = () => {
     };
 
     const handleSave = async () => {
-        const bookToSave = {
-            bookId: null,
-            title: bookData?.book_title,
-            accessionNo: accessionNumber,
-            authors: Array.isArray(author)
-                ? author.map((authorName) => ({ name: authorName }))
-                : author
-                    ? [{ name: author }]
-                    : [], // Handles both array and string cases
-            callNumber: callNumber ?? "N/A",
-            purchasePrice: bookData?.purchase_price,
-            status: status ?? "Available",
-            barcode: barcode ?? "N/A",
-            section: section ?? "General",
-            dateAcquired: new Date().toISOString(),
-            categories: Array.isArray(categories)
-                ? categories
-                : categories
-                    ? [categories]
-                    : [], // Ensure categories is always an array
-            notes: notes ?? "",
-            location: location,
-            vendor: bookData?.vendor,
-            fundingSource: bookData?.funding_source,
-            subjects: [],
-            thumbnail: "",
-            description: "No description available",
-            isbn13: "",
-            isbn10: bookData?.isbn,
-            language: "English",
-            pageCount: 264,
-            publishedDate: "",
-            publisher: "Unknown Publisher",
-            printType: "Book",
+        if (numberOfCopies < 1) {
+            alert("Number of copies must be at least 1.");
+            return;
         }
+        setConfirmOpen(true);
+    };
 
-        console.log('Books to Save:', bookToSave);
-
+    const confirmSave = async () => {
+        setConfirmOpen(false);
         try {
-            await saveBook(bookToSave);
+            for (let i = 1; i <= numberOfCopies; i++) {
+                const currentAccessionNumber = `${accessionNumber.split(' c.')[0]} c.${i}`;
+
+                const bookToSave = {
+                    bookId: null,
+                    title: bookData?.book_title,
+                    accessionNo: currentAccessionNumber,
+                    authors: Array.isArray(author)
+                        ? author.map((authorName) => ({ name: authorName }))
+                        : author
+                            ? [{ name: author }]
+                            : [],
+                    callNumber: callNumber ?? "N/A",
+                    purchasePrice: bookData?.purchase_price,
+                    status: "Available",
+                    barcode: barcode ? `${barcode}-${i}` : `N/A-${i}`,
+                    section: section || "General",
+                    dateAcquired: new Date().toISOString(),
+                    categories: Array.isArray(categories)
+                        ? categories
+                        : categories
+                            ? [categories]
+                            : [],
+                    notes: "",
+                    location: location,
+                    vendor: bookData?.vendor,
+                    fundingSource: bookData?.funding_source,
+                    subjects: [],
+                    thumbnail: "",
+                    description: description || "No description available",
+                    isbn13: "",
+                    isbn10: bookData?.isbn,
+                    language: "English",
+                    pageCount: 264,
+                    publishedDate: bookData?.published_date,
+                    publisher: "Unknown Publisher",
+                    printType: "Book",
+                };
+
+                console.log('Saving book copy:', bookToSave);
+
+                await saveBook(bookToSave);
+            }
+
             navigate('/admin/catalog/management/accesion-record', {
                 state: {
                     success: true,
                     id: bookData?.id,
-                    title: bookData?.book_title
+                    title: bookData?.book_title,
                 },
-                replace: true
+                replace: true,
             });
+
         } catch (error) {
-            console.error('Error saving book:', error);
-            alert(`An error occurred while saving the book. ${error}`);
+            console.error('Error saving book copies:', error);
+            alert(`An error occurred while saving the book copies. ${error}`);
         }
     };
 
-    const handleCancel = () => navigate(-1);
+
+
+
+    const handleCancel = () => navigate('/admin/catalog/management/accesion-record');
+    const handleCloseConfirm = () => setConfirmOpen(false);
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -171,12 +194,12 @@ const BookFormFast: React.FC = () => {
                             />
 
                             <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="ddc-label">DDC Class</InputLabel>
+                                <InputLabel id="ddc-label">Dewey Decimal Classification</InputLabel>
                                 <Select
                                     labelId="ddc-label"
                                     value={ddcNumber}
                                     onChange={(e) => setDDCNumber(e.target.value)}
-                                    label="DDC Class"
+                                    label="Dewey Decimal Classification"
                                     size="small"
                                 >
                                     {ddcClasses.map((ddc) => (
@@ -221,11 +244,11 @@ const BookFormFast: React.FC = () => {
 
                             <TextField
                                 fullWidth
-                                label="Notes"
+                                label="Description"
                                 multiline
                                 rows={3}
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
                                 sx={{ mb: 2 }}
                             />
 
@@ -238,6 +261,27 @@ const BookFormFast: React.FC = () => {
                 </Box>
             </Container>
             <Copyright />
+            <Dialog
+                open={confirmOpen}
+                onClose={handleCloseConfirm}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Confirm Save"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to save this data?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseConfirm} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={confirmSave} color="primary" autoFocus>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

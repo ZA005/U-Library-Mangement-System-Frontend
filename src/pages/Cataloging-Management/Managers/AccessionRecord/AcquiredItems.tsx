@@ -71,6 +71,8 @@ const AcquiredItems: React.FC = () => {
                     } else {
                         openSnackbar(`Failed to catalog ${location.state.title}`, 'error');
                     }
+                    // Reset location state
+                    navigate(location.pathname, { replace: true });
                 }
                 const records = await fetchAllPendingCatalogRecords();
                 setArray(records);
@@ -87,7 +89,7 @@ const AcquiredItems: React.FC = () => {
         };
 
         loadData();
-    }, [location.state, openSnackbar]);
+    }, [openSnackbar, navigate, location]);
 
     const handleSideBarClick = () => {
         if (!isLoading) setSidebarOpen(!isSidebarOpen);
@@ -158,7 +160,7 @@ const AcquiredItems: React.FC = () => {
 
     const validateAndParseCSV = async (csvString: string) => {
         const expectedHeaders = [
-            'book_title', 'isbn', 'publisher', 'edition', 'series',
+            'book_title', 'isbn', 'publisher', 'edition', 'published_date',
             'purchase_price', 'purchase_date', 'acquired_date', 'vendor',
             'vendor_location', 'funding_source'
         ];
@@ -291,9 +293,6 @@ const AcquiredItems: React.FC = () => {
                                 <TableRow>
                                     <TableCell style={{ minWidth: '150px' }}><strong>Book Title</strong></TableCell>
                                     <TableCell><strong>ISBN</strong></TableCell>
-                                    <TableCell><strong>Publisher</strong></TableCell>
-                                    <TableCell><strong>Edition</strong></TableCell>
-                                    <TableCell><strong>Series</strong></TableCell>
                                     <TableCell><strong>Price</strong></TableCell>
                                     <TableCell><strong>Purchase Date</strong></TableCell>
                                     <TableCell><strong>Acquired Date</strong></TableCell>
@@ -307,7 +306,12 @@ const AcquiredItems: React.FC = () => {
                                 {array.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((item, index) => (
                                     <TableRow key={item.id || index}>
                                         {/* Exclude 'id' from mapping */}
-                                        {Object.entries(item).filter(([key]) => key !== 'id' && key !== 'status').map(([, value], idx) => (
+                                        {Object.entries(item).filter(([key]) => key !== 'id'
+                                            && key !== 'status'
+                                            && key !== 'publisher'
+                                            && key !== 'edition'
+                                            && key !== 'published_date'
+                                        ).map(([, value], idx) => (
                                             <TableCell key={idx}>{value}</TableCell>
                                         ))}
                                         <TableCell>
