@@ -64,7 +64,7 @@ const AcquiredItems: React.FC = () => {
         const loadData = async () => {
             setIsLoading(true);
             try {
-                if (location.state?.id) {
+                if (location.state?.success) {
                     const success = await updateStatus(location.state.id);
                     if (success) {
                         openSnackbar(`${location.state.title} has been successfully cataloged`, 'success');
@@ -112,10 +112,10 @@ const AcquiredItems: React.FC = () => {
                     individualLibrary: null,
                 };
                 navigate("/admin/catalog/management/search-title", {
-                    state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams },
+                    state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams, bookData: item },
                 });
             } else if (value === 'addToCatalog') {
-                navigate('/admin/catalog/management/marc-record/add', {
+                navigate('/admin/catalog/management/book-form-fast', {
                     state: { bookData: item }
                 });
             }
