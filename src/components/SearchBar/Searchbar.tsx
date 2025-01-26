@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -17,14 +18,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Book } from '../../model/Book';
 import UserService from '../../services/UserService';
 import styles from './styles.module.css';
-import { searchGoogleBooks } from '../../services/Cataloging/GoogleBooksApi';
 import { useNavigate } from 'react-router-dom';
 import { getBooksByAdvancedSearch } from '../../services/Cataloging/LocalBooksAPI';
+import Z3950SRUSearch from '../Modal/SRUSearch/Z3950SRUSearch';
 
 interface SearchBarProps {
-  initialQuery?: string;
-  initialSource?: string;
-  onSearch: (books: Book[], source: string, query: string | object) => void;
+    initialQuery?: string;
+    initialSource?: string;
+    onSearch: (books: Book[], source: string, query: string | object) => void;
+    modalParams?: any;
+
 }
 
 const searchIndexLabels: { [key: string]: string } = {
@@ -36,64 +39,90 @@ const searchIndexLabels: { [key: string]: string } = {
   isbn: "ISBN",
 };
 
-const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'All libraries', onSearch }) => {
-  const [query, setQuery] = useState(initialQuery);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [searchIndex, setSearchIndex] = useState("q");
-  const [source, setSource] = useState(initialSource);
-  const navigate = useNavigate();
+const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'All libraries', onSearch, modalParams }) => {
+    const [query, setQuery] = useState(initialQuery);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [searchIndex, setSearchIndex] = useState("q");
+    const [source, setSource] = useState(initialSource);
+    const navigate = useNavigate();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        keyword: '',
+        title: '',
+        author: '',
+        publisher: '',
+        isbn: '',
+        lccn: '',
+    });
 
-  useEffect(() => {
-    setQuery(initialQuery);
-    setSource(initialSource);
-  }, [initialQuery, initialSource]);
+    useEffect(() => {
+        setQuery(initialQuery);
+        if (initialSource !== "Z39.50/SRU") {
+            setSource(initialSource);
+        }
+    }, [initialQuery, initialSource]);
 
-  const handleSearch = async () => {
-    setLoading(true);
-    setError(null);
 
-    if (!query.trim()) {
-      setError("Please enter a search query.");
-      setLoading(false);
-      return;
-    }
+    const handleOpenSRUModal = () => {
+        if (modalParams) {
+            setFormDataFromParams(modalParams);
+        }
+        setModalOpen(true);
+    };
 
-    try {
-      let result: Book[] = [];
-      let formattedQuery: string | object;
-
-      if (source === "Google Books") {
-        formattedQuery = query;
-        result = await searchGoogleBooks(query);
-      } else {
-        const advancedSearchParams = {
-          criteria: [
-            {
-              idx: searchIndex,
-              searchTerm: query,
-              operator: "AND",
-            },
-          ],
-          individualLibrary: source === "All libraries" ? null : source,
+    // Helper function to populate modal fields from modalParams
+    const setFormDataFromParams = (params: any) => {
+        const newFormData = {
+            keyword: params.criteria?.find((criterion: any) => criterion.idx === "q")?.searchTerm || "",
+            title: params.criteria?.find((criterion: any) => criterion.idx === "intitle")?.searchTerm || "",
+            author: params.criteria?.find((criterion: any) => criterion.idx === "inauthor")?.searchTerm || "",
+            publisher: params.criteria?.find((criterion: any) => criterion.idx === "inpublisher")?.searchTerm || "",
+            isbn: params.criteria?.find((criterion: any) => criterion.idx === "isbn")?.searchTerm || "",
+            lccn: "",
         };
-        formattedQuery = advancedSearchParams;
-        result = await getBooksByAdvancedSearch(advancedSearchParams);
-      }
+        setFormData(newFormData);
+    };
 
-      navigate("/admin/catalog/management/search-title", {
-        state: { query: formattedQuery, books: result, source },
-      });
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
 
-      onSearch(result, source, formattedQuery);
-    } catch (error) {
-      console.error("Error fetching books:", error);
-      setError("An error occurred while searching. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleSearch = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            let result: Book[] = [];
+            // Advanced search for other libraries
+            const advancedSearchParams = {
+                criteria: [
+                    {
+                        idx: searchIndex,
+                        searchTerm: query,
+                        operator: "AND",
+                    },
+                ],
+                individualLibrary: source === "All libraries" ? null : source,
+            };
+            result = await getBooksByAdvancedSearch(advancedSearchParams);
+
+            // Navigate to the BookSearch page with the search results
+            navigate("/admin/catalog/management/search-title", {
+                state: { query: advancedSearchParams, books: result, source },
+            });
+
+            // Update the parent with the search results
+            onSearch(result, source, advancedSearchParams);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+            setError("An error occurred while searching. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -185,28 +214,55 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
           </Box>
         </Box>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSearch}
-          disabled={loading || !query}
-          className={styles.searchButton}
-          endIcon={loading && <CircularProgress size={20} color="inherit" />}
-        >
-          {loading ? 'Searching...' : 'Search'}
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => navigate('/user/advanced/search')}
-          className={styles.searchButton}
-        >
-          Advanced Search
-        </Button>
-      </Stack>
-      {error && <p className={styles.errorText}>{error}</p>}
-    </div>
-  );
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSearch}
+                    disabled={loading || !query}
+                    className={styles.searchButton}
+                    endIcon={loading && <CircularProgress size={20} color="inherit" />}
+                >
+                    {loading ? 'Searching...' : 'Search'}
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => navigate('/user/advanced/search')}
+                    className={styles.searchButton}
+                >
+                    Advanced Search
+                </Button>
+
+                {/* To be implemented */}
+                <Button
+                    startIcon={<SearchIcon />}
+                    sx={{
+                        color: "inherit",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textTransform: "none",
+                        boxShadow: "none",
+                        "&:hover": {
+                            backgroundColor: "rgba(0, 0, 0, 0.04)",
+                        },
+                    }}
+                    onClick={handleOpenSRUModal}
+                >
+                    Z39.50/SRU
+                </Button>
+
+                <Z3950SRUSearch
+                    open={modalOpen}
+                    onClose={handleCloseModal}
+                    onSubmit={(books, source, query) => {
+                        onSearch(books, source, query);
+                    }}
+                    initialFormData={formData}
+                />
+            </Stack>
+            {error && <p className={styles.errorText}>{error}</p>}
+        </div>
+    );
 };
 
 export default SearchBar;

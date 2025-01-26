@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import {
@@ -31,12 +32,13 @@ import Header from '../../../../components/Header/Header';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../../../../components/Sidebar';
 import Line from '../../../../components/Line/Line';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Copyright from '../../../../components/Footer/Copyright';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
-import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords } from '../../../../services/AcquisitionService';
+import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords, updateStatus } from '../../../../services/AcquisitionService';
 
 const AcquiredItems: React.FC = () => {
+    const location = useLocation();
     const [array, setArray] = useState<AcquisitionRecord[]>([]);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
@@ -59,9 +61,19 @@ const AcquiredItems: React.FC = () => {
     } = useSnackbar();
 
     useEffect(() => {
-        const loadPendingRecords = async () => {
+        const loadData = async () => {
+            setIsLoading(true);
             try {
-                setIsLoading(true);
+                if (location.state?.success) {
+                    const success = await updateStatus(location.state.id);
+                    if (success) {
+                        openSnackbar(`${location.state.title} has been successfully cataloged`, 'success');
+                    } else {
+                        openSnackbar(`Failed to catalog ${location.state.title}`, 'error');
+                    }
+                    // Reset location state
+                    navigate(location.pathname, { replace: true });
+                }
                 const records = await fetchAllPendingCatalogRecords();
                 setArray(records);
                 setCanImport(records.length === 0);
@@ -75,8 +87,9 @@ const AcquiredItems: React.FC = () => {
                 setIsLoading(false);
             }
         };
-        loadPendingRecords();
-    }, []);
+
+        loadData();
+    }, [openSnackbar, navigate, location]);
 
     const handleSideBarClick = () => {
         if (!isLoading) setSidebarOpen(!isSidebarOpen);
@@ -89,25 +102,24 @@ const AcquiredItems: React.FC = () => {
     const handleSelectChange = (value: string, item: AcquisitionRecord) => {
         if (!isLoading) {
             setSelectedOption(value);
-            if (value === 'searchGoogleBooks') {
-                navigate('/admin/catalog/management/search-title', {
-                    state: { query: item.book_title, books: item, source: 'Google Books' },
-                });
-            } else if (value === "searchLocalCatalog") {
+            if (value === "copyCatalog") {
                 // Navigate to BookSearch.tsx with local catalog search parameters
                 const advancedSearchParams = {
                     criteria: [
                         { idx: "q", searchTerm: item.book_title, operator: "AND" },
+                        { idx: "intitle", searchTerm: item.book_title, operator: "AND" },
                         { idx: "isbn", searchTerm: item.isbn, operator: "AND" },
                         { idx: "inpublisher", searchTerm: item.publisher, operator: "AND" },
                     ],
                     individualLibrary: null,
                 };
                 navigate("/admin/catalog/management/search-title", {
-                    state: { query: advancedSearchParams, books: [], source: "All libraries" },
+                    state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams, bookData: item },
                 });
             } else if (value === 'addToCatalog') {
-                navigate('/admin/catalog/management/marc-record/add', { state: { item } });
+                navigate('/admin/catalog/management/book-form-fast', {
+                    state: { bookData: item }
+                });
             }
         }
     };
@@ -123,6 +135,7 @@ const AcquiredItems: React.FC = () => {
             setFileToUpload(selectedFile);
             setErrorMessage(null);
             setOpenDialog(true);
+            (e.target as HTMLInputElement).value = '';
         }
     };
 
@@ -146,16 +159,28 @@ const AcquiredItems: React.FC = () => {
     };
 
     const validateAndParseCSV = async (csvString: string) => {
+        const expectedHeaders = [
+            'book_title', 'isbn', 'publisher', 'edition', 'published_date',
+            'purchase_price', 'purchase_date', 'acquired_date', 'vendor',
+            'vendor_location', 'funding_source'
+        ];
+
+        const resetStates = () => {
+            setOpenDialog(false);
+            setFileToUpload(null);
+        };
+
+        const handleError = (message: string, snackbarMsg: string) => {
+            setErrorMessage(message);
+            openSnackbar(snackbarMsg, 'error');
+            resetStates();
+            setIsLoading(false);
+        };
+
         Papa.parse(csvString, {
             header: true,
             skipEmptyLines: true,
             complete: async (result) => {
-                const expectedHeaders = [
-                    'book_title', 'isbn', 'publisher', 'edition', 'series',
-                    'purchase_price', 'purchase_date', 'acquired_date', 'vendor_name',
-                    'vendor_location', 'funding_source'
-                ];
-
                 if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
                     const parsedData = result.data as unknown as AcquisitionRecord[];
                     try {
@@ -165,27 +190,30 @@ const AcquiredItems: React.FC = () => {
                         setArray(allRecords);
                         setCanImport(allRecords.length === 0);
                     } catch (error) {
-                        if (error instanceof Error) {
-                            setErrorMessage(`Failed to add records to the server: ${error.message}`);
-                            openSnackbar("Failed to add records to the server!", "error");
-                        } else {
-                            setErrorMessage('An unexpected error occurred while adding records.');
-                            openSnackbar("An unexpected error occurred while adding records!", "error");
-                        }
+                        handleError(
+                            error instanceof Error ? `Failed to add records to the server: ${error.message}` : 'An unexpected error occurred while adding records.',
+                            error instanceof Error ? "Failed to add records to the server!" : "An unexpected error occurred while adding records!"
+                        );
+                        return;
                     }
                 } else {
-                    setErrorMessage('CSV file headers do not match the expected format or the file is empty.');
+                    handleError('CSV file headers do not match the expected format or the file is empty.', 'CSV file headers incorrect or file empty!');
+                    return;
                 }
                 setIsLoading(false);
+                // console.log('After processing:', openDialog, fileToUpload);
             },
             error: (err) => {
-                setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
-                setIsLoading(false);
+                handleError(`An error occurred while parsing the CSV file: ${err.message}`, `Error parsing CSV file!`);
             }
         });
     };
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    useEffect(() => {
+        // console.log('State update:', openDialog, fileToUpload);
+    }, [openDialog, fileToUpload]);
+
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
@@ -265,9 +293,6 @@ const AcquiredItems: React.FC = () => {
                                 <TableRow>
                                     <TableCell style={{ minWidth: '150px' }}><strong>Book Title</strong></TableCell>
                                     <TableCell><strong>ISBN</strong></TableCell>
-                                    <TableCell><strong>Publisher</strong></TableCell>
-                                    <TableCell><strong>Edition</strong></TableCell>
-                                    <TableCell><strong>Series</strong></TableCell>
                                     <TableCell><strong>Price</strong></TableCell>
                                     <TableCell><strong>Purchase Date</strong></TableCell>
                                     <TableCell><strong>Acquired Date</strong></TableCell>
@@ -281,7 +306,12 @@ const AcquiredItems: React.FC = () => {
                                 {array.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((item, index) => (
                                     <TableRow key={item.id || index}>
                                         {/* Exclude 'id' from mapping */}
-                                        {Object.entries(item).filter(([key]) => key !== 'id' && key !== 'status').map(([, value], idx) => (
+                                        {Object.entries(item).filter(([key]) => key !== 'id'
+                                            && key !== 'status'
+                                            && key !== 'publisher'
+                                            && key !== 'edition'
+                                            && key !== 'published_date'
+                                        ).map(([, value], idx) => (
                                             <TableCell key={idx}>{value}</TableCell>
                                         ))}
                                         <TableCell>
@@ -295,9 +325,8 @@ const AcquiredItems: React.FC = () => {
                                                 <MenuItem value="" disabled>
                                                     Action
                                                 </MenuItem>
-                                                <MenuItem value="searchGoogleBooks">Search Google Books</MenuItem>
-                                                <MenuItem value="searchLocalCatalog">Search Local Catalog</MenuItem>
-                                                <MenuItem value="addToCatalog">Add to Catalog</MenuItem>
+                                                <MenuItem value="copyCatalog">Copy Catalog</MenuItem>
+                                                <MenuItem value="addToCatalog">Fast Catalog</MenuItem>
 
                                             </Select>
                                         </TableCell>

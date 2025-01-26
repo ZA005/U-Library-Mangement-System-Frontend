@@ -3,6 +3,7 @@ import CurriculumManagement from '../pages/Curriculum-Management/CurriculumManag
 import ProtectedRoute from './ProtectedRoute';
 import BookSearch from '../pages/SearchResult/BookSearch';
 import BookForm from '../components/Book/BookForm/BookForm';
+import BookFormFast from '../components/Book/BookForm/BookFormFast';
 import LandingPage from '../pages/LandingPageAdmin/LandingPage';
 import CirculationDashboard from '../pages/CirculationAdmin/CirculationDashboard';
 import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
@@ -14,6 +15,8 @@ import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageB
 import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
 import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/CatalogingAdmin';
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
+import WeedingDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/WeedingDashboard';
+import CriteriaDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/CriteriaDashboard';
 
 const AdminRoutes = () => (
   <Routes>
@@ -28,8 +31,12 @@ const AdminRoutes = () => (
       <Route path="catalog/management/accesion-record" element={<AcquiredItems />} />
       <Route path='catalog/management/marc-record/add' element={<AddMARCRecord />} />
       <Route path="catalog/management/search-title" element={<BookSearch />} />
+      <Route path="catalog/management/book-weeding" element={<WeedingDashboard />} />
+      <Route path="catalog/management/criteria" element={<CriteriaDashboard />} />
+
       {/* <Route path="book/:bookId" element={<BookDetails />} /> */}
-      <Route path="book-form" element={<BookForm />} />
+      <Route path="catalog/management/book-form" element={<BookForm />} />
+      <Route path="catalog/management/book-form-fast" element={<BookFormFast />} />
 
 
       {/* Curriculum Module  */}

@@ -28,6 +28,10 @@ const AdvancedSearchPage: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
 
+    // Track the error state for the year range
+    const [yearRangeError, setYearRangeError] = useState(false);
+
+    // Define searchParams state with proper typing
     const [searchParams, setSearchParams] = useState({
         criteria: [{ idx: "q", searchTerm: "", operator: "AND" }],
         yearRange: "",
@@ -201,6 +205,18 @@ const AdvancedSearchPage: React.FC = () => {
                             }
                         />
                         <Divider />
+                    {/* Limits Section */}
+                    <LimitsSection
+                        yearRange={searchParams.yearRange}
+                        language={searchParams.language}
+                        setYearRange={(value) =>
+                            setSearchParams((prev) => ({ ...prev, yearRange: value }))
+                        }
+                        setLanguage={(value) =>
+                            setSearchParams((prev) => ({ ...prev, language: value }))
+                        }
+                        setYearRangeError={setYearRangeError} // Pass the error setter function
+                    />
 
                         <Typography variant="h6" fontWeight="bold">
                             Location & Availability
@@ -243,6 +259,21 @@ const AdvancedSearchPage: React.FC = () => {
                         </Box>
                     </Stack>
                 </Box>
+                    {/* Action Buttons */}
+                    <Box display="flex" justifyContent="space-between" marginTop={3}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSearch}
+                            disabled={yearRangeError} // Disable the button if there's an error
+                        >
+                            Search
+                        </Button>
+                        <Button variant="outlined" color="secondary" onClick={resetSearch}>
+                            Reset
+                        </Button>
+                    </Box>
+                </Stack>
             </Container>
         </Box>
     );

@@ -21,8 +21,10 @@ const BookDetails: React.FC = () => {
   const [showBooks, setShowBooks] = useState(false);
   const [booksByAuthor, setBooksByAuthor] = useState<Book[] | null>(null);
   const [isAddBookRefModalOpen, setIsAddBookRefModalOpen] = useState(false);
+  // const [urlPath, setURLPath] = useState("");
 
   const book: Book = state?.book;
+  const source = state?.source;
   const handleAddBookRefModalOpen = () => setIsAddBookRefModalOpen(true);
   const handleAddBookRefModalClose = () => setIsAddBookRefModalOpen(false);
 
@@ -49,6 +51,10 @@ const BookDetails: React.FC = () => {
   const handleReserve = () => alert(`Book "${book.title}" reserved.`);
   const handleBorrow = () => alert(`Book "${book.title}" borrowed.`);
   const handleAddToWishlist = () => alert(`Book "${book.title}" added to your wishlist.`);
+
+  const handleBookClick = (book: Book) =>
+    navigate(`/user/book/${book.id}`, { state: { book, source } });
+
   const handleGoBack = () => {
     const path = UserService.isAdmin()
       ? '/admin/catalog/management/search-title'
@@ -60,7 +66,7 @@ const BookDetails: React.FC = () => {
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Header buttons={<Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleGoBack}>Go Back</Button>} />
-        
+
         <Box sx={{ flexGrow: 1, padding: 2, margin: '20px auto', maxWidth: 900, backgroundColor: '#f9f9f9', borderRadius: 3, boxShadow: 2, position: 'relative' }}>
           {/* Larger Bookmark Icon */}
           <BookmarkIcon sx={{ color: 'red', fontSize: 100, position: 'absolute', top: -5, right: 30 }} />
@@ -93,8 +99,10 @@ const BookDetails: React.FC = () => {
           </Box>
 
           <Collapse in={showBooks}>
-            {booksByAuthor && <BookList books={booksByAuthor} onBookClick={(book) => navigate(`/user/book/${book.id}`, { state: { book } })} />}
+            {booksByAuthor && <BookList books={booksByAuthor} onBookClick={handleBookClick} source={source} />}
           </Collapse>
+
+
 
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 2 }}>
             {UserService.isAdmin() && (
@@ -113,6 +121,8 @@ const BookDetails: React.FC = () => {
             <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleBorrow}>Borrow item</Button>
             <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddToWishlist}>Add to Wishlist</Button>
           </Box>
+
+
         </Box>
         <Footer />
       </Box>

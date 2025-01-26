@@ -22,7 +22,7 @@ const tabData = [
     },
     {
         label: "Collection Type",
-        options: ["Books", "Popular Magazines", "Newspapers", "Journals", "AV Materials", "Theses & Dissertation", "Special Collections", "Museum and Archival Materials"],
+        options: ["Book", "Popular Magazines", "Newspapers", "Journals", "AV Materials", "Theses & Dissertation", "Special Collections", "Museum and Archival Materials"],
     },
 ];
 

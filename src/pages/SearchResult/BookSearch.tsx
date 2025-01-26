@@ -10,12 +10,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Line from "../../components/Line/Line";
 import Sidebar from "../../components/Sidebar";
 import SearchBar from "../../components/SearchBar/Searchbar";
-import { searchGoogleBooks } from "../../services/Cataloging/GoogleBooksApi";
 import { getBooksByAdvancedSearch } from "../../services/Cataloging/LocalBooksAPI";
 
 const BookSearch: React.FC = () => {
     const location = useLocation();
-    const state = location.state as { query: any; books: Book[]; source: string };
+    const state = location.state as { query: any; books: Book[]; source: string; modalParams?: any };
 
     const [query, setQuery] = useState(state?.query || null);
     const [source, setSource] = useState(state?.source || "All libraries");
@@ -31,7 +30,7 @@ const BookSearch: React.FC = () => {
 
     const handleBookClick = (book: Book) => {
         navigate(`/user/book/${book.id}`, {
-            state: { book, searchState: { query, books, source } },
+            state: { book, searchState: { query, books, source }, source },
         });
     };
 
@@ -39,22 +38,15 @@ const BookSearch: React.FC = () => {
         setBooks(newBooks);
         setSource(newSource);
         setQuery(newQuery);
-        setIsNavigationSearch(false); // Ensure subsequent searches are treated as user-triggered
+        setIsNavigationSearch(false);
     };
-    // const updateBooks = (newBooks: Book[]) => {
-    //     setBooks(newBooks);
-    //     setSource(source);
-    //     setQuery(query);
-    //     setIsNavigationSearch(false);
-    // };
+
 
     const fetchBooks = async (searchQuery: any, searchSource: string) => {
         setLoading(true);
         try {
             let result: Book[] = [];
-            if (searchSource === "Google Books") {
-                result = await searchGoogleBooks(searchQuery);
-            } else if (searchSource !== "Google Books" && typeof searchQuery === "object") {
+            if (searchSource !== "Z39.50/SRU" && typeof searchQuery === "object") {
                 result = await getBooksByAdvancedSearch(searchQuery);
             }
             setBooks(result);
@@ -72,26 +64,52 @@ const BookSearch: React.FC = () => {
     }, [isNavigationSearch, query, source]); // Only fetch when it's a navigation search
 
     const generateSearchMessage = () => {
-        const criteria =
-            typeof query === "string"
-                ? query
-                : query?.criteria
-                    ?.map((criterion: any) => {
-                        if (criterion.idx === "q") {
-                            return `inkeyword: ${criterion.searchTerm}`;
-                        }
-                        return `${criterion.idx}: ${criterion.searchTerm}`;
-                    })
-                    .join(" AND ");
+        // Start building the criteria message
+        const criteria = [];
 
-        console.log('Books', books)
-
-        if (books.length === 0) {
-            return `No results match your search for ${criteria || "your query"} in ${source}.`;
+        // Check if query is a string, if so, use it directly
+        if (typeof query === "string") {
+            criteria.push(query);
         } else {
-            return `${books.length} result(s) found for '${criteria || "your query"}' in ${source}.`;
+            // Add filtered criteria (ignore null, isAvailableOnly, and sortOrder)
+            query?.criteria?.forEach((criterion: any) => {
+                if (criterion.searchTerm !== null && criterion.idx !== "isAvailableOnly" && criterion.idx !== "sortOrder") {
+                    if (criterion.idx === "q") {
+                        criteria.push(`inkeyword: ${criterion.searchTerm}`);
+                    } else {
+                        criteria.push(`${criterion.idx}: ${criterion.searchTerm}`);
+                    }
+                }
+            });
+
+            // Add other relevant fields if they have values
+            if (query?.yearRange) {
+                criteria.push(`yearRange: ${query.yearRange}`);
+            }
+            if (query?.language) {
+                criteria.push(`language: ${query.language}`);
+            }
+            if (query?.itemType?.length > 0) {
+                criteria.push(`itemType: ${query.itemType.join(", ")}`);
+            }
+            if (query?.sections?.length > 0) {
+                criteria.push(`sections: ${query.sections.join(", ")}`);
+            }
+            if (query?.collection) {
+                criteria.push(`collection: ${query.collection}`);
+            }
+        }
+
+        const criteriaString = criteria.join(" AND ");
+
+        // Return the result message
+        if (books.length === 0) {
+            return `No results match your search for ${criteriaString || "your query"} in ${source}.`;
+        } else {
+            return `${books.length} result(s) found for '${criteriaString || "your query"}' in ${source}.`;
         }
     };
+
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -121,8 +139,8 @@ const BookSearch: React.FC = () => {
                     initialQuery={typeof query === "string" ? query : ""}
                     initialSource={source}
                     onSearch={handleSearch}
+                    modalParams={state?.modalParams}
                 />
-                {/* <SearchBar onSearch={updateBooks} /> */}
 
                 {/* Display Search Results Summary */}
                 {!loading && (
@@ -136,7 +154,7 @@ const BookSearch: React.FC = () => {
                 ) : books.length === 0 ? (
                     <Typography>No results found</Typography>
                 ) : (
-                    <BookList books={books} onBookClick={handleBookClick} />
+                    <BookList books={books} onBookClick={handleBookClick} source={source} />
                 )}
             </Container>
         </Box>
