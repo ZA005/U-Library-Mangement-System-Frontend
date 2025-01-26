@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import styles from "./styles.module.css";
 
-type FieldType = "text" | "select";
+type FieldType = "text" | "select" | "number";
 
 interface Field {
   label: string;
@@ -77,7 +77,21 @@ const ModalForm: React.FC<ModalFormProps> = ({
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box className={styles.modalBox}>
+      <Box className={styles.modalBox}
+        sx={{
+          maxHeight: '90vh',  // Set max height for scrollable area
+          overflowY: 'auto',  // Enable vertical scrolling
+          padding: 2,  // Add padding to the modal content
+          display: 'flex',
+          flexDirection: 'column',
+          // Hide scrollbars
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+          '-ms-overflow-style': 'none',  // For Internet Explorer
+          'scrollbar-width': 'none',  // For Firefox
+        }}
+      >
         <Stack spacing={2}>
           <Typography
             variant="h6"
@@ -132,8 +146,22 @@ const ModalForm: React.FC<ModalFormProps> = ({
                   ))}
                 </TextField>
               );
+            } else if (field.type === "number") {
+              return (
+                <TextField
+                  key={index}
+                  label={field.label}
+                  variant="outlined"
+                  value={field.value}
+                  onChange={(e) => handleFieldChange(e.target.value, index)}
+                  type="number" // Specify the input type as number
+                  className={styles.textField}
+                  error={!!fieldErrors[index]}
+                  helperText={fieldErrors[index]}
+                />
+              );
             }
-            return null;
+            return null;;
           })}
           <Button
             variant="contained"
