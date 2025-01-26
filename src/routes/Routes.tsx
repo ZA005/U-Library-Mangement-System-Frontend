@@ -10,6 +10,7 @@ import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
+import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();

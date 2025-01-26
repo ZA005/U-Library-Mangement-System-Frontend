@@ -24,7 +24,6 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
       if (data && data.id) {
         localStorage.setItem('emailAdd', data.emailAdd);
         navigate('/verify/user/otp');
-
       } else {
         setError('Student not found or not currently enrolled.');
       }
@@ -53,15 +52,15 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
 
         {/* Modal Content */}
         <Box className="verify-modal-content">
-          <Typography className="modal-title">Verify Student ID</Typography>
+          <Typography className="modal-title">Verify UNC ID Number</Typography>
           <Typography className="modal-subtitle">
-            Enter your Student ID to receive a verification code.
+            Enter your UNC ID Number to receive a verification code.
           </Typography>
 
           <form onSubmit={(e) => e.preventDefault()} className="modal-form">
             {/* TextField for Student ID */}
             <TextField
-              label="Student ID"
+              label="UNC ID Number"
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
               required
