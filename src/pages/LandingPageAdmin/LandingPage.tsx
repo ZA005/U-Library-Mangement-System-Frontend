@@ -121,7 +121,10 @@ const LandingPage: React.FC = () => {
                             <Icon className={styles.icon}>
                                 <LibraryAddIcon />
                             </Icon>
-                            <button className={styles.manageButton}>
+                            <button
+                                className={styles.manageButton}
+                                onClick={() => navigate('/admin/catalog/management/accesion-record')}
+                            >
                                 Acquisition
                             </button>
                         </Box>

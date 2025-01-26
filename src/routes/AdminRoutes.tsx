@@ -3,6 +3,7 @@ import CurriculumManagement from '../pages/Curriculum-Management/CurriculumManag
 import ProtectedRoute from './ProtectedRoute';
 import BookSearch from '../pages/SearchResult/BookSearch';
 import BookForm from '../components/Book/BookForm/BookForm';
+import BookFormFast from '../components/Book/BookForm/BookFormFast';
 import LandingPage from '../pages/LandingPageAdmin/LandingPage';
 import CirculationDashboard from '../pages/CirculationAdmin/CirculationDashboard';
 import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
@@ -34,7 +35,8 @@ const AdminRoutes = () => (
       <Route path="catalog/management/criteria" element={<CriteriaDashboard />} />
 
       {/* <Route path="book/:bookId" element={<BookDetails />} /> */}
-      <Route path="book-form" element={<BookForm />} />
+      <Route path="catalog/management/book-form" element={<BookForm />} />
+      <Route path="catalog/management/book-form-fast" element={<BookFormFast />} />
 
 
       {/* Curriculum Module  */}

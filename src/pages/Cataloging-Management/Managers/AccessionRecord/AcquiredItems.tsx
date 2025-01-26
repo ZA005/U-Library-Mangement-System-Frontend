@@ -64,13 +64,15 @@ const AcquiredItems: React.FC = () => {
         const loadData = async () => {
             setIsLoading(true);
             try {
-                if (location.state?.id) {
+                if (location.state?.success) {
                     const success = await updateStatus(location.state.id);
                     if (success) {
                         openSnackbar(`${location.state.title} has been successfully cataloged`, 'success');
                     } else {
                         openSnackbar(`Failed to catalog ${location.state.title}`, 'error');
                     }
+                    // Reset location state
+                    navigate(location.pathname, { replace: true });
                 }
                 const records = await fetchAllPendingCatalogRecords();
                 setArray(records);
@@ -87,7 +89,7 @@ const AcquiredItems: React.FC = () => {
         };
 
         loadData();
-    }, [location.state, openSnackbar]);
+    }, [openSnackbar, navigate, location]);
 
     const handleSideBarClick = () => {
         if (!isLoading) setSidebarOpen(!isSidebarOpen);
@@ -112,10 +114,10 @@ const AcquiredItems: React.FC = () => {
                     individualLibrary: null,
                 };
                 navigate("/admin/catalog/management/search-title", {
-                    state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams },
+                    state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams, bookData: item },
                 });
             } else if (value === 'addToCatalog') {
-                navigate('/admin/catalog/management/marc-record/add', {
+                navigate('/admin/catalog/management/book-form-fast', {
                     state: { bookData: item }
                 });
             }
@@ -133,6 +135,7 @@ const AcquiredItems: React.FC = () => {
             setFileToUpload(selectedFile);
             setErrorMessage(null);
             setOpenDialog(true);
+            (e.target as HTMLInputElement).value = '';
         }
     };
 
@@ -156,17 +159,29 @@ const AcquiredItems: React.FC = () => {
     };
 
     const validateAndParseCSV = async (csvString: string) => {
+        const expectedHeaders = [
+            'book_title', 'isbn', 'publisher', 'edition', 'published_date',
+            'purchase_price', 'purchase_date', 'acquired_date', 'vendor',
+            'vendor_location', 'funding_source'
+        ];
+
+        const resetStates = () => {
+            setOpenDialog(false);
+            setFileToUpload(null);
+        };
+
+        const handleError = (message: string, snackbarMsg: string) => {
+            setErrorMessage(message);
+            openSnackbar(snackbarMsg, 'error');
+            resetStates();
+            setIsLoading(false);
+        };
+
         Papa.parse(csvString, {
             header: true,
             skipEmptyLines: true,
             complete: async (result) => {
-                const expectedHeaders = [
-                    'book_title', 'isbn', 'publisher', 'edition', 'series',
-                    'purchase_price', 'purchase_date', 'acquired_date', 'vendor_name',
-                    'vendor_location', 'funding_source'
-                ];
-
-                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0] as object)) === JSON.stringify(expectedHeaders)) {
+                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
                     const parsedData = result.data as unknown as AcquisitionRecord[];
                     try {
                         await addRecords(parsedData);
@@ -175,25 +190,28 @@ const AcquiredItems: React.FC = () => {
                         setArray(allRecords);
                         setCanImport(allRecords.length === 0);
                     } catch (error) {
-                        if (error instanceof Error) {
-                            setErrorMessage(`Failed to add records to the server: ${error.message}`);
-                            openSnackbar("Failed to add records to the server!", "error");
-                        } else {
-                            setErrorMessage('An unexpected error occurred while adding records.');
-                            openSnackbar("An unexpected error occurred while adding records!", "error");
-                        }
+                        handleError(
+                            error instanceof Error ? `Failed to add records to the server: ${error.message}` : 'An unexpected error occurred while adding records.',
+                            error instanceof Error ? "Failed to add records to the server!" : "An unexpected error occurred while adding records!"
+                        );
+                        return;
                     }
                 } else {
-                    setErrorMessage('CSV file headers do not match the expected format or the file is empty.');
+                    handleError('CSV file headers do not match the expected format or the file is empty.', 'CSV file headers incorrect or file empty!');
+                    return;
                 }
                 setIsLoading(false);
+                // console.log('After processing:', openDialog, fileToUpload);
             },
-            error: (err: { message: any; }) => {
-                setErrorMessage(`An error occurred while parsing the CSV file: ${err.message}`);
-                setIsLoading(false);
+            error: (err) => {
+                handleError(`An error occurred while parsing the CSV file: ${err.message}`, `Error parsing CSV file!`);
             }
         });
     };
+
+    useEffect(() => {
+        // console.log('State update:', openDialog, fileToUpload);
+    }, [openDialog, fileToUpload]);
 
     const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
@@ -275,9 +293,6 @@ const AcquiredItems: React.FC = () => {
                                 <TableRow>
                                     <TableCell style={{ minWidth: '150px' }}><strong>Book Title</strong></TableCell>
                                     <TableCell><strong>ISBN</strong></TableCell>
-                                    <TableCell><strong>Publisher</strong></TableCell>
-                                    <TableCell><strong>Edition</strong></TableCell>
-                                    <TableCell><strong>Series</strong></TableCell>
                                     <TableCell><strong>Price</strong></TableCell>
                                     <TableCell><strong>Purchase Date</strong></TableCell>
                                     <TableCell><strong>Acquired Date</strong></TableCell>
@@ -291,7 +306,12 @@ const AcquiredItems: React.FC = () => {
                                 {array.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((item, index) => (
                                     <TableRow key={item.id || index}>
                                         {/* Exclude 'id' from mapping */}
-                                        {Object.entries(item).filter(([key]) => key !== 'id' && key !== 'status').map(([, value], idx) => (
+                                        {Object.entries(item).filter(([key]) => key !== 'id'
+                                            && key !== 'status'
+                                            && key !== 'publisher'
+                                            && key !== 'edition'
+                                            && key !== 'published_date'
+                                        ).map(([, value], idx) => (
                                             <TableCell key={idx}>{value}</TableCell>
                                         ))}
                                         <TableCell>

@@ -6,11 +6,11 @@ export interface AcquisitionRecord {
     isbn: string;
     publisher: string;
     edition: string;
-    series: string;
+    published_date: string;
     purchase_price: number;
     purchase_date: string;
     acquired_date: string;
-    vendor_name: string;
+    vendor: string;
     vendor_location: string;
     funding_source: string;
 }

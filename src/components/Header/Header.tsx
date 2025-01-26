@@ -5,7 +5,7 @@ import LibraryLogo from '../../assets/images/lms-logo.png'
 
 // Passing of props so that the buttons can be dynamic
 interface HeaderProps {
-  buttons: React.ReactNode; 
+  buttons: React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({ buttons }) => {
@@ -13,7 +13,7 @@ const Header: React.FC<HeaderProps> = ({ buttons }) => {
     <AppBar position="static" color="transparent" elevation={0} className={Style.bottomLine}>
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Box display="flex" alignItems="center">
-          <img src={ LibraryLogo } alt="Library Logo" height={50} />
+          <img src={LibraryLogo} alt="Library Logo" height={50} />
           <Box display="flex" flexDirection="column">
             <Typography
               variant="caption"
