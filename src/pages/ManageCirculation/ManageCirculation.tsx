@@ -13,6 +13,8 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -22,7 +24,7 @@ import Copyright from "../../components/Footer/Copyright";
 import CirculationIssueBookModal from "../../components/Circulation/CirculationPopUps/CirculationIssueBookModal";
 import CirculationUpdateModal from "../../components/Circulation/CirculationPopUps/CirculationUpdateModal";
 import styles from "./styles.module.css";
-import { getAllLoans, getLoanById } from "../../services/Circulation/CirculationApi";
+import { getLoanById, getBorrowedLoans } from "../../services/Circulation/CirculationApi";
 import { Loan } from "../../model/Loan";
 
 const ManageCirculation: React.FC = () => {
@@ -31,14 +33,14 @@ const ManageCirculation: React.FC = () => {
   const [loans, setLoans] = useState<Loan[]>([]);
   const [filteredLoans, setFilteredLoans] = useState<Loan[]>([]);
   const [barcode, setBarcode] = useState<string>("");
-  const [loanData, setLoanData] = useState<Loan[] | null>(null); // updated to handle one loan at a time
+  const [loanData, setLoanData] = useState<Loan[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchLoans = async () => {
       setIsLoading(true);
       try {
-        const loansData = await getAllLoans();
+        const loansData = await getBorrowedLoans();
         setLoans(loansData);
         setFilteredLoans(loansData);
       } catch (error) {
@@ -116,7 +118,7 @@ const ManageCirculation: React.FC = () => {
           }
         />
         <Typography variant="h4" gutterBottom className={styles.title}>
-          Manage Circulation
+          Manage Borrowed Book
         </Typography>
 
         <Line />
@@ -132,7 +134,7 @@ const ManageCirculation: React.FC = () => {
             }}
             onClick={() => setIsIssueModalOpen(true)}
           >
-            Issue A Book
+            New Borrow
           </Button>
 
           <Box className={styles.searchBox}>
@@ -162,11 +164,11 @@ const ManageCirculation: React.FC = () => {
                   <TableCell>Author</TableCell>
                   <TableCell>Borrower</TableCell>
                   <TableCell>Department</TableCell>
-                  <TableCell>Date & Time Borrowed</TableCell>
-                  <TableCell>Date & Time Returned</TableCell>
-                  <TableCell>Due</TableCell>
-                  <TableCell>STATUS</TableCell>
-                  <TableCell>ACTION</TableCell>
+                  <TableCell>Borrowed Timestamp</TableCell>
+                  {/* <TableCell>Date & Time Returned</TableCell> */}
+                  <TableCell>Due Date</TableCell>
+                  {/* <TableCell>Status</TableCell> */}
+                  <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -185,14 +187,14 @@ const ManageCirculation: React.FC = () => {
                         })
                         : "N/A"}
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {loan.returnDate
                         ? new Date(loan.returnDate).toLocaleString("en-US", {
                           dateStyle: "short",
                           timeStyle: "medium",
                         })
                         : ""}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       {loan.dueDate
                         ? new Date(loan.dueDate).toLocaleString("en-US", {
@@ -201,7 +203,7 @@ const ManageCirculation: React.FC = () => {
                         })
                         : "N/A"}
                     </TableCell>
-                    <TableCell
+                    {/* <TableCell
                       className={
                         loan.status === "Active"
                           ? styles.activeStatus
@@ -209,22 +211,22 @@ const ManageCirculation: React.FC = () => {
                       }
                     >
                       {loan.status}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
-                      <Button
-                        variant="text"
-                        sx={{
-                          color: "#EA4040",
-                          textTransform: "none",
-                          ":hover": {
-                            backgroundColor: "#f2f2f2",
-                            color: "#d13333",
-                          },
-                        }}
-                        onClick={() => handleOpenModal(BigInt(loan.loanId))}
+                      <Select
+                        value={() => { }}
+                        onChange={() => { }}
+                        displayEmpty
+                        className={styles.select}
+                        disabled={isLoading}
                       >
-                        Edit
-                      </Button>
+                        <MenuItem value="" disabled>
+                          Action
+                        </MenuItem>
+                        <MenuItem value="Return">Return</MenuItem>
+                        <MenuItem value="Renew">Renew</MenuItem>
+
+                      </Select>
                     </TableCell>
                   </TableRow>
                 ))}
