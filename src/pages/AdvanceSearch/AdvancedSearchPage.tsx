@@ -146,7 +146,7 @@ const AdvancedSearchPage: React.FC = () => {
                             }
                         />
                         <Divider />
-                        
+
                         <Typography variant="h6" fontWeight="bold">
                             Filters
                         </Typography>
@@ -203,20 +203,21 @@ const AdvancedSearchPage: React.FC = () => {
                             setLanguage={(value) =>
                                 setSearchParams((prev) => ({ ...prev, language: value }))
                             }
+                            setYearRangeError={setYearRangeError} // Pass the error setter function
                         />
                         <Divider />
-                    {/* Limits Section */}
-                    <LimitsSection
-                        yearRange={searchParams.yearRange}
-                        language={searchParams.language}
-                        setYearRange={(value) =>
-                            setSearchParams((prev) => ({ ...prev, yearRange: value }))
-                        }
-                        setLanguage={(value) =>
-                            setSearchParams((prev) => ({ ...prev, language: value }))
-                        }
-                        setYearRangeError={setYearRangeError} // Pass the error setter function
-                    />
+                        {/* Limits Section */}
+                        <LimitsSection
+                            yearRange={searchParams.yearRange}
+                            language={searchParams.language}
+                            setYearRange={(value) =>
+                                setSearchParams((prev) => ({ ...prev, yearRange: value }))
+                            }
+                            setLanguage={(value) =>
+                                setSearchParams((prev) => ({ ...prev, language: value }))
+                            }
+                            setYearRangeError={setYearRangeError} // Pass the error setter function
+                        />
 
                         <Typography variant="h6" fontWeight="bold">
                             Location & Availability
@@ -225,9 +226,9 @@ const AdvancedSearchPage: React.FC = () => {
                             isAvailableOnly={searchParams.isAvailableOnly}
                             individualLibrary={searchParams.individualLibrary}
                             setIsAvailableOnly={(value) =>
-                                setSearchParams((prev) => ({ ...prev, isAvailableOnly: value })) }
+                                setSearchParams((prev) => ({ ...prev, isAvailableOnly: value }))}
                             setIndividualLibrary={(value) =>
-                                setSearchParams((prev) => ({ ...prev, individualLibrary: value })) }
+                                setSearchParams((prev) => ({ ...prev, individualLibrary: value }))}
                         />
                         <Divider />
 
@@ -246,6 +247,7 @@ const AdvancedSearchPage: React.FC = () => {
                                 variant="contained"
                                 style={{ backgroundColor: "#ea4040", color: "white" }}
                                 onClick={handleSearch}
+                                disabled={yearRangeError}
                             >
                                 Search
                             </Button>
@@ -259,21 +261,6 @@ const AdvancedSearchPage: React.FC = () => {
                         </Box>
                     </Stack>
                 </Box>
-                    {/* Action Buttons */}
-                    <Box display="flex" justifyContent="space-between" marginTop={3}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleSearch}
-                            disabled={yearRangeError} // Disable the button if there's an error
-                        >
-                            Search
-                        </Button>
-                        <Button variant="outlined" color="secondary" onClick={resetSearch}>
-                            Reset
-                        </Button>
-                    </Box>
-                </Stack>
             </Container>
         </Box>
     );
