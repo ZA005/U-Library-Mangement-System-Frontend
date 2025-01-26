@@ -71,7 +71,7 @@ const TransactionRecord: React.FC = () => {
                 {isLoading ? (
                     <Typography>Loading...</Typography>
                 ) : filteredLoans.length === 0 ? (
-                    <Typography>No loans to display</Typography>
+                    <Typography>No Record To Display</Typography>
                 ) : (
                     <TableContainer component={Paper} className={styles.tableContainer}>
                         <Table stickyHeader>
