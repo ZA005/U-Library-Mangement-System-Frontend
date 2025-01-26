@@ -200,7 +200,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
           handleClose();
           resetState();
         }}
-        title="Issue A Book"
+        title="Enter Library Card"
         fields={getFieldsForStep()}
         onConfirm={step === 3 ? handleConfirm : handleNext}
         confirmText={step === 3 ? "Save" : "Next"}
