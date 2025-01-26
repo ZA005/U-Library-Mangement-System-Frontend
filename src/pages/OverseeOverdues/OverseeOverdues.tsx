@@ -20,11 +20,14 @@ import Header from "../../components/Header/Header";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
 import Copyright from "../../components/Footer/Copyright";
-import { calculateFines, getAllFines } from "../../services/Circulation/CirculationApi";
+import { calculateFines, getAllFines, getAllFineDetails } from "../../services/Circulation/CirculationApi";
 
 interface Fine {
     fineId: number;
     loanId: number;
+    stakeholder_id: string;
+    first_name: string;
+    last_name: string;
     borrowDate: string;
     dueDate: string;
     fineAmount: number;
@@ -43,7 +46,7 @@ const OverseeOverdue: React.FC = () => {
         const fetchFines = async () => {
             try {
                 await calculateFines();
-                const result = await getAllFines(); // Assuming the backend returns an array of fines
+                const result = await getAllFineDetails(); // Assuming the backend returns an array of fines
                 setFines(result);
             } catch (error) {
                 console.error("Error calculating fines:", error);
@@ -107,10 +110,10 @@ const OverseeOverdue: React.FC = () => {
                         <Table stickyHeader>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><strong>Loan #</strong></TableCell>
+                                    <TableCell><strong>ID</strong></TableCell>
+                                    <TableCell><strong>Name</strong></TableCell>
                                     <TableCell><strong>Date Borrowed</strong></TableCell>
                                     <TableCell><strong>Due Date</strong></TableCell>
-                                    {/* <TableCell><strong>Date Returned</strong></TableCell> */}
                                     <TableCell><strong>Penalty</strong></TableCell>
                                     {/* <TableCell><strong>Penalty Status</strong></TableCell> */}
                                     <TableCell><strong>Action</strong></TableCell>
@@ -119,7 +122,9 @@ const OverseeOverdue: React.FC = () => {
                             <TableBody>
                                 {fines.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((fine, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{fine.loanId}</TableCell>
+                                        <TableCell>{fine.stakeholder_id}</TableCell>
+                                        <TableCell>{`${fine.first_name} ${fine.last_name}`}</TableCell>
+
                                         <TableCell>{new Date(fine.borrowDate).toLocaleString()}</TableCell>
                                         <TableCell>{new Date(fine.dueDate).toLocaleString()}</TableCell>
                                         {/* <TableCell>{new Date(fine.returnDate).toLocaleString()}</TableCell> */}
@@ -138,7 +143,7 @@ const OverseeOverdue: React.FC = () => {
                                                     },
                                                 }}
                                             >
-                                                Notify
+                                                Paid
                                             </Typography>
                                         </TableCell>
                                     </TableRow>
