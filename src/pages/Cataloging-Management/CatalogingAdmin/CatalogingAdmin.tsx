@@ -104,6 +104,15 @@ const CatalogingAdmin: React.FC = () => {
                                 Manage Catalog
                             </button>
                         </Box>
+
+                        <Box className={styles.buttonContainer}>
+                            <button
+                                className={styles.manageButton}
+                                onClick={() => navigate('/admin/catalog/management/book-weeding')}
+                            >
+                                Book Weeding
+                            </button>
+                        </Box>
                     </Box>
                 </Box>
             </Container>
