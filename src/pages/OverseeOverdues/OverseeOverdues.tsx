@@ -12,6 +12,7 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Pagination,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -35,12 +36,9 @@ interface Fine {
 const OverseeOverdue: React.FC = () => {
     const [fines, setFines] = useState<Fine[]>([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState<number>(1);
+    const itemsPerPage = 6;
 
-    const handleSideBarClick = () => {
-        console.log("Hamburger menu clicked!");
-    };
-
-    // Fetch fines when the component mounts
     useEffect(() => {
         const fetchFines = async () => {
             try {
@@ -56,6 +54,14 @@ const OverseeOverdue: React.FC = () => {
 
         fetchFines();
     }, []);
+
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
+
+    const handleSideBarClick = () => {
+        console.log("Hamburger menu clicked!");
+    };
 
     return (
         <Box className={styles.rootContainer}>
@@ -92,29 +98,34 @@ const OverseeOverdue: React.FC = () => {
                     <Typography variant="h6" align="center">
                         Calculating fines...
                     </Typography>
+                ) : fines.length === 0 ? (
+                    <Typography variant="body1" align="center">
+                        No fines to display.
+                    </Typography>
                 ) : (
                     <TableContainer component={Paper} className={styles.tableContainer}>
                         <Table stickyHeader>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Loan #</TableCell>
-                                    <TableCell>Date Borrowed</TableCell>
-                                    <TableCell>Due Date</TableCell>
-                                    <TableCell>Date Returned</TableCell>
-                                    <TableCell>Penalty</TableCell>
-                                    <TableCell>Penalty Status</TableCell>
-                                    <TableCell>ACTION</TableCell>
+                                    <TableCell><strong>Loan #</strong></TableCell>
+                                    <TableCell><strong>Date Borrowed</strong></TableCell>
+                                    <TableCell><strong>Due Date</strong></TableCell>
+                                    {/* <TableCell><strong>Date Returned</strong></TableCell> */}
+                                    <TableCell><strong>Penalty</strong></TableCell>
+                                    {/* <TableCell><strong>Penalty Status</strong></TableCell> */}
+                                    <TableCell><strong>Action</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {fines.map((fine, index) => (
+                                {fines.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((fine, index) => (
                                     <TableRow key={index}>
                                         <TableCell>{fine.loanId}</TableCell>
                                         <TableCell>{new Date(fine.borrowDate).toLocaleString()}</TableCell>
                                         <TableCell>{new Date(fine.dueDate).toLocaleString()}</TableCell>
-                                        <TableCell>{new Date(fine.returnDate).toLocaleString()}</TableCell>
-                                        <TableCell>{fine.fineAmount + " php"}</TableCell>
-                                        <TableCell>{fine.paid ? "Paid" : "Unpaid"}</TableCell>
+                                        {/* <TableCell>{new Date(fine.returnDate).toLocaleString()}</TableCell> */}
+                                        <TableCell>{fine.fineAmount} php</TableCell>
+                                        {/* <TableCell>{fine.paid ? "Paid" : "Unpaid"}</TableCell> */}
+                                        {/* <TableCell>{fine.user.name}</TableCell> */}
                                         <TableCell>
                                             <Typography
                                                 variant="button"
@@ -127,7 +138,7 @@ const OverseeOverdue: React.FC = () => {
                                                     },
                                                 }}
                                             >
-                                                Edit
+                                                Notify
                                             </Typography>
                                         </TableCell>
                                     </TableRow>
@@ -136,6 +147,14 @@ const OverseeOverdue: React.FC = () => {
                         </Table>
                     </TableContainer>
                 )}
+
+                <Box display="flex" justifyContent="center" mt={2}>
+                    <Pagination
+                        count={Math.ceil(fines.length / itemsPerPage)}
+                        page={page}
+                        onChange={handlePageChange}
+                    />
+                </Box>
             </Container>
 
             <Copyright />

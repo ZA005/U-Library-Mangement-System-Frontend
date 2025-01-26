@@ -94,9 +94,9 @@ const CurriculumManagement: React.FC = () => {
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={() => navigate('/admin/curriculum/management/departments')}
+                onClick={() => navigate('/admin/curriculum/management/upload')}
               >
-                Manage Departments
+                Upload Course References
               </button>
             </Box>
 

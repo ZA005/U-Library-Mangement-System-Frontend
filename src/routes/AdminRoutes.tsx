@@ -15,6 +15,8 @@ import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageB
 import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
 import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/CatalogingAdmin';
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
+import UploadCourseReference from '../pages/Curriculum-Management/Managers/UploadCourseReference';
+import TransactionRecord from '../pages/ManageCirculation/TransactionRecord';
 
 const AdminRoutes = () => (
   <Routes>
@@ -36,6 +38,7 @@ const AdminRoutes = () => (
 
       {/* Curriculum Module  */}
       <Route path="curriculum/management/page" element={<CurriculumManagement />} />
+      <Route path="curriculum/management/upload" element={<UploadCourseReference />} />
       <Route path='/curriculum/management/departments' element={<ManageDepartments />} />
       <Route path='/curriculum/management/programs' element={<ManageCourses />} />
       <Route path='/curriculum/management/subjects' element={<ManageSubjects />} />
@@ -44,6 +47,7 @@ const AdminRoutes = () => (
       {/* Ciculation Module  */}
       <Route path='circulation/management/page' element={<CirculationDashboard />} />
       <Route path='manage-circulation' element={<ManageCirculation />} />
+      <Route path='circulation/management/history' element={<TransactionRecord />} />
       <Route path='oversee-overdue' element={<OverseeOverdue />} />
 
 

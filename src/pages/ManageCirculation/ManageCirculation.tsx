@@ -132,7 +132,7 @@ const ManageCirculation: React.FC = () => {
             }}
             onClick={() => setIsIssueModalOpen(true)}
           >
-            Issue A Book
+            Record Borrow
           </Button>
 
           <Box className={styles.searchBox}>
