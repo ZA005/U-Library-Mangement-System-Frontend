@@ -21,6 +21,7 @@ import TabCheckboxGroup from "./TabCheckboxGroup";
 import LimitsSection from "./LimitsSection";
 import LocationAvailabilitySection from "./LocationAvailabilitySection";
 import SortingSection from "./SortingSection";
+import "./AdvancedSearch.css";
 
 const AdvancedSearchPage: React.FC = () => {
     const navigate = useNavigate();
@@ -54,7 +55,7 @@ const AdvancedSearchPage: React.FC = () => {
         const requestBody = {
             criteria: searchParams.criteria.filter(
                 (criterion) => criterion.searchTerm.trim() !== ""
-            ), // Remove empty search terms
+            ),
             yearRange: searchParams.yearRange,
             language: searchParams.language !== "No limit" ? searchParams.language : null,
             isAvailableOnly: searchParams.isAvailableOnly,
@@ -98,6 +99,16 @@ const AdvancedSearchPage: React.FC = () => {
             sections: [],
             collection: [],
         });
+    };
+
+    const addCriterion = () => {
+        setSearchParams((prevState) => ({
+            ...prevState,
+            criteria: [
+                ...prevState.criteria,
+                { idx: "", searchTerm: "", operator: "AND" },
+            ],
+        }));
     };
 
     return (

@@ -31,6 +31,18 @@ export const addProgram = async (newProgram: Program): Promise<Program> => {
     }
 }
 
+// Add multiple programs
+export const addProgramInBulk = async (programs: Program[]): Promise<Program[]> => {
+    try {
+        const response = await axios.post(`${BASE_URL}public/programs/bulk`, programs);
+        console.log("Programs added:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding programs:", error);
+        throw error;
+    }
+};
+
 export const updateProgram = async (id: number, program: Program): Promise<Program> => {
     try {
         const response = await axios.put(`${BASE_URL}public/programs/${id}`, program);

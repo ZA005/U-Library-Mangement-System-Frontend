@@ -4,15 +4,17 @@ import { Box, Container, Typography, Icon } from "@mui/material";
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Line from "../../components/Line/Line";
-import ManageCirculationIcon from "@mui/icons-material/AllInbox"; // Example Icon
-import ManageReservationIcon from "@mui/icons-material/EventNote"; // Example Icon
-import OverseeOverdueIcon from "@mui/icons-material/Warning"; // Example Icon
+import HistoryIcon from '@mui/icons-material/History';
+import ManageCirculationIcon from "@mui/icons-material/AllInbox";
+import ManageReservationIcon from "@mui/icons-material/EventNote";
+import OverseeOverdueIcon from "@mui/icons-material/Warning";
 import styles from "./styles.module.css";
 
 const CirculationDashboard: React.FC = () => {
     const navigate = useNavigate();
 
     // Navigation Handlers
+    const viewTransactionHistory = () => navigate("/admin/circulation/management/history");
     const handleManageCirculation = () => navigate("/admin/manage-circulation");
     const handleManageReservation = () => navigate("/admin/manage-reservation");
     const handleOverseeOverdues = () => navigate("/admin/oversee-overdue");
@@ -76,6 +78,18 @@ const CirculationDashboard: React.FC = () => {
 
                     {/* Right Content */}
                     <Box className={styles.rightContent}>
+                        <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <HistoryIcon />
+                            </Icon>
+                            <button
+                                className={styles.manageButton}
+                                onClick={viewTransactionHistory}
+                            >
+                                Transaction History
+                            </button>
+                        </Box>
+
                         <Box className={styles.buttonContainer}>
                             <Icon className={styles.icon}>
                                 <ManageCirculationIcon />

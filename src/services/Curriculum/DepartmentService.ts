@@ -42,6 +42,18 @@ export const addDepartment = async (newDepartment: Department): Promise<Departme
     }
 };
 
+// Add multiple departments
+export const addDepartmentInBulk = async (departments: Department[]): Promise<Department[]> => {
+    try {
+        const response = await axios.post(`${BASE_URL}public/departments/bulk`, departments);
+        console.log("Departments added:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding departments:", error);
+        throw error;
+    }
+};
+
 // Update an existing department
 export const updateDepartment = async (id: number, department: Department): Promise<Department> => {
     try {

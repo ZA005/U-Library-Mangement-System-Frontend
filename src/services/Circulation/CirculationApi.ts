@@ -26,6 +26,17 @@ export const getAllLoans = async () => {
     }
 };
 
+export const getBorrowedLoans = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}admin/borrowed-loans`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        return response.data
+    } catch (error) {
+        throw new Error("Failed to fetch laons from the database." + error);
+    }
+}
+
 export const fetchBorrowerDetails = async (libraryCardNumber: string): Promise<{ department: string }> => {
     try {
         const response = await axios.get(`${BASE_URL}admin/borrower-details/${libraryCardNumber}`, {
@@ -60,9 +71,9 @@ export const getLoanById = async (loanId: bigint) => {
     }
 };
 
-export const updateLoanStatus = async (loanId: bigint, status: string) => {
+export const updateLoanStatus = async (loanId: bigint, status: string, action: string) => {
     try {
-        const response = await axios.put(`${BASE_URL}admin/update/${loanId}`, { status }, {
+        const response = await axios.put(`${BASE_URL}admin/update/${loanId}?action=${action}`, { status }, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data;
@@ -103,6 +114,17 @@ export const calculateFines = async () => {
 export const getAllFines = async () => {
     try {
         const response = await axios.get(`${BASE_URL}adminuser/get-all-fines`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch fines: " + error);
+    }
+}
+
+export const getAllFineDetails = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}adminuser/get-all-fine-details`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data;

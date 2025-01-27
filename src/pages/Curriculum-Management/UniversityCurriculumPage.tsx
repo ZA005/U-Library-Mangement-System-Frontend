@@ -107,7 +107,7 @@ const UniversityCurriculumPage: React.FC = () => {
                     sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                     fontWeight="bold"
                 >
-                    University Curriculum
+                    Courses and Programs
                 </Typography>
                 <Line />
 
