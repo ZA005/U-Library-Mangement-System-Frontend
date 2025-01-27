@@ -32,6 +32,18 @@ export const addSubject = async (newSubject: Subject): Promise<Subject> => {
     }
 }
 
+// Add multiple subjects
+export const addSubjectInBulk = async (subjects: Subject[]): Promise<Subject[]> => {
+    try {
+        const response = await axios.post(`${BASE_URL}public/subjects/bulk`, subjects);
+        console.log("Subjects added:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding subjects:", error);
+        throw error;
+    }
+};
+
 export const updateSubject = async (id: number, subject: Subject): Promise<Subject> => {
     try {
         const response = await axios.put(`${BASE_URL}public/subjects/${id}`, subject);
