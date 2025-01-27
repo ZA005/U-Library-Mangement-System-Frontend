@@ -21,7 +21,7 @@ import CriteriaDashboard from '../pages/Cataloging-Management/Managers/Book-Weed
 const AdminRoutes = () => (
   <Routes>
     <Route
-      element={<ProtectedRoute allowedRoles={['LIBRARIAN']} redirectPath="/" />}
+      element={<ProtectedRoute allowedRoles={['LIBRARIAN', 'ADMIN']} redirectPath="/" />}
     >
       {/* Admin Landing Page */}
       <Route path="library" element={<LandingPage />} />

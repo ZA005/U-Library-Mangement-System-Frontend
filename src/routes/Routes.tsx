@@ -40,7 +40,7 @@ const AppRoutes = () => {
       <Route
         path="admin/*"
         element={
-          role === 'LIBRARIAN' ? (
+          role === 'LIBRARIAN' || role === 'ADMIN' ? (
             <AdminRoutes />
           ) : (
             <Navigate to="/" replace />
@@ -52,7 +52,7 @@ const AppRoutes = () => {
       <Route
         path="user/*"
         element={
-          role === 'STUDENT' || role === 'LIBRARIAN' ? (
+          role === 'STUDENT' || role === 'LIBRARIAN' || role === 'ADMIN' ? (
             <UserRoutes />
           ) : (
             <Navigate to="/" replace />
