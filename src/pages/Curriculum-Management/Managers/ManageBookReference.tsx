@@ -1,58 +1,122 @@
 import React, { useState, useEffect } from "react";
-import { Box, Container, IconButton, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+    Box,
+    Container,
+    IconButton,
+    Typography,
+    TextField,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Select,
+    MenuItem,
+    Button,
+} from "@mui/material";
+import { Program, getAllProgramByDepartment } from "../../../services/Curriculum/ProgramService";
+import { Department, getAllDepartments } from "../../../services/Curriculum/DepartmentService";
+import { Subject, getAllSubjectsByProgram } from "../../../services/Curriculum/SubjectService";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import Header from "../../../components/Header/Header";
 import Line from "../../../components/Line/Line";
 import Copyright from "../../../components/Footer/Copyright";
 import Sidebar from "../../../components/Sidebar";
-import { getAllBookRef, BookReference } from "../../../services/Curriculum/BookReferenceService";
-import UpdateBookReferenceModal from "../../../components/CurriculumManagement/UpdateBookReferenceModal";
 import styles from "./styles.module.css";
 
 const ManageBookReference: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [bookReferences, setBookReferences] = useState<BookReference[]>([]);
-    const [selectedBookReference, setSelectedBookReference] =
-        useState<BookReference | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [programs, setPrograms] = useState<Program[]>([]);
+    const [subjects, setSubjects] = useState<Subject[]>([]);
+    const [departmentName, setDepartmentName] = useState<string>("");
+    const [programName, setProgramName] = useState<string>("");
 
     useEffect(() => {
-        const fetchBookReferences = async () => {
+        const fetchDepartments = async () => {
             try {
-                const data = await getAllBookRef();
-                console.log('DATA', data)
-                setBookReferences(data);
+                const fetchedDepartments = await getAllDepartments();
+                setDepartments(fetchedDepartments);
             } catch (error) {
-                console.error("Error fetching book references:", error);
+                console.error("Error fetching departments:", error);
             }
         };
 
-        fetchBookReferences();
+        fetchDepartments();
     }, []);
 
-    const toggleSidebar = () => setSidebarOpen((prev) => !prev);
-
-    const refreshList = async () => {
+    const fetchPrograms = async (departmentName: string) => {
         try {
-            const data = await getAllBookRef();
-            setBookReferences(data);
+            const selectedDepartment = departments.find((dept) => dept.name === departmentName);
+
+            if (selectedDepartment?.id) {
+                const fetchedPrograms = await getAllProgramByDepartment(selectedDepartment.id);
+                setPrograms(fetchedPrograms);
+            } else {
+                setPrograms([]);
+            }
         } catch (error) {
-            console.error("Error refreshing book references:", error);
+            console.error("Error fetching programs:", error);
         }
     };
 
-    const handleEditClick = (bookReference: BookReference) => {
-        setSelectedBookReference(bookReference);
-        setOpenUpdateModal(true);
+    const fetchSubjects = async (programName: string) => {
+        try {
+            const selectedProgram = programs.find((program) => program.name === programName);
+
+            if (selectedProgram?.id) {
+                const fetchedSubjects = await getAllSubjectsByProgram(selectedProgram.id);
+                setSubjects(fetchedSubjects); // Store the full subject objects with id and name
+            } else {
+                setSubjects([]);
+            }
+        } catch (error) {
+            console.error("Error fetching subjects:", error);
+        }
     };
 
-    const filteredBookReferences = bookReferences.filter((bookReference) =>
-        bookReference.book_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        bookReference.subject_name.toLowerCase().includes(searchTerm.toLowerCase())
+    const handleDepartmentChange = (name: string) => {
+        setDepartmentName(name);
+        setProgramName(""); // Reset program selection
+        setSubjects([]); // Clear subjects when department changes
+        if (name) {
+            fetchPrograms(name);
+        } else {
+            setPrograms([]);
+        }
+    };
 
-    );
+    const handleProgramChange = (name: string) => {
+        setProgramName(name);
+        if (name) {
+            fetchSubjects(name);
+        } else {
+            setSubjects([]);
+        }
+    };
+
+    const convertYearToString = (year: number): string | null => {
+        switch (year) {
+            case 1:
+                return "1st Year";
+            case 2:
+                return "2nd Year";
+            case 3:
+                return "3rd Year";
+            case 4:
+                return "4th Year";
+            case 5:
+                return "5th Year";
+            default:
+                return null;
+        }
+    };
+
+    const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
     return (
         <Box className={styles.rootContainer}>
@@ -83,6 +147,42 @@ const ManageBookReference: React.FC = () => {
                             }}
                         />
                     </Box>
+
+                    <Box className={styles.filterBox}>
+                        <Select
+                            value={departmentName}
+                            onChange={(e) => handleDepartmentChange(e.target.value)}
+                            displayEmpty
+                            size="small"
+                            sx={{ width: 300, marginRight: 2 }}
+                        >
+                            <MenuItem value="" disabled>
+                                Select Department
+                            </MenuItem>
+                            {departments.map((department) => (
+                                <MenuItem key={department.id} value={department.name}>
+                                    {department.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+
+                        <Select
+                            value={programName}
+                            onChange={(e) => handleProgramChange(e.target.value)}
+                            displayEmpty
+                            size="small"
+                            sx={{ width: 300 }}
+                        >
+                            <MenuItem value="" disabled>
+                                Select Program
+                            </MenuItem>
+                            {programs.map((program) => (
+                                <MenuItem key={program.id} value={program.name}>
+                                    {program.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Box>
                 </Box>
 
                 <TableContainer
@@ -93,62 +193,49 @@ const ManageBookReference: React.FC = () => {
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Book Title</TableCell>
-                                <TableCell>Subject Name</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Action</TableCell>
+                                <TableCell><strong>Program</strong></TableCell>
+                                <TableCell><strong>Subject</strong></TableCell>
+                                <TableCell><strong>Year</strong></TableCell>
+                                {/* <TableCell>Status</TableCell> */}
+                                <TableCell><strong>Action</strong></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredBookReferences.length > 0 ? (
-                                filteredBookReferences.map((bookReference) => (
-                                    <TableRow key={bookReference.id}>
-                                        <TableCell>{bookReference.book_name}</TableCell>
-                                        <TableCell>{bookReference.subject_name}</TableCell>
-                                        <TableCell>
-                                            {bookReference.status === 1 ? "Active" : "Inactive"}
-                                        </TableCell>
+                            {subjects.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={4} align="center">
+                                        No subjects to display. Please select a department and program to view the subjects.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                subjects.map((subject) => (
+                                    <TableRow key={subject.id}>
+                                        <TableCell width="350px">{subject.program_name || "N/A"}</TableCell>
+                                        <TableCell width="300px">{subject.subject_name || "N/A"}</TableCell>
+                                        <TableCell>{convertYearToString(subject.year)}</TableCell>
                                         <TableCell>
                                             <Button
                                                 variant="text"
                                                 sx={{
                                                     color: "#EA4040",
                                                     textTransform: "none",
-                                                    ":hover": {
-                                                        backgroundColor: "#f2f2f2",
-                                                        color: "#d13333",
-                                                    },
+                                                    ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
                                                 }}
-                                                onClick={() => handleEditClick(bookReference)}
+                                                onClick={() => { }}
                                             >
-                                                Edit
+                                                Add Book Reference
                                             </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={4} align="center">
-                                        <Typography variant="body1" sx={{ color: "gray" }}>
-                                            No book references match your search criteria.
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
                             )}
                         </TableBody>
                     </Table>
                 </TableContainer>
             </Container>
-
-            <UpdateBookReferenceModal
-                open={openUpdateModal}
-                handleClose={() => setOpenUpdateModal(false)}
-                onBookReferenceUpdate={refreshList}
-                bookReference={selectedBookReference}
-            />
             <Copyright />
         </Box>
     );
 };
 
-export default ManageBookReference
+export default ManageBookReference;
