@@ -71,9 +71,9 @@ export const getLoanById = async (loanId: bigint) => {
     }
 };
 
-export const updateLoanStatus = async (loanId: bigint, status: string) => {
+export const updateLoanStatus = async (loanId: bigint, status: string, action: string) => {
     try {
-        const response = await axios.put(`${BASE_URL}admin/update/${loanId}`, { status }, {
+        const response = await axios.put(`${BASE_URL}admin/update/${loanId}?action=${action}`, { status }, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data;

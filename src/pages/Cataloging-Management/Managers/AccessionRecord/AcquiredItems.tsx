@@ -229,7 +229,7 @@ const AcquiredItems: React.FC = () => {
                     }
                 />
                 <Typography variant="h4" gutterBottom className={styles.title}>
-                    Accession
+                    Manage Accession
                 </Typography>
                 <Line />
                 <Box className={styles.actionBar}>
