@@ -17,7 +17,7 @@ import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/Cata
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 import WeedingDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/WeedingDashboard';
 import CriteriaDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/CriteriaDashboard';
-import UploadCourseReference from '../pages/Curriculum-Management/Managers/UploadCourseReference';
+import UploadCourseReference from '../pages/Curriculum-Management/Managers/UploadCurriculum';
 import TransactionRecord from '../pages/ManageCirculation/TransactionRecord';
 
 const AdminRoutes = () => (
