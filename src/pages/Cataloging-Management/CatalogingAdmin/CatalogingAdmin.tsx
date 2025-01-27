@@ -101,7 +101,7 @@ const CatalogingAdmin: React.FC = () => {
                                 className={styles.manageButton}
                                 onClick={() => navigate('/admin/catalog/management/accesion-record')}
                             >
-                                Manage Catalog
+                                Manage Accession
                             </button>
                         </Box>
 
