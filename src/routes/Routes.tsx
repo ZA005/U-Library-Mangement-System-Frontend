@@ -9,6 +9,7 @@ import VerifyUser from '../components/Verify/VerifyUser';
 import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
+import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
 // import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
 // import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 
@@ -29,12 +30,15 @@ const AppRoutes = () => {
         element={isAuthenticated ? getDefaultRoute() : <HomeScreen />}
       />
       <Route path="/register" element={<Register />} />
+      <Route path="/library-card" element={<LibraryCardGenerationPage />} />
       <Route path="/university/curriculum" element={<UniversityCurriculumPage />} />
       <Route
         path="/university/curriculum/:departmentName/:programName"
         element={<ProgramPage />}
       />
-      <Route path="/verify/user" element={<VerifyUser />} />
+      <Route path="/verify/user" element={<VerifyUser open={false} onClose={function (): void {
+        throw new Error('Function not implemented.');
+      }} />} />
       <Route path="/verify/user/otp" element={<VerifyOtp />} />
 
       {/* ADMIN ROUTES */}

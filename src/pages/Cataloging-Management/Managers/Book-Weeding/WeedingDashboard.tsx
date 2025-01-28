@@ -95,7 +95,6 @@ const WeedingDashboard: React.FC = () => {
         }
     };
 
-
     const handleWeedBook = async (bookWeedingStatusNotes: string) => {
         if (currentWeedInfo) {
             try {
@@ -105,7 +104,9 @@ const WeedingDashboard: React.FC = () => {
                     updatedStatus = "ARCHIVED";
                 }
 
-                let notesToUse = isOverride ? bookWeedingStatusNotes : currentWeedInfo.bookWeedingStatusNotes;
+                let notesToUse = (isOverride || !currentWeedInfo.bookWeedingStatusNotes)
+                    ? bookWeedingStatusNotes
+                    : currentWeedInfo.bookWeedingStatusNotes;
 
                 if (!isOverride && (!notesToUse || notesToUse === "")) {
                     notesToUse = bookWeedingStatusNotes;
@@ -121,26 +122,15 @@ const WeedingDashboard: React.FC = () => {
 
                 openSnackbar("Book status updated.", "success");
 
-                // Check if this was the last book in the process to be updated
-                const processBooks = weedInfos.filter(book => book.weedProcessId === currentWeedInfo.weedProcessId);
-                const allProcessed = processBooks.every(book => book.weedStatus !== 'FLAGGED');
 
-                // First update the weedInfos state
-                setWeedInfos(prev => {
-                    const newWeedInfos = prev.map(book =>
-                        book.id === currentWeedInfo.id
-                            ? {
-                                ...book,
-                                weedStatus: updatedStatus,
-                                bookWeedingStatusNotes: notesToUse,
-                                reviewDate: new Date()
-                            }
-                            : book
-                    );
-
-                    return newWeedInfos;
-                });
-
+                setWeedInfos(prev => prev.map(book =>
+                    book.id === currentWeedInfo.id ? {
+                        ...book,
+                        weedStatus: updatedStatus,
+                        bookWeedingStatusNotes: notesToUse,
+                        reviewDate: new Date()
+                    } : book
+                ));
                 // Then update currentWeedInfo directly
                 setCurrentWeedInfo(prev => {
                     if (!prev) return prev; // Handle null prev state case safely
@@ -152,6 +142,10 @@ const WeedingDashboard: React.FC = () => {
                         reviewDate: new Date()
                     };
                 });
+
+                // Check if this was the last book in the process to be updated
+                const processBooks = weedInfos.filter(book => book.weedProcessId === currentWeedInfo.weedProcessId);
+                const allProcessed = processBooks.every(book => book.weedStatus !== 'FLAGGED');
 
                 // Handle the logic for allProcessed and the modal opening
                 if (allProcessed && isAdmin) {
@@ -219,7 +213,8 @@ const WeedingDashboard: React.FC = () => {
     const checkAllProcessed = () => {
         if (currentWeedInfo) {
             const processBooks = weedInfos.filter(book => book.weedProcessId === currentWeedInfo.weedProcessId);
-            const allProcessed = processBooks.every(book => book.weedStatus !== 'FLAGGED' && book.weedStatus !== 'REVIEWED');
+            const allProcessed = processBooks.every(book => !['FLAGGED', 'REVIEWED'].includes(book.weedStatus));
+
             setAllProcessed(allProcessed);
             if (allProcessed && UserService.isAdmin()) {
                 setProcessNotes('');

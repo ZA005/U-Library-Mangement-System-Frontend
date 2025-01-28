@@ -39,7 +39,6 @@ const AdvancedSearchPage: React.FC = () => {
         isAvailableOnly: false,
         individualLibrary: "All libraries",
         sortOrder: "Acquisition date: newest to oldest",
-        itemType: [] as string[],
         sections: [] as string[],
         collection: [] as string[],
     });
@@ -64,7 +63,6 @@ const AdvancedSearchPage: React.FC = () => {
                     ? searchParams.individualLibrary
                     : null,
             sortOrder: searchParams.sortOrder,
-            itemType: searchParams.itemType.length > 0 ? searchParams.itemType : null,
             sections: searchParams.sections.length > 0 ? searchParams.sections : null,
             collection: searchParams.collection.length > 0 ? searchParams.collection : null,
         };
@@ -95,21 +93,20 @@ const AdvancedSearchPage: React.FC = () => {
             isAvailableOnly: false,
             individualLibrary: "All libraries",
             sortOrder: "Acquisition date: newest to oldest",
-            itemType: [],
             sections: [],
             collection: [],
         });
     };
 
-    const addCriterion = () => {
-        setSearchParams((prevState) => ({
-            ...prevState,
-            criteria: [
-                ...prevState.criteria,
-                { idx: "", searchTerm: "", operator: "AND" },
-            ],
-        }));
-    };
+    // const addCriterion = () => {
+    //     setSearchParams((prevState) => ({
+    //         ...prevState,
+    //         criteria: [
+    //             ...prevState.criteria,
+    //             { idx: "", searchTerm: "", operator: "AND" },
+    //         ],
+    //     }));
+    // };
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -157,23 +154,15 @@ const AdvancedSearchPage: React.FC = () => {
                             textColor="primary"
                             sx={{ marginBottom: 3 }}
                         >
-                            {["Item type", "Sections", "Collection Type"].map((label, index) => (
+                            {["Sections", "Collection Type"].map((label, index) => (
                                 <Tab label={label} key={index} />
                             ))}
                         </Tabs>
 
                         <TabCheckboxGroup
                             activeTab={activeTab}
-                            itemType={searchParams.itemType}
                             sections={searchParams.sections}
                             collection={searchParams.collection}
-                            setItemType={(value) => {
-                                setSearchParams((prev) => ({
-                                    ...prev,
-                                    itemType:
-                                        typeof value === "function" ? value(prev.itemType) : value,
-                                }));
-                            }}
                             setSections={(value) => {
                                 setSearchParams((prev) => ({
                                     ...prev,
@@ -194,17 +183,6 @@ const AdvancedSearchPage: React.FC = () => {
                         <Typography variant="h6" fontWeight="bold">
                             Limits
                         </Typography>
-                        <LimitsSection
-                            yearRange={searchParams.yearRange}
-                            language={searchParams.language}
-                            setYearRange={(value) =>
-                                setSearchParams((prev) => ({ ...prev, yearRange: value }))
-                            }
-                            setLanguage={(value) =>
-                                setSearchParams((prev) => ({ ...prev, language: value }))
-                            }
-                            setYearRangeError={setYearRangeError} // Pass the error setter function
-                        />
                         <Divider />
                         {/* Limits Section */}
                         <LimitsSection
