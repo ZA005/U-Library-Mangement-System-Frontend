@@ -96,6 +96,7 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
     const [multiSelectMode, setMultiSelectMode] = useState<boolean>(false); // Multi-select toggle
     const [selectedBooks, setSelectedBooks] = useState<Book[]>([]); // Selected books in multi-select mode
+    const [confirmationOpen, setConfirmationOpen] = useState<boolean>(false); // Confirmation dialog toggle
 
     const filteredBooks = books.filter((book) =>
         book.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -119,10 +120,19 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
     };
 
     const handleDoneMultiSelect = () => {
+        setConfirmationOpen(true); // Show confirmation dialog
+    };
+
+    const confirmSelection = () => {
         const bookTitles = selectedBooks.map((book) => book.title).join(", ");
-        alert(`You have selected these books: ${bookTitles}`);
+        alert(`You have confirmed these books: ${bookTitles}`);
+        setConfirmationOpen(false);
         setMultiSelectMode(false);
         setSelectedBooks([]);
+    };
+
+    const handleCancelSelection = () => {
+        setConfirmationOpen(false); // Close confirmation dialog
     };
 
     const handleSelectBook = (book: Book) => {
@@ -216,6 +226,36 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
                         sx={{ backgroundColor: "#EA4040" }}
                     >
                         Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Confirmation Dialog */}
+            <Dialog open={confirmationOpen} onClose={handleCancelSelection}>
+                <DialogTitle>Confirm Your Selection</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to confirm the following books?
+                    <ul>
+                        {selectedBooks.map((book, index) => (
+                            <li key={index}>{book.title}</li>
+                        ))}
+                    </ul>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={handleCancelSelection}
+                        variant="outlined"
+                        size="small"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={confirmSelection}
+                        variant="contained"
+                        size="small"
+                        sx={{ backgroundColor: "#EA4040" }}
+                    >
+                        Confirm
                     </Button>
                 </DialogActions>
             </Dialog>
