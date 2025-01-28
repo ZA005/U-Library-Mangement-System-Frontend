@@ -89,9 +89,6 @@ const BookSearch: React.FC = () => {
             if (query?.language) {
                 criteria.push(`language: ${query.language}`);
             }
-            if (query?.itemType?.length > 0) {
-                criteria.push(`itemType: ${query.itemType.join(", ")}`);
-            }
             if (query?.sections?.length > 0) {
                 criteria.push(`sections: ${query.sections.join(", ")}`);
             }

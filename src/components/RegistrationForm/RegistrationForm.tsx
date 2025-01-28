@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Box,
   TextField,
   Button,
   Container,
@@ -99,13 +98,13 @@ const RegisterForm: React.FC = () => {
           password: '',
           role: '',
         });
-        navigate('user/library/card/', { state: { ...formData, libraryCardNumber } });
+        navigate('/library-card', { state: { ...formData, libraryCardNumber } });
       } else {
         console.error('Registration failed:', response);
         setError(response.message || 'Error submitting form.');
       }
     } catch (error) {
-      setError('Error submitting form.');
+      setError('Error submitting form.' + error);
     }
   };
 
@@ -113,7 +112,7 @@ const RegisterForm: React.FC = () => {
     <>
       <Header buttons={[]} />
 
-      <Container maxWidth="sm" className={ Style.container }>
+      <Container maxWidth="sm" className={Style.container}>
         <Typography variant="h4" align="center" gutterBottom>
           Register
         </Typography>

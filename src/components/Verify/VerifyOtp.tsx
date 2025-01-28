@@ -36,18 +36,18 @@ const VerifyOtp: React.FC = () => {
         setError(response.message || "Invalid OTP. Please try again.");
       }
     } catch (error) {
-      setError("Error verifying OTP. Please try again later.");
+      setError("Error verifying OTP. Please try again later." + error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    
+
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Header buttons={null} />
       <Container maxWidth="sm" sx={{ flexGrow: 1 }}>
-        
+
         <Box
           sx={{
             display: "flex",
@@ -94,33 +94,33 @@ const VerifyOtp: React.FC = () => {
             </Typography>
 
             <Box
-  sx={{
-    display: "flex",
-    justifyContent: "center",
-    gap: 1,
-    mb: 2,
-  }}
->
-  {Array(6) // Change to 6 boxes
-    .fill("")
-    .map((_, index) => (
-      <input
-        key={index}
-        type="text"
-        maxLength={1}
-        value={otp[index] || ""}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (/^\d$/.test(value) || value === "") {
-            const newOtp = otp.split("");
-            newOtp[index] = value;
-            setOtp(newOtp.join(""));
-          }
-        }}
-        className="otp-input"
-      />
-    ))}
-</Box>
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 1,
+                mb: 2,
+              }}
+            >
+              {Array(6) // Change to 6 boxes
+                .fill("")
+                .map((_, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    maxLength={1}
+                    value={otp[index] || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d$/.test(value) || value === "") {
+                        const newOtp = otp.split("");
+                        newOtp[index] = value;
+                        setOtp(newOtp.join(""));
+                      }
+                    }}
+                    className="otp-input"
+                  />
+                ))}
+            </Box>
             {error && (
               <Typography color="error" variant="body2" sx={{ mb: 2 }}>
                 {error}

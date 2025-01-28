@@ -23,12 +23,13 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
       const data = await UserService.verifyUser(studentId);
       if (data && data.id) {
         localStorage.setItem('emailAdd', data.emailAdd);
-        navigate('/verify/user/otp');
+        navigate('/verify/user/otp', { state: { userData: data } });
+        console.log(data);
       } else {
         setError('Student not found or not currently enrolled.');
       }
     } catch (error) {
-      setError('Error verifying student ID.');
+      setError('Error verifying student ID.' + error);
     } finally {
       setLoading(false);
     }

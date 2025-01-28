@@ -5,7 +5,7 @@ import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
 import Header from '../../Header/Header';
 import Footer from '../../Footer/Copyright';
-import { Box, Button, Typography, CardMedia, CardContent, Collapse } from '@mui/material';
+import { Box, Button, Typography, CardMedia, Collapse } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
@@ -56,7 +56,7 @@ const BookDetails: React.FC = () => {
     navigate(`/user/book/${book.id}`, { state: { book, source } });
 
   const handleGoBack = () => {
-    const path = UserService.isAdmin()
+    const path = UserService.isLibrarian() || UserService.isAdmin()
       ? '/admin/catalog/management/search-title'
       : '/user/browse';
     navigate(path, { state: { searchState: state?.searchState } });
@@ -105,7 +105,7 @@ const BookDetails: React.FC = () => {
 
 
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 2 }}>
-            {UserService.isAdmin() && (
+            {UserService.isLibrarian() || UserService.isAdmin() && (
               <>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddCopies}>Add Copies</Button>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleEditTitle}>Edit Title</Button>
