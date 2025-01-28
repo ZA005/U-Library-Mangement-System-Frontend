@@ -16,7 +16,11 @@ import {
 } from "@mui/material";
 import { PlaylistAddCheck, DoneAll } from "@mui/icons-material";
 
-interface Book {
+import { useFilteredBooks } from "./useFilteredBook";
+import { useMultiSelect } from "./useMultiSelect";
+import { useConfirmationDialog } from "./useConfirmationDialog";
+
+export interface Book {
     title: string;
     isbn: string;
     language: string;
@@ -39,7 +43,7 @@ interface BookRefRecProps {
     onClose: () => void;
 }
 
-const recommendedBooks = {
+const recommendedBooks: Record<string, Book[]> = {
     'Introduction to Computing': [
         {
             title: "Algebra Essentials by John Doe",
@@ -90,72 +94,38 @@ const recommendedBooks = {
     ],
 };
 
+
 const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
     const books = recommendedBooks[subject.subject_name] || [];
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [selectedBook, setSelectedBook] = useState<Book | null>(null);
-    const [multiSelectMode, setMultiSelectMode] = useState<boolean>(false); // Multi-select toggle
-    const [selectedBooks, setSelectedBooks] = useState<Book[]>([]); // Selected books in multi-select mode
-    const [confirmationOpen, setConfirmationOpen] = useState<boolean>(false); // Confirmation for multi-select
-    const [singleSelectConfirmationOpen, setSingleSelectConfirmationOpen] = useState<boolean>(false); // Confirmation for single-select
+    const filteredBooks = useFilteredBooks(books, searchTerm);
 
-    const filteredBooks = books.filter((book) =>
-        book.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+
+    const { multiSelectMode, selectedBooks, toggleMultiSelectMode, handleCheckboxChange } = useMultiSelect();
+
+    const singleSelectConfirmation = useConfirmationDialog(
+        () => alert(`You have selected the book: ${selectedBook?.title}`),
+        () => setSelectedBook(null)
     );
 
-    const toggleMultiSelectMode = () => {
-        setMultiSelectMode(!multiSelectMode);
-        setSelectedBooks([]); // Reset selections when toggling mode
-    };
+    const multiSelectConfirmation = useConfirmationDialog(
+        () => {
+            alert(`You have confirmed these books: ${selectedBooks.map((book) => book.title).join(", ")}`);
+            toggleMultiSelectMode();
+        },
+        () => { }
+    );
 
-    const handleCheckboxChange = (book: Book) => {
-        setSelectedBooks((prevSelectedBooks) => {
-            if (prevSelectedBooks.includes(book)) {
-                // If already selected, remove it
-                return prevSelectedBooks.filter((b) => b !== book);
-            } else {
-                // Otherwise, add it
-                return [...prevSelectedBooks, book];
-            }
-        });
-    };
-
-    const handleDoneMultiSelect = () => {
-        setConfirmationOpen(true); // Show confirmation dialog for multi-select
-    };
-
-    const confirmMultiSelect = () => {
-        const bookTitles = selectedBooks.map((book) => book.title).join(", ");
-        alert(`You have confirmed these books: ${bookTitles}`);
-        setConfirmationOpen(false);
-        setMultiSelectMode(false);
-        setSelectedBooks([]);
-    };
-
-    const cancelMultiSelect = () => {
-        setConfirmationOpen(false); // Close multi-select confirmation dialog
+    const handleViewBook = (book: Book) => {
+        const bookTitleEncoded = encodeURIComponent(book.title);
+        const url = `https://www.google.com/search?udm=36&q=${bookTitleEncoded}`;
+        window.open(url, "_blank");
     };
 
     const handleSelectBook = (book: Book) => {
-        setSelectedBook(book); // Set the book for confirmation
-        setSingleSelectConfirmationOpen(true); // Open confirmation dialog
-    };
-
-    const confirmSingleSelect = () => {
-        if (selectedBook) {
-            alert(`You have selected the book: ${selectedBook.title}`);
-        }
-        setSingleSelectConfirmationOpen(false); // Close dialog
-        setSelectedBook(null); // Reset the selected book
-    };
-
-    const cancelSingleSelect = () => {
-        setSingleSelectConfirmationOpen(false); // Close dialog
-        setSelectedBook(null); // Reset the selected book
-    };
-
-    const handleViewBook = (book: Book) => {
-        alert(`Viewing details for ${book.title}\nISBN: ${book.isbn}\nLanguage: ${book.language}\nLocation: ${book.location}\nSection: ${book.section}`);
+        setSelectedBook(book);
+        singleSelectConfirmation.openDialog();
     };
 
     return (
@@ -183,12 +153,12 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
                         {filteredBooks.length > 0 ? (
                             filteredBooks.map((book, index) => (
                                 <ListItem key={index}>
-                                    {multiSelectMode ? (
+                                    {multiSelectMode && (
                                         <Checkbox
                                             checked={selectedBooks.includes(book)}
                                             onChange={() => handleCheckboxChange(book)}
                                         />
-                                    ) : null}
+                                    )}
                                     <ListItemText
                                         primary={book.title}
                                         secondary={`ISBN: ${book.isbn}, Language: ${book.language}, Location: ${book.location}, Section: ${book.section}`}
@@ -225,7 +195,7 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
                 <DialogActions>
                     {multiSelectMode && (
                         <Button
-                            onClick={handleDoneMultiSelect}
+                            onClick={multiSelectConfirmation.openDialog}
                             variant="contained"
                             size="small"
                             sx={{ backgroundColor: "#EA4040" }}
@@ -244,25 +214,22 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
                 </DialogActions>
             </Dialog>
 
-            {/* Single-Select Confirmation Dialog */}
-            <Dialog open={singleSelectConfirmationOpen} onClose={cancelSingleSelect} fullWidth>
+            <Dialog open={singleSelectConfirmation.isOpen} onClose={singleSelectConfirmation.cancelAction}>
                 <DialogTitle>Confirm Your Selection</DialogTitle>
                 <DialogContent>
                     Are you sure you want to select this book?
-                    <br />
                     <strong>{selectedBook?.title}</strong>
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        onClick={cancelSingleSelect}
+                        onClick={singleSelectConfirmation.cancelAction}
                         variant="outlined"
                         size="small"
-                        sx={{ color: "#EA4040", borderColor: "#EA4040" }}
                     >
                         Cancel
                     </Button>
                     <Button
-                        onClick={confirmSingleSelect}
+                        onClick={singleSelectConfirmation.confirmAction}
                         variant="contained"
                         size="small"
                         sx={{ backgroundColor: "#EA4040" }}
@@ -272,8 +239,7 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
                 </DialogActions>
             </Dialog>
 
-            {/* Multi-Select Confirmation Dialog */}
-            <Dialog open={confirmationOpen} onClose={cancelMultiSelect} fullWidth>
+            <Dialog open={multiSelectConfirmation.isOpen} onClose={multiSelectConfirmation.cancelAction}>
                 <DialogTitle>Confirm Your Selection</DialogTitle>
                 <DialogContent>
                     Are you sure you want to confirm the following books?
@@ -285,15 +251,14 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        onClick={cancelMultiSelect}
+                        onClick={multiSelectConfirmation.cancelAction}
                         variant="outlined"
                         size="small"
-                        sx={{ color: "#EA4040", borderColor: "#EA4040" }}
                     >
                         Cancel
                     </Button>
                     <Button
-                        onClick={confirmMultiSelect}
+                        onClick={multiSelectConfirmation.confirmAction}
                         variant="contained"
                         size="small"
                         sx={{ backgroundColor: "#EA4040" }}
