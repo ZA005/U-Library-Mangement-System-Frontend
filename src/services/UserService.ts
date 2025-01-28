@@ -61,11 +61,17 @@ class UserService {
         return !!token;
     }
 
-    static isAdmin(): boolean {
+    static isLibrarian(): boolean {
         const role = localStorage.getItem('role');
-        console.log('Role in isAdmin:', role);
         return role === 'LIBRARIAN';
     }
+
+    static isAdmin(): boolean {
+        const role = localStorage.getItem('role');
+        return role === 'ADMIN';
+    }
+
+
 
     static isUser(): boolean {
         const role = localStorage.getItem('role');
@@ -73,7 +79,7 @@ class UserService {
     }
 
     static adminOnly(): boolean {
-        return this.isAuthenticated() && this.isAdmin();
+        return this.isAuthenticated() && this.isLibrarian();
     }
 
     static userOnly(): boolean {

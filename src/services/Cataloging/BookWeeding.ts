@@ -32,9 +32,22 @@ export const getAllBookWeeding = async () => {
     }
 }
 
-export const toWeedBook = async (bookWeed: WeedInfos): Promise<void> => {
+export const toWeedBook = async (bookWeed: WeedInfos): Promise<WeedInfos> => {
     try {
         const response = await axios.post(`${BASE_URL}/weed`, bookWeed, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        // Assuming the server returns the updated book in the response
+        return response.data; // This should be the updated book data
+    } catch (error) {
+        console.log('Failed to weed the book: ', error);
+        throw error;
+    }
+};
+
+export const toUpdateWeedingProcess = async (bookWeed: WeedInfos): Promise<void> => {
+    try {
+        const response = await axios.post(`${BASE_URL}/weed-process`, bookWeed, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         return response.data;

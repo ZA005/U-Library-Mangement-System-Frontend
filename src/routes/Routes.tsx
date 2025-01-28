@@ -9,14 +9,14 @@ import VerifyUser from '../components/Verify/VerifyUser';
 import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
-import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
-import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
+// import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
+// import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
   const getDefaultRoute = () => {
     if (role === 'STUDENT') return <Navigate to="/user/browse" />;
-    if (role === 'LIBRARIAN') return <Navigate to="/admin/library" />;
+    if (role === 'LIBRARIAN' || role === 'ADMIN') return <Navigate to="/admin/library" />;
     console.log(role);
     return <HomeScreen />;
   };
