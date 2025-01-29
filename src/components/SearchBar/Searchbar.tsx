@@ -1,6 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
-import { Box, Button, CircularProgress, FormControl, IconButton, InputLabel, Menu, MenuItem, Select, Stack, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputLabel,
+  Menu,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+} from '@mui/material';
 import TuneIcon from "@mui/icons-material/Tune";
 import SearchIcon from "@mui/icons-material/Search";
 import { Book } from '../../model/Book';
@@ -19,12 +31,12 @@ interface SearchBarProps {
 }
 
 const searchIndexLabels: { [key: string]: string } = {
-    q: "Keyword",
-    intitle: "Title",
-    inauthor: "Author",
-    inpublisher: "Publisher",
-    insubjects: "Subject",
-    isbn: "ISBN"
+  q: "Keyword",
+  intitle: "Title",
+  inauthor: "Author",
+  inpublisher: "Publisher",
+  insubjects: "Subject",
+  isbn: "ISBN",
 };
 
 const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'All libraries', onSearch, modalParams }) => {
@@ -112,94 +124,95 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
     };
 
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    };
-    const handleTuneClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
-    return (
-        <div className={styles.searchContainer}>
-            <Stack direction="row" spacing={2} alignItems="center">
-                <Box className={styles.actionBar}>
-                    <Box className={styles.searchBox}>
-                        <TextField
-                            placeholder={`Search in ${searchIndexLabels[searchIndex]} at ${source || "All libraries"}`}
-                            type="text"
-                            size="small"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            InputProps={{
-                                startAdornment: (
-                                    <SearchIcon className={styles.searchIcon} />
-                                ),
-                                endAdornment: (
-                                    <IconButton onClick={handleTuneClick}>
-                                        <TuneIcon className={styles.tuneIcon} />
-                                    </IconButton>
-                                ),
-                            }}
-                        />
-                        {/* Dropdown for filter options */}
-                        <Menu
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "right",
-                            }}
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                        >
-                            <Box sx={{ padding: 2, width: 200 }}>
-                                <FormControl fullWidth margin="dense">
-                                    <InputLabel>Search Index</InputLabel>
-                                    <Select
-                                        label="Search Index"
-                                        disabled={UserService.isUser()}
-                                        value={searchIndex || "q"}
-                                        onChange={(e) => setSearchIndex(e.target.value)}
-                                    >
-                                        <MenuItem value="q">Keyword</MenuItem>
-                                        <MenuItem value="intitle">Title</MenuItem>
-                                        <MenuItem value="inauthor">Author</MenuItem>
-                                        <MenuItem value="inpublisher">Publisher</MenuItem>
-                                        <MenuItem value="insubjects">Subject</MenuItem>
-                                        <MenuItem value="isbn">ISBN</MenuItem>
-                                    </Select>
-                                </FormControl>
-                                <FormControl fullWidth margin="dense">
-                                    <InputLabel>Library</InputLabel>
-                                    <Select
-                                        label="Source"
-                                        value={source}
-                                        onChange={(e) => setSource(e.target.value)}
-                                    >
-                                        <MenuItem value="All libraries">All libraries</MenuItem>
-                                        <MenuItem value="eLibrary">eLibrary</MenuItem>
-                                        <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
-                                        <MenuItem value="Law Library">Law Library</MenuItem>
-                                        <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
-                                        <MenuItem value="High School Library">High School Library</MenuItem>
-                                        <MenuItem value="Elementary Library">Elementary Library</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                        </Menu>
-                    </Box>
+  const handleTuneClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-                </Box>
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
+  return (
+    <div className={styles.searchContainer}>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Box className={styles.actionBar}>
+          <Box className={styles.searchBox}>
+            <TextField
+              placeholder={`Search in ${searchIndexLabels[searchIndex]} at ${source || "All libraries"}`}
+              type="text"
+              size="small"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              sx={{
+                width: '850px', // Adjust the width here
+                maxWidth: '100%',
+              }}
+              InputProps={{
+                startAdornment: <SearchIcon className={styles.searchIcon} />,
+                endAdornment: (
+                  <IconButton onClick={handleTuneClick}>
+                    <TuneIcon className={styles.tuneIcon} />
+                  </IconButton>
+                ),
+              }}
+            />
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <Box sx={{ padding: 2, width: 200 }}>
+                <FormControl fullWidth margin="dense">
+                  <InputLabel>Search Index</InputLabel>
+                  <Select
+                    label="Search Index"
+                    disabled={UserService.isUser()}
+                    value={searchIndex || "q"}
+                    onChange={(e) => setSearchIndex(e.target.value)}
+                  >
+                    {Object.entries(searchIndexLabels).map(([key, label]) => (
+                      <MenuItem key={key} value={key}>
+                        {label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth margin="dense">
+                  <InputLabel>Library</InputLabel>
+                  <Select
+                    label="Source"
+                    value={source}
+                    onChange={(e) => setSource(e.target.value)}
+                  >
+                    <MenuItem value="All libraries">All libraries</MenuItem>
+                    <MenuItem value="Google Books">Google Books</MenuItem>
+                    <MenuItem value="eLibrary">eLibrary</MenuItem>
+                    <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
+                    <MenuItem value="Law Library">Law Library</MenuItem>
+                    <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
+                    <MenuItem value="High School Library">High School Library</MenuItem>
+                    <MenuItem value="Elementary Library">Elementary Library</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Menu>
+          </Box>
+        </Box>
 
                 <Button
                     variant="contained"

@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserService from '../../../services/UserService';
 import { Book } from '../../../model/Book';
-import { getBooksByAuthor } from '../../../services/Cataloging/LocalBooksAPI';
 import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
 import Header from '../../Header/Header';
@@ -11,6 +10,10 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { getBooksByAuthor } from '../../../services/Cataloging/LocalBooksAPI';
+import './BookDetails.css';
+
+
 
 const BookDetails: React.FC = () => {
   const { state } = useLocation();
@@ -53,7 +56,7 @@ const BookDetails: React.FC = () => {
     navigate(`/user/book/${book.id}`, { state: { book, source } });
 
   const handleGoBack = () => {
-    const path = UserService.isAdmin()
+    const path = UserService.isLibrarian() || UserService.isAdmin()
       ? '/admin/catalog/management/search-title'
       : '/user/browse';
     navigate(path, { state: { searchState: state?.searchState } });
@@ -102,7 +105,7 @@ const BookDetails: React.FC = () => {
 
 
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 2 }}>
-            {UserService.isAdmin() && (
+            {UserService.isLibrarian() || UserService.isAdmin() && (
               <>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddCopies}>Add Copies</Button>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleEditTitle}>Edit Title</Button>

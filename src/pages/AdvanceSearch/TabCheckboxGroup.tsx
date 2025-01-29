@@ -3,35 +3,27 @@ import { Checkbox, FormControlLabel, Grid } from "@mui/material";
 
 interface TabCheckboxGroupProps {
     activeTab: number;
-    itemType: string[];
     sections: string[];
     collection: string[];
-    setItemType: React.Dispatch<React.SetStateAction<string[]>>;
     setSections: React.Dispatch<React.SetStateAction<string[]>>;
     setCollection: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const tabData = [
     {
-        label: "Item type",
-        options: ["Audio Visual", "BOOK"],
-    },
-    {
         label: "Sections",
         options: ["General Reference", "Circulation", "Periodicals", "Filipiniana", "Special Collection"],
     },
     {
         label: "Collection Type",
-        options: ["Book", "Popular Magazines", "Newspapers", "Journals", "AV Materials", "Theses & Dissertation", "Special Collections", "Museum and Archival Materials"],
+        options: ["Book", "Journals", "Theses & Dissertation", "Special Collections", "Museum and Archival Materials"],
     },
 ];
 
 const TabCheckboxGroup: React.FC<TabCheckboxGroupProps> = ({
     activeTab,
-    itemType,
     sections,
     collection,
-    setItemType,
     setSections,
     setCollection,
 }) => {
@@ -47,13 +39,10 @@ const TabCheckboxGroup: React.FC<TabCheckboxGroupProps> = ({
         };
 
         switch (activeTab) {
-            case 0: // Item Type tab
-                updateSelectedOptions(itemType, setItemType);
-                break;
-            case 1: // Sections tab
+            case 0: // Sections tab
                 updateSelectedOptions(sections, setSections);
                 break;
-            case 2: // Collection Type tab
+            case 1: // Collection Type tab
                 updateSelectedOptions(collection, setCollection);
                 break;
             default:
@@ -61,7 +50,7 @@ const TabCheckboxGroup: React.FC<TabCheckboxGroupProps> = ({
         }
     };
 
-    const selectedOptions = activeTab === 0 ? itemType : activeTab === 1 ? sections : collection;
+    const selectedOptions = activeTab === 0 ? sections : collection;
 
     return (
         <Grid container spacing={2}>

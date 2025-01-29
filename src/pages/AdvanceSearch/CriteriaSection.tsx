@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface SearchCriteria {
     idx: string;
@@ -37,10 +38,19 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
     return (
         <>
             {criteria.map((param, index) => (
-                <Box key={index} display="flex" alignItems="center" marginBottom={2}>
+                <Box
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    marginBottom={2}
+                    padding={2}
+                    borderRadius={2}
+                    border="1px solid #ddd"
+                    sx={{ backgroundColor: "#f9f9f9" }}
+                >
                     {/* Logical operator dropdown */}
                     {index > 0 && (
-                        <FormControl sx={{ marginRight: 2 }}>
+                        <FormControl sx={{ marginRight: 2, minWidth: 120 }}>
                             <InputLabel>Operator</InputLabel>
                             <Select
                                 label="Operator"
@@ -77,19 +87,24 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                         value={param.searchTerm}
                         onChange={(e) => handleCriteriaChange(e, index, "searchTerm")}
                         fullWidth
+                        sx={{ marginRight: 2 }}
                     />
 
-                    {/* Remove criterion button */}
+                    {/* Remove criterion (X icon) */}
                     {index > 0 && (
-                        <Button variant="outlined" color="secondary" onClick={() => handleRemoveCriterion(index)}>
-                            Remove
-                        </Button>
+                        <IconButton
+                            color="secondary"
+                            onClick={() => handleRemoveCriterion(index)}
+                            sx={{ marginLeft: 2 }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
                     )}
                 </Box>
             ))}
 
             {/* Add criterion button */}
-            <Button variant="contained" color="primary" onClick={handleAddCriterion}>
+            <Button variant="contained" color="primary" onClick={handleAddCriterion} sx={{ marginTop: 2 }}>
                 Add Criterion
             </Button>
         </>

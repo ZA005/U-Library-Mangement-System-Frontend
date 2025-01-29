@@ -65,11 +65,11 @@ const VerifyOtp: React.FC = () => {
   };
 
   return (
+
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Container maxWidth="sm" sx={{ flexGrow: 1, position: "relative" }}>
         <Header buttons={null} />
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh", position: "relative", marginTop: "2rem" }}>
-
           <Box className="verify-otp-box" sx={{ bgcolor: "white", p: 4, borderRadius: 2, boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", textAlign: "center", width: "100%", maxWidth: 400 }}>
             <CheckCircleOutlinedIcon sx={{ fontSize: { xs: 60, sm: 80, md: 90 }, color: "#cc0000", backgroundColor: "white", borderRadius: "50%", padding: "8px", boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)" }} />
             <Typography variant="h5" sx={{ fontWeight: "bold", mt: 2 }}>Verify Your Code</Typography>
