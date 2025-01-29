@@ -105,10 +105,17 @@ const BookDetails: React.FC = () => {
 
 
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 2 }}>
-            {UserService.isLibrarian() || UserService.isAdmin() && (
+            {(UserService.isLibrarian() || UserService.isAdmin()) && (
               <>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddCopies}>Catalog</Button>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleEditTitle}>Edit Title</Button>
+
+              </>
+            )}
+            {source !== "Z39.50/SRU" && (
+              <>
+                <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleReserve}>Reserve item</Button>
+                <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleBorrow}>Borrow item</Button>
                 <Button
                   sx={{ backgroundColor: '#ea4040', color: 'white' }}
                   onClick={handleAddBookRefModalOpen}
@@ -116,9 +123,9 @@ const BookDetails: React.FC = () => {
                   Add As Book Reference
                 </Button>
               </>
+
             )}
-            <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleReserve}>Reserve item</Button>
-            <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleBorrow}>Borrow item</Button>
+
             <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddToWishlist}>Add to Wishlist</Button>
           </Box>
 
