@@ -151,7 +151,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               sx={{
-                width: '850px', // Adjust the width here
+                width: '700px', // Adjust the width here
                 maxWidth: '100%',
               }}
               InputProps={{
@@ -235,21 +235,25 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
 
                 {/* To be implemented */}
                 <Button
-                    startIcon={<SearchIcon />}
-                    sx={{
-                        color: "inherit",
-                        backgroundColor: "transparent",
-                        border: "none",
-                        textTransform: "none",
-                        boxShadow: "none",
-                        "&:hover": {
-                            backgroundColor: "rgba(0, 0, 0, 0.04)",
-                        },
-                    }}
-                    onClick={handleOpenSRUModal}
-                >
-                    Z39.50/SRU
-                </Button>
+    startIcon={<SearchIcon />}
+    sx={{
+        color: "red", // Red text and icon
+        backgroundColor: "white", // White background
+        border: "none", // No border
+        textTransform: "none", // Keep text in its original case
+        boxShadow: "none", // No shadow
+        padding: "8px 16px", // Optional: Add padding for spacing
+        margin: 0, // No margin
+        minWidth: "auto", // Button fits content
+        "&:hover": {
+            backgroundColor: "white", // Keep white background on hover
+        },
+    }}
+    onClick={handleOpenSRUModal}
+>
+    Z39.50/SRU
+</Button>
+
 
                 <Z3950SRUSearch
                     open={modalOpen}

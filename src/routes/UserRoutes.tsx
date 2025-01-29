@@ -4,7 +4,6 @@ import ProtectedRoute from './ProtectedRoute';
 import CatalogHome from '../pages/CatalogHome';
 import BookDetails from '../components/Book/BookDetails/BookDetails';
 import AdvancedSearchPage from '../pages/AdvanceSearch/AdvancedSearchPage';
-
 const UserRoutes = () => (
   <Routes>
     <Route
@@ -14,7 +13,6 @@ const UserRoutes = () => (
       <Route path='browse' element={<CatalogHome />} />
       <Route path="book/:bookId" element={<BookDetails />} />
       <Route path='advanced/search' element={<AdvancedSearchPage />} />
-
     </Route>
   </Routes>
 );
