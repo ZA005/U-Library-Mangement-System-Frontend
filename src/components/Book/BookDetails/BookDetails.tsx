@@ -37,7 +37,7 @@ const BookDetails: React.FC = () => {
     }
   };
 
-  const handleAddCopies = () => navigate('/admin/book-form', { state: { book } });
+  const handleAddCopies = () => navigate('/admin/catalog/management/book-form', { state: { book } });
   const handleEditTitle = () => {
     const newTitle = prompt('Edit the title of the book:', book.title);
     if (newTitle) {
@@ -104,7 +104,7 @@ const BookDetails: React.FC = () => {
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 2 }}>
             {UserService.isAdmin() && (
               <>
-                <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddCopies}>Add Copies</Button>
+                <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddCopies}>Catalog</Button>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleEditTitle}>Edit Title</Button>
                 <Button
                   sx={{ backgroundColor: '#ea4040', color: 'white' }}
