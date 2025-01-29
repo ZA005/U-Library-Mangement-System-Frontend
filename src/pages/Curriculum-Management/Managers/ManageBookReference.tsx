@@ -14,7 +14,6 @@ import {
     Paper,
     Select,
     MenuItem,
-    Button,
 } from "@mui/material";
 import { Program, getAllProgramByDepartment } from "../../../services/Curriculum/ProgramService";
 import { Department, getAllDepartments } from "../../../services/Curriculum/DepartmentService";
@@ -120,6 +119,15 @@ const ManageBookReference: React.FC = () => {
         }
     };
 
+    const handleActionChange = (action: string, subject: Subject) => {
+        if (action === "Add Book Reference") {
+            toggleBookRefRec(subject);
+        } else if (action === "Update Book Reference") {
+            // Handle the update logic here
+            alert(`WORK IN PROGRESS`);
+        }
+    };
+
     const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
     return (
@@ -218,17 +226,19 @@ const ManageBookReference: React.FC = () => {
                                         <TableCell width="300px">{subject.subject_name || "N/A"}</TableCell>
                                         <TableCell>{convertYearToString(subject.year)}</TableCell>
                                         <TableCell>
-                                            <Button
-                                                variant="text"
-                                                sx={{
-                                                    color: "#EA4040",
-                                                    textTransform: "none",
-                                                    ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
-                                                }}
-                                                onClick={() => toggleBookRefRec(subject)}
+                                            <Select
+                                                value=""
+                                                displayEmpty
+                                                size="small"
+                                                onChange={(e) => handleActionChange(e.target.value, subject)}
+                                                sx={{ width: 200 }}
                                             >
-                                                Add Book Reference
-                                            </Button>
+                                                <MenuItem value="" disabled>
+                                                    Select Action
+                                                </MenuItem>
+                                                <MenuItem value="Add Book Reference">Add Book Reference</MenuItem>
+                                                <MenuItem value="Update Book Reference">Update Book Reference</MenuItem>
+                                            </Select>
                                         </TableCell>
                                     </TableRow>
                                 ))
