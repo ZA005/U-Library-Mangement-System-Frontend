@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem } from '@mui/material';
 import { Book } from '../../../../model/Book';
 import { useNavigate } from 'react-router-dom';
+import Line from '../../../../components/Line/Line';
+import Header from '../../../../components/Header/Header';
+import Copyright from '../../../../components/Footer/Copyright';
 
 
 interface WeedingDashboardProps {
@@ -134,108 +137,112 @@ const dummyBooks: any = [
         lastUsedDate: '2023-12-30'
     }
 ];
-
-// Make sure your Book type includes all these fields or adjust accordingly
-
 const WeedingDashboard: React.FC<WeedingDashboardProps> = ({ books, onWeedBook, onOverrideWeeding, onFilterChange }) => {
     const [filter, setFilter] = useState<{ ddc?: string, age?: number, condition?: string }>({});
-
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     onFilterChange(filter);
-    // }, [filter, onFilterChange]);
 
     const handleFilterChange = (field: keyof typeof filter, value: string | number) => {
         setFilter(prev => ({ ...prev, [field]: value }));
     };
 
-
-
     return (
-        <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom>Book Weeding Dashboard</Typography>
+        <Box className="root-container">
+            {/* Header */}
+            <Header buttons={undefined} />
 
+            <Box sx={{ p: 3 }}>
+                {/* Title */}
+                <Typography variant="h4" gutterBottom>Book Weeding Dashboard</Typography>
+                
+                {/* Horizontal Line */}
+                <Line />
 
-            <Button
-                variant="text"
-                sx={{
-                    color: "#EA4040",
-                    textTransform: "none",
-                    ":hover": {
-                        backgroundColor: "#f2f2f2",
-                        color: "#d13333",
-                    },
-                }}
-                onClick={() => navigate('/admin/catalog/management/criteria')}
-            >
-                View Criteria
-            </Button>
-            {/* Filters */}
-            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-                <TextField
-                    label="Dewey Decimal"
-                    value={filter.ddc || ''}
-                    onChange={(e) => handleFilterChange('ddc', e.target.value)}
-                    variant="outlined"
-                />
-                <TextField
-                    type="number"
-                    label="Age (Years)"
-                    value={filter.age || ''}
-                    onChange={(e) => handleFilterChange('age', Number(e.target.value))}
-                    variant="outlined"
-                />
-                <Select
-                    value={filter.condition || ''}
-                    onChange={(e) => handleFilterChange('condition', e.target.value as string)}
-                    displayEmpty
-                    variant="outlined"
+                {/* View Criteria Button */}
+                <Button
+                    variant="text"
+                    sx={{
+                        color: "#EA4040", // Red color for text
+                        textTransform: "none", // No uppercase transformation
+                        fontWeight: 500, // Slightly bold text
+                        mb: 2, // Adds margin at the bottom for spacing
+                        ":hover": {
+                            backgroundColor: "#f2f2f2", // Light gray hover background
+                            color: "#d13333", // Darker red on hover
+                        },
+                    }}
+                    onClick={() => navigate('/admin/catalog/management/criteria')}
                 >
-                    <MenuItem value="">All Conditions</MenuItem>
-                    <MenuItem value="poor">Poor</MenuItem>
-                    <MenuItem value="fair">Fair</MenuItem>
-                    <MenuItem value="good">Good</MenuItem>
-                    <MenuItem value="excellent">Excellent</MenuItem>
-                </Select>
+                    View Criteria
+                </Button>
+
+                {/* Filters */}
+                <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                    <TextField
+                        label="Dewey Decimal"
+                        value={filter.ddc || ''}
+                        onChange={(e) => handleFilterChange('ddc', e.target.value)}
+                        variant="outlined"
+                    />
+                    <TextField
+                        type="number"
+                        label="Age (Years)"
+                        value={filter.age || ''}
+                        onChange={(e) => handleFilterChange('age', Number(e.target.value))}
+                        variant="outlined"
+                    />
+                    <Select
+                        value={filter.condition || ''}
+                        onChange={(e) => handleFilterChange('condition', e.target.value as string)}
+                        displayEmpty
+                        variant="outlined"
+                    >
+                        <MenuItem value="">All Conditions</MenuItem>
+                        <MenuItem value="poor">Poor</MenuItem>
+                        <MenuItem value="fair">Fair</MenuItem>
+                        <MenuItem value="good">Good</MenuItem>
+                        <MenuItem value="excellent">Excellent</MenuItem>
+                    </Select>
+                </Box>
+
+                {/* Book Table */}
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="book weeding table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Title</TableCell>
+                                <TableCell>Author</TableCell>
+                                <TableCell>Dewey Decimal</TableCell>
+                                <TableCell>Age</TableCell>
+                                <TableCell>Condition</TableCell>
+                                <TableCell>Action</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {dummyBooks.map((book: any) => (
+                                <TableRow key={book.id}>
+                                    <TableCell component="th" scope="row">
+                                        {book.title}
+                                    </TableCell>
+                                    <TableCell>{book.author}</TableCell>
+                                    <TableCell>{book.ddc}</TableCell>
+                                    <TableCell>{new Date().getFullYear() - Number(book.publicationYear)}</TableCell>
+                                    <TableCell>{book.condition}</TableCell>
+                                    <TableCell>
+                                        <Button onClick={() => onWeedBook(book.id)} color="error" variant="contained" size="small">Weed</Button>
+                                        <Button onClick={() => onOverrideWeeding(book.id)} variant="outlined" size="small" sx={{ ml: 1 }}>Override</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Box>
 
-            {/* Book Table */}
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="book weeding table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Author</TableCell>
-                            <TableCell>Dewey Decimal</TableCell>
-                            <TableCell>Age</TableCell>
-                            <TableCell>Condition</TableCell>
-                            <TableCell>Action</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {dummyBooks.map((book: any) => (
-                            <TableRow key={book.id}>
-                                <TableCell component="th" scope="row">
-                                    {book.title}
-                                </TableCell>
-                                <TableCell>{book.author}</TableCell>
-                                <TableCell>{book.ddc}</TableCell>
-                                <TableCell>{new Date().getFullYear() - Number(book.publicationYear)}</TableCell>
-                                <TableCell>{book.condition}</TableCell>
-                                <TableCell>
-                                    <Button onClick={() => onWeedBook(book.id)} color="error" variant="contained" size="small">Weed</Button>
-                                    <Button onClick={() => onOverrideWeeding(book.id)} variant="outlined" size="small" sx={{ ml: 1 }}>Override</Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-
+            {/* Footer */}
+            <Copyright />
         </Box>
     );
 };
+
 
 export default WeedingDashboard;

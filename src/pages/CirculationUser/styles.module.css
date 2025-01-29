@@ -1,0 +1,70 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the container stretches to the viewport height */
+    background-color: #ffffff;
+  }
+  
+  .content {
+    flex: 4; /* Makes the content area take up remaining space between header and footer */
+    padding: 2rem 0;
+  }
+  
+  .menuIcon {
+    color: #ea4040;
+  }
+  
+  .title {
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  .separator {
+    border: 1px solid #ea4040;
+    margin-bottom: 2rem;
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .historyContainer {
+    margin-bottom: 2rem;
+  }
+  
+  .userDetails {
+    text-align: left;
+    font-size: 1rem;
+  }
+  
+  .userId {
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .stats {
+    text-align: left;
+    font-size: 1rem;
+  }
+  
+  .highlight {
+    color: #ea4040;
+    font-weight: bold;
+  }
+  
+  .buttonContainer {
+    margin-top: 4rem; /* Adds space above buttons */
+  }
+  
+  .actionButton {
+    background-color: #ea4040;
+    color: #fff;
+    text-transform: none;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 0.8rem; /* Increase button padding */
+  }
+  
+  .actionButton:hover {
+    background-color: #c63535;
+  }
+  

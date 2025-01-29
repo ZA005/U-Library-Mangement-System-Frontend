@@ -300,38 +300,39 @@ const CriteriaDashboard: React.FC = () => {
                 <Box className={styles.actionBar}>
                     {/* Filters Section */}
                     <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                        <FormControl fullWidth>
-                            <InputLabel>Dewey Decimal</InputLabel>
-                            <Select
-                                value={selectedDdc}
-                                onChange={(e) => setSelectedDdc(e.target.value)}
-                            >
-                                <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="000">000</MenuItem>
-                                <MenuItem value="100">100</MenuItem>
-                                <MenuItem value="200">200</MenuItem>
-                                <MenuItem value="300">300</MenuItem>
-                                <MenuItem value="400">400</MenuItem>
-                                <MenuItem value="500">500</MenuItem>
-                                <MenuItem value="600">600</MenuItem>
-                                <MenuItem value="700">700</MenuItem>
-                                <MenuItem value="800">800</MenuItem>
-                                <MenuItem value="900">900</MenuItem>
-                            </Select>
-                        </FormControl>
+    <FormControl sx={{ width: '200px' }}> {/* Adjust width here */}
+        <InputLabel>Dewey Decimal</InputLabel>
+        <Select
+            value={selectedDdc}
+            onChange={(e) => setSelectedDdc(e.target.value)}
+        >
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="000">000</MenuItem>
+            <MenuItem value="100">100</MenuItem>
+            <MenuItem value="200">200</MenuItem>
+            <MenuItem value="300">300</MenuItem>
+            <MenuItem value="400">400</MenuItem>
+            <MenuItem value="500">500</MenuItem>
+            <MenuItem value="600">600</MenuItem>
+            <MenuItem value="700">700</MenuItem>
+            <MenuItem value="800">800</MenuItem>
+            <MenuItem value="900">900</MenuItem>
+        </Select>
+    </FormControl>
 
-                        <FormControl fullWidth>
-                            <InputLabel>Status</InputLabel>
-                            <Select
-                                value={selectedStatus}
-                                onChange={(e) => setSelectedStatus(e.target.value)}
-                            >
-                                <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="Activated">Activated</MenuItem>
-                                <MenuItem value="Deactivated">Deactivated</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Box>
+    <FormControl sx={{ width: '200px' }}> {/* Adjust width here */}
+        <InputLabel>Status</InputLabel>
+        <Select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+        >
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="Activated">Activated</MenuItem>
+            <MenuItem value="Deactivated">Deactivated</MenuItem>
+        </Select>
+    </FormControl>
+</Box>
+
                     <Button
                         variant="outlined"
                         component="label"

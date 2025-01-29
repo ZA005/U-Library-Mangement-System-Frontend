@@ -11,6 +11,7 @@ import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
+import BorrowingHistory from '../pages/CirculationUser/BorrowingHistory';
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
@@ -34,8 +35,11 @@ const AppRoutes = () => {
         path="/university/curriculum/:departmentName/:programName"
         element={<ProgramPage />}
       />
-      <Route path="/verify/user" element={<VerifyUser />} />
+      <Route path="/verify/user" element={<VerifyUser open={false} onClose={function (): void {
+        throw new Error('Function not implemented.');
+      } } />} />
       <Route path="/verify/user/otp" element={<VerifyOtp />} />
+      <Route path='borrowing/history' element={<BorrowingHistory />} />
 
       {/* ADMIN ROUTES */}
       <Route
