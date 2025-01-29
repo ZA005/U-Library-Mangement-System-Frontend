@@ -10,14 +10,14 @@ import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
-import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
-import BorrowingHistory from '../pages/CirculationUser/BorrowingHistory';
+// import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
+// import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
   const getDefaultRoute = () => {
     if (role === 'STUDENT') return <Navigate to="/user/browse" />;
-    if (role === 'LIBRARIAN') return <Navigate to="/admin/library" />;
+    if (role === 'LIBRARIAN' || role === 'ADMIN') return <Navigate to="/admin/library" />;
     console.log(role);
     return <HomeScreen />;
   };
@@ -30,6 +30,7 @@ const AppRoutes = () => {
         element={isAuthenticated ? getDefaultRoute() : <HomeScreen />}
       />
       <Route path="/register" element={<Register />} />
+      <Route path="/library-card" element={<LibraryCardGenerationPage />} />
       <Route path="/university/curriculum" element={<UniversityCurriculumPage />} />
       <Route
         path="/university/curriculum/:departmentName/:programName"
@@ -37,15 +38,14 @@ const AppRoutes = () => {
       />
       <Route path="/verify/user" element={<VerifyUser open={false} onClose={function (): void {
         throw new Error('Function not implemented.');
-      } } />} />
+      }} />} />
       <Route path="/verify/user/otp" element={<VerifyOtp />} />
-      <Route path='borrowing/history' element={<BorrowingHistory />} />
 
       {/* ADMIN ROUTES */}
       <Route
         path="admin/*"
         element={
-          role === 'LIBRARIAN' ? (
+          role === 'LIBRARIAN' || role === 'ADMIN' ? (
             <AdminRoutes />
           ) : (
             <Navigate to="/" replace />
@@ -57,7 +57,7 @@ const AppRoutes = () => {
       <Route
         path="user/*"
         element={
-          role === 'STUDENT' || role === 'LIBRARIAN' ? (
+          role === 'STUDENT' || role === 'LIBRARIAN' || role === 'ADMIN' ? (
             <UserRoutes />
           ) : (
             <Navigate to="/" replace />

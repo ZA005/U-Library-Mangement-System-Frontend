@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
+import {
+    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton
+} from '@mui/material';
+import Sidebar from '../../../components/Sidebar';
+import Header from '../../Header/Header';
+import MenuIcon from "@mui/icons-material/Menu";
+import Copyright from '../../Footer/Copyright';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { generateCallNumber, saveBook } from '../../../services/Cataloging/GoogleBooksApi';
 import { fetchCopyNumBookExist, fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
@@ -38,7 +45,15 @@ const BookForm: React.FC = () => {
     const [numberOfCopies, setNumberOfCopies] = useState(1);
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
 
+    const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+    const handleSideBarClick = () => {
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarClose = () => {
+        setSidebarOpen(false);
+    };
 
     const generateAccessionNumbers = useCallback(async () => {
         const locationPrefixes: { [key: string]: string } = {
@@ -157,178 +172,190 @@ const BookForm: React.FC = () => {
     };
 
     return (
-        <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-            <h1>Book Form</h1>
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <img
-                    src={book.thumbnail}
-                    alt={book.title}
-                    style={{
-                        maxWidth: '100px',
-                        maxHeight: '150px',
-                        objectFit: 'cover',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                    }}
+        <Box display="flex" flexDirection="column" height="100vh">
+            <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
+            <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
+                <Header
+                    buttons={
+                        <>
+                            <IconButton onClick={handleSideBarClick}>
+                                <MenuIcon style={{ color: "#EA4040" }} />
+                            </IconButton>
+                        </>
+                    }
                 />
-            </div>
-            <p><strong>Title:</strong> {book.title}</p>
-            <p><strong>Authors:</strong> {book.authors.join(', ')}</p>
-            <p><strong>Call Number:</strong> {callNumber || 'N/A'}</p>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Box maxWidth="sm" sx={{
+                        mt: 2,
+                        border: '1px solid #d3d3d3',
+                        borderRadius: '4px',
+                        padding: 2,
+                        boxShadow: '0px 0px 5px rgba(0,0,0,0.1)'
+                    }}>
+                        <Typography variant="h4"><strong>Title:</strong> {book.title}</Typography>
+                        <Typography variant="h6"><strong>Authors:</strong> {book.authors.join(', ')}</Typography>
+                        <Typography variant="h6"><strong>Call Number:</strong> {callNumber || 'N/A'}</Typography>
 
-            <form>
-                {/* Status */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Status: </label>
-                    <select value={status} onChange={(e) => setStatus(e.target.value)}>
-                        <option value="Available">Available</option>
-                        <option value="In Processing">In Processing</option>
-                        <option value="Loaned Out">Loaned Out</option>
-                        <option value="On Order">On Order</option>
-                        <option value="Out for Repairs">Out for Repairs</option>
-                    </select>
-                </div>
+                        <Box component="form" sx={{ mt: 2 }}>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <InputLabel id="status-label">Status</InputLabel>
+                                <Select
+                                    labelId="status-label"
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}
+                                    label="Status"
+                                    size="small"
+                                >
+                                    <MenuItem value="Available">Available</MenuItem>
+                                    <MenuItem value="In Processing">In Processing</MenuItem>
+                                    <MenuItem value="Loaned Out">Loaned Out</MenuItem>
+                                    <MenuItem value="On Order">On Order</MenuItem>
+                                    <MenuItem value="Out for Repairs">Out for Repairs</MenuItem>
+                                </Select>
+                            </FormControl>
 
-                {/* Number of Copies */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Number of Copies: </label>
-                    <input
-                        type="number"
-                        value={numberOfCopies}
-                        onChange={(e) => setNumberOfCopies(Number(e.target.value))}
-                        min="1"
-                    />
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Number of Copies"
+                                type="number"
+                                value={numberOfCopies}
+                                onChange={(e) => setNumberOfCopies(Number(e.target.value))}
+                                inputProps={{ min: 1 }}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
-                {/* Starting Barcode */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Starting Barcode: </label>
-                    <input
-                        type="text"
-                        value={barcode}
-                        onChange={(e) => setBarcode(e.target.value)}
-                    />
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Starting Barcode"
+                                value={barcode}
+                                onChange={(e) => setBarcode(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
-                {/* Call Number */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Call Number: </label>
-                    <input
-                        type="text"
-                        value={callNumber}
-                        onChange={(e) => setCallNumber(e.target.value)}
-                    />
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Call Number"
+                                value={callNumber}
+                                onChange={(e) => setCallNumber(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
-                {/* Purchase Price */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Purchase Price: </label>
-                    <input
-                        type="text"
-                        value={purchasePrice}
-                        onChange={(e) => setPurchasePrice(e.target.value)}
-                    />
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Purchase Price"
+                                value={purchasePrice}
+                                onChange={(e) => setPurchasePrice(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Location: </label>
-                    <select value={location} onChange={(e) => setLocation(e.target.value)}>
-                        <option value="">Select</option>
-                        <option value="eLibrary">eLibrary</option>
-                        <option value="Graduate Studies Library">Graduate Studies Library</option>
-                        <option value="Law Library">Law Library</option>
-                        <option value="Engineering and Architecture Library">Engineering and Architecture Library</option>
-                        <option value="High School Library">High School Library</option>
-                        <option value="Elementary Library">Elementary Libray</option>
-                    </select>
-                </div>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <InputLabel id="location-label">Location</InputLabel>
+                                <Select
+                                    labelId="location-label"
+                                    value={location}
+                                    onChange={(e) => setLocation(e.target.value)}
+                                    label="Location"
+                                    size="small"
+                                >
+                                    <MenuItem value="">Select</MenuItem>
+                                    <MenuItem value="eLibrary">eLibrary</MenuItem>
+                                    <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
+                                    <MenuItem value="Law Library">Law Library</MenuItem>
+                                    <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
+                                    <MenuItem value="High School Library">High School Library</MenuItem>
+                                    <MenuItem value="Elementary Library">Elementary Library</MenuItem>
+                                </Select>
+                            </FormControl>
 
-                {/* Section */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Section: </label>
-                    <select value={section} onChange={(e) => setSection(e.target.value)}>
-                        <option value="">Select</option>
-                        <option value="General Reference">General Reference</option>
-                        <option value="Circulation">Circulation</option>
-                        <option value="Periodical">Periodical</option>
-                        <option value="Filipiniana">Filipiniana</option>
-                        <option value="Special Collection">Special Collection</option>
-                    </select>
-                </div>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <InputLabel id="section-label">Section</InputLabel>
+                                <Select
+                                    labelId="section-label"
+                                    value={section}
+                                    onChange={(e) => setSection(e.target.value)}
+                                    label="Section"
+                                    size="small"
+                                >
+                                    <MenuItem value="">Select</MenuItem>
+                                    <MenuItem value="General Reference">General Reference</MenuItem>
+                                    <MenuItem value="Circulation">Circulation</MenuItem>
+                                    <MenuItem value="Periodical">Periodical</MenuItem>
+                                    <MenuItem value="Filipiniana">Filipiniana</MenuItem>
+                                    <MenuItem value="Special Collection">Special Collection</MenuItem>
+                                </Select>
+                            </FormControl>
 
-                {/* Date Acquired */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Date Acquired: </label>
-                    <input
-                        type="date"
-                        value={dateAcquired}
-                        onChange={(e) => setDateAcquired(e.target.value)}
-                    />
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Date Acquired"
+                                type="date"
+                                value={dateAcquired}
+                                onChange={(e) => setDateAcquired(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                                InputLabelProps={{ shrink: true }}
+                            />
 
-                {/* Categories */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Categories: </label>
-                    <input
-                        type="text"
-                        value={categories}  // Ensure you're binding to the correct state
-                        onChange={(e) => setCategories(e.target.value)}
-                    />
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Categories"
+                                value={categories}
+                                onChange={(e) => setCategories(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
-                {/* Notes */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Notes: </label>
-                    <textarea
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        rows={3}
-                    ></textarea>
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Notes"
+                                multiline
+                                rows={3}
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
+                                sx={{ mb: 2 }}
+                            />
 
+                            <TextField
+                                fullWidth
+                                label="Vendor"
+                                value={vendor}
+                                onChange={(e) => setVendor(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
+                            <TextField
+                                fullWidth
+                                label="Funding Source"
+                                value={fundingSource}
+                                onChange={(e) => setFundingSource(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
-                {/* Vendor */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Vendor: </label>
-                    <input
-                        type="text"
-                        value={vendor}
-                        onChange={(e) => setVendor(e.target.value)}
-                    />
-                </div>
+                            <TextField
+                                fullWidth
+                                label="Subjects"
+                                value={subjects}
+                                onChange={(e) => setSubjects(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                            />
 
-                {/* Funding Source */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Funding Source: </label>
-                    <input
-                        type="text"
-                        value={fundingSource}
-                        onChange={(e) => setFundingSource(e.target.value)}
-                    />
-                </div>
-
-                {/* Subjects */}
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Subjects: </label>
-                    <input
-                        type="text"
-                        value={subjects}
-                        onChange={(e) => setSubjects(e.target.value)}
-                    />
-                </div>
-
-                {/* Buttons */}
-                <div>
-                    <button type="button" onClick={handleSave} style={{ marginRight: '10px' }}>
-                        Save
-                    </button>
-                    <button type="button" onClick={handleCancel}>
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
+                            <Box sx={{ mt: 2 }} paddingBottom="15px">
+                                <Button variant="contained" onClick={handleSave} sx={{ mr: 2, background: "#ea4040" }}>Save</Button>
+                                <Button variant="outlined" onClick={handleCancel} sx={{ borderColor: "#ea4040", color: "#ea4040" }}>Cancel</Button>
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+            </Container>
+            <Copyright />
+        </Box>
     );
 };
 

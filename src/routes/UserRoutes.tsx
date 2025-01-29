@@ -7,14 +7,12 @@ import AdvancedSearchPage from '../pages/AdvanceSearch/AdvancedSearchPage';
 const UserRoutes = () => (
   <Routes>
     <Route
-      element={<ProtectedRoute allowedRoles={['STUDENT', 'LIBRARIAN']} redirectPath="*" />}
+      element={<ProtectedRoute allowedRoles={['STUDENT', 'LIBRARIAN', 'ADMIN']} redirectPath="*" />}
     >
-      
+
       <Route path='browse' element={<CatalogHome />} />
       <Route path="book/:bookId" element={<BookDetails />} />
       <Route path='advanced/search' element={<AdvancedSearchPage />} />
-    
-      {/* <Route path="user/library" element={<LibraryCard />} /> */}
     </Route>
   </Routes>
 );

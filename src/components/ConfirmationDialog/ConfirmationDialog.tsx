@@ -1,4 +1,3 @@
-// ConfirmationDialog.tsx
 import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, useTheme, useMediaQuery } from '@mui/material';
 
@@ -9,9 +8,10 @@ interface ConfirmationDialogProps {
     title: string;
     message: string;
     confirmText: string;
+    cancelText?: string; // Added cancelText prop as optional
 }
 
-const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose, onConfirm, title, message, confirmText }) => {
+const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose, onConfirm, title, message, confirmText, cancelText = "Cancel" }) => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -28,7 +28,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose, 
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} autoFocus>
-                    Cancel
+                    {cancelText} {/* Use the cancelText prop */}
                 </Button>
                 <Button onClick={onConfirm} color="primary">
                     {confirmText}

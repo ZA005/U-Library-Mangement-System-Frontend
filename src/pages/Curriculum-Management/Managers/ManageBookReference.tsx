@@ -19,6 +19,7 @@ import {
 import { Program, getAllProgramByDepartment } from "../../../services/Curriculum/ProgramService";
 import { Department, getAllDepartments } from "../../../services/Curriculum/DepartmentService";
 import { Subject, getAllSubjectsByProgram } from "../../../services/Curriculum/SubjectService";
+import BookRefRec from "../../../components/CurriculumManagement/BookRefRecommendation/BookRefRec";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import Header from "../../../components/Header/Header";
@@ -35,6 +36,9 @@ const ManageBookReference: React.FC = () => {
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [departmentName, setDepartmentName] = useState<string>("");
     const [programName, setProgramName] = useState<string>("");
+
+    const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+    const toggleBookRefRec = (subject: Subject | null) => setSelectedSubject(subject);
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -221,7 +225,7 @@ const ManageBookReference: React.FC = () => {
                                                     textTransform: "none",
                                                     ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
                                                 }}
-                                                onClick={() => { }}
+                                                onClick={() => toggleBookRefRec(subject)}
                                             >
                                                 Add Book Reference
                                             </Button>
@@ -232,6 +236,8 @@ const ManageBookReference: React.FC = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                {selectedSubject && <BookRefRec subject={selectedSubject} onClose={() => toggleBookRefRec(null)} />}
+
             </Container>
             <Copyright />
         </Box>
