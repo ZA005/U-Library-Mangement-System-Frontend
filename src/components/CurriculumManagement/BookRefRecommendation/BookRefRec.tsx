@@ -217,7 +217,7 @@ const BookRefRec: React.FC<BookRefRecProps> = ({ subject, onClose }) => {
             <Dialog open={singleSelectConfirmation.isOpen} onClose={singleSelectConfirmation.cancelAction}>
                 <DialogTitle>Confirm Your Selection</DialogTitle>
                 <DialogContent>
-                    Are you sure you want to select this book?
+                    Are you sure you want to select this book?<br />
                     <strong>{selectedBook?.title}</strong>
                 </DialogContent>
                 <DialogActions>
