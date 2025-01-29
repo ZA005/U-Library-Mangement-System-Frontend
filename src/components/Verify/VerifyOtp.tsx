@@ -58,7 +58,7 @@ const VerifyOtp: React.FC = () => {
         setError(response.message || "Invalid OTP. Please try again.");
       }
     } catch (error) {
-      setError("Invalid OTP. Please check the OTP again.");
+      setError("Invalid OTP. Please check the OTP again." + error);
     } finally {
       setLoading(false);
     }
