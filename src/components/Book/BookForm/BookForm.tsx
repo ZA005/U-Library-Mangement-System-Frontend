@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton
+    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton,
+    Chip
 } from '@mui/material';
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../Header/Header';
@@ -10,6 +11,9 @@ import Copyright from '../../Footer/Copyright';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { generateCallNumber, saveBook } from '../../../services/Cataloging/GoogleBooksApi';
 import { fetchCopyNumBookExist, fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
+import { Locations, Sections } from '../../../model/Book';
+import LocationSelect from './LocationSelect';
+import SectionSelect from './SectionSelect';
 
 interface Book {
     id: string;
@@ -28,66 +32,54 @@ const BookForm: React.FC = () => {
 
     // Retrieve the book data passed from BookDetails
     const book: Book = state.book;
+    const acquiredBook = state?.acquiredBook;
 
     // Form state management
     const [status, setStatus] = useState('Available');
-    const [barcode, setBarcode] = useState('');
     const [callNumber, setCallNumber] = useState('');
-    const [purchasePrice, setPurchasePrice] = useState('');
+    const [purchasePrice, setPurchasePrice] = useState(acquiredBook.purchase_price || '');
     const [section, setSection] = useState('');
-    const [dateAcquired, setDateAcquired] = useState('');
+    const [sections, setSections] = useState<Sections[]>([]);
+    const [dateAcquired, setDateAcquired] = useState(acquiredBook.acquired_date || '');
     const [categories, setCategories] = useState(book.categories || '');
     const [notes, setNotes] = useState('');
-    const [location, setLocation] = useState('');
-    const [vendor, setVendor] = useState('');
-    const [fundingSource, setFundingSource] = useState('');
+    const [vendor, setVendor] = useState(acquiredBook.vendor || '');
+    const [fundingSource, setFundingSource] = useState(acquiredBook.funding_source || '');
     const [subjects, setSubjects] = useState('');
-    const [numberOfCopies, setNumberOfCopies] = useState(1);
+    const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
-
+    const [locations, setLocations] = useState<Locations[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState('');
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
     const handleSideBarClick = () => {
         setSidebarOpen(!isSidebarOpen);
     };
-
     const handleSidebarClose = () => {
         setSidebarOpen(false);
     };
 
     const generateAccessionNumbers = useCallback(async () => {
-        const locationPrefixes: { [key: string]: string } = {
-            eLibrary: 'E',
-            'Graduate Studies Library': 'GS',
-            'Law Library': 'L',
-            'Engineering and Architecture Library': 'EA',
-            'High School Library': 'HS',
-            'Elementary Library': 'EL',
-        };
+        // Find the location object that matches the selectedLocation
+        const selectedLoc = locations.find(loc => loc.locationCodeName === selectedLocation);
 
-        const prefix = locationPrefixes[location] || 'UNK';
+        // Use locationCodeName if found, otherwise default to 'UNK'
+        const prefix = selectedLoc ? selectedLoc.locationCodeName : 'UNK';
 
         try {
-            // Fetch the generated accession numbers from the backend
-            const response = await fetchCopyNumBookExist(book.title, book.isbn10, book.isbn13, prefix);
-
-            if (response !== "NOTFOUND") {
-                console.log("Generated Accession Numbers:", response);
-                // setAccessionNumbers(response); // Backend returns a list of accession numbers
-            } else {
-                alert('No accession numbers found for this book. Please try again.');
-            }
+            const lastAccessionNumber = await fetchLastAccessionNumber(prefix);
+            const lastNumber = parseInt(lastAccessionNumber.split('-')[1], 10) || 0;
+            const baseNumber = (lastNumber + 1).toString().padStart(6, '0');
+            const baseAccessionNumber = `${prefix}-${baseNumber}`;
+            const numbers = Array.from({ length: numberOfCopies! }, (_, index) =>
+                `${baseAccessionNumber} c.${index + 1}`
+            );
+            setAccessionNumbers(numbers);
         } catch (error) {
             console.error('Error fetching accession numbers:', error);
             alert('Failed to fetch accession numbers. Please try again.');
         }
-    }, [location, book.title, book.isbn10, book.isbn13]);
-
-
-
-
-
-
+    }, [selectedLocation, locations, numberOfCopies]);
 
 
     const handleGenerateCallNumber = useCallback(async () => {
@@ -97,24 +89,27 @@ const BookForm: React.FC = () => {
             const publishedDate = state.book.publishedDate;
             const title = book.title;
             const callNumber = await generateCallNumber(category, authors, publishedDate, title);
-            setCallNumber(callNumber); // Update the state with the generated call number
+            setCallNumber(callNumber);
+            console.log(callNumber);
         } catch (error) {
             alert('Error generating call number. Please try again.');
             console.error(error);
         }
     }, [state.book.categories, state.book.publishedDate, book.authors, book.title]);
 
+
     useEffect(() => {
+        setCallNumber(book.callNumber || '');
         if (!book.callNumber) {
             handleGenerateCallNumber(); // Generate call number if it doesn't exist
         }
     }, [book.callNumber, handleGenerateCallNumber]);
 
     useEffect(() => {
-        if (location && numberOfCopies > 0) {
+        if (selectedLocation && numberOfCopies! > 0) {
             generateAccessionNumbers();
         }
-    }, [location, numberOfCopies, generateAccessionNumbers]);
+    }, [selectedLocation, numberOfCopies, generateAccessionNumbers]);
 
     const handleSave = async () => {
         // Ensure all fields are valid before proceeding
@@ -132,12 +127,11 @@ const BookForm: React.FC = () => {
             callNumber,
             purchasePrice,
             status,
-            barcode,
             section,
             dateAcquired,
             categories: Array.isArray(categories) ? categories : categories?.split(','),
             notes,
-            location,
+            selectedLocation,
             vendor,
             fundingSource,
             subjects: subjects.split(','),
@@ -168,7 +162,7 @@ const BookForm: React.FC = () => {
     };
 
     const handleCancel = () => {
-        navigate(-1); // Go back to the previous page
+        navigate(-1);
     };
 
     return (
@@ -195,6 +189,18 @@ const BookForm: React.FC = () => {
                         <Typography variant="h4"><strong>Title:</strong> {book.title}</Typography>
                         <Typography variant="h6"><strong>Authors:</strong> {book.authors.join(', ')}</Typography>
                         <Typography variant="h6"><strong>Call Number:</strong> {callNumber || 'N/A'}</Typography>
+                        <Typography variant="h6"><strong>ISBN:</strong> {state.book.isbn13}</Typography>
+                        <Typography variant="h6"><strong>Accession Numbers:</strong></Typography>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', maxWidth: '100%', overflowX: 'auto', padding: 1 }}>
+                            {accessionNumbers.length > 0 ? (
+                                accessionNumbers.map((number, index) => (
+                                    <Chip key={index} label={number} sx={{ backgroundColor: '#f5f5f5', fontSize: '0.9rem' }} />
+                                ))
+                            ) : (
+                                <Typography variant="body1">N/A - Set Location to generate Accession number/s</Typography>
+                            )}
+                        </Box>
+
 
                         <Box component="form" sx={{ mt: 2 }}>
                             <FormControl fullWidth sx={{ mb: 2 }}>
@@ -218,21 +224,21 @@ const BookForm: React.FC = () => {
                                 fullWidth
                                 label="Number of Copies"
                                 type="number"
-                                value={numberOfCopies}
-                                onChange={(e) => setNumberOfCopies(Number(e.target.value))}
+                                value={numberOfCopies !== null ? numberOfCopies : ""}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setNumberOfCopies(value === "" ? null : Number(value));
+                                }}
+                                onBlur={() => {
+                                    if (numberOfCopies === null) {
+                                        setNumberOfCopies(1);
+                                    }
+                                }}
                                 inputProps={{ min: 1 }}
                                 sx={{ mb: 2 }}
                                 size="small"
                             />
 
-                            <TextField
-                                fullWidth
-                                label="Starting Barcode"
-                                value={barcode}
-                                onChange={(e) => setBarcode(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
 
                             <TextField
                                 fullWidth
@@ -252,26 +258,23 @@ const BookForm: React.FC = () => {
                                 size="small"
                             />
 
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="location-label">Location</InputLabel>
-                                <Select
-                                    labelId="location-label"
-                                    value={location}
-                                    onChange={(e) => setLocation(e.target.value)}
-                                    label="Location"
-                                    size="small"
-                                >
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="eLibrary">eLibrary</MenuItem>
-                                    <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
-                                    <MenuItem value="Law Library">Law Library</MenuItem>
-                                    <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
-                                    <MenuItem value="High School Library">High School Library</MenuItem>
-                                    <MenuItem value="Elementary Library">Elementary Library</MenuItem>
-                                </Select>
-                            </FormControl>
+                            <LocationSelect
+                                selectedLocation={selectedLocation}
+                                setSelectedLocation={setSelectedLocation}
+                                locations={locations}
+                                setLocations={setLocations}
+                            />
 
-                            <FormControl fullWidth sx={{ mb: 2 }}>
+                            <SectionSelect
+                                selectedSection={section}
+                                setSelectedSection={setSection}
+                                sections={sections}
+                                setSections={setSections}
+                                selectedLocation={selectedLocation}
+                                locations={locations}
+                            />
+
+                            {/* <FormControl fullWidth sx={{ mb: 2 }}>
                                 <InputLabel id="section-label">Section</InputLabel>
                                 <Select
                                     labelId="section-label"
@@ -287,7 +290,7 @@ const BookForm: React.FC = () => {
                                     <MenuItem value="Filipiniana">Filipiniana</MenuItem>
                                     <MenuItem value="Special Collection">Special Collection</MenuItem>
                                 </Select>
-                            </FormControl>
+                            </FormControl> */}
 
                             <TextField
                                 fullWidth

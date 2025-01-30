@@ -24,3 +24,15 @@ export interface Book {
     fundingSource: string;
     subjects: string;
 }
+
+export interface Locations {
+    id?: number;
+    locationCodeName: string;
+    locationName: string;
+}
+
+export interface Sections {
+    id?: number;
+    locationId: number;
+    sectionName: string;
+}
