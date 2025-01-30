@@ -25,6 +25,7 @@ const BookDetails: React.FC = () => {
 
   const book: Book = state?.book;
   const source = state?.source;
+  const acquiredBook = state?.acquiredBook;
   const handleAddBookRefModalOpen = () => setIsAddBookRefModalOpen(true);
   const handleAddBookRefModalClose = () => setIsAddBookRefModalOpen(false);
 
@@ -40,7 +41,7 @@ const BookDetails: React.FC = () => {
     }
   };
 
-  const handleAddCopies = () => navigate('/admin/catalog/management/book-form', { state: { book } });
+  const handleAddCopies = () => navigate('/admin/catalog/management/book-form', { state: { book, acquiredBook } });
   const handleEditTitle = () => {
     const newTitle = prompt('Edit the title of the book:', book.title);
     if (newTitle) {

@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
+    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Chip
 } from '@mui/material';
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../Header/Header';
 import MenuIcon from "@mui/icons-material/Menu";
 import Copyright from '../../Footer/Copyright';
 import useGenerateCallNumber from './useGenerateCallNumber';
-import useGenerateAccessionNumber from './useGenerateAccessionNumber';
+import { useGenerateAccessionNumbers } from './useGenerateAccessionNumber';
 import { saveBook } from '../../../services/Cataloging/GoogleBooksApi';
+import LocationSelect from './LocationSelect';
+import { Locations, Sections } from '../../../model/Book';
+import SectionSelect from './SectionSelect';
 
 interface BookData {
     book_title: string;
@@ -27,14 +31,15 @@ const BookFormFast: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isbn, setISBN] = useState(bookData?.isbn || '');
     const [author, setAuthor] = useState('');
-    const [numberOfCopies, setNumberOfCopies] = useState(1);
+    const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [barcode, setBarcode] = useState('');
-    const [location, setLocation] = useState('');
     const [section, setSection] = useState('');
+    const [sections, setSections] = useState<Sections[]>([]);
     const [categories, setCategories] = useState('');
     const [description, setDescription] = useState('');
     const [ddcNumber, setDDCNumber] = useState('');
-
+    const [locations, setLocations] = useState<Locations[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     const ddcClasses = [
@@ -52,7 +57,12 @@ const BookFormFast: React.FC = () => {
 
     const callNumber = useGenerateCallNumber({ bookTitle: bookData?.book_title || '', author, ddcNumber, publishedDate: bookData?.published_date });
 
-    const accessionNumber = useGenerateAccessionNumber({ location, copies: numberOfCopies });
+    // Find the location object that matches the selectedLocation
+    const selectedLoc = locations.find(loc => loc.locationCodeName === selectedLocation);
+
+    // Use locationCodeName if found, otherwise default to ''
+    const locationPrefix = selectedLoc ? selectedLoc.locationCodeName : '';
+    const accessionNumbers = useGenerateAccessionNumbers({ locationPrefix, copies: numberOfCopies });
 
     const handleSideBarClick = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -161,8 +171,18 @@ const BookFormFast: React.FC = () => {
                     }}>
                         <Typography variant="h4"><strong>Title:</strong> {bookData?.book_title}</Typography>
                         <Typography variant="h6"><strong>Call Number:</strong> {callNumber}</Typography>
-                        <Typography variant="h6"><strong>Accession Number:</strong> {accessionNumber}</Typography>
                         <Typography variant="h6"><strong>ISBN:</strong> {isbn}</Typography>
+                        <Typography variant="h6"><strong>Accession Numbers:</strong></Typography>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', maxWidth: '100%', overflowX: 'auto', padding: 1 }}>
+                            {accessionNumbers.length > 0 ? (
+                                accessionNumbers.map((number, index) => (
+                                    <Chip key={index} label={number} sx={{ backgroundColor: '#f5f5f5', fontSize: '0.9rem' }} />
+                                ))
+                            ) : (
+                                <Typography variant="body1">N/A - Set Location to generate Accession number/s</Typography>
+                            )}
+                        </Box>
+
                         <Box component="form" sx={{ mt: 2 }}>
                             <TextField
                                 fullWidth
@@ -177,13 +197,20 @@ const BookFormFast: React.FC = () => {
                                 fullWidth
                                 label="Number of Copies"
                                 type="number"
-                                value={numberOfCopies}
-                                onChange={(e) => setNumberOfCopies(Number(e.target.value))}
+                                value={numberOfCopies !== null ? numberOfCopies : ""}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setNumberOfCopies(value === "" ? null : Number(value));
+                                }}
+                                onBlur={() => {
+                                    if (numberOfCopies === null) {
+                                        setNumberOfCopies(1);
+                                    }
+                                }}
                                 inputProps={{ min: 1 }}
                                 sx={{ mb: 2 }}
                                 size="small"
                             />
-
                             <TextField
                                 fullWidth
                                 label="Starting Barcode"
@@ -207,31 +234,21 @@ const BookFormFast: React.FC = () => {
                                     ))}
                                 </Select>
                             </FormControl>
+                            <LocationSelect
+                                selectedLocation={selectedLocation}
+                                setSelectedLocation={setSelectedLocation}
+                                locations={locations}
+                                setLocations={setLocations}
+                            />
 
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="location-label">Location</InputLabel>
-                                <Select labelId="location-label" value={location} onChange={(e) => setLocation(e.target.value)} label="Location" size="small">
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="eLibrary">eLibrary</MenuItem>
-                                    <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
-                                    <MenuItem value="Law Library">Law Library</MenuItem>
-                                    <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
-                                    <MenuItem value="High School Library">High School Library</MenuItem>
-                                    <MenuItem value="Elementary Library">Elementary Library</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="section-label">Section</InputLabel>
-                                <Select labelId="section-label" value={section} onChange={(e) => setSection(e.target.value)} label="Section" size="small">
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="General Reference">General Reference</MenuItem>
-                                    <MenuItem value="Circulation">Circulation</MenuItem>
-                                    <MenuItem value="Periodical">Periodical</MenuItem>
-                                    <MenuItem value="Filipiniana">Filipiniana</MenuItem>
-                                    <MenuItem value="Special Collection">Special Collection</MenuItem>
-                                </Select>
-                            </FormControl>
+                            <SectionSelect
+                                selectedSection={section}
+                                setSelectedSection={setSection}
+                                sections={sections}
+                                setSections={setSections}
+                                selectedLocation={selectedLocation}
+                                locations={locations}
+                            />
 
                             <TextField
                                 fullWidth

@@ -14,11 +14,12 @@ import { getBooksByAdvancedSearch } from "../../services/Cataloging/LocalBooksAP
 
 const BookSearch: React.FC = () => {
     const location = useLocation();
-    const state = location.state as { query: any; books: Book[]; source: string; modalParams?: any };
+    const state = location.state as { query: any; books: Book[]; source: string; modalParams?: any; bookData: any; };
 
     const [query, setQuery] = useState(state?.query || null);
     const [source, setSource] = useState(state?.source || "All libraries");
     const [books, setBooks] = useState<Book[]>(state?.books || []);
+    const [acquiredBook] = useState<Book>(state?.bookData || null);
     const [loading, setLoading] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isNavigationSearch, setIsNavigationSearch] = useState(!!state?.query);
@@ -30,7 +31,7 @@ const BookSearch: React.FC = () => {
 
     const handleBookClick = (book: Book) => {
         navigate(`/user/book/${book.id}`, {
-            state: { book, searchState: { query, books, source }, source },
+            state: { book, searchState: { query, books, source }, source, acquiredBook },
         });
     };
 
