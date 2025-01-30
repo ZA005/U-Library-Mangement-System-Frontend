@@ -49,9 +49,9 @@ export const fetchBorrowerDetails = async (libraryCardNumber: string): Promise<{
 };
 
 
-export const fetchBookDetails = async (barcode: string): Promise<{ accessionNo: string, title: string, callNumber: string, authors: string }> => {
+export const fetchBookDetails = async (accessionNo: string): Promise<{ title: string, callNumber: string, authors: string }> => {
     try {
-        const response = await axios.get(`${BASE_URL}adminuser/barcode/${barcode}`, {
+        const response = await axios.get(`${BASE_URL}adminuser/accessionNo/${accessionNo}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data; // Ensure the backend returns `{ bookTitle, author }`
@@ -82,9 +82,9 @@ export const updateLoanStatus = async (loanId: bigint, status: string, action: s
     }
 };
 
-export const checkBookLoanStatus = async (barcode: string): Promise<boolean> => {
+export const checkBookLoanStatus = async (accessionNo: string): Promise<boolean> => {
     try {
-        const response = await axios.get(`${BASE_URL}admin/check-book-loan-status/barcode/${barcode}`, {
+        const response = await axios.get(`${BASE_URL}admin/check-book-loan-status/accessionNo/${accessionNo}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data.isLoaned;  // Assuming the backend returns a boolean indicating the loan status

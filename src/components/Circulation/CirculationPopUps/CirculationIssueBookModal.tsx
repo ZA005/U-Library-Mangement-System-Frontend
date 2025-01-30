@@ -13,7 +13,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
 }) => {
   const [step, setStep] = useState(1);
   const [libraryCardNumber, setLibraryCardNumber] = useState("");
-  const [barcode, setBarcode] = useState("");
+  // const [barcode, setBarcode] = useState("");
   const [title, setTitle] = useState("");
   const [callNumber, setCallNumber] = useState("");
   const [accessionNo, setAccessionNo] = useState("");
@@ -38,7 +38,6 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   const resetState = () => {
     setStep(1);
     setLibraryCardNumber("");
-    setBarcode("");
     setTitle("");
     setCallNumber("");
     setAccessionNo("");
@@ -61,14 +60,14 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
       }
     } else if (step === 2) {
       try {
-        const { accessionNo, title, callNumber, authors } = await fetchBookDetails(barcode);
-        setAccessionNo(accessionNo);
+        const { title, callNumber, authors } = await fetchBookDetails(accessionNo);
+        // setAccessionNo(accessionNo);
         setCallNumber(callNumber);
         setTitle(title);
         setAuthors(authors);
 
         // Check if the book is already loaned out
-        const isBookLoaned = await checkBookLoanStatus(barcode);
+        const isBookLoaned = await checkBookLoanStatus(accessionNo);
         if (isBookLoaned) {
           setErrorMessage("This book is already loaned out. Please choose another book.");
         } else {
@@ -136,10 +135,10 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
     } else if (step === 2) {
       return [
         {
-          label: "Barcode",
+          label: "Accession Number",
           type: "text",
-          value: barcode,
-          onChange: setBarcode,
+          value: accessionNo,
+          onChange: setAccessionNo,
           readOnly: false,
         },
       ];
