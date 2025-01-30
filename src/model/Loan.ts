@@ -1,7 +1,6 @@
 export interface Loan {
     loanId: string;
     accessionNo: string;
-    barcode: string;
     title: string;
     callNumber: string;
     authorName: string;

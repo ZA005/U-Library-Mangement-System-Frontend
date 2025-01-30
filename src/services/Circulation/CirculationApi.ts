@@ -62,12 +62,12 @@ export const fetchBookDetails = async (accessionNo: string): Promise<{ title: st
 
 export const getLoanById = async (loanId: bigint) => {
     try {
-        const response = await axios.get(`${BASE_URL}admin/loans/barcode/${loanId}`, {
+        const response = await axios.get(`${BASE_URL}admin/loans/accessionNo/${loanId}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data;
     } catch (error) {
-        throw new Error("Failed to fetch loan by barcode: " + error);
+        throw new Error("Failed to fetch loan by Accession Number: " + error);
     }
 };
 

@@ -23,10 +23,10 @@ import { getBooksByAdvancedSearch } from '../../services/Cataloging/LocalBooksAP
 import Z3950SRUSearch from '../Modal/SRUSearch/Z3950SRUSearch';
 
 interface SearchBarProps {
-    initialQuery?: string;
-    initialSource?: string;
-    onSearch: (books: Book[], source: string, query: string | object) => void;
-    modalParams?: any;
+  initialQuery?: string;
+  initialSource?: string;
+  onSearch: (books: Book[], source: string, query: string | object) => void;
+  modalParams?: any;
 
 }
 
@@ -40,88 +40,88 @@ const searchIndexLabels: { [key: string]: string } = {
 };
 
 const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource = 'All libraries', onSearch, modalParams }) => {
-    const [query, setQuery] = useState(initialQuery);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [searchIndex, setSearchIndex] = useState("q");
-    const [source, setSource] = useState(initialSource);
-    const navigate = useNavigate();
-    const [modalOpen, setModalOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        keyword: '',
-        title: '',
-        author: '',
-        publisher: '',
-        isbn: '',
-        lccn: '',
-    });
+  const [query, setQuery] = useState(initialQuery);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [searchIndex, setSearchIndex] = useState("q");
+  const [source, setSource] = useState(initialSource);
+  const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    keyword: '',
+    title: '',
+    author: '',
+    publisher: '',
+    isbn: '',
+    lccn: '',
+  });
 
-    useEffect(() => {
-        setQuery(initialQuery);
-        if (initialSource !== "Z39.50/SRU") {
-            setSource(initialSource);
-        }
-    }, [initialQuery, initialSource]);
+  useEffect(() => {
+    setQuery(initialQuery);
+    if (initialSource !== "Z39.50/SRU") {
+      setSource(initialSource);
+    }
+  }, [initialQuery, initialSource]);
 
 
-    const handleOpenSRUModal = () => {
-        if (modalParams) {
-            setFormDataFromParams(modalParams);
-        }
-        setModalOpen(true);
+  const handleOpenSRUModal = () => {
+    if (modalParams) {
+      setFormDataFromParams(modalParams);
+    }
+    setModalOpen(true);
+  };
+
+  // Helper function to populate modal fields from modalParams
+  const setFormDataFromParams = (params: any) => {
+    const newFormData = {
+      keyword: params.criteria?.find((criterion: any) => criterion.idx === "q")?.searchTerm || "",
+      title: params.criteria?.find((criterion: any) => criterion.idx === "intitle")?.searchTerm || "",
+      author: params.criteria?.find((criterion: any) => criterion.idx === "inauthor")?.searchTerm || "",
+      publisher: params.criteria?.find((criterion: any) => criterion.idx === "inpublisher")?.searchTerm || "",
+      isbn: params.criteria?.find((criterion: any) => criterion.idx === "isbn")?.searchTerm || "",
+      lccn: "",
     };
+    setFormData(newFormData);
+  };
 
-    // Helper function to populate modal fields from modalParams
-    const setFormDataFromParams = (params: any) => {
-        const newFormData = {
-            keyword: params.criteria?.find((criterion: any) => criterion.idx === "q")?.searchTerm || "",
-            title: params.criteria?.find((criterion: any) => criterion.idx === "intitle")?.searchTerm || "",
-            author: params.criteria?.find((criterion: any) => criterion.idx === "inauthor")?.searchTerm || "",
-            publisher: params.criteria?.find((criterion: any) => criterion.idx === "inpublisher")?.searchTerm || "",
-            isbn: params.criteria?.find((criterion: any) => criterion.idx === "isbn")?.searchTerm || "",
-            lccn: "",
-        };
-        setFormData(newFormData);
-    };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
-    const handleCloseModal = () => {
-        setModalOpen(false);
-    };
+  const handleSearch = async () => {
+    setLoading(true);
+    setError(null);
 
-    const handleSearch = async () => {
-        setLoading(true);
-        setError(null);
+    try {
+      let result: Book[] = [];
+      // Advanced search for other libraries
+      const advancedSearchParams = {
+        criteria: [
+          {
+            idx: searchIndex,
+            searchTerm: query,
+            operator: "AND",
+          },
+        ],
+        individualLibrary: source === "All libraries" ? null : source,
+      };
+      result = await getBooksByAdvancedSearch(advancedSearchParams);
 
-        try {
-            let result: Book[] = [];
-            // Advanced search for other libraries
-            const advancedSearchParams = {
-                criteria: [
-                    {
-                        idx: searchIndex,
-                        searchTerm: query,
-                        operator: "AND",
-                    },
-                ],
-                individualLibrary: source === "All libraries" ? null : source,
-            };
-            result = await getBooksByAdvancedSearch(advancedSearchParams);
+      // Navigate to the BookSearch page with the search results
+      navigate("/admin/catalog/management/search-title", {
+        state: { query: advancedSearchParams, books: result, source },
+      });
 
-            // Navigate to the BookSearch page with the search results
-            navigate("/admin/catalog/management/search-title", {
-                state: { query: advancedSearchParams, books: result, source },
-            });
-
-            // Update the parent with the search results
-            onSearch(result, source, advancedSearchParams);
-        } catch (error) {
-            console.error("Error fetching books:", error);
-            setError("An error occurred while searching. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
+      // Update the parent with the search results
+      onSearch(result, source, advancedSearchParams);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setError("An error occurred while searching. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -214,59 +214,57 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
           </Box>
         </Box>
 
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSearch}
-                    disabled={loading || !query}
-                    className={styles.searchButton}
-                    endIcon={loading && <CircularProgress size={20} color="inherit" />}
-                >
-                    {loading ? 'Searching...' : 'Search'}
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => navigate('/user/advanced/search')}
-                    className={styles.searchButton}
-                >
-                    Advanced Search
-                </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSearch}
+          disabled={loading || !query}
+          className={styles.searchButton}
+          endIcon={loading && <CircularProgress size={20} color="inherit" />}
+        >
+          {loading ? 'Searching...' : 'Search'}
+        </Button>
 
-                {/* To be implemented */}
-                <Button
-    startIcon={<SearchIcon />}
-    sx={{
-        color: "red", // Red text and icon
-        backgroundColor: "white", // White background
-        border: "none", // No border
-        textTransform: "none", // Keep text in its original case
-        boxShadow: "none", // No shadow
-        padding: "8px 16px", // Optional: Add padding for spacing
-        margin: 0, // No margin
-        minWidth: "auto", // Button fits content
-        "&:hover": {
-            backgroundColor: "white", // Keep white background on hover
-        },
-    }}
-    onClick={handleOpenSRUModal}
->
-    Z39.50/SRU
-</Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate('/user/advanced/search')}
+          className={styles.searchButton}
+        >
+          Advanced Search
+        </Button>
+
+        <Button
+          startIcon={<SearchIcon />}
+          sx={{
+            backgroundColor: "transparent", // Transparent background
+            border: "none", // No border
+            textTransform: "none", // Keep text in its original case
+            boxShadow: "none", // No shadow
+            margin: 0, // No margin
+            minWidth: "auto", // Button fits content
+            "&:hover": {
+              backgroundColor: "transparent", // Keep transparent background on hover
+            },
+          }}
+          onClick={handleOpenSRUModal}
+        >
+          Z39.50/SRU
+        </Button>
 
 
-                <Z3950SRUSearch
-                    open={modalOpen}
-                    onClose={handleCloseModal}
-                    onSubmit={(books, source, query) => {
-                        onSearch(books, source, query);
-                    }}
-                    initialFormData={formData}
-                />
-            </Stack>
-            {error && <p className={styles.errorText}>{error}</p>}
-        </div>
-    );
+        <Z3950SRUSearch
+          open={modalOpen}
+          onClose={handleCloseModal}
+          onSubmit={(books, source, query) => {
+            onSearch(books, source, query);
+          }}
+          initialFormData={formData}
+        />
+      </Stack>
+      {error && <p className={styles.errorText}>{error}</p>}
+    </div>
+  );
 };
 
 export default SearchBar;

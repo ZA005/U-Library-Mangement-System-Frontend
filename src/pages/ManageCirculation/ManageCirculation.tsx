@@ -36,12 +36,12 @@ const ManageCirculation: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loans, setLoans] = useState<Loan[]>([]);
   const [filteredLoans, setFilteredLoans] = useState<Loan[]>([]);
-  const [barcode, setBarcode] = useState<string>("");
   const [loanData, setLoanData] = useState<Loan[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
   const [action, setAction] = useState<"Return" | "Renew" | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [accessionNo, setAccessionNo] = useState<string>("");
 
   useEffect(() => {
     const fetchLoans = async () => {
@@ -68,16 +68,16 @@ const ManageCirculation: React.FC = () => {
     setLoanData(null); // Reset loan data on close
   };
 
-  const handleBarcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAccessionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
-    setBarcode(searchTerm);
+    setAccessionNo(searchTerm);
 
     if (searchTerm.trim() === "") {
       setFilteredLoans(loans);
     } else {
       const filtered = loans.filter(
         (loan) =>
-          loan.barcode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          loan.accessionNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
           loan.borrower.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredLoans(filtered);
@@ -165,9 +165,9 @@ const ManageCirculation: React.FC = () => {
 
           <Box className={styles.searchBox}>
             <TextField
-              value={barcode}
-              onChange={handleBarcodeChange}
-              placeholder="Search by Barcode..."
+              value={accessionNo}
+              onChange={handleAccessionChange}
+              placeholder="Search by Accession number..."
               size="small"
               InputProps={{
                 startAdornment: <SearchIcon className={styles.searchIcon} />,

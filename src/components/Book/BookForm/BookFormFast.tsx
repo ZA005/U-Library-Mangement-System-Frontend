@@ -32,7 +32,6 @@ const BookFormFast: React.FC = () => {
     const [isbn, setISBN] = useState(bookData?.isbn || '');
     const [author, setAuthor] = useState('');
     const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
-    const [barcode, setBarcode] = useState('');
     const [section, setSection] = useState('');
     const [sections, setSections] = useState<Sections[]>([]);
     const [categories, setCategories] = useState('');
@@ -98,7 +97,6 @@ const BookFormFast: React.FC = () => {
                     callNumber: callNumber ?? "N/A",
                     purchasePrice: bookData?.purchase_price,
                     status: "Available",
-                    barcode: barcode ? `${barcode}-${i}` : `N/A-${i}`,
                     section: section || "General",
                     dateAcquired: new Date().toISOString(),
                     categories: Array.isArray(categories)
@@ -141,9 +139,6 @@ const BookFormFast: React.FC = () => {
             alert(`An error occurred while saving the book copies. ${error}`);
         }
     };
-
-
-
 
     const handleCancel = () => navigate('/admin/catalog/management/accesion-record');
     const handleCloseConfirm = () => setConfirmOpen(false);
@@ -208,14 +203,6 @@ const BookFormFast: React.FC = () => {
                                     }
                                 }}
                                 inputProps={{ min: 1 }}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-                            <TextField
-                                fullWidth
-                                label="Starting Barcode"
-                                value={barcode}
-                                onChange={(e) => setBarcode(e.target.value)}
                                 sx={{ mb: 2 }}
                                 size="small"
                             />

@@ -13,7 +13,6 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
 }) => {
   const [step, setStep] = useState(1);
   const [libraryCardNumber, setLibraryCardNumber] = useState("");
-  // const [barcode, setBarcode] = useState("");
   const [title, setTitle] = useState("");
   const [callNumber, setCallNumber] = useState("");
   const [accessionNo, setAccessionNo] = useState("");
@@ -80,7 +79,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
         }
       } catch (error) {
         console.error("Error fetching book details:", error);
-        setErrorMessage("Book details not found. Please verify the Barcode.");
+        setErrorMessage("Book details not found. Please verify the Accession number.");
       }
     }
   };

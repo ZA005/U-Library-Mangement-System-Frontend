@@ -13,7 +13,6 @@ export interface Book {
     language: string;
     printType: string;
     status: string;
-    barcode: string;
     callNumber: string;
     purchasePrice: string;
     section: string;
