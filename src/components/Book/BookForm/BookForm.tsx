@@ -239,7 +239,6 @@ const BookForm: React.FC = () => {
                                 size="small"
                             />
 
-
                             <TextField
                                 fullWidth
                                 label="Call Number"
@@ -273,24 +272,6 @@ const BookForm: React.FC = () => {
                                 selectedLocation={selectedLocation}
                                 locations={locations}
                             />
-
-                            {/* <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="section-label">Section</InputLabel>
-                                <Select
-                                    labelId="section-label"
-                                    value={section}
-                                    onChange={(e) => setSection(e.target.value)}
-                                    label="Section"
-                                    size="small"
-                                >
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="General Reference">General Reference</MenuItem>
-                                    <MenuItem value="Circulation">Circulation</MenuItem>
-                                    <MenuItem value="Periodical">Periodical</MenuItem>
-                                    <MenuItem value="Filipiniana">Filipiniana</MenuItem>
-                                    <MenuItem value="Special Collection">Special Collection</MenuItem>
-                                </Select>
-                            </FormControl> */}
 
                             <TextField
                                 fullWidth
