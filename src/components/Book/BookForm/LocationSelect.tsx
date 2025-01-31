@@ -105,6 +105,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                 label="Location"
                 placeholder='Please select a library'
                 size="small"
+                required
             >
                 <MenuItem value="">Select</MenuItem>
                 {locations.map((loc) => (
