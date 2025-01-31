@@ -13,7 +13,6 @@ export interface Book {
     language: string;
     printType: string;
     status: string;
-    barcode: string;
     callNumber: string;
     purchasePrice: string;
     section: string;
@@ -23,4 +22,16 @@ export interface Book {
     vendor: string;
     fundingSource: string;
     subjects: string;
+}
+
+export interface Locations {
+    id?: number;
+    locationCodeName: string;
+    locationName: string;
+}
+
+export interface Sections {
+    id?: number;
+    locationId: number;
+    sectionName: string;
 }

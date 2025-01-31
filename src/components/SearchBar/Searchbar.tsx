@@ -216,44 +216,37 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
 
         <Button
           variant="contained"
-          size='small'
           color="primary"
           onClick={handleSearch}
           disabled={loading || !query}
-          // className={styles.searchButton}
+          className={styles.searchButton}
           endIcon={loading && <CircularProgress size={20} color="inherit" />}
         >
           {loading ? 'Searching...' : 'Search'}
         </Button>
 
         <Button
-          variant="text"
-          size='small'
-          // color="secondary"
+          variant="outlined"
+          color="secondary"
           onClick={() => navigate('/user/advanced/search')}
-        // className={styles.searchButton}
+          className={styles.searchButton}
         >
           Advanced Search
         </Button>
 
-        {/* To be implemented */}
         <Button
           startIcon={<SearchIcon />}
-          size='small'
-          variant="text"
-          // sx={{
-          //   color: "red", // Red text and icon
-          //   backgroundColor: "white", // White background
-          //   border: "none", // No border
-          //   textTransform: "none", // Keep text in its original case
-          //   boxShadow: "none", // No shadow
-          //   padding: "8px 16px", // Optional: Add padding for spacing
-          //   margin: 0, // No margin
-          //   minWidth: "auto", // Button fits content
-          //   "&:hover": {
-          //     backgroundColor: "white", // Keep white background on hover
-          //   },
-          // }}
+          sx={{
+            backgroundColor: "transparent", // Transparent background
+            border: "none", // No border
+            textTransform: "none", // Keep text in its original case
+            boxShadow: "none", // No shadow
+            margin: 0, // No margin
+            minWidth: "auto", // Button fits content
+            "&:hover": {
+              backgroundColor: "transparent", // Keep transparent background on hover
+            },
+          }}
           onClick={handleOpenSRUModal}
         >
           Z39.50/SRU
@@ -269,7 +262,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
           initialFormData={formData}
         />
       </Stack>
-      {error && <p /*className={styles.errorText}*/>{error}</p>}
+      {error && <p className={styles.errorText}>{error}</p>}
     </div>
   );
 };

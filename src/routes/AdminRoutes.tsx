@@ -19,6 +19,7 @@ import WeedingDashboard from '../pages/Cataloging-Management/Managers/Book-Weedi
 import CriteriaDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/CriteriaDashboard';
 import UploadManager from '../pages/Curriculum-Management/Managers/UploadManager';
 import TransactionRecord from '../pages/ManageCirculation/TransactionRecord';
+import ManageReservation from '../pages/ManageReservation/ManageReservation';
 
 const AdminRoutes = () => (
   <Routes>
@@ -51,9 +52,10 @@ const AdminRoutes = () => (
 
       {/* Ciculation Module  */}
       <Route path='circulation/management/page' element={<CirculationDashboard />} />
-      <Route path='manage-circulation' element={<ManageCirculation />} />
+      <Route path='circulation/management/circulation' element={<ManageCirculation />} />
       <Route path='circulation/management/history' element={<TransactionRecord />} />
-      <Route path='oversee-overdue' element={<OverseeOverdue />} />
+      <Route path='circulation/management/reservation' element={<ManageReservation />} />
+      <Route path='circulation/management/oversee-overdue' element={<OverseeOverdue />} />
 
 
 

@@ -1,41 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
+    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Chip
 } from '@mui/material';
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../Header/Header';
 import MenuIcon from "@mui/icons-material/Menu";
 import Copyright from '../../Footer/Copyright';
 import useGenerateCallNumber from './useGenerateCallNumber';
-import useGenerateAccessionNumber from './useGenerateAccessionNumber';
+import { useGenerateAccessionNumbers } from './useGenerateAccessionNumber';
 import { saveBook } from '../../../services/Cataloging/GoogleBooksApi';
+import LocationSelect from './LocationSelect';
+import { Locations, Sections } from '../../../model/Book';
+import SectionSelect from './SectionSelect';
+import BookConditionSelect from './BookConditionOptions';
 
-interface BookData {
-    book_title: string;
-    isbn: string;
-}
-
-interface LocationState {
-    bookData?: BookData;
-}
 
 const BookFormFast: React.FC = () => {
-    const { state } = useLocation() as { state: LocationState };
+    const { state } = useLocation();
     const bookData = state?.bookData;
     const navigate = useNavigate();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [isbn, setISBN] = useState(bookData?.isbn || '');
+    const [isbn] = useState(bookData?.isbn || '');
     const [author, setAuthor] = useState('');
-    const [numberOfCopies, setNumberOfCopies] = useState(1);
-    const [barcode, setBarcode] = useState('');
-    const [location, setLocation] = useState('');
+    const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [section, setSection] = useState('');
+    const [sections, setSections] = useState<Sections[]>([]);
     const [categories, setCategories] = useState('');
     const [description, setDescription] = useState('');
     const [ddcNumber, setDDCNumber] = useState('');
-
+    const [publishedDate, setPublishedDate] = useState('');
+    const [locations, setLocations] = useState<Locations[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [bookCondition, setBookCondition] = useState('New');
+    const [collectionType, setCollectionType] = useState('Book');
 
     const ddcClasses = [
         { value: '000', label: '[000] General Information' },
@@ -52,7 +52,12 @@ const BookFormFast: React.FC = () => {
 
     const callNumber = useGenerateCallNumber({ bookTitle: bookData?.book_title || '', author, ddcNumber, publishedDate: bookData?.published_date });
 
-    const accessionNumber = useGenerateAccessionNumber({ location, copies: numberOfCopies });
+    // Find the location object that matches the selectedLocation
+    const selectedLoc = locations.find(loc => loc.locationCodeName === selectedLocation);
+
+    // Use locationCodeName if found, otherwise default to ''
+    const locationPrefix = selectedLoc ? selectedLoc.locationCodeName : '';
+    const accessionNumbers = useGenerateAccessionNumbers({ locationPrefix, copies: numberOfCopies! });
 
     const handleSideBarClick = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -63,7 +68,7 @@ const BookFormFast: React.FC = () => {
     };
 
     const handleSave = async () => {
-        if (numberOfCopies < 1) {
+        if (numberOfCopies! < 1) {
             alert("Number of copies must be at least 1.");
             return;
         }
@@ -73,9 +78,10 @@ const BookFormFast: React.FC = () => {
     const confirmSave = async () => {
         setConfirmOpen(false);
         try {
-            for (let i = 1; i <= numberOfCopies; i++) {
-                const currentAccessionNumber = `${accessionNumber.split(' c.')[0]} c.${i}`;
-
+            for (let i = 1; i <= numberOfCopies!; i++) {
+                const currentAccessionNumber = `${accessionNumbers.join(' ').split(' c.')[0]} c.${i}`;
+                // Find the location object that matches the locationCodeName
+                const selectedLoc = locations.find(loc => loc.locationCodeName === selectedLocation);
                 const bookToSave = {
                     bookId: null,
                     title: bookData?.book_title,
@@ -88,7 +94,6 @@ const BookFormFast: React.FC = () => {
                     callNumber: callNumber ?? "N/A",
                     purchasePrice: bookData?.purchase_price,
                     status: "Available",
-                    barcode: barcode ? `${barcode}-${i}` : `N/A-${i}`,
                     section: section || "General",
                     dateAcquired: new Date().toISOString(),
                     categories: Array.isArray(categories)
@@ -97,19 +102,21 @@ const BookFormFast: React.FC = () => {
                             ? [categories]
                             : [],
                     notes: "",
-                    location: location,
+                    location: selectedLoc?.locationName,
                     vendor: bookData?.vendor,
                     fundingSource: bookData?.funding_source,
                     subjects: [],
                     thumbnail: "",
                     description: description || "No description available",
-                    isbn13: "",
-                    isbn10: bookData?.isbn,
-                    language: "English",
+                    isbn13: bookData?.isbn,
+                    isbn10: "",
+                    language: "en",
                     pageCount: 264,
-                    publishedDate: bookData?.published_date,
-                    publisher: "Unknown Publisher",
-                    printType: "Book",
+                    publishedDate,
+                    publisher: bookData!.publisher,
+                    printType: "BOOK",
+                    collectionType,
+                    bookCondition
                 };
 
                 console.log('Saving book copy:', bookToSave);
@@ -131,9 +138,6 @@ const BookFormFast: React.FC = () => {
             alert(`An error occurred while saving the book copies. ${error}`);
         }
     };
-
-
-
 
     const handleCancel = () => navigate('/admin/catalog/management/accesion-record');
     const handleCloseConfirm = () => setConfirmOpen(false);
@@ -161,8 +165,18 @@ const BookFormFast: React.FC = () => {
                     }}>
                         <Typography variant="h4"><strong>Title:</strong> {bookData?.book_title}</Typography>
                         <Typography variant="h6"><strong>Call Number:</strong> {callNumber}</Typography>
-                        <Typography variant="h6"><strong>Accession Number:</strong> {accessionNumber}</Typography>
                         <Typography variant="h6"><strong>ISBN:</strong> {isbn}</Typography>
+                        <Typography variant="h6"><strong>Accession Numbers:</strong></Typography>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', maxWidth: '100%', overflowX: 'auto', padding: 1 }}>
+                            {accessionNumbers.length > 0 ? (
+                                accessionNumbers.map((number, index) => (
+                                    <Chip key={index} label={number} sx={{ backgroundColor: '#f5f5f5', fontSize: '0.9rem' }} />
+                                ))
+                            ) : (
+                                <Typography variant="body1">N/A - Set Location to generate Accession number/s</Typography>
+                            )}
+                        </Box>
+
                         <Box component="form" sx={{ mt: 2 }}>
                             <TextField
                                 fullWidth
@@ -172,23 +186,32 @@ const BookFormFast: React.FC = () => {
                                 sx={{ mb: 2 }}
                                 size="small"
                             />
+                            <TextField
+                                fullWidth
+                                label="Published Date"
+                                type="date"
+                                value={publishedDate}
+                                onChange={(e) => setPublishedDate(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                                InputLabelProps={{ shrink: true }}
+                            />
 
                             <TextField
                                 fullWidth
                                 label="Number of Copies"
                                 type="number"
-                                value={numberOfCopies}
-                                onChange={(e) => setNumberOfCopies(Number(e.target.value))}
+                                value={numberOfCopies !== null ? numberOfCopies : ""}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setNumberOfCopies(value === "" ? null : Number(value));
+                                }}
+                                onBlur={() => {
+                                    if (numberOfCopies === null) {
+                                        setNumberOfCopies(1);
+                                    }
+                                }}
                                 inputProps={{ min: 1 }}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Starting Barcode"
-                                value={barcode}
-                                onChange={(e) => setBarcode(e.target.value)}
                                 sx={{ mb: 2 }}
                                 size="small"
                             />
@@ -207,29 +230,38 @@ const BookFormFast: React.FC = () => {
                                     ))}
                                 </Select>
                             </FormControl>
+                            <LocationSelect
+                                selectedLocation={selectedLocation}
+                                setSelectedLocation={setSelectedLocation}
+                                locations={locations}
+                                setLocations={setLocations}
+                            />
+
+                            <SectionSelect
+                                selectedSection={section}
+                                setSelectedSection={setSection}
+                                sections={sections}
+                                setSections={setSections}
+                                selectedLocation={selectedLocation}
+                                locations={locations}
+                            />
+
+                            <BookConditionSelect bookCondition={bookCondition} setBookCondition={setBookCondition} />
 
                             <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="location-label">Location</InputLabel>
-                                <Select labelId="location-label" value={location} onChange={(e) => setLocation(e.target.value)} label="Location" size="small">
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="eLibrary">eLibrary</MenuItem>
-                                    <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
-                                    <MenuItem value="Law Library">Law Library</MenuItem>
-                                    <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
-                                    <MenuItem value="High School Library">High School Library</MenuItem>
-                                    <MenuItem value="Elementary Library">Elementary Library</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="section-label">Section</InputLabel>
-                                <Select labelId="section-label" value={section} onChange={(e) => setSection(e.target.value)} label="Section" size="small">
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="General Reference">General Reference</MenuItem>
-                                    <MenuItem value="Circulation">Circulation</MenuItem>
-                                    <MenuItem value="Periodical">Periodical</MenuItem>
-                                    <MenuItem value="Filipiniana">Filipiniana</MenuItem>
-                                    <MenuItem value="Special Collection">Special Collection</MenuItem>
+                                <InputLabel id="collectionType-label">Collection Type</InputLabel>
+                                <Select
+                                    labelId="collectionType-label"
+                                    value={collectionType}
+                                    onChange={(e) => setCollectionType(e.target.value)}
+                                    label="Collection Type"
+                                    size="small"
+                                >
+                                    <MenuItem value="Book">Book</MenuItem>
+                                    <MenuItem value="Journals">Journals</MenuItem>
+                                    <MenuItem value="Theses & Dissertation">Theses & Dissertation</MenuItem>
+                                    <MenuItem value="Special Collections">Special Collections</MenuItem>
+                                    <MenuItem value="Museum and Archival Materials">Museum and Archival Materials</MenuItem>
                                 </Select>
                             </FormControl>
 
