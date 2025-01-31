@@ -16,7 +16,7 @@ const ModalType = {
   UPDATE: 'UPDATE',
 };
 
-const ManageDepartments: React.FC = () => {
+const UploadDepartments: React.FC = () => {
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -182,4 +182,4 @@ const ManageDepartments: React.FC = () => {
   );
 };
 
-export default ManageDepartments;
+export default UploadDepartments;
