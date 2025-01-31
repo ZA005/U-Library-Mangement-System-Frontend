@@ -14,22 +14,15 @@ import { saveBook } from '../../../services/Cataloging/GoogleBooksApi';
 import LocationSelect from './LocationSelect';
 import { Locations, Sections } from '../../../model/Book';
 import SectionSelect from './SectionSelect';
+import BookConditionSelect from './BookConditionOptions';
 
-interface BookData {
-    book_title: string;
-    isbn: string;
-}
-
-interface LocationState {
-    bookData?: BookData;
-}
 
 const BookFormFast: React.FC = () => {
-    const { state } = useLocation() as { state: LocationState };
+    const { state } = useLocation();
     const bookData = state?.bookData;
     const navigate = useNavigate();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [isbn, setISBN] = useState(bookData?.isbn || '');
+    const [isbn] = useState(bookData?.isbn || '');
     const [author, setAuthor] = useState('');
     const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [section, setSection] = useState('');
@@ -37,9 +30,12 @@ const BookFormFast: React.FC = () => {
     const [categories, setCategories] = useState('');
     const [description, setDescription] = useState('');
     const [ddcNumber, setDDCNumber] = useState('');
+    const [publishedDate, setPublishedDate] = useState('');
     const [locations, setLocations] = useState<Locations[]>([]);
     const [selectedLocation, setSelectedLocation] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [bookCondition, setBookCondition] = useState('New');
+    const [collectionType, setCollectionType] = useState('Book');
 
     const ddcClasses = [
         { value: '000', label: '[000] General Information' },
@@ -61,7 +57,7 @@ const BookFormFast: React.FC = () => {
 
     // Use locationCodeName if found, otherwise default to ''
     const locationPrefix = selectedLoc ? selectedLoc.locationCodeName : '';
-    const accessionNumbers = useGenerateAccessionNumbers({ locationPrefix, copies: numberOfCopies });
+    const accessionNumbers = useGenerateAccessionNumbers({ locationPrefix, copies: numberOfCopies! });
 
     const handleSideBarClick = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -72,7 +68,7 @@ const BookFormFast: React.FC = () => {
     };
 
     const handleSave = async () => {
-        if (numberOfCopies < 1) {
+        if (numberOfCopies! < 1) {
             alert("Number of copies must be at least 1.");
             return;
         }
@@ -82,9 +78,10 @@ const BookFormFast: React.FC = () => {
     const confirmSave = async () => {
         setConfirmOpen(false);
         try {
-            for (let i = 1; i <= numberOfCopies; i++) {
-                const currentAccessionNumber = `${accessionNumber.split(' c.')[0]} c.${i}`;
-
+            for (let i = 1; i <= numberOfCopies!; i++) {
+                const currentAccessionNumber = `${accessionNumbers.join(' ').split(' c.')[0]} c.${i}`;
+                // Find the location object that matches the locationCodeName
+                const selectedLoc = locations.find(loc => loc.locationCodeName === selectedLocation);
                 const bookToSave = {
                     bookId: null,
                     title: bookData?.book_title,
@@ -105,19 +102,21 @@ const BookFormFast: React.FC = () => {
                             ? [categories]
                             : [],
                     notes: "",
-                    location: location,
+                    location: selectedLoc?.locationName,
                     vendor: bookData?.vendor,
                     fundingSource: bookData?.funding_source,
                     subjects: [],
                     thumbnail: "",
                     description: description || "No description available",
-                    isbn13: "",
-                    isbn10: bookData?.isbn,
-                    language: "English",
+                    isbn13: bookData?.isbn,
+                    isbn10: "",
+                    language: "en",
                     pageCount: 264,
-                    publishedDate: bookData?.published_date,
-                    publisher: "Unknown Publisher",
-                    printType: "Book",
+                    publishedDate,
+                    publisher: bookData!.publisher,
+                    printType: "BOOK",
+                    collectionType,
+                    bookCondition
                 };
 
                 console.log('Saving book copy:', bookToSave);
@@ -187,6 +186,16 @@ const BookFormFast: React.FC = () => {
                                 sx={{ mb: 2 }}
                                 size="small"
                             />
+                            <TextField
+                                fullWidth
+                                label="Published Date"
+                                type="date"
+                                value={publishedDate}
+                                onChange={(e) => setPublishedDate(e.target.value)}
+                                sx={{ mb: 2 }}
+                                size="small"
+                                InputLabelProps={{ shrink: true }}
+                            />
 
                             <TextField
                                 fullWidth
@@ -236,6 +245,25 @@ const BookFormFast: React.FC = () => {
                                 selectedLocation={selectedLocation}
                                 locations={locations}
                             />
+
+                            <BookConditionSelect bookCondition={bookCondition} setBookCondition={setBookCondition} />
+
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <InputLabel id="collectionType-label">Collection Type</InputLabel>
+                                <Select
+                                    labelId="collectionType-label"
+                                    value={collectionType}
+                                    onChange={(e) => setCollectionType(e.target.value)}
+                                    label="Collection Type"
+                                    size="small"
+                                >
+                                    <MenuItem value="Book">Book</MenuItem>
+                                    <MenuItem value="Journals">Journals</MenuItem>
+                                    <MenuItem value="Theses & Dissertation">Theses & Dissertation</MenuItem>
+                                    <MenuItem value="Special Collections">Special Collections</MenuItem>
+                                    <MenuItem value="Museum and Archival Materials">Museum and Archival Materials</MenuItem>
+                                </Select>
+                            </FormControl>
 
                             <TextField
                                 fullWidth

@@ -14,6 +14,7 @@ import { fetchCopyNumBookExist, fetchLastAccessionNumber } from '../../../servic
 import { Locations, Sections } from '../../../model/Book';
 import LocationSelect from './LocationSelect';
 import SectionSelect from './SectionSelect';
+import BookConditionSelect from './BookConditionOptions';
 
 interface Book {
     id: string;
@@ -36,6 +37,8 @@ const BookForm: React.FC = () => {
 
     // Form state management
     const [status, setStatus] = useState('Available');
+    const [bookCondition, setBookCondition] = useState('New');
+    const [collectionType, setCollectionType] = useState('Book');
     const [callNumber, setCallNumber] = useState('');
     const [purchasePrice, setPurchasePrice] = useState(acquiredBook.purchase_price || '');
     const [section, setSection] = useState('');
@@ -49,7 +52,7 @@ const BookForm: React.FC = () => {
     const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
     const [locations, setLocations] = useState<Locations[]>([]);
-    const [selectedLocation, setSelectedLocation] = useState('');
+    const [location, setSelectedLocation] = useState('');
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
     const handleSideBarClick = () => {
@@ -61,7 +64,7 @@ const BookForm: React.FC = () => {
 
     const generateAccessionNumbers = useCallback(async () => {
         // Find the location object that matches the selectedLocation
-        const selectedLoc = locations.find(loc => loc.locationCodeName === selectedLocation);
+        const selectedLoc = locations.find(loc => loc.locationCodeName === location);
 
         // Use locationCodeName if found, otherwise default to 'UNK'
         const prefix = selectedLoc ? selectedLoc.locationCodeName : 'UNK';
@@ -79,7 +82,7 @@ const BookForm: React.FC = () => {
             console.error('Error fetching accession numbers:', error);
             alert('Failed to fetch accession numbers. Please try again.');
         }
-    }, [selectedLocation, locations, numberOfCopies]);
+    }, [location, locations, numberOfCopies]);
 
 
     const handleGenerateCallNumber = useCallback(async () => {
@@ -106,10 +109,10 @@ const BookForm: React.FC = () => {
     }, [book.callNumber, handleGenerateCallNumber]);
 
     useEffect(() => {
-        if (selectedLocation && numberOfCopies! > 0) {
+        if (location && numberOfCopies! > 0) {
             generateAccessionNumbers();
         }
-    }, [selectedLocation, numberOfCopies, generateAccessionNumbers]);
+    }, [location, numberOfCopies, generateAccessionNumbers]);
 
     const handleSave = async () => {
         // Ensure all fields are valid before proceeding
@@ -118,7 +121,8 @@ const BookForm: React.FC = () => {
             return;
         }
 
-
+        // Find the location object that matches the locationCodeName
+        const selectedLoc = locations.find(loc => loc.locationCodeName === location);
         const booksToSave = accessionNumbers.map((accessionNumber) => ({
             bookId: book.id,
             title: book.title,
@@ -131,7 +135,7 @@ const BookForm: React.FC = () => {
             dateAcquired,
             categories: Array.isArray(categories) ? categories : categories?.split(','),
             notes,
-            selectedLocation,
+            location: selectedLoc?.locationName,
             vendor,
             fundingSource,
             subjects: subjects.split(','),
@@ -144,6 +148,8 @@ const BookForm: React.FC = () => {
             publishedDate: state.book.publishedDate,
             publisher: state.book.publisher,
             printType: state.book.printType,
+            collectionType,
+            bookCondition
         }));
 
         try {
@@ -258,7 +264,7 @@ const BookForm: React.FC = () => {
                             />
 
                             <LocationSelect
-                                selectedLocation={selectedLocation}
+                                selectedLocation={location}
                                 setSelectedLocation={setSelectedLocation}
                                 locations={locations}
                                 setLocations={setLocations}
@@ -269,7 +275,7 @@ const BookForm: React.FC = () => {
                                 setSelectedSection={setSection}
                                 sections={sections}
                                 setSections={setSections}
-                                selectedLocation={selectedLocation}
+                                selectedLocation={location}
                                 locations={locations}
                             />
 
@@ -320,6 +326,25 @@ const BookForm: React.FC = () => {
                                 sx={{ mb: 2 }}
                                 size="small"
                             />
+
+                            <BookConditionSelect bookCondition={bookCondition} setBookCondition={setBookCondition} />
+
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <InputLabel id="collectionType-label">Collection Type</InputLabel>
+                                <Select
+                                    labelId="collectionType-label"
+                                    value={collectionType}
+                                    onChange={(e) => setCollectionType(e.target.value)}
+                                    label="Collection Type"
+                                    size="small"
+                                >
+                                    <MenuItem value="Book">Book</MenuItem>
+                                    <MenuItem value="Journals">Journals</MenuItem>
+                                    <MenuItem value="Theses & Dissertation">Theses & Dissertation</MenuItem>
+                                    <MenuItem value="Special Collections">Special Collections</MenuItem>
+                                    <MenuItem value="Museum and Archival Materials">Museum and Archival Materials</MenuItem>
+                                </Select>
+                            </FormControl>
 
                             <TextField
                                 fullWidth
