@@ -1,18 +1,35 @@
-// src/pages/BorrowingHistory/BorrowingHistory.tsx
 import React from "react";
 import { Box, Container, IconButton, Typography, Grid, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import ReplayIcon from "@mui/icons-material/Replay";
+import HistoryIcon from "@mui/icons-material/History";
+import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Sidebar from "../../components/Sidebar";
-import Line from "../../components/Line/Line"; // Import the Line component
+import Line from "../../components/Line/Line";
+import LibraryCard from "../../components/LibraryCard/LibraryCard";
 import styles from "./styles.module.css";
 
 const BorrowingHistory: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = React.useState(false);
+  const navigate = useNavigate(); // Use the navigate hook
 
   const handleSideBarClick = () => setSidebarOpen(!isSidebarOpen);
   const handleSidebarClose = () => setSidebarOpen(false);
+
+  const handleViewHistoryClick = () => {
+    navigate('/transaction/history'); // Redirect to TransactionHistory page
+  };
+
+  const handlePayFeesClick = () => {
+    navigate('/pay/fees'); // Redirect to PayFees page
+  };
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" className={styles.container}>
@@ -24,102 +41,100 @@ const BorrowingHistory: React.FC = () => {
           </IconButton>
         }
       />
-      {/* Sidebar */}
       <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
-      {/* Main Content */}
+
+      {/* Page Content */}
       <Box flex="1">
         <Container maxWidth="lg" className={styles.content}>
-          {/* Title */}
-          <Typography 
-            variant="h3" 
-            gutterBottom 
-            fontWeight="bold" 
-            align="left" 
-            className={styles.title}
-          >
-            Borrowing History
-          </Typography>
+          {/* Left-Aligned Title */}
+          <Box className={styles.headerTitleContainer}>
+            <Typography variant="h3" fontWeight="bold" className={styles.title}>
+              Borrowing History
+            </Typography>
+            <Line className={styles.separator} />
+          </Box>
 
-          {/* Horizontal Line */}
-          <Line
-            style={{
-              borderBottom: "1px solid #ea4040",
-              width: "20%",
-              margin: "1rem auto",
-            }}
-            className={styles.separator}
-          />
-
-          {/* Content Grid */}
-          <Grid container spacing={3} className={styles.historyContainer}>
+          <Grid container spacing={6} className={styles.historyContainer}>
             {/* User Details */}
-            <Grid item xs={12} md={6} className={styles.userDetails}>
-              {/* Temporary QR Code Image */}
-              <img
-                src="https://via.placeholder.com/100?text=QR"
-                alt="QR Code"
-                style={{ display: "block", margin: "0 auto 1.5rem auto" }}
-              />
-
-              <Typography variant="h6" className={styles.userId}>
-                85462698423684
-              </Typography>
-              <Typography>Student/Faculty</Typography>
-              <Typography>Name:</Typography>
-              <Typography>ID Number:</Typography>
-              <Typography>Grade/Year Level:</Typography>
-              <Typography>Department:</Typography>
-              <Typography>Course:</Typography>
+            <Grid item xs={12} md={5} className={styles.userDetailsBox}>
+              <Box display="flex" justifyContent="center" alignItems="center" marginBottom="1rem">
+                <LibraryCard />
+              </Box>
             </Grid>
 
-            {/* Borrowing Stats and Actions */}
-            <Grid item xs={12} md={6} className={styles.stats}>
-              {/* Borrowing Statistics */}
-              <Typography>
-                Borrowed Books: <span className={styles.highlight}>0</span>
-              </Typography>
-              <Typography>
-                Current Borrowed Books: <span className={styles.highlight}>0</span>
-              </Typography>
-              <Typography>
-                Overdue fines: <span className={styles.highlight}>0</span>
-              </Typography>
+            {/* Reminder Panel */}
+            <Grid item xs={12} md={7}>
+              <Box className={styles.reminderBox}>
+                <WarningAmberIcon className={styles.reminderIcon} />
+                <Typography variant="h6" className={styles.reminderText}>
+                  Reminder: You have a book due soon. Please return or renew it to avoid overdue fines.
+                </Typography>
+              </Box>
 
-              {/* Add spacing between text and buttons */}
-              <Box sx={{ marginTop: 12 }}>
-                <Grid container spacing={2} className={styles.buttonContainer}>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <Button fullWidth className={styles.actionButton}>
-                      Borrow a Book
-                    </Button>
+              {/* Borrowing Stats and Actions */}
+              <Box className={styles.stats}>
+                <Typography variant="h6">
+                  Borrowed Books: <span className={styles.highlight}>3</span>
+                </Typography>
+                <Typography variant="h6">
+                  Current Borrowed Books: <span className={styles.highlight}>1</span>
+                </Typography>
+                <Typography variant="h6">
+                  Overdue fines: <span className={styles.highlight}>₱0.00</span>
+                </Typography>
+
+                {/* Action Buttons */}
+                <Box sx={{ marginTop: 5 }}>
+                  <Grid container spacing={3} className={styles.buttonContainer}>
+                    {/* Borrow a Book */}
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Button fullWidth className={styles.actionButton} startIcon={<LibraryBooksIcon />}>
+                        Borrow a Book
+                      </Button>
+                    </Grid>
+                    {/* Renew a Book */}
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Button fullWidth className={styles.actionButton} startIcon={<ReplayIcon />}>
+                        Renew a Book
+                      </Button>
+                    </Grid>
+                    {/* Return a Book */}
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Button fullWidth className={styles.actionButton} startIcon={<AssignmentReturnIcon />}>
+                        Return a Book
+                      </Button>
+                    </Grid>
+                    {/* View History */}
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Button
+                        fullWidth
+                        className={styles.actionButton}
+                        startIcon={<HistoryIcon />}
+                        onClick={handleViewHistoryClick} // Handle View History click
+                      >
+                        View History
+                      </Button>
+                    </Grid>
+                    {/* Pay Fees */}
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Button fullWidth className={styles.actionButton} startIcon={<MonetizationOnIcon />} onClick={handlePayFeesClick}>
+                        Pay Fees
+                      </Button>
+                    </Grid>
+                    {/* Reserve a Book */}
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Button fullWidth className={styles.actionButton} startIcon={<BookmarkIcon />}>
+                        Reserve a Book
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <Button fullWidth className={styles.actionButton}>
-                      Pay Fees
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <Button fullWidth className={styles.actionButton}>
-                      Renew a Book
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <Button fullWidth className={styles.actionButton}>
-                      View History
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <Button fullWidth className={styles.actionButton}>
-                      Return a Book
-                    </Button>
-                  </Grid>
-                </Grid>
+                </Box>
               </Box>
             </Grid>
           </Grid>
         </Container>
       </Box>
-      {/* Footer */}
+
       <Footer />
     </Box>
   );

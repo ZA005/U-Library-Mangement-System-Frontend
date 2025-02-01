@@ -12,6 +12,8 @@ import UserRoutes from './UserRoutes';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 import BorrowingHistory from '../pages/CirculationUser/BorrowingHistory';
+import PayFees from '../pages/CirculationUser/PayFees';
+import TransactionHistory from '../pages/CirculationUser/TransactionHistory';
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
@@ -40,6 +42,9 @@ const AppRoutes = () => {
       } } />} />
       <Route path="/verify/user/otp" element={<VerifyOtp />} />
       <Route path='borrowing/history' element={<BorrowingHistory />} />
+      <Route path='pay/fees' element={<PayFees />} />
+      <Route path='transaction/history' element={<TransactionHistory />} />
+
 
       {/* ADMIN ROUTES */}
       <Route
