@@ -15,7 +15,7 @@ import {
     Select,
     MenuItem,
 } from "@mui/material";
-import { Program, getAllProgramByDepartment } from "../../../services/Curriculum/ProgramService";
+// import { Program, getAllProgramByDepartment } from "../../../services/Curriculum/ProgramService";
 import { Department, getAllDepartments } from "../../../services/Curriculum/DepartmentService";
 import { Subject, getAllSubjectsByProgram } from "../../../services/Curriculum/SubjectService";
 import BookRefRec from "../../../components/CurriculumManagement/BookRefRecommendation/BookRefRec";
@@ -31,7 +31,7 @@ const ManageBookReference: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [departments, setDepartments] = useState<Department[]>([]);
-    const [programs, setPrograms] = useState<Program[]>([]);
+    // const [programs, setPrograms] = useState<Program[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [departmentName, setDepartmentName] = useState<string>("");
     const [programName, setProgramName] = useState<string>("");
@@ -52,55 +52,55 @@ const ManageBookReference: React.FC = () => {
         fetchDepartments();
     }, []);
 
-    const fetchPrograms = async (departmentName: string) => {
-        try {
-            const selectedDepartment = departments.find((dept) => dept.name === departmentName);
+    // const fetchPrograms = async (departmentName: string) => {
+    //     try {
+    //         const selectedDepartment = departments.find((dept) => dept.name === departmentName);
 
-            if (selectedDepartment?.id) {
-                const fetchedPrograms = await getAllProgramByDepartment(selectedDepartment.id);
-                setPrograms(fetchedPrograms);
-            } else {
-                setPrograms([]);
-            }
-        } catch (error) {
-            console.error("Error fetching programs:", error);
-        }
-    };
+    //         if (selectedDepartment?.id) {
+    //             const fetchedPrograms = await getAllProgramByDepartment(selectedDepartment.id);
+    //             setPrograms(fetchedPrograms);
+    //         } else {
+    //             setPrograms([]);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching programs:", error);
+    //     }
+    // };
 
-    const fetchSubjects = async (programName: string) => {
-        try {
-            const selectedProgram = programs.find((program) => program.name === programName);
+    // const fetchSubjects = async (programName: string) => {
+    //     try {
+    //         const selectedProgram = programs.find((program) => program.name === programName);
 
-            if (selectedProgram?.id) {
-                const fetchedSubjects = await getAllSubjectsByProgram(selectedProgram.id);
-                setSubjects(fetchedSubjects); // Store the full subject objects with id and name
-            } else {
-                setSubjects([]);
-            }
-        } catch (error) {
-            console.error("Error fetching subjects:", error);
-        }
-    };
+    //         if (selectedProgram?.id) {
+    //             const fetchedSubjects = await getAllSubjectsByProgram(selectedProgram.id);
+    //             setSubjects(fetchedSubjects); // Store the full subject objects with id and name
+    //         } else {
+    //             setSubjects([]);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching subjects:", error);
+    //     }
+    // };
 
-    const handleDepartmentChange = (name: string) => {
-        setDepartmentName(name);
-        setProgramName(""); // Reset program selection
-        setSubjects([]); // Clear subjects when department changes
-        if (name) {
-            fetchPrograms(name);
-        } else {
-            setPrograms([]);
-        }
-    };
+    // const handleDepartmentChange = (name: string) => {
+    //     setDepartmentName(name);
+    //     setProgramName(""); // Reset program selection
+    //     setSubjects([]); // Clear subjects when department changes
+    //     if (name) {
+    //         fetchPrograms(name);
+    //     } else {
+    //         setPrograms([]);
+    //     }
+    // };
 
-    const handleProgramChange = (name: string) => {
-        setProgramName(name);
-        if (name) {
-            fetchSubjects(name);
-        } else {
-            setSubjects([]);
-        }
-    };
+    // const handleProgramChange = (name: string) => {
+    //     setProgramName(name);
+    //     if (name) {
+    //         fetchSubjects(name);
+    //     } else {
+    //         setSubjects([]);
+    //     }
+    // };
 
     const convertYearToString = (year: number): string | null => {
         switch (year) {
@@ -161,7 +161,7 @@ const ManageBookReference: React.FC = () => {
                     </Box>
 
                     <Box className={styles.filterBox}>
-                        <Select
+                        {/* <Select
                             value={departmentName}
                             onChange={(e) => handleDepartmentChange(e.target.value)}
                             displayEmpty
@@ -193,7 +193,7 @@ const ManageBookReference: React.FC = () => {
                                     {program.name}
                                 </MenuItem>
                             ))}
-                        </Select>
+                        </Select> */}
                     </Box>
                 </Box>
 

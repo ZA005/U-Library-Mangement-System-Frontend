@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ModalForm from "../Modal/ModalForm";
-import { Program, getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
+// import { Program, getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
 import { Department, getAllDepartments } from "../../services/Curriculum/DepartmentService";
 import { addSubject } from "../../services/Curriculum/SubjectService";
 import { Snackbar, Alert } from "@mui/material";
@@ -19,7 +19,7 @@ const AddNewSubjectModal: React.FC<AddNewSubjectModalProps> = ({
 }) => {
   const [subjectName, setSubjectName] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [programs, setPrograms] = useState<Program[]>([]);
+  // const [programs, setPrograms] = useState<Program[]>([]);
   const [departmentName, setDepartmentName] = useState("");
   const [programName, setProgramName] = useState("");
   const [year, setYear] = useState("");
@@ -40,7 +40,7 @@ const AddNewSubjectModal: React.FC<AddNewSubjectModalProps> = ({
     setProgramName("");
     setYear("");
     setDepartments([]);
-    setPrograms([]);
+    // setPrograms([]);
   };
 
 
@@ -69,12 +69,12 @@ const AddNewSubjectModal: React.FC<AddNewSubjectModalProps> = ({
         (dept) => dept.name === departmentName
       );
 
-      if (selectedDepartment?.id) {
-        const fetchedPrograms = await getAllProgramByDepartment(selectedDepartment.id);
-        setPrograms(fetchedPrograms);
-      } else {
-        setPrograms([]); // Reset programs if no valid department is selected
-      }
+      // if (selectedDepartment?.id) {
+      //   const fetchedPrograms = await getAllProgramByDepartment(selectedDepartment.id);
+      //   setPrograms(fetchedPrograms);
+      // } else {
+      //   setPrograms([]); // Reset programs if no valid department is selected
+      // }
     } catch (error) {
       console.error("Error fetching programs:", error);
     }
@@ -83,17 +83,17 @@ const AddNewSubjectModal: React.FC<AddNewSubjectModalProps> = ({
   const handleDepartmentChange = (name: string) => {
     setDepartmentName(name);
     setProgramName(""); // Reset program selection
-    if (name) {
-      fetchPrograms(name);
-    } else {
-      setPrograms([]); // Reset programs if department is cleared
-    }
+    // if (name) {
+    //   fetchPrograms(name);
+    // } else {
+    //   setPrograms([]); // Reset programs if department is cleared
+    // }
   };
 
-  const findProgramId = (programName: string, programs: Program[]): number | null => {
-    const program = programs.find((program) => program.name === programName);
-    return program ? Number(program.id) : null;
-  };
+  // const findProgramId = (programName: string, programs: Program[]): number | null => {
+  //   const program = programs.find((program) => program.name === programName);
+  //   return program ? Number(program.id) : null;
+  // };
 
   const convertYearToInteger = (year: string): number | null => {
     switch (year) {
@@ -117,7 +117,7 @@ const AddNewSubjectModal: React.FC<AddNewSubjectModalProps> = ({
 
     setIsSubmitting(true);
 
-    const programId = findProgramId(programName, programs);
+    // const programId = findProgramId(programName, programs);
     const yearInt = convertYearToInteger(year);
     const newSubject = {
       program_id: programId,
@@ -128,7 +128,7 @@ const AddNewSubjectModal: React.FC<AddNewSubjectModalProps> = ({
 
     try {
       console.log('Subject DATA:', newSubject);
-      await addSubject(newSubject);
+      // await addSubject(newSubject);
       onSubjectAdd();
       handleClose();
 
@@ -174,7 +174,7 @@ const AddNewSubjectModal: React.FC<AddNewSubjectModalProps> = ({
             type: "select",
             value: programName,
             onChange: setProgramName,
-            options: programs.map((program) => program.name),
+            // options: programs.map((program) => program.name),
             required: true
           },
           {

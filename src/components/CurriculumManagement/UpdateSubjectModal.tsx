@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ModalForm from "../Modal/ModalForm";
-import { Program, getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
+// import { Program, getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
 import { Department, getAllDepartments } from "../../services/Curriculum/DepartmentService";
 import { updateSubject, Subject } from "../../services/Curriculum/SubjectService";
 import { Snackbar, Alert } from "@mui/material";
@@ -19,7 +19,7 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
   subject,
 }) => {
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [programs, setPrograms] = useState<Program[]>([]);
+  // const [programs, setPrograms] = useState<Program[]>([]);
 
   const [subjectName, setSubjectName] = useState("");
   const [programName, setProgramName] = useState("");
@@ -60,11 +60,11 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
         (dept) => dept.name === subject.department_name
       );
 
-      if (selectedDepartment?.id) {
-        fetchPrograms(selectedDepartment.id).then(() => {
-          setProgramName(subject.program_name);
-        });
-      }
+      // if (selectedDepartment?.id) {
+      //   fetchPrograms(selectedDepartment.id).then(() => {
+      //     setProgramName(subject.program_name);
+      //   });
+      // }
     } else if (!open) {
       resetFields();
     }
@@ -73,8 +73,8 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
   // Fetch programs based on department
   const fetchPrograms = async (departmentId: number) => {
     try {
-      const fetchedPrograms = await getAllProgramByDepartment(departmentId);
-      setPrograms(fetchedPrograms);
+      // const fetchedPrograms = await getAllProgramByDepartment(departmentId);
+      // setPrograms(fetchedPrograms);
     } catch (error) {
       console.error("Error fetching programs:", error);
     }
@@ -85,7 +85,7 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
     setDepartmentName("");
     setProgramName("");
     setYear("");
-    setPrograms([]);
+    // setPrograms([]);
   };
 
   const convertYearToString = (year: number): string | null => {
@@ -126,28 +126,28 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
     setDepartmentName(name);
     setProgramName(""); // Reset program selection
     const selectedDepartment = departments.find((dept) => dept.name === name);
-    if (selectedDepartment?.id) {
-      fetchPrograms(selectedDepartment.id);
-    } else {
-      setPrograms([]);
-    }
+    // if (selectedDepartment?.id) {
+    //   fetchPrograms(selectedDepartment.id);
+    // } else {
+    //   setPrograms([]);
+    // }
   };
 
-  const findProgramId = (programName: string, programs: Program[]): number | null => {
-    const program = programs.find((program) => program.name === programName);
-    return program ? Number(program.id) : null;
-  }
+  // const findProgramId = (programName: string, programs: Program[]): number | null => {
+  //   const program = programs.find((program) => program.name === programName);
+  //   return program ? Number(program.id) : null;
+  // }
 
   const handleConfirm = async () => {
     if (isSubmitting || !subject) return; // Prevent submission if already submitting
 
     setIsSubmitting(true); // Disable the button by setting submitting state to true
 
-    const programId = findProgramId(programName, programs);
+    // const programId = findProgramId(programName, programs);
 
     const updatedSubject = {
       ...subject,
-      program_id: programId ?? 0,
+      // program_id: programId ?? 0,
       program_name: programName,
       department_name: departmentName,
       subject_name: subjectName,
@@ -200,7 +200,7 @@ const UpdateSubjectModal: React.FC<UpdateSubjectModalProps> = ({
             type: "select",
             value: programName,
             onChange: setProgramName,
-            options: programs.map((program) => program.name),
+            // options: programs.map((program) => program.name),
             required: true,
             disabled: false,
           },

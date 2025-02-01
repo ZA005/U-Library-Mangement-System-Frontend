@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ModalForm from "../Modal/ModalForm";
 import { Department, getAllDepartments } from "../../services/Curriculum/DepartmentService";
-import { Program, getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
+// import { Program, getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
 import { getAllSubjectsByProgram } from "../../services/Curriculum/SubjectService";
 import { addBookRef } from "../../services/Curriculum/BookReferenceService";
 import { Snackbar, Alert } from "@mui/material";
@@ -26,7 +26,7 @@ const AddBookReferenceModal: React.FC<AddBookReferenceModalProps> = ({
     urlPath
 }) => {
     const [departments, setDepartments] = useState<Department[]>([]);
-    const [programs, setPrograms] = useState<Program[]>([]);
+    // const [programs, setPrograms] = useState<Program[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [departmentName, setDepartmentName] = useState("");
     const [programName, setProgramName] = useState("");
@@ -48,7 +48,7 @@ const AddBookReferenceModal: React.FC<AddBookReferenceModalProps> = ({
         setSubjectName("");
         setStatus("");
         setDepartments([]);
-        setPrograms([]);
+        // setPrograms([]);
         setSubjects([]);
     };
 
@@ -71,34 +71,34 @@ const AddBookReferenceModal: React.FC<AddBookReferenceModalProps> = ({
 
     const fetchPrograms = async (departmentName: string) => {
         try {
-            const selectedDepartment = departments.find(
-                (dept) => dept.name === departmentName
-            );
+            // const selectedDepartment = departments.find(
+            //     (dept) => dept.name === departmentName
+            // );
 
-            if (selectedDepartment?.id) {
-                const fetchedPrograms = await getAllProgramByDepartment(selectedDepartment.id);
-                setPrograms(fetchedPrograms);
-            } else {
-                setPrograms([]);
-            }
+            // if (selectedDepartment?.id) {
+            //     const fetchedPrograms = await getAllProgramByDepartment(selectedDepartment.id);
+            //     setPrograms(fetchedPrograms);
+            // } else {
+            //     setPrograms([]);
+            // }
         } catch (error) {
             console.error("Error fetching programs:", error);
         }
     };
 
     const fetchSubjects = async (programName: string) => {
-        try {
-            const selectedProgram = programs.find((program) => program.name === programName);
+        // try {
+        //     const selectedProgram = programs.find((program) => program.name === programName);
 
-            if (selectedProgram?.id) {
-                const fetchedSubjects = await getAllSubjectsByProgram(selectedProgram.id);
-                setSubjects(fetchedSubjects); // Store the full subject objects with id and name
-            } else {
-                setSubjects([]);
-            }
-        } catch (error) {
-            console.error("Error fetching subjects:", error);
-        }
+        //     if (selectedProgram?.id) {
+        //         const fetchedSubjects = await getAllSubjectsByProgram(selectedProgram.id);
+        //         setSubjects(fetchedSubjects); // Store the full subject objects with id and name
+        //     } else {
+        //         setSubjects([]);
+        //     }
+        // } catch (error) {
+        //     console.error("Error fetching subjects:", error);
+        // }
     };
 
     const handleDepartmentChange = (name: string) => {
@@ -108,7 +108,7 @@ const AddBookReferenceModal: React.FC<AddBookReferenceModalProps> = ({
         if (name) {
             fetchPrograms(name);
         } else {
-            setPrograms([]);
+            // setPrograms([]);
             setSubjects([]);
         }
     };
@@ -147,7 +147,7 @@ const AddBookReferenceModal: React.FC<AddBookReferenceModalProps> = ({
         };
 
         try {
-            await addBookRef(newBookRef);
+            // await addBookRef(newBookRef);
             handleClose();
             resetFields();
             openSnackbar("Book reference added successfully!", "success");
@@ -182,14 +182,14 @@ const AddBookReferenceModal: React.FC<AddBookReferenceModalProps> = ({
                         options: departments.map((dept) => dept.name),
                         required: true,
                     },
-                    {
-                        label: "Program",
-                        type: "select",
-                        value: programName,
-                        onChange: handleProgramChange,
-                        options: programs.map((program) => program.name),
-                        required: true,
-                    },
+                    // {
+                    //     label: "Program",
+                    //     type: "select",
+                    //     value: programName,
+                    //     onChange: handleProgramChange,
+                    //     options: programs.map((program) => program.name),
+                    //     required: true,
+                    // },
                     {
                         label: "Subject",
                         type: "select",

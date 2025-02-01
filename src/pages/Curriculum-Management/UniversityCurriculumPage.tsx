@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Container, IconButton, Button } from "@mui/material";
-import { getAllProgramByDepartment } from "../../services/Curriculum/ProgramService";
+import { getAllProgramsByDepartment } from "../../services/Curriculum/ProgramService";
 import { getAllDepartments } from "../../services/Curriculum/DepartmentService";
 import Header from "../../components/Header/Header";
 import Copyright from "../../components/Footer/Copyright";
