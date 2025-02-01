@@ -1,4 +1,3 @@
-// src/hooks/useDepartments.ts
 import { useState, useEffect } from "react";
 import { getAllDepartments, Department } from "../services/Curriculum/DepartmentService";
 
