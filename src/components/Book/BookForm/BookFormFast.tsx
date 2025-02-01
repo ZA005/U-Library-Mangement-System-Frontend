@@ -118,7 +118,6 @@ const BookFormFast: React.FC = () => {
                     collectionType,
                     bookCondition
                 };
-
                 console.log('Saving book copy:', bookToSave);
 
                 await saveBook(bookToSave);
