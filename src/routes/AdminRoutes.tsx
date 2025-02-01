@@ -9,7 +9,7 @@ import CirculationDashboard from '../pages/CirculationAdmin/CirculationDashboard
 import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
 import OverseeOverdue from '../pages/OverseeOverdues/OverseeOverdues';
 import UploadPrograms from '../pages/Curriculum-Management/Managers/UploadPrograms';
-import UploadDepartments from '../pages/Curriculum-Management/Managers/UploadDepartments';
+import UploadDepartments from '../pages/Curriculum-Management/Managers/UploadDepartments/UploadDepartments';
 import UploadCourses from '../pages/Curriculum-Management/Managers/UploadCourses';
 import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageBookReference';
 import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
