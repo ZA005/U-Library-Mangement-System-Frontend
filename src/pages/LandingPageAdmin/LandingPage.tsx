@@ -5,10 +5,10 @@ import Header from '../../components/Header/Header';
 import MenuIcon from "@mui/icons-material/Menu";
 import Footer from '../../components/Footer/Footer';
 import Line from "../../components/Line/Line";
-import ManageCirculationIcon from "@mui/icons-material/AllInbox"; // Example Icon for Cataloging
-import ManageReservationIcon from "@mui/icons-material/EventNote"; // Example Icon for Circulation
-import SchoolIcon from "@mui/icons-material/School"; // Icon for Curriculum Management
-import LibraryAddIcon from "@mui/icons-material/LibraryAdd"; // Icon for Acquisition
+import ManageCirculationIcon from "@mui/icons-material/AllInbox";
+import ManageReservationIcon from "@mui/icons-material/EventNote";
+import SchoolIcon from "@mui/icons-material/School";
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import styles from "./styles.module.css";
 import Sidebar from '../../components/Sidebar';
 

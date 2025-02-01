@@ -2,14 +2,14 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8080/";
 
-export const saveLoanDetails = async (loanData: unknown): Promise<void> => {
+export const saveLoanDetails = async (loanData: unknown) => {
     console.log("Loan Data:", loanData);
 
     try {
-        const response = await axios.post(`${BASE_URL}admin/save-loan`, loanData, {
+        await axios.post(`${BASE_URL}admin/save-loan`, loanData, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        console.log("Loan details saved successfully:", response.data);
+        return loanData;
     } catch (error) {
         throw new Error("Failed to save loan details: " + error);
     }
@@ -37,9 +37,9 @@ export const getBorrowedLoans = async () => {
     }
 }
 
-export const fetchBorrowerDetails = async (libraryCardNumber: string): Promise<{ department: string }> => {
+export const fetchBorrowerDetails = async (idNumber: string): Promise<{ department: string, hasCurrentBorrowedBook: boolean, registered: boolean }> => {
     try {
-        const response = await axios.get(`${BASE_URL}admin/borrower-details/${libraryCardNumber}`, {
+        const response = await axios.get(`${BASE_URL}admin/borrower-details/${idNumber}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data;
@@ -49,7 +49,7 @@ export const fetchBorrowerDetails = async (libraryCardNumber: string): Promise<{
 };
 
 
-export const fetchBookDetails = async (accessionNo: string): Promise<{ title: string, callNumber: string, authors: string }> => {
+export const fetchBookDetails = async (accessionNo: string): Promise<{ title: string, callNumber: string, authors: string, bookStatus: string }> => {
     try {
         const response = await axios.get(`${BASE_URL}adminuser/accessionNo/${accessionNo}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
