@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import { deleteWeedingCriteria, getAllWeedingCriteria, updateWeedingCriteria } from '../../../../services/Cataloging/WeedingCriteriaApi';
 import IOSSwitch from '../../../../components/ToggleSwitch/IOSSwitch';
-import CriteriaModal from '../../../../components/Modal/CriteriaModal/CriteriaModal';
+import CriteriaModal from '../../../../components/Modal/WeedingModal/CriteriaModal';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog/ConfirmationDialog';
 import { WeedingCriteria } from '../../../../model/Criteria';
 import { useSnackbar } from '../../../../hooks/useSnackbar';

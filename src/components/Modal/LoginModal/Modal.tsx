@@ -44,7 +44,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
 
       login(userData.token, userData.role);
 
-      if (userData.role === 'LIBRARIAN') navigate('/admin/library');
+      if (userData.role === 'LIBRARIAN' || userData.role === 'ADMIN') navigate('/admin/library');
       else if (userData.role === 'STUDENT') navigate('/user/browse');
       else navigate('/'); // Default fallback
 

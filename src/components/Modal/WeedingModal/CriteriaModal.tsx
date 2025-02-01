@@ -216,7 +216,7 @@ const CriteriaModal: React.FC<CriteriaModalProps> = ({ open, onClose, onConfirm,
                         type: "select",
                         value: criteria.conditionThreshold,
                         onChange: (value) => handleFieldChange(value, 'conditionThreshold'),
-                        options: ["Poor", "Fair", "Good", "Excellent"],
+                        options: ["Poor", "Fair", "Good", "New", "Like New", "Damaged", "Water Damaged", "Repaired", "Archived", "Missing Parts"],
                         required: true
                     },
                     {

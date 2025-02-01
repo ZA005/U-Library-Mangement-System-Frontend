@@ -23,7 +23,7 @@ import TransactionRecord from '../pages/ManageCirculation/TransactionRecord';
 const AdminRoutes = () => (
   <Routes>
     <Route
-      element={<ProtectedRoute allowedRoles={['LIBRARIAN']} redirectPath="/" />}
+      element={<ProtectedRoute allowedRoles={['LIBRARIAN', 'ADMIN']} redirectPath="/" />}
     >
       {/* Admin Landing Page */}
       <Route path="library" element={<LandingPage />} />
