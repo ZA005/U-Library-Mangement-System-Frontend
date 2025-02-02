@@ -11,10 +11,12 @@ import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import Line from "../../../components/Line/Line";
 import styles from "../styles.module.css";
 import Sidebar from "../../../components/Sidebar";
+import { useDepartments } from "../../../hooks/useDepartments";
 
 const UploadManager: React.FC = () => {
     const navigate = useNavigate();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const { departments, loading } = useDepartments(true);
 
     const handleSideBarClick = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -22,6 +24,15 @@ const UploadManager: React.FC = () => {
 
     const handleSidebarClose = () => {
         setSidebarOpen(false);
+    };
+
+    // Function to handle navigation with department check
+    const handleNavigation = (path: string) => {
+        if (departments.length === 0) {
+            navigate("/admin/curriculum/management/no-departments"); // Redirect if no departments exist
+        } else {
+            navigate(path);
+        }
     };
 
     return (
@@ -107,7 +118,8 @@ const UploadManager: React.FC = () => {
                             </Icon>
                             <button
                                 className={styles.manageButton}
-                                onClick={() => navigate('/admin/curriculum/management/programs')}
+                                onClick={() => handleNavigation('/admin/curriculum/management/programs')}
+                                disabled={loading}
                             >
                                 Upload Programs
                             </button>
@@ -119,7 +131,7 @@ const UploadManager: React.FC = () => {
                             </Icon>
                             <button
                                 className={styles.manageButton}
-                                onClick={() => navigate('/admin/curriculum/management/subjects')}
+                                onClick={() => navigate('/admin/curriculum/management/curriculum')}
                             >
                                 Upload Curriculum
                             </button>

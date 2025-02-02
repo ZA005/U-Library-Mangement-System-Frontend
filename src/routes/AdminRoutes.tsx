@@ -11,6 +11,7 @@ import OverseeOverdue from '../pages/OverseeOverdues/OverseeOverdues';
 import UploadPrograms from '../pages/Curriculum-Management/Managers/UploadPrograms/UploadPrograms';
 import UploadDepartments from '../pages/Curriculum-Management/Managers/UploadDepartments/UploadDepartments';
 import UploadCourses from '../pages/Curriculum-Management/Managers/UploadCourses';
+import UploadCurriculum from '../pages/Curriculum-Management/Managers/UploadCurriculum/UploadCurriculum';
 import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageBookReference';
 import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
 import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/CatalogingAdmin';
@@ -50,6 +51,7 @@ const AdminRoutes = () => (
       <Route path="curriculum/management/upload-manager" element={<UploadManager />} />
       <Route path='/curriculum/management/departments' element={<UploadDepartments />} />
       <Route path='/curriculum/management/programs' element={<UploadPrograms />} />
+      <Route path="curriculum/management/curriculum" element={<UploadCurriculum />} />
       <Route path='/curriculum/management/subjects' element={<UploadCourses />} />
       <Route path='/curriculum/management/reference' element={<ManageBookReference />} />
 
