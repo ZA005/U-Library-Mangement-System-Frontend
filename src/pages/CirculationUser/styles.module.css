@@ -1,70 +1,140 @@
+/* Global */
 .container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ensures the container stretches to the viewport height */
-    background-color: #ffffff;
-  }
-  
-  .content {
-    flex: 4; /* Makes the content area take up remaining space between header and footer */
-    padding: 2rem 0;
-  }
-  
-  .menuIcon {
-    color: #ea4040;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.menuIcon {
+  color: #ea4040;
+}
+
+/* Header Title - Left Aligned */
+.headerTitleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.title {
+  color: #333;
+  text-transform: uppercase;
+  text-align: left;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.separator {
+  border-bottom: 3px solid #ea4040;
+  width: 40%;
+  margin-left: 0;
+}
+
+/* History Container */
+.historyContainer {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* User Details */
+.userDetailsBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Reminder Panel */
+.reminderBox {
+  display: flex;
+  align-items: center;
+  background-color: #ffebcc;
+  border-left: 6px solid #ff9800;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  width: 100%; /* Ensure it takes full width of the container */
+  max-width: 100%; /* Optional: you can set a max-width if needed */
+  margin-left: 13px; /* Adjusts alignment within the container */
+}
+.reminderIcon {
+  color: #ff9800;
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.reminderText {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Borrowing Stats */
+.stats {
+  text-align: left;
+  font-size: 1.2rem;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-top: 1.5rem; /* Align with reminder box */
+}
+
+.highlight {
+  color: #ea4040;
+  font-weight: bold;
+  font-size: 1.75rem;
+}
+
+/* Action Buttons */
+.buttonContainer {
+  margin-top: 2rem;
+}
+
+.actionButton {
+  background-color: #ea4040;
+  color: #fff;
+  text-transform: none;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease-in-out;
+}
+
+.actionButton:hover {
+  background-color: #c63535;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
   .title {
-    color: #333;
-    margin-bottom: 0.5rem;
+    font-size: 2rem;
   }
-  
+
   .separator {
-    border: 1px solid #ea4040;
-    margin-bottom: 2rem;
-    width: 20%;
-    margin-left: auto;
-    margin-right: auto;
+    width: 60%;
   }
-  
+
   .historyContainer {
-    margin-bottom: 2rem;
+    flex-direction: column;
   }
-  
-  .userDetails {
-    text-align: left;
-    font-size: 1rem;
-  }
-  
-  .userId {
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  
+
   .stats {
     text-align: left;
-    font-size: 1rem;
   }
-  
-  .highlight {
-    color: #ea4040;
-    font-weight: bold;
+
+  .reminderBox {
+    margin-bottom: 1rem;
   }
-  
-  .buttonContainer {
-    margin-top: 4rem; /* Adds space above buttons */
-  }
-  
-  .actionButton {
-    background-color: #ea4040;
-    color: #fff;
-    text-transform: none;
-    font-weight: bold;
-    border-radius: 8px;
-    padding: 0.8rem; /* Increase button padding */
-  }
-  
-  .actionButton:hover {
-    background-color: #c63535;
-  }
-  
+}
