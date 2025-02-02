@@ -15,7 +15,7 @@ const BASE_URL = "http://localhost:8080/";
 
 export const getAllCurriculum = async (): Promise<Curriculum[]> => {
     try {
-        const response = await axios.get(`${BASE_URL}/public/curriculums`);
+        const response = await axios.get(`${BASE_URL}public/curriculums`);
         return response.data;
     } catch (e) {
         console.error("Error fetch curriculums: ", e);
@@ -25,7 +25,7 @@ export const getAllCurriculum = async (): Promise<Curriculum[]> => {
 
 export const uploadCurriculums = async (curriculums: Curriculum[]): Promise<Curriculum[]> => {
     try {
-        const response = await axios.post(`${BASE_URL}/public/curriculums/upload`, curriculums);
+        const response = await axios.post(`${BASE_URL}public/curriculums/upload`, curriculums);
 
         return response.data;
     } catch (e) {
@@ -36,7 +36,7 @@ export const uploadCurriculums = async (curriculums: Curriculum[]): Promise<Curr
 
 export const getAllCurriculumsByProgram = async (id: number): Promise<Curriculum[]> => {
     try {
-        const response = await axios.get(`${BASE_URL}/public/curriculums/program/${id}`);
+        const response = await axios.get(`${BASE_URL}public/curriculums/program/${id}`);
 
         return response.data;
     } catch (e) {

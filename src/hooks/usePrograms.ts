@@ -15,7 +15,7 @@ export const usePrograms = (open: boolean) => {
             try {
                 const fetchedPrograms = await getAllPrograms();
                 console.log(fetchedPrograms)
-                setPrograms(fetchedPrograms); // Update departments state
+                setPrograms(fetchedPrograms);
             } catch (err) {
                 console.error("Error fetching departments:", err);
                 setError("Failed to load departments. Please try again.");
@@ -42,7 +42,7 @@ export const useProgramsByDepartment = (department_id: string) => {
             try {
                 const fetchedPrograms = await getAllProgramsByDepartment(department_id);
                 console.log(fetchedPrograms)
-                setPrograms(fetchedPrograms); // Update departments state
+                setPrograms(fetchedPrograms);
             } catch (err) {
                 console.error("Error fetching departments:", err);
                 setError("Failed to load departments. Please try again.");
