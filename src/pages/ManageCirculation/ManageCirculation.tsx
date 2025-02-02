@@ -47,9 +47,9 @@ const ManageCirculation: React.FC = () => {
     const fetchLoans = async () => {
       setIsLoading(true);
       try {
-        const loansData = await getBorrowedLoans();
-        setLoans(loansData);
-        setFilteredLoans(loansData);
+        const loansData = await getBorrowedLoans(); // Get the updated loan data
+        setLoans(loansData); // Set the loans state with fetched data
+        setFilteredLoans(loansData); // Set filteredLoans with the same data
       } catch (error) {
         console.error("Error fetching loans:", error);
       } finally {
@@ -57,15 +57,40 @@ const ManageCirculation: React.FC = () => {
       }
     };
 
-    fetchLoans();
-  }, []);
+    fetchLoans(); // Trigger the fetch when the component mounts
+  }, []); // Empty dependency array ensures this effect only runs once
+
+  const handleLoanSuccess = (updatedLoan: unknown) => {
+    const loan = updatedLoan as Loan;
+
+    // Check if the loan is being updated correctly
+    console.log("Loan updated: ", loan);
+
+    // Update the loans and filteredLoans state with the new data
+    setLoans((prevLoans) => {
+      return prevLoans.map((loanItem) =>
+        loanItem.loanId === loan.loanId ? loan : loanItem
+      );
+    });
+
+    setFilteredLoans((prevFilteredLoans) => {
+      return prevFilteredLoans.map((loanItem) =>
+        loanItem.loanId === loan.loanId ? loan : loanItem
+      );
+    });
+
+    // Close the modal after updating the loan data
+    setIsIssueModalOpen(false); // Close the modal here
+  };
+
+
 
   const handleSideBarClick = () => console.log("Hamburger menu clicked!");
 
   const handleCloseModal = () => {
     setIsIssueModalOpen(false);
     setIsModalOpen(false);
-    setLoanData(null); // Reset loan data on close
+    setLoanData(null);
   };
 
   const handleAccessionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -265,6 +290,7 @@ const ManageCirculation: React.FC = () => {
       <CirculationIssueBookModal
         open={isIssueModalOpen}
         handleClose={handleCloseModal}
+        onLoanSuccess={handleLoanSuccess}
       />
 
 

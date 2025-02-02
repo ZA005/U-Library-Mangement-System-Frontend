@@ -17,7 +17,7 @@ const CirculationDashboard: React.FC = () => {
     const viewTransactionHistory = () => navigate("/admin/circulation/management/history");
     const handleManageCirculation = () => navigate("/admin/circulation/management/circulation");
     const handleManageReservation = () => navigate("/admin/circulation/management/reservation");
-    const handleOverseeOverdues = () => navigate("/admin/oversee-overdue");
+    const handleOverseeOverdues = () => navigate("/admin/circulation/management/oversee-overdue");
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">

@@ -155,3 +155,12 @@ export const deleteSection = async (id: number) => {
         throw error;
     }
 };
+
+export const getAllAccessionNo = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}all-accession-number`);
+        return response.data; // return the data from the response
+    } catch (error) {
+        throw new Error("Failed to fetch books from the database.");
+    }
+};

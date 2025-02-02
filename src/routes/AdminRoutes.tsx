@@ -20,6 +20,7 @@ import CriteriaDashboard from '../pages/Cataloging-Management/Managers/Book-Weed
 import UploadManager from '../pages/Curriculum-Management/Managers/UploadManager';
 import TransactionRecord from '../pages/ManageCirculation/TransactionRecord';
 import ManageReservation from '../pages/ManageReservation/ManageReservation';
+import BarcodeGenerator from '../pages/Cataloging-Management/Managers/BarcodeManagement/BarcodeGenerator';
 
 const AdminRoutes = () => (
   <Routes>
@@ -36,6 +37,8 @@ const AdminRoutes = () => (
       <Route path="catalog/management/search-title" element={<BookSearch />} />
       <Route path="catalog/management/book-weeding" element={<WeedingDashboard />} />
       <Route path="catalog/management/criteria" element={<CriteriaDashboard />} />
+      <Route path="catalog/management/barcode" element={<BarcodeGenerator />} />
+
 
       {/* <Route path="book/:bookId" element={<BookDetails />} /> */}
       <Route path="catalog/management/book-form" element={<BookForm />} />

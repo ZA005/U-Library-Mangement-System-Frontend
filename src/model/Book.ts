@@ -35,3 +35,8 @@ export interface Sections {
     locationId: number;
     sectionName: string;
 }
+
+export interface BarcodeLabels {
+    accessionNo: string;
+    section: string;
+}
