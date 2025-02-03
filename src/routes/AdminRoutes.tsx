@@ -10,7 +10,7 @@ import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
 import OverseeOverdue from '../pages/OverseeOverdues/OverseeOverdues';
 import UploadPrograms from '../pages/Curriculum-Management/Managers/UploadPrograms/UploadPrograms';
 import UploadDepartments from '../pages/Curriculum-Management/Managers/UploadDepartments/UploadDepartments';
-import UploadCourses from '../pages/Curriculum-Management/Managers/UploadCourses';
+import UploadCourses from '../pages/Curriculum-Management/Managers/UploadCourses/UploadCourses';
 import UploadCurriculum from '../pages/Curriculum-Management/Managers/UploadCurriculum/UploadCurriculum';
 import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageBookReference';
 import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
@@ -22,6 +22,9 @@ import UploadManager from '../pages/Curriculum-Management/Managers/UploadManager
 import TransactionRecord from '../pages/ManageCirculation/TransactionRecord';
 import ManageReservation from '../pages/ManageReservation/ManageReservation';
 import BarcodeGenerator from '../pages/Cataloging-Management/Managers/BarcodeManagement/BarcodeGenerator';
+import NoDepartments from '../pages/Curriculum-Management/Managers/UploadPrograms/NoDepartment';
+import NoProgram from '../pages/Curriculum-Management/Managers/UploadCurriculum/NoProgram';
+import NoCurriculum from '../pages/Curriculum-Management/Managers/UploadCourses/NoCurriculum';
 
 const AdminRoutes = () => (
   <Routes>
@@ -52,8 +55,11 @@ const AdminRoutes = () => (
       <Route path='/curriculum/management/departments' element={<UploadDepartments />} />
       <Route path='/curriculum/management/programs' element={<UploadPrograms />} />
       <Route path="curriculum/management/curriculum" element={<UploadCurriculum />} />
-      <Route path='/curriculum/management/subjects' element={<UploadCourses />} />
+      <Route path='/curriculum/management/courses' element={<UploadCourses />} />
       <Route path='/curriculum/management/reference' element={<ManageBookReference />} />
+      <Route path='/curriculum/management/no-department' element={<NoDepartments />} />
+      <Route path='/curriculum/management/no-program' element={<NoProgram />} />
+      <Route path='/curriculum/management/no-curriculum' element={<NoCurriculum />} />
 
       {/* Ciculation Module  */}
       <Route path='circulation/management/page' element={<CirculationDashboard />} />

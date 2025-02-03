@@ -27,6 +27,7 @@ import Copyright from "../../../../components/Footer/Copyright";
 import Sidebar from "../../../../components/Sidebar";
 import FileInstructionDialog from "./FileInstructionDialog";
 import ConfirmUploadDialog from "./ConfirmUploadDialog";
+import { useNavigate } from "react-router-dom";
 import { useDepartments } from "../../../../hooks/useDepartments";
 import { useProgramsByDepartment } from "../../../../hooks/usePrograms";
 import { useCurriculumByProgram } from "../../../../hooks/useCurriculum";
@@ -36,6 +37,7 @@ import { useDialog } from "../../../../hooks/useDialog";
 import styles from "../styles.module.css";
 
 const UploadCurriculum: React.FC = () => {
+    const navigate = useNavigate()
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [fileToUpload, setFileToUpload] = useState<File | null>(null);
@@ -124,12 +126,16 @@ const UploadCurriculum: React.FC = () => {
     };
 
     useEffect(() => {
+        if (programs.length === 0) {
+            navigate("/admin/curriculum/management/no-program");
+        }
+
         if (uploadError) {
             openSnackbar(uploadError, "error");
         } else if (parsedData) {
             openSnackbar("Programs uploaded successfully!", "success");
         }
-    }, [uploadError, parsedData, openSnackbar]);
+    }, [uploadError, parsedData, openSnackbar, programs, navigate]);
 
     return (
         <Box className={styles.rootContainer}>
@@ -227,8 +233,8 @@ const UploadCurriculum: React.FC = () => {
                                     <TableCell><strong>ID</strong></TableCell>
                                     <TableCell><strong>PROGRAM</strong></TableCell>
                                     <TableCell><strong>REVISION NO</strong></TableCell>
-                                    <TableCell><strong>EFFECTIVITY SEMESTER</strong></TableCell>
-                                    <TableCell><strong>EFFECTIVITY SY</strong></TableCell>
+                                    <TableCell><strong>SEMESTER</strong></TableCell>
+                                    <TableCell><strong>SCHOOL YEAR</strong></TableCell>
                                     {/* <TableCell><strong>PROGRAM NAME</strong></TableCell> */}
                                 </TableRow>
                             </TableHead>

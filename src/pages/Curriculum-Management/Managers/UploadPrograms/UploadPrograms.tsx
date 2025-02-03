@@ -25,6 +25,7 @@ import Header from "../../../../components/Header/Header";
 import Line from "../../../../components/Line/Line";
 import Copyright from "../../../../components/Footer/Copyright";
 import Sidebar from "../../../../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 import { useProgramsByDepartment } from "../../../../hooks/usePrograms";
 import { useDepartments } from "../../../../hooks/useDepartments";
 import { useCsvUploader } from "../UploadPrograms/useUploadPrograms";
@@ -35,6 +36,7 @@ import ConfirmUploadDialog from "./ConfirmUploadDialog";
 import styles from "../styles.module.css";
 
 const UploadPrograms: React.FC = () => {
+  const navigate = useNavigate()
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
@@ -108,12 +110,15 @@ const UploadPrograms: React.FC = () => {
   };
 
   useEffect(() => {
+    if (departments.length === 0) {
+      navigate("/admin/curriculum/management/no-department");
+    }
     if (uploadError) {
       openSnackbar(uploadError, "error");
     } else if (parsedData) {
       openSnackbar("Programs uploaded successfully!", "success");
     }
-  }, [uploadError, parsedData, openSnackbar]);
+  }, [uploadError, parsedData, openSnackbar, departments, navigate]);
 
   return (
     <Box className={styles.rootContainer}>
