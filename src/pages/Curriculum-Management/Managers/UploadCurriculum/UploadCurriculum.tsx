@@ -18,6 +18,7 @@ import {
     Input,
     Select,
     MenuItem,
+    CircularProgress
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -42,6 +43,7 @@ const UploadCurriculum: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [fileToUpload, setFileToUpload] = useState<File | null>(null);
     const [openFileInstructionDialog, setOpenFileInstructionDialog] = useState(false);
+    const [loading, setLoading] = useState(false);
     const toggleSidebar = () => setSidebarOpen((prev) => !prev);
     const { snackbarOpen, snackbarMessage, snackbarStatus, openSnackbar, closeSnackbar } = useSnackbar();
 
@@ -126,17 +128,25 @@ const UploadCurriculum: React.FC = () => {
     };
 
     useEffect(() => {
-        if (programs.length === 0) {
-            navigate("/admin/curriculum/management/no-program");
-        }
-
         if (uploadError) {
             openSnackbar(uploadError, "error");
         } else if (parsedData) {
             openSnackbar("Programs uploaded successfully!", "success");
         }
-    }, [uploadError, parsedData, openSnackbar, programs, navigate]);
+    }, [uploadError, parsedData, openSnackbar]);
 
+    useEffect(() => {
+        setLoading(true)
+        const timer = setTimeout(() => {
+            if (!programsLoading && programs.length === 0) {
+                // console.log("TEST");
+                navigate("/admin/curriculum/management/no-program");
+            }
+            setLoading(false)
+        }, 500); // Delay to ensure state updates
+
+        return () => clearTimeout(timer);
+    }, [programsLoading, programs, navigate]);
     return (
         <Box className={styles.rootContainer}>
             <Sidebar open={isSidebarOpen} onClose={toggleSidebar} />
@@ -261,6 +271,11 @@ const UploadCurriculum: React.FC = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                )}
+                {loading && (
+                    <Box sx={{ textAlign: "center", marginTop: 2 }}>
+                        <CircularProgress />
+                    </Box>
                 )}
             </Container>
 

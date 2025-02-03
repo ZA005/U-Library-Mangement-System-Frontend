@@ -18,6 +18,7 @@ import {
   Input,
   Select,
   MenuItem,
+  CircularProgress
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -41,6 +42,7 @@ const UploadPrograms: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
   const [openFileInstructionDialog, setOpenFileInstructionDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
   const [departmentId, setDepartmentId] = useState<string>("");
@@ -58,7 +60,6 @@ const UploadPrograms: React.FC = () => {
   // Fetch departments
   const { departments, loading: departmentsLoading, error: departmentsError } = useDepartments(true);
 
-  // Filter programs based on search term
   const filteredPrograms = programs.filter((prog) =>
     prog.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -110,15 +111,24 @@ const UploadPrograms: React.FC = () => {
   };
 
   useEffect(() => {
-    if (departments.length === 0) {
-      navigate("/admin/curriculum/management/no-department");
-    }
     if (uploadError) {
       openSnackbar(uploadError, "error");
     } else if (parsedData) {
       openSnackbar("Programs uploaded successfully!", "success");
     }
-  }, [uploadError, parsedData, openSnackbar, departments, navigate]);
+  }, [uploadError, parsedData, openSnackbar]);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      if (!departmentsLoading && departments.length === 0) {
+        navigate("/admin/curriculum/management/no-department");
+      }
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [departmentsLoading, departments, navigate]);
 
   return (
     <Box className={styles.rootContainer}>
@@ -220,6 +230,11 @@ const UploadPrograms: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
+        )}
+        {loading && (
+          <Box sx={{ textAlign: "center", marginTop: 2 }}>
+            <CircularProgress />
+          </Box>
         )}
       </Container>
 
