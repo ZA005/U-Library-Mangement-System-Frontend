@@ -61,7 +61,7 @@ const configureCsvParsing = (
 
             const headers = Object.keys(rawData[0]);
             if (!validateHeaders(headers)) {
-                setError("Invalid CSV headers.\n Required headers: curr_id, program_id, revision_no, effectivity_sem, effectivity_sy, status");
+                setError("Invalid CSV headers.\n Required headers: course_id, curr_id, course_code, course_name, year_level, sem");
                 setIsUploading(false);
                 return;
             }
