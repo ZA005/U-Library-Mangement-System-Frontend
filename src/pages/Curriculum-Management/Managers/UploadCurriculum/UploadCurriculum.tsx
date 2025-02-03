@@ -30,7 +30,7 @@ import FileInstructionDialog from "./FileInstructionDialog";
 import ConfirmUploadDialog from "./ConfirmUploadDialog";
 import { useNavigate } from "react-router-dom";
 import { useDepartments } from "../../../../hooks/useDepartments";
-import { useProgramsByDepartment } from "../../../../hooks/usePrograms";
+import { usePrograms, useProgramsByDepartment } from "../../../../hooks/usePrograms";
 import { useCurriculumByProgram } from "../../../../hooks/useCurriculum";
 import { useCsvUploader } from "./useUploadCurriculums";
 import { useSnackbar } from "../../../../hooks/useSnackbar";
@@ -56,6 +56,7 @@ const UploadCurriculum: React.FC = () => {
 
     const { departments, loading: departmentsLoading, error: departmentsError } = useDepartments(true);
 
+    const { programs: allPrograms, loading: allProgramsLoading, error: allProgramsError } = usePrograms(true);
     const { programs, loading: programsLoading, error: programsError } = useProgramsByDepartment(departmentId);
 
     const { curriculums, loading: curriculumsLoading, error: curriculumsError } = useCurriculumByProgram(programId);
@@ -138,15 +139,15 @@ const UploadCurriculum: React.FC = () => {
     useEffect(() => {
         setLoading(true)
         const timer = setTimeout(() => {
-            if (!programsLoading && programs.length === 0) {
-                // console.log("TEST");
-                navigate("/admin/curriculum/management/no-program");
+            if (!allProgramsLoading && allPrograms.length === 0) {
+                console.log("ALL PROGRAMS: ", allPrograms)
+                // navigate("/admin/curriculum/management/no-program");
             }
             setLoading(false)
-        }, 500); // Delay to ensure state updates
+        }, 500);
 
         return () => clearTimeout(timer);
-    }, [programsLoading, programs, navigate]);
+    }, [allProgramsLoading, allPrograms, navigate]);
     return (
         <Box className={styles.rootContainer}>
             <Sidebar open={isSidebarOpen} onClose={toggleSidebar} />
