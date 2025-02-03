@@ -4,8 +4,9 @@ import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Bac
 import { styled } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { ManageAccounts } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -24,6 +25,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
 
   const handleLogout = () => {
     logout();
+    localStorage.clear();
     navigate("/");
   };
   return (
@@ -55,6 +57,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
       >
         <DrawerHeader />
         <List>
+
           <ListItem disablePadding>
             <ListItemButton onClick={() => navigate("/")}>
               <ListItemIcon>
@@ -63,8 +66,17 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
               <ListItemText primary="Home" />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding>
 
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate("/user/library/myaccount")}>
+              <ListItemIcon>
+                <ManageAccounts sx={{ color: "#FFF" }} />
+              </ListItemIcon>
+              <ListItemText primary="My Account" />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon>
                 <LogoutIcon sx={{ color: "#FFF" }} />
@@ -72,6 +84,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
               <ListItemText primary="Logout" />
             </ListItemButton>
           </ListItem>
+
         </List>
       </Drawer>
     </>

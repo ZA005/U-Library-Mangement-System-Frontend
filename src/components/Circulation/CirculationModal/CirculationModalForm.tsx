@@ -39,7 +39,7 @@ const CirculationModalForm: React.FC<CirculationModalFormProps> = ({
   fields,
   onConfirm,
   confirmText,
-  errorMessage, // Include errorMessage here
+  errorMessage,
 }) => {
   return (
     <Modal open={open} onClose={handleClose}>
@@ -54,6 +54,15 @@ const CirculationModalForm: React.FC<CirculationModalFormProps> = ({
             <span className={styles.modalHeaderLine} />
             {title}
           </Typography>
+          {errorMessage && (
+            <Typography
+              variant="body2"
+              color="error"
+              className={styles.errorMessage}
+            >
+              {errorMessage}
+            </Typography>
+          )}
           {fields.map((field, index) => {
             if (field.type === "text") {
               return (
@@ -81,15 +90,7 @@ const CirculationModalForm: React.FC<CirculationModalFormProps> = ({
             }
             return null;
           })}
-          {errorMessage && (
-            <Typography
-              variant="body2"
-              color="error"
-              className={styles.errorMessage}
-            >
-              {errorMessage}
-            </Typography>
-          )}
+
           <Button
             variant="contained"
             sx={{

@@ -1,17 +1,19 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import UserService from '../../../services/UserService';
+import UserService from '../../../services/UserManagement/UserService';
 import { Book } from '../../../model/Book';
 import { useState } from 'react';
 import BookList from '../BookList/BookListComponent';
 import Header from '../../Header/Header';
 import Footer from '../../Footer/Copyright';
-import { Box, Button, Typography, CardMedia, Collapse } from '@mui/material';
+import { Box, Button, Typography, CardMedia, Collapse, Container, IconButton } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { getBooksByAuthor } from '../../../services/Cataloging/LocalBooksAPI';
 import './BookDetails.css';
+import Sidebar from '../../Sidebar';
+import MenuIcon from "@mui/icons-material/Menu";
 
 
 
@@ -21,7 +23,7 @@ const BookDetails: React.FC = () => {
   const [showBooks, setShowBooks] = useState(false);
   const [booksByAuthor, setBooksByAuthor] = useState<Book[] | null>(null);
   const [isAddBookRefModalOpen, setIsAddBookRefModalOpen] = useState(false);
-  // const [urlPath, setURLPath] = useState("");
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const book: Book = state?.book;
   const source = state?.source;
@@ -58,15 +60,38 @@ const BookDetails: React.FC = () => {
 
   const handleGoBack = () => {
     const path = UserService.isLibrarian() || UserService.isAdmin()
-      ? '/admin/catalog/management/search-title'
+      ? '/user/catalog/management/search-title'
       : '/user/browse';
     navigate(path, { state: { searchState: state?.searchState } });
   };
 
+  const handleSideBarClick = () => setSidebarOpen(!isSidebarOpen);
+  const handleSidebarClose = () => setSidebarOpen(false);
+
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Header buttons={<Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleGoBack}>Go Back</Button>} />
+        <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
+        <Container>
+          <Header
+            buttons={
+              <>
+                <Button sx={{ backgroundColor: '#ea4040', color: 'white' }}
+                  onClick={handleGoBack}>
+                  Go Back
+                </Button>
+                <IconButton onClick={handleSideBarClick}>
+                  <MenuIcon style={{ color: "#ea4040", marginLeft: "10px" }} />
+                </IconButton>
+              </>
+
+            }
+
+
+          />
+          {/* <Header buttons={ } /> */}
+        </Container>
+
 
         <Box sx={{ flexGrow: 1, padding: 2, margin: '20px auto', maxWidth: 900, backgroundColor: '#f9f9f9', borderRadius: 3, boxShadow: 2, position: 'relative' }}>
           {/* Larger Bookmark Icon */}
@@ -106,7 +131,7 @@ const BookDetails: React.FC = () => {
 
 
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', marginTop: 2 }}>
-            {(UserService.isLibrarian() || UserService.isAdmin()) && (
+            {UserService.adminOnly() && (
               <>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleAddCopies}>Catalog</Button>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleEditTitle}>Edit Title</Button>
@@ -117,12 +142,15 @@ const BookDetails: React.FC = () => {
               <>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleReserve}>Reserve item</Button>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleBorrow}>Borrow item</Button>
-                <Button
-                  sx={{ backgroundColor: '#ea4040', color: 'white' }}
-                  onClick={handleAddBookRefModalOpen}
-                >
-                  Add As Book Reference
-                </Button>
+                {UserService.adminOnly() && (
+                  <Button
+                    sx={{ backgroundColor: '#ea4040', color: 'white' }}
+                    onClick={handleAddBookRefModalOpen}
+                  >
+                    Add As Book Reference
+                  </Button>
+                )}
+
               </>
 
             )}

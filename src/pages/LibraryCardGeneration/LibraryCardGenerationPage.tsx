@@ -17,18 +17,18 @@ const LibraryCardGenerationPage: React.FC = () => {
     // console.log("Download button clicked");
     const libraryCardElement = document.getElementById('libraryCard');
     if (libraryCardElement) {
-        html2canvas(libraryCardElement).then((canvas) => {
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const link = document.createElement('a');
-              link.href = URL.createObjectURL(blob);
-              link.download = 'library_card.png';
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }
-          }, 'image/png');
-        });
+      html2canvas(libraryCardElement).then((canvas) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'library_card.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        }, 'image/png');
+      });
     } else {
       console.log("Download button clicked!");
     }
@@ -47,7 +47,7 @@ const LibraryCardGenerationPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
         <Header
           buttons=<>
-            
+
           </>
         />
 
@@ -74,7 +74,7 @@ const LibraryCardGenerationPage: React.FC = () => {
                 Your library card serves as your official identification for accessing library resources. <br />
                 Please follow these instructions:
               </Typography>
-              
+
               <List>
                 <ListItem>
                   <ListItemText primary={

@@ -4,7 +4,7 @@ import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import UserService from "../../services/UserService";
+import UserService from "../../services/UserManagement/UserService";
 import "./VerifyOtp.css";
 
 const VerifyOtp: React.FC = () => {
@@ -67,7 +67,7 @@ const VerifyOtp: React.FC = () => {
   return (
 
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Container maxWidth="sm" sx={{ flexGrow: 1, position: "relative" }}>
+      <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
         <Header buttons={null} />
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh", position: "relative", marginTop: "2rem" }}>
           <Box className="verify-otp-box" sx={{ bgcolor: "white", p: 4, borderRadius: 2, boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", textAlign: "center", width: "100%", maxWidth: 400 }}>
