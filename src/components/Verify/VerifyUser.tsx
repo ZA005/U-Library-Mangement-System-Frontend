@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Modal, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import UserService from '../../services/UserService';
+import UserService from '../../services/UserManagement/UserService';
 import './VerifyUser.css';
 
 interface VerifyUserModalProps {
@@ -24,7 +24,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
       if (data && data.id) {
         localStorage.setItem('emailAdd', data.emailAdd);
         navigate('/verify/user/otp', { state: { userData: data } });
-        console.log(data);
+        localStorage.setItem('uncIdNumber', studentId)
       } else {
         setError('Student not found or not currently enrolled.');
       }
@@ -62,6 +62,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
             {/* TextField for Student ID */}
             <TextField
               label="UNC ID Number"
+              placeholder='Enter your Student/Employee UNC ID number'
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
               required

@@ -113,7 +113,7 @@ const AcquiredItems: React.FC = () => {
                     ],
                     individualLibrary: null,
                 };
-                navigate("/admin/catalog/management/search-title", {
+                navigate("/user/catalog/management/search-title", {
                     state: { query: advancedSearchParams, books: [], source: "All libraries", modalParams: advancedSearchParams, bookData: item },
                 });
             } else if (value === 'addToCatalog') {

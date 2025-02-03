@@ -1,7 +1,6 @@
 import React from 'react';
 import { Book } from '../../../model/Book';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Typography, Card, CardContent, CardMedia, Link, Container } from '@mui/material';
+import { Box, Button, Typography, Card, CardContent, CardMedia, Container } from '@mui/material';
 
 interface BookListProps {
   books: Book[];
@@ -10,7 +9,6 @@ interface BookListProps {
 }
 
 const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
-  const navigate = useNavigate();
 
   // Function to remove duplicates based on book id
   const getUniqueBooks = (books: Book[]) => {
@@ -98,17 +96,7 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
                     {book.title}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-                    <strong>Authors:</strong>{' '}
-                    <Link
-                      href="/about-author"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate('/about-author');
-                      }}
-                      sx={{ color: 'primary.main', textDecoration: 'none' }}
-                    >
-                      {book.authors.join(', ')}
-                    </Link>
+                    <strong>Authors:</strong>{' '}{book.authors.join(', ')}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
                     <strong>Publisher:</strong> {book.publisher || 'N/A'}

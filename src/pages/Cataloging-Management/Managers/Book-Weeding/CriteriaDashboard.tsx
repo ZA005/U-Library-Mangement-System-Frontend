@@ -299,6 +299,7 @@ const CriteriaDashboard: React.FC = () => {
                     Criteria Dashboard
                 </Typography>
                 <Line />
+
                 <Box className={styles.actionBar}>
                     {/* Filters Section */}
                     <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>

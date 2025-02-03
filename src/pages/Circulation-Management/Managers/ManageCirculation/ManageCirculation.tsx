@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -20,16 +21,20 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import Header from "../../components/Header/Header";
-import Line from "../../components/Line/Line";
-import Copyright from "../../components/Footer/Copyright";
-import CirculationIssueBookModal from "../../components/Circulation/CirculationPopUps/CirculationIssueBookModal";
+import Header from "../../../../components/Header/Header";
+import Line from "../../../../components/Line/Line";
+import Copyright from "../../../../components/Footer/Copyright";
+import CirculationIssueBookModal from "../../../../components/Circulation/CirculationPopUps/CirculationIssueBookModal";
 import styles from "./styles.module.css";
-import { getBorrowedLoans, updateLoanStatus } from "../../services/Circulation/CirculationApi";
-import { Loan } from "../../model/Loan";
+import { getBorrowedLoans, updateLoanStatus } from "../../../../services/Circulation/CirculationApi";
+import { Loan } from "../../../../model/Loan";
+import { useSnackbar } from "../../../../hooks/useSnackbar";
+import Sidebar from "../../../../components/Sidebar";
 
 const ManageCirculation: React.FC = () => {
   const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
@@ -42,14 +47,16 @@ const ManageCirculation: React.FC = () => {
   const [action, setAction] = useState<"Return" | "Renew" | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [accessionNo, setAccessionNo] = useState<string>("");
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchLoans = async () => {
       setIsLoading(true);
       try {
-        const loansData = await getBorrowedLoans(); // Get the updated loan data
-        setLoans(loansData); // Set the loans state with fetched data
-        setFilteredLoans(loansData); // Set filteredLoans with the same data
+        const loansData = await getBorrowedLoans();
+        setLoans(loansData);
+        setFilteredLoans(loansData);
       } catch (error) {
         console.error("Error fetching loans:", error);
       } finally {
@@ -57,35 +64,60 @@ const ManageCirculation: React.FC = () => {
       }
     };
 
-    fetchLoans(); // Trigger the fetch when the component mounts
-  }, []); // Empty dependency array ensures this effect only runs once
+    fetchLoans();
 
-  const handleLoanSuccess = (updatedLoan: unknown) => {
+  }, []);
+
+  const fetchLoans = async () => {
+    setIsLoading(true);
+    try {
+      const loansData = await getBorrowedLoans();
+      setLoans(loansData);
+      setFilteredLoans(loansData);
+    } catch (error) {
+      console.error("Error fetching loans:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleLoanSuccess = async (updatedLoan: unknown) => {
     const loan = updatedLoan as Loan;
 
-    // Check if the loan is being updated correctly
-    console.log("Loan updated: ", loan);
-
     // Update the loans and filteredLoans state with the new data
-    setLoans((prevLoans) => {
-      return prevLoans.map((loanItem) =>
-        loanItem.loanId === loan.loanId ? loan : loanItem
-      );
-    });
+    setLoans(prevLoans => [
+      ...prevLoans.filter(loanItem => loanItem.id !== loan.id),
+      loan
+    ]);
 
-    setFilteredLoans((prevFilteredLoans) => {
-      return prevFilteredLoans.map((loanItem) =>
-        loanItem.loanId === loan.loanId ? loan : loanItem
-      );
-    });
+    setFilteredLoans(prevFilteredLoans => [
+      ...prevFilteredLoans.filter(loanItem => loanItem.id !== loan.id),
+      loan
+    ]);
+
+    // Fetch updated loans to reflect any changes or new loans from server
+    await fetchLoans();
 
     // Close the modal after updating the loan data
-    setIsIssueModalOpen(false); // Close the modal here
+    setIsIssueModalOpen(false);
   };
 
+  const {
+    snackbarOpen,
+    snackbarMessage,
+    snackbarStatus,
+    openSnackbar,
+    closeSnackbar,
+  } = useSnackbar();
 
+  const handleSideBarClick = () => {
+    if (!isLoading) setSidebarOpen(!isSidebarOpen);
+  };
 
-  const handleSideBarClick = () => console.log("Hamburger menu clicked!");
+  const handleSidebarClose = () => {
+    if (!isLoading) setSidebarOpen(false);
+  };
+
 
   const handleCloseModal = () => {
     setIsIssueModalOpen(false);
@@ -103,7 +135,7 @@ const ManageCirculation: React.FC = () => {
       const filtered = loans.filter(
         (loan) =>
           loan.accessionNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          loan.borrower.toLowerCase().includes(searchTerm.toLowerCase())
+          loan.uncIdNumber.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredLoans(filtered);
     }
@@ -113,6 +145,7 @@ const ManageCirculation: React.FC = () => {
     setSelectedLoan(loan);
     setAction(selectedAction);
     setIsDialogOpen(true);
+
   };
 
   const handleConfirmAction = async () => {
@@ -120,27 +153,15 @@ const ManageCirculation: React.FC = () => {
       const updatedLoan = {
         ...selectedLoan,
         status: action === "Return" ? "Returned" : "Borrowed",
-        returnDate: action === "Return" ? new Date().toISOString() : selectedLoan.returnDate,
+        returnDate: action === "Return" ? new Date() : selectedLoan.dateReturned,
       };
-
-      console.log("Updated Loan:", updatedLoan);  // Check if action is correct here
       try {
         const status = updatedLoan.status === "Borrowed" ? "Renewed" : "Returned";
-        console.log("Sending Status:", updatedLoan.status, "Action:", status);
-        await updateLoanStatus(BigInt(updatedLoan.loanId), updatedLoan.status, status);
+        openSnackbar(`Successfully returned ${selectedLoan.title}.`, "success");
+        await updateLoanStatus(BigInt(updatedLoan.id), updatedLoan.status, status);
 
-        console.log(status)
-        // Update the loan in the state
-        setLoans((prevLoans) =>
-          prevLoans.map((loan) =>
-            loan.loanId === updatedLoan.loanId ? updatedLoan : loan
-          )
-        );
-        setFilteredLoans((prevFilteredLoans) =>
-          prevFilteredLoans.map((loan) =>
-            loan.loanId === updatedLoan.loanId ? updatedLoan : loan
-          )
-        );
+        // Update the local state directly after the API call succeeds
+        handleLoanSuccess(updatedLoan);
       } catch (error) {
         console.error("Error updating loan:", error);
       } finally {
@@ -150,7 +171,6 @@ const ManageCirculation: React.FC = () => {
       }
     }
   };
-
   const handleCancelAction = () => {
     setIsDialogOpen(false);
     setSelectedLoan(null);
@@ -158,6 +178,7 @@ const ManageCirculation: React.FC = () => {
   };
   return (
     <Box className={styles.rootContainer}>
+      <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
       <Container maxWidth="lg" className={styles.container}>
         <Header
           buttons={
@@ -224,28 +245,20 @@ const ManageCirculation: React.FC = () => {
               </TableHead>
               <TableBody>
                 {filteredLoans.map((loan) => (
-                  <TableRow key={loan.loanId}>
+                  <TableRow key={loan.id}>
                     <TableCell>{loan.accessionNo}</TableCell>
                     <TableCell>{loan.title}</TableCell>
-                    <TableCell>{loan.authorName}</TableCell>
-                    <TableCell>{loan.borrower}</TableCell>
-                    <TableCell>{loan.departmentName}</TableCell>
+                    <TableCell>{loan.author}</TableCell>
+                    <TableCell>{loan.uncIdNumber}</TableCell>
+                    <TableCell>{loan.department}</TableCell>
                     <TableCell>
-                      {loan.borrowDate
-                        ? new Date(loan.borrowDate).toLocaleString("en-US", {
+                      {loan.dateBorrowed
+                        ? new Date(loan.dateBorrowed).toLocaleString("en-US", {
                           dateStyle: "short",
                           timeStyle: "medium",
                         })
                         : "N/A"}
                     </TableCell>
-                    {/* <TableCell>
-                      {loan.returnDate
-                        ? new Date(loan.returnDate).toLocaleString("en-US", {
-                          dateStyle: "short",
-                          timeStyle: "medium",
-                        })
-                        : ""}
-                    </TableCell> */}
                     <TableCell>
                       {loan.dueDate
                         ? new Date(loan.dueDate).toLocaleString("en-US", {
@@ -254,15 +267,6 @@ const ManageCirculation: React.FC = () => {
                         })
                         : "N/A"}
                     </TableCell>
-                    {/* <TableCell
-                      className={
-                        loan.status === "Active"
-                          ? styles.activeStatus
-                          : styles.inactiveStatus
-                      }
-                    >
-                      {loan.status}
-                    </TableCell> */}
                     <TableCell>
                       <Select
                         displayEmpty
@@ -292,6 +296,12 @@ const ManageCirculation: React.FC = () => {
         handleClose={handleCloseModal}
         onLoanSuccess={handleLoanSuccess}
       />
+
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={closeSnackbar} anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
+        <Alert onClose={closeSnackbar} severity={snackbarStatus}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
 
       <Dialog open={isDialogOpen} onClose={handleCancelAction}>

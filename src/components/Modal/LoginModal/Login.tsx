@@ -5,7 +5,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import AccountCircle from '@mui/icons-material/LibraryBooks';
 import LockIcon from '@mui/icons-material/Lock';
 import './LoginModal.css';
-import UserService from '../../../services/UserService';
+import UserService from '../../../services/UserManagement/UserService';
 import { useAuth } from '../../../contexts/AuthContext';
 
 interface LoginProps {
@@ -18,7 +18,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
   const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [libraryCardNumber, setLibraryCardNumber] = useState('');
+  const [uncIdNumber, setUncIdNumber] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -28,25 +28,31 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     e.preventDefault();
     setError(null); // Reset error state before new login attempt
 
-    if (!libraryCardNumber || !password) {
+    if (!uncIdNumber || !password) {
       setError('Both library card number and password are required.');
       return;
     }
 
     try {
-      const userData = await UserService.login(libraryCardNumber, password);
+      const userData = await UserService.login(uncIdNumber, password);
 
       // Check for server-provided error messages
       if (!userData.token) {
-        setError('Login failed. Please check your library card number and password.');
+        setError('Login failed. Please check your UNC ID number and password.');
         return;
       }
 
       login(userData.token, userData.role);
 
-      if (userData.role === 'LIBRARIAN' || userData.role === 'ADMIN') navigate('/admin/library');
-      else if (userData.role === 'STUDENT') navigate('/user/browse');
-      else navigate('/'); // Default fallback
+      if (userData.role === 'LIBRARIAN' || userData.role === 'ADMIN') {
+        navigate('/admin/library');
+        localStorage.setItem('uncIdNumber', uncIdNumber);
+      } else if (userData.role === 'STUDENT') {
+        navigate('/user/browse');
+        localStorage.setItem('uncIdNumber', uncIdNumber);
+      } else {
+        navigate('/', { state: { uncIdNumber } }); // Default fallback
+      }
 
       onClose();
     } catch (error: unknown) {
@@ -55,7 +61,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
       // Handle specific error cases
       const err = error as { response?: { status: number, data?: { message: string } } };
       if (err.response?.status === 401) {
-        setError('Invalid credentials. Please check your library card number and password.');
+        setError('Invalid credentials. Please check your UNC ID number and password.');
       } else if (err.response?.status === 500) {
         setError('Internal server error. Our team is working on it. Please try again later.');
       } else if (err.response?.status === 400) {
@@ -86,13 +92,14 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
 
           <form onSubmit={handleLogin}>
             <TextField
-              label="Library Card Number"
+              label="UNC ID number"
+              placeholder='Enter you Student/Employee ID number'
               variant="outlined"
               fullWidth
               margin="normal"
               className="modal-input"
-              value={libraryCardNumber}
-              onChange={(e) => setLibraryCardNumber(e.target.value)}
+              value={uncIdNumber}
+              onChange={(e) => setUncIdNumber(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -104,6 +111,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
 
             <TextField
               label="Password"
+              placeholder='Enter your password'
               type={showPassword ? 'text' : 'password'}
               variant="outlined"
               fullWidth

@@ -1,10 +1,9 @@
 import axios from "axios";
+import { Reservations } from "../../model/Loan";
 
 const BASE_URL = "http://localhost:8080/";
 
 export const saveLoanDetails = async (loanData: unknown) => {
-    console.log("Loan Data:", loanData);
-
     try {
         await axios.post(`${BASE_URL}admin/save-loan`, loanData, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -37,7 +36,12 @@ export const getBorrowedLoans = async () => {
     }
 }
 
-export const fetchBorrowerDetails = async (idNumber: string): Promise<{ department: string, hasCurrentBorrowedBook: boolean, registered: boolean }> => {
+export const fetchBorrowerDetails = async (idNumber: string): Promise<{
+    department: string,
+    hasCurrentBorrowedBook: boolean,
+    registered: boolean,
+    reservationCount: number
+}> => {
     try {
         const response = await axios.get(`${BASE_URL}admin/borrower-details/${idNumber}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -48,13 +52,13 @@ export const fetchBorrowerDetails = async (idNumber: string): Promise<{ departme
     }
 };
 
-
+//Book Controller
 export const fetchBookDetails = async (accessionNo: string): Promise<{ title: string, callNumber: string, authors: string, bookStatus: string }> => {
     try {
         const response = await axios.get(`${BASE_URL}adminuser/accessionNo/${accessionNo}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        return response.data; // Ensure the backend returns `{ bookTitle, author }`
+        return response.data;
     } catch (error) {
         throw new Error("Failed to fetch book details: " + error);
     }
@@ -93,16 +97,8 @@ export const checkBookLoanStatus = async (accessionNo: string): Promise<boolean>
     }
 };
 
-// export const getOverdueLoans = async () => {
-//     try {
-//         const response = await axios.get(`${BASE_URL}admin/overdue`, {
-//             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-//         });
-//         return response.data;
-//     } catch (error) {
-//         throw new Error("Failed to fetch overdue loans: " + error);
-//     }
-// }
+
+
 
 export const calculateFines = async () => {
     const response = await axios.post(`${BASE_URL}adminuser/calculate`, {
@@ -132,3 +128,40 @@ export const getAllFineDetails = async () => {
         throw new Error("Failed to fetch fines: " + error);
     }
 }
+
+export const getUserCirculationDetails = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}adminuser/get-user-circulation-details`);
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch user circulation details: " + error);
+    }
+}
+
+//Resertvation Controller
+export const getAllReservations = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}adminuser/reservation/all-reservations`);
+        return response.data;
+    } catch (error) {
+        console.log("Failed to fetch reservations: " + error);
+    }
+};
+
+export const getBookDetailsForReservation = async (accessionNo: string) => {
+    try {
+        const response = await axios.get(`${BASE_URL}adminuser/reservation/accessionNo/${accessionNo}`);
+        return response.data;
+    } catch (error) {
+        console.log("Error fetching book detaoils for reservation", error);
+    }
+}
+
+export const saveReservation = async (reservation: unknown) => {
+    try {
+        const response = await axios.post(`${BASE_URL}adminuser/reservation/save-reservation`, reservation);
+        return response.data;
+    } catch (error) {
+        console.log("Error saving reservation", error);
+    }
+}; 

@@ -8,7 +8,7 @@ import Header from '../../../../components/Header/Header';
 import MenuIcon from '@mui/icons-material/Menu';
 import { WeedInfos } from '../../../../model/Criteria';
 import ReviewModal from '../../../../components/Modal/WeedingModal/ReviewModal';
-import UserService from '../../../../services/UserService';
+import UserService from '../../../../services/UserManagement/UserService';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog/ConfirmationDialog';
 import Line from '../../../../components/Line/Line';

@@ -10,8 +10,8 @@ interface UserData {
 class UserService {
     static BASE_URL = "http://localhost:8080";
 
-    static async login(libraryCardNumber: string, password: string) {
-        const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { libraryCardNumber, password });
+    static async login(uncIdNumber: string, password: string) {
+        const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { uncIdNumber, password });
         console.log('Login Response:', response); //Debugging
         return response.data;
     }
@@ -30,12 +30,9 @@ class UserService {
     }
 
     static async verifyOTP(emailAdd: string, otp: string) {
-
-        console.log("Verifying OTP with email:", emailAdd, "and OTP:", otp);
-
         const response = await axios.post(`${UserService.BASE_URL}/verify/confirm-otp`, {
-            emailAdd, // Send 'email' as a query parameter
-            otp    // Send 'otp' as a query parameter
+            emailAdd,
+            otp
         });
         return response.data;
     }
@@ -47,8 +44,7 @@ class UserService {
 
     /** AUTHENTICATION CHECKER */
     static logout(): void {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
+        localStorage.clear();
 
         // Log the result to see if the items were removed
         console.log('Token removed:', !localStorage.getItem('token'));
@@ -77,7 +73,7 @@ class UserService {
     }
 
     static adminOnly(): boolean {
-        return this.isAuthenticated() && this.isLibrarian();
+        return this.isAuthenticated() && (this.isLibrarian() || this.isAdmin());
     }
 
     static userOnly(): boolean {
