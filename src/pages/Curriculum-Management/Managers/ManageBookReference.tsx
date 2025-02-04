@@ -27,6 +27,7 @@ import Line from "../../../components/Line/Line";
 import Copyright from "../../../components/Footer/Copyright";
 import Sidebar from "../../../components/Sidebar";
 import styles from "./styles.module.css";
+import { Helmet } from "react-helmet";
 
 const ManageBookReference: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -124,6 +125,12 @@ const ManageBookReference: React.FC = () => {
 
     return (
         <Box className={styles.rootContainer}>
+            <Helmet>
+                <title>Manage Book Reference - Library Management System</title>
+                <meta name="Manage Book Reference" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={toggleSidebar} />
             <Container maxWidth="lg" className={styles.container}>
                 <Header

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "../../components/Sidebar";
 import styles from "./styles.module.css";
+import { Helmet } from "react-helmet";
 
 interface Department {
     id: number;
@@ -77,6 +78,12 @@ const UniversityCurriculumPage: React.FC = () => {
 
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
+            <Helmet>
+                <title>Univeristy Curriculum - Library Management System</title>
+                <meta name="University Curriculum" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header

@@ -6,6 +6,7 @@ import Footer from "../../components/Footer/Footer";
 import Sidebar from "../../components/Sidebar";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
+import { Helmet } from "react-helmet";
 
 // Sample data for the transaction history with Book Title and Author
 const transactions = [
@@ -22,7 +23,12 @@ const PayFee: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" className={styles.container}>
-      {/* Header */}
+      <Helmet>
+                <title>Transaction History - Library Management System</title>
+                <meta name="Transaction History" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
       <Header
         buttons={
           <IconButton onClick={handleSideBarClick}>

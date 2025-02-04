@@ -9,6 +9,7 @@ import ManageCirculationIcon from "@mui/icons-material/AllInbox";
 import ManageReservationIcon from "@mui/icons-material/EventNote";
 import OverseeOverdueIcon from "@mui/icons-material/Warning";
 import styles from "./styles.module.css";
+import { Helmet } from 'react-helmet';
 
 const CirculationDashboard: React.FC = () => {
     const navigate = useNavigate();
@@ -21,6 +22,12 @@ const CirculationDashboard: React.FC = () => {
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
+            <Helmet>
+                <title>Circulation Admin - Library Management System</title>
+                <meta name="Circulation Admin" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header buttons={<></>} />
 

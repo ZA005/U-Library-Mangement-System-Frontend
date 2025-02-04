@@ -19,6 +19,7 @@ import Line from "../../components/Line/Line";
 import Copyright from "../../components/Footer/Copyright";
 import { getAllLoans } from "../../services/Circulation/CirculationApi";
 import { Loan } from "../../model/Loan";
+import { Helmet } from "react-helmet"; // Import Helmet
 import styles from "./styles.module.css";
 
 const TransactionRecord: React.FC = () => {
@@ -54,6 +55,14 @@ const TransactionRecord: React.FC = () => {
 
     return (
         <Box className={styles.rootContainer}>
+          <Helmet>
+                          <title>Transaction Records - Library Management System</title>
+                          <meta name="Transaction Records" content="Manage and oversee overdue books and fines in the library system." />
+                          <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+          
+                      </Helmet>
+
+
             <Container maxWidth="lg" className={styles.container}>
                 <Header
                     buttons={

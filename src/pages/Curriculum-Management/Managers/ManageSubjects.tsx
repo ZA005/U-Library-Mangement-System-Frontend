@@ -10,6 +10,7 @@ import UpdateSubjectModal from "../../../components/CurriculumManagement/UpdateS
 import Sidebar from "../../../components/Sidebar";
 import { getAllSubjects, Subject } from "../../../services/Curriculum/SubjectService";
 import styles from "./styles.module.css";
+import { Helmet } from "react-helmet";
 
 const ModalType = {
   ADD: 'ADD',
@@ -82,6 +83,12 @@ const ManageSubjects: React.FC = () => {
 
   return (
     <Box className={styles.rootContainer}>
+      <Helmet>
+                <title>Manage Subjects- Library Management System</title>
+                <meta name="Manage Subjects" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
       <Sidebar open={isSidebarOpen} onClose={toggleSidebar} />
       <Container maxWidth="lg" className={styles.container}>
         <Header

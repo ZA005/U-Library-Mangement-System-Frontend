@@ -34,6 +34,7 @@ import Copyright from '../../../components/Footer/Copyright';
 import { useSnackbar } from '../../../hooks/useSnackbar';
 import { useCsvUploader } from '../../../hooks/useCsvUploader';
 import { Subject, getAllSubjects } from '../../../services/Curriculum/SubjectService';
+import { Helmet } from 'react-helmet';
 
 const UploadCurriculum: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -142,6 +143,12 @@ const UploadCurriculum: React.FC = () => {
     );
     return (
         <Box className={styles.rootContainer}>
+            <Helmet>
+                <title>Upload Curriculum - Library Management System</title>
+                <meta name="Upload Curriculum" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" className={styles.container}>
                 <Header

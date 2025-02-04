@@ -15,6 +15,7 @@ import Sidebar from "../../components/Sidebar";
 import Line from "../../components/Line/Line";
 import LibraryCard from "../../components/LibraryCard/LibraryCard";
 import styles from "./styles.module.css";
+import { Helmet } from "react-helmet";
 
 const BorrowingHistory: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = React.useState(false);
@@ -33,7 +34,12 @@ const BorrowingHistory: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" className={styles.container}>
-      {/* Header */}
+      <Helmet>
+                <title>Borrowing History - Library Management System</title>
+                <meta name="Borrowing History" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
       <Header
         buttons={
           <IconButton onClick={handleSideBarClick}>

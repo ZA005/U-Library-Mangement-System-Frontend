@@ -30,6 +30,7 @@ import CirculationIssueBookModal from "../../components/Circulation/CirculationP
 import styles from "./styles.module.css";
 import { getBorrowedLoans, updateLoanStatus } from "../../services/Circulation/CirculationApi";
 import { Loan } from "../../model/Loan";
+import { Helmet } from "react-helmet";
 
 const ManageCirculation: React.FC = () => {
   const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
@@ -133,6 +134,12 @@ const ManageCirculation: React.FC = () => {
   };
   return (
     <Box className={styles.rootContainer}>
+      <Helmet>
+                <title>Manage Circulation - Library Management System</title>
+                <meta name="Manage Circulation" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
       <Container maxWidth="lg" className={styles.container}>
         <Header
           buttons={

@@ -11,6 +11,7 @@ import SchoolIcon from "@mui/icons-material/School"; // Icon for Curriculum Mana
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd"; // Icon for Acquisition
 import styles from "./styles.module.css";
 import Sidebar from '../../components/Sidebar';
+import { Helmet } from 'react-helmet';
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
@@ -26,6 +27,12 @@ const LandingPage: React.FC = () => {
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
+            <Helmet>
+                <title>Landing page Admin- Library Management System</title>
+                <meta name="Admin Landing Page" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header

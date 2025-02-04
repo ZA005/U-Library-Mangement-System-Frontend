@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 import {
     Box,
     Container,
@@ -20,7 +21,8 @@ import Header from "../../components/Header/Header";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
 import Copyright from "../../components/Footer/Copyright";
-import { calculateFines, getAllFines, getAllFineDetails } from "../../services/Circulation/CirculationApi";
+import { calculateFines, getAllFineDetails } from "../../services/Circulation/CirculationApi";
+import logo from "../../assets/images/lms-logo.png"; 
 
 interface Fine {
     fineId: number;
@@ -68,14 +70,19 @@ const OverseeOverdue: React.FC = () => {
 
     return (
         <Box className={styles.rootContainer}>
+            <Helmet>
+                <title>Oversee Overdue - Library Management System</title>
+                <meta name="Oversee Overdue" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
+
             <Container maxWidth="lg" className={styles.container}>
                 <Header
                     buttons={
-                        <>
-                            <IconButton onClick={handleSideBarClick}>
-                                <MenuIcon className={styles.menuIcon} />
-                            </IconButton>
-                        </>
+                        <IconButton onClick={handleSideBarClick}>
+                            <MenuIcon className={styles.menuIcon} />
+                        </IconButton>
                     }
                 />
                 <Typography variant="h4" gutterBottom className={styles.title}>
@@ -115,7 +122,6 @@ const OverseeOverdue: React.FC = () => {
                                     <TableCell><strong>Date Borrowed</strong></TableCell>
                                     <TableCell><strong>Due Date</strong></TableCell>
                                     <TableCell><strong>Penalty</strong></TableCell>
-                                    {/* <TableCell><strong>Penalty Status</strong></TableCell> */}
                                     <TableCell><strong>Action</strong></TableCell>
                                 </TableRow>
                             </TableHead>
@@ -124,13 +130,9 @@ const OverseeOverdue: React.FC = () => {
                                     <TableRow key={index}>
                                         <TableCell>{fine.stakeholder_id}</TableCell>
                                         <TableCell>{`${fine.first_name} ${fine.last_name}`}</TableCell>
-
                                         <TableCell>{new Date(fine.borrowDate).toLocaleString()}</TableCell>
                                         <TableCell>{new Date(fine.dueDate).toLocaleString()}</TableCell>
-                                        {/* <TableCell>{new Date(fine.returnDate).toLocaleString()}</TableCell> */}
                                         <TableCell>{fine.fineAmount} php</TableCell>
-                                        {/* <TableCell>{fine.paid ? "Paid" : "Unpaid"}</TableCell> */}
-                                        {/* <TableCell>{fine.user.name}</TableCell> */}
                                         <TableCell>
                                             <Typography
                                                 variant="button"

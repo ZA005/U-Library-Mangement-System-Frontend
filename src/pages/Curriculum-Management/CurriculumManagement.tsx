@@ -11,6 +11,7 @@ import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
 import Sidebar from "../../components/Sidebar";
+import { Helmet } from "react-helmet";
 
 const CurriculumManagement: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,12 @@ const CurriculumManagement: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
+      <Helmet>
+                <title>Manage Curriculum - Library Management System</title>
+                <meta name="Manage Curriculum" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
       <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
       <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
         <Header

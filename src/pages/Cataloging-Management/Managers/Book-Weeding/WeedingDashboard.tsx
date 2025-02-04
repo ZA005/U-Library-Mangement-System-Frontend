@@ -11,6 +11,7 @@ import ReviewModal from '../../../../components/Modal/WeedingModal/ReviewModal';
 import UserService from '../../../../services/UserService';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog/ConfirmationDialog';
+import { Helmet } from 'react-helmet';
 
 const WeedingDashboard: React.FC = () => {
     const [filter, setFilter] = useState<{ criteria?: string, accessionNo?: string, status: string }>({
@@ -376,6 +377,12 @@ const WeedingDashboard: React.FC = () => {
 
     return (
         <Box className={styles.rootContainer}>
+            <Helmet>
+                <title>Weeding Dashboard - Library Management System</title>
+                <meta name="Weeding Dashboard" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" className={styles.container}>
                 <Header

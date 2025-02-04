@@ -13,6 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import { Helmet } from "react-helmet";
 
 const FilterAccordion: React.FC<{ title: string; content: string }> = ({ title, content }) => (
   <Accordion>
@@ -85,8 +86,18 @@ const CatalogHome: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
+
+<Helmet>
+        <title>Catalog Home - Library Management System</title>
+        <meta name="Catalog Home" content="Welcome to the Library Management System. Manage books, reservations, and more." />
+        <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+      </Helmet>
+
       <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
+      
       <Container maxWidth="lg" sx={{ flexGrow: 1, padding: 4 }}>
+
         <Header
           buttons={
             <IconButton onClick={handleSideBarClick}>
@@ -168,7 +179,7 @@ const CatalogHome: React.FC = () => {
               {books.length === 0 ? (
                 <Typography>No books available.</Typography>
               ) : (
-                <BookList books={books} onBookClick={handleBookClick} />
+                <BookList books={books} onBookClick={handleBookClick} source={""} />
               )}
             </Box>
 

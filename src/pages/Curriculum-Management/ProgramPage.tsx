@@ -8,6 +8,7 @@ import Copyright from "../../components/Footer/Copyright";
 import Line from "../../components/Line/Line";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "../../components/Sidebar";
+import { Helmet } from "react-helmet";
 
 const ProgramPage: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -59,6 +60,12 @@ const ProgramPage: React.FC = () => {
 
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
+            <Helmet>
+                <title>Program Page - Library Management System</title>
+                <meta name="Program Page" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header

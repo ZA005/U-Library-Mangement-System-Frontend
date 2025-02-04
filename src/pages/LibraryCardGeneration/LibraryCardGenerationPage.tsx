@@ -9,6 +9,7 @@ import LibraryCard from "../../components/LibraryCard/LibraryCard";
 import Style from "./LibraryCardGeneration.module.css"
 import html2canvas from "html2canvas";
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 
 const LibraryCardGenerationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,6 +45,12 @@ const LibraryCardGenerationPage: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Helmet>
+                <title>Library Card Generation - Library Management System</title>
+                <meta name="Library Card Generation" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
       <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
         <Header
           buttons=<>

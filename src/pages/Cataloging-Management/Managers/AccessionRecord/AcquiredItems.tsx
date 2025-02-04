@@ -36,6 +36,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Copyright from '../../../../components/Footer/Copyright';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
 import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords, updateStatus } from '../../../../services/AcquisitionService';
+import { Helmet } from 'react-helmet';
 
 const AcquiredItems: React.FC = () => {
     const location = useLocation();
@@ -219,6 +220,12 @@ const AcquiredItems: React.FC = () => {
 
     return (
         <Box className={styles.rootContainer}>
+            <Helmet>
+                <title>Acquired Items - Library Management System</title>
+                <meta name="Acquired Items" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" className={styles.container}>
                 <Header

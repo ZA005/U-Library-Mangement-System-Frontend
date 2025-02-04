@@ -34,6 +34,7 @@ import Sidebar from '../../../../components/Sidebar';
 import Header from '../../../../components/Header/Header';
 import Line from '../../../../components/Line/Line';
 import Copyright from '../../../../components/Footer/Copyright';
+import { Helmet } from 'react-helmet';
 
 const CriteriaDashboard: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -284,6 +285,12 @@ const CriteriaDashboard: React.FC = () => {
 
     return (
         <Box className={styles.rootContainer}>
+            <Helmet>
+                <title>Criteria Dashboard - Library Management System</title>
+                <meta name="Criteria Dashboard" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" className={styles.container}>
                 <Header

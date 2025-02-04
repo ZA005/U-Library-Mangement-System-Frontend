@@ -10,6 +10,7 @@ import SearchBar from '../../../components/SearchBar/Searchbar';
 import Sidebar from '../../../components/Sidebar';
 import Copyright from '../../../components/Footer/Copyright';
 import { Book } from '../../../model/Book';
+import { Helmet } from 'react-helmet';
 
 const CatalogingAdmin: React.FC = () => {
     const navigate = useNavigate();
@@ -33,6 +34,12 @@ const CatalogingAdmin: React.FC = () => {
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
+            <Helmet>
+                <title>Cataloging Admin - Library Management System</title>
+                <meta name="Cataloging Admin" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
             <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
             <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
                 <Header

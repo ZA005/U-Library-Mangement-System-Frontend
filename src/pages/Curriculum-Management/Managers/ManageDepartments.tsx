@@ -10,6 +10,7 @@ import AddNewDepartmentModal from "../../../components/CurriculumManagement/AddN
 import UpdateDepartmentModal from "../../../components/CurriculumManagement/UpdateDepartmentModal";
 import styles from "./styles.module.css";
 import Sidebar from "../../../components/Sidebar";
+import { Helmet } from "react-helmet";
 
 const ModalType = {
   ADD: 'ADD',
@@ -76,6 +77,12 @@ const ManageDepartments: React.FC = () => {
 
   return (
     <Box className={styles.rootContainer}>
+      <Helmet>
+                <title>Manage Departments - Library Management System</title>
+                <meta name="Manage Departments" content="Manage and oversee overdue books and fines in the library system." />
+                <link rel="icon" type="image/png" href="/assets/lms-logo.png" />
+
+            </Helmet>
       <Sidebar open={isSidebarOpen} onClose={toggleSidebar} />
       <Container maxWidth="lg" className={styles.container}>
         <Header
