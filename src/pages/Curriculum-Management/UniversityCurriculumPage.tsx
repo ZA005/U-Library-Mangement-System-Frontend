@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Container, IconButton, Button } from "@mui/material";
-import { getAllProgramsByDepartment } from "../../services/Curriculum/ProgramService";
-import { getAllDepartments } from "../../services/Curriculum/DepartmentService";
+import { useProgramsByDepartment } from "../../hooks/usePrograms";
+import { useDepartments } from "../../hooks/useDepartments";
 import Header from "../../components/Header/Header";
 import Copyright from "../../components/Footer/Copyright";
 import Line from "../../components/Line/Line";
@@ -9,71 +9,51 @@ import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "../../components/Sidebar";
 import styles from "./styles.module.css";
-
-interface Department {
-    id: number;
-    name: string;
-    status: number;
-}
-
-interface Program {
-    id: number;
-    name: string;
-    department_id: number;
-    status: number;
-}
+import { getAllProgramsByDepartment, Program } from "../../services/Curriculum/ProgramService";
 
 const UniversityCurriculumPage: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [expandedDepartment, setExpandedDepartment] = useState<number | null>(null);
-    const [departments, setDepartments] = useState<Department[]>([]);
-    const [programs, setPrograms] = useState<{ [key: number]: Program[] }>({});
-    const [loading, setLoading] = useState(false);
+    const [expandedDepartment, setExpandedDepartment] = useState<string | null>(null);
+    const { departments, loading: departmentsLoading, error: departmentsError } = useDepartments(true);
+    const [programsByDepartment, setProgramsByDepartment] = useState<{ [key: string]: Program[] }>({});
+    const [programsLoading, setProgramsLoading] = useState<{ [key: string]: boolean }>({});
+    const [programsError, setProgramsError] = useState<{ [key: string]: string | null }>({});
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchDepartments = async () => {
-            try {
-                setLoading(true);
-                const fetchedDepartments = await getAllDepartments();
-                setDepartments(fetchedDepartments.filter(department => department.status === 1));
-            } catch (error) {
-                console.error("Error fetching departments:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDepartments();
-    }, []);
-
-    const handleToggle = async (departmentId: number) => {
+    const handleToggle = async (departmentId: string) => {
         if (expandedDepartment === departmentId) {
             setExpandedDepartment(null);
         } else {
             setExpandedDepartment(departmentId);
 
-            if (!programs[departmentId]) {
+            if (!programsByDepartment[departmentId]) {
+                setProgramsLoading((prev) => ({ ...prev, [departmentId]: true }));
+                setProgramsError((prev) => ({ ...prev, [departmentId]: null }));
+
                 try {
-                    const fetchedPrograms = await getAllProgramByDepartment(departmentId);
-                    setPrograms((prev) => ({
+                    const fetchedPrograms = await getAllProgramsByDepartment(departmentId);
+                    setProgramsByDepartment((prev) => ({
                         ...prev,
                         [departmentId]: fetchedPrograms.filter(program => program.status === 1),
                     }));
                 } catch (error) {
                     console.error(`Error fetching programs for department ${departmentId}:`, error);
+                    setProgramsError((prev) => ({
+                        ...prev,
+                        [departmentId]: "Failed to load programs.",
+                    }));
+                } finally {
+                    setProgramsLoading((prev) => ({ ...prev, [departmentId]: false }));
                 }
             }
         }
     };
 
     const handleViewSubjects = (department: string, program: Program) => {
-        const route = `/university/curriculum/${department.toLowerCase().replace(/\s/g, "-")}/${program.name.toLowerCase().replace(/\s/g, "-")}`;
+        const route = `/university/curriculum/${department.toLowerCase().replace(/\s/g, "-")}/${program.description.toLowerCase().replace(/\s/g, "-")}`;
         navigate(route, { state: { program } });
     };
-
-
 
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -95,9 +75,6 @@ const UniversityCurriculumPage: React.FC = () => {
                                 <MenuIcon style={{ color: "#EA4040" }} />
                             </IconButton>
                         </>
-
-
-
                     }
                 />
 
@@ -141,8 +118,10 @@ const UniversityCurriculumPage: React.FC = () => {
                     </Box>
 
                     <Box className={styles.rightContent}>
-                        {loading ? (
+                        {departmentsLoading ? (
                             <Typography variant="body2">Loading departments...</Typography>
+                        ) : departmentsError ? (
+                            <Typography variant="body2" color="error">{departmentsError}</Typography>
                         ) : (
                             departments.map((department) => (
                                 <Box key={department.id} mb={2} width="100%">
@@ -166,17 +145,21 @@ const UniversityCurriculumPage: React.FC = () => {
                                     </Box>
                                     {expandedDepartment === department.id && (
                                         <Box pl={2}>
-                                            {programs[department.id]?.length > 0 ? (
-                                                programs[department.id].map((program) => (
+                                            {programsLoading[department.id] ? (
+                                                <Typography variant="body2">Loading programs...</Typography>
+                                            ) : programsError[department.id] ? (
+                                                <Typography variant="body2" color="error">{programsError[department.id]}</Typography>
+                                            ) : programsByDepartment[department.id]?.length > 0 ? (
+                                                programsByDepartment[department.id].map((program) => (
                                                     <Box
-                                                        key={program.id}
+                                                        key={program.prog_id}
                                                         display="flex"
                                                         justifyContent="space-between"
                                                         alignItems="center"
                                                         mb={1}
                                                     >
                                                         <Typography variant="body2">
-                                                            {program.name}
+                                                            {program.description}
                                                         </Typography>
                                                         <Button
                                                             sx={{ color: "#EA4040", textTransform: "none" }}

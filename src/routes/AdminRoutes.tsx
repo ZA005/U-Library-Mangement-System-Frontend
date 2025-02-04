@@ -12,7 +12,7 @@ import UploadPrograms from '../pages/Curriculum-Management/Managers/UploadProgra
 import UploadDepartments from '../pages/Curriculum-Management/Managers/UploadDepartments/UploadDepartments';
 import UploadCourses from '../pages/Curriculum-Management/Managers/UploadCourses/UploadCourses';
 import UploadCurriculum from '../pages/Curriculum-Management/Managers/UploadCurriculum/UploadCurriculum';
-import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageBookReference';
+import ManageBookReference from '../pages/Curriculum-Management/Managers/BookReference/ManageBookReference';
 import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
 import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/CatalogingAdmin';
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';

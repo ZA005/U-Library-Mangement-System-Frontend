@@ -2,11 +2,20 @@ import axios from 'axios';
 
 export interface BookReference {
     id: number;
-    subject_id: number;
-    subject_name: string;
+
+    // COURSE ARRTRIBS
+    course_id: number;
+    course_number: string;
+
+    // BOOK ATTRIBS
+    book_id: number;
     book_name: string;
+    isbn10: string;
+    isbn13: string;
+    language: string;
+    location: string;
+
     status: number;
-    urlPath: string;
 }
 
 const BASE_URL = "http://localhost:8080/";
@@ -21,9 +30,9 @@ export const getAllBookRef = async (): Promise<BookReference[]> => {
     }
 }
 
-export const getAllBookRefBySubject = async (id: number): Promise<BookReference[]> => {
+export const getAllBookRefByCourse = async (id: number): Promise<BookReference[]> => {
     try {
-        const response = await axios.get(`${BASE_URL}public/reference/subject/${id}`);
+        const response = await axios.get(`${BASE_URL}public/reference/course/${id}`);
 
         return response.data;
     } catch (error) {
