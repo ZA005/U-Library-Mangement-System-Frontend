@@ -1,11 +1,11 @@
 import axios from 'axios';
-
+import { Book } from '../../model/Book';
 export interface BookReference {
     id: number;
 
     // COURSE ARRTRIBS
     course_id: number;
-    course_number: string;
+    course_name: string;
 
     // BOOK ATTRIBS
     book_id: number;
@@ -40,9 +40,22 @@ export const getAllBookRefByCourse = async (id: number): Promise<BookReference[]
         throw error;
     }
 }
+
+
 export const addBookRef = async (newBookRef: BookReference): Promise<BookReference> => {
     try {
         const response = await axios.post(`${BASE_URL}public/reference`, newBookRef);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error adding Book Reference:", error);
+        throw error;
+    }
+}
+
+export const addMultipleBookRef = async (newBookRef: BookReference[]): Promise<BookReference[]> => {
+    try {
+        const response = await axios.post(`${BASE_URL}public/reference/multiple`, newBookRef);
 
         return response.data;
     } catch (error) {
@@ -58,6 +71,29 @@ export const updateBookRef = async (id: number, bookRef: BookReference): Promise
         return response.data;
     } catch (error) {
         console.error("Error updating book reference:", error)
+        throw error;
+    }
+}
+
+
+
+// FETCHING BOOKS
+export const getAllUniqueBooks = async (): Promise<Book[]> => {
+    try {
+        const response = await axios.get(`${BASE_URL}public/reference/book`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching references:", error)
+        throw error;
+    }
+}
+
+export const getAllNotReferencedBook = async (id: number): Promise<Book[]> => {
+    try {
+        const response = await axios.get(`${BASE_URL}public/reference/book/course/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching subjects:", error)
         throw error;
     }
 }
