@@ -17,7 +17,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import SearchIcon from "@mui/icons-material/Search";
 import { Book } from '../../model/Book';
 import UserService from '../../services/UserManagement/UserService';
-// import styles from './styles.module.css';
+import styles from './styles.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getBooksByAdvancedSearch } from '../../services/Cataloging/LocalBooksAPI';
 import Z3950SRUSearch from '../Modal/SRUSearch/Z3950SRUSearch';
@@ -215,10 +215,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         <Button
           variant="contained"
           color="primary"
+          size='small'
           onClick={handleSearch}
           disabled={loading || !query}
-          className={styles.searchButton}
+          // className={styles.searchButton}
           endIcon={loading && <CircularProgress size={20} color="inherit" />}
+
         >
           {loading ? 'Searching...' : 'Search'}
         </Button>
@@ -226,8 +228,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         <Button
           variant="outlined"
           color="secondary"
+          size='small'
           onClick={() => navigate('/user/advanced/search')}
-          className={styles.searchButton}
+          sx={{ color: "#EA4040", borderColor: "#ea4040" }}
         >
           Advanced Search
         </Button>
@@ -235,16 +238,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         {UserService.adminOnly() && (
           <Button
             startIcon={<SearchIcon />}
+            variant='text'
+            size='small'
             sx={{
-              backgroundColor: "transparent",
-              border: "none",
-              textTransform: "none",
-              boxShadow: "none",
-              margin: 0,
-              minWidth: "auto",
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
+              color: "#EA4040"
             }}
             onClick={handleOpenSRUModal}
           >
