@@ -13,7 +13,9 @@ import {
     CircularProgress,
     Typography,
     Pagination,
-    IconButton
+    IconButton,
+    Snackbar,
+    Alert
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,6 +23,8 @@ import { Course } from "../../../services/Curriculum/CourseService";
 import { useFetchBookRefByCourse } from "./useFetchBookRef";
 import { BookReference } from "../../../services/Curriculum/BookReferenceService";
 import BookReferenceDialog from "../BookRefRecommendation/BookReference";
+import { removeBookReference } from "../../../services/Curriculum/BookReferenceService";
+import { useSnackbar } from "../../../hooks/useSnackbar";
 
 interface ViewBookReferenceProps {
     course: Course;
@@ -29,23 +33,24 @@ interface ViewBookReferenceProps {
 
 const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }) => {
     const { bookRef, loading, error } = useFetchBookRefByCourse(course.course_id);
+    const { openSnackbar, snackbarOpen, snackbarMessage, snackbarStatus, closeSnackbar } = useSnackbar();
+
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [showBookReference, setShowBookReference] = useState<boolean>(false);
     const [localBookRef, setLocalBookRef] = useState<BookReference[]>(bookRef || []);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [bookToRemove, setBookToRemove] = useState<BookReference | null>(null);
     const rowsPerPage = 5;
 
     useEffect(() => {
-        // Update localBookRef whenever bookRef changes
         setLocalBookRef(bookRef || []);
     }, [bookRef]);
 
-    // Filter books based on search input
     const filteredBooks = localBookRef.filter((book: BookReference) =>
         book.book_name.toLowerCase().includes(searchTerm.toLowerCase())
     ) || [];
 
-    // Handle pagination
     const paginatedBooks = filteredBooks.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
     const handleViewBook = (book: BookReference) => {
@@ -54,9 +59,32 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
         window.open(url, "_blank");
     };
 
-    const handleDeleteReference = () => {
+    // Trigger confirmation dialog to remove book reference
+    const handleRemoveReference = async (id: number, bookName: string) => {
+        setBookToRemove({ id, book_name: bookName });
+        setOpenConfirmDialog(true);
+    };
 
-    }
+    // Confirm the removal of the book reference
+    const handleConfirmRemove = async () => {
+        if (bookToRemove) {
+            try {
+                await removeBookReference(bookToRemove.id); // Assuming removeBookReference function is defined
+                setLocalBookRef(prev => prev.filter(book => book.id !== bookToRemove.id));
+                openSnackbar(`Book Reference for "${bookToRemove.book_name}" successfully removed.`, "success");
+            } catch (error) {
+                console.error("Error removing book reference:", error);
+                openSnackbar(`Error removing book reference for "${bookToRemove.book_name}".`, "error");
+            } finally {
+                setOpenConfirmDialog(false);
+            }
+        }
+    };
+
+    // Cancel the removal of the book reference
+    const handleCancelRemove = () => {
+        setOpenConfirmDialog(false);
+    };
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
         setPage(newPage);
@@ -67,14 +95,25 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
     };
 
     const handleBookAdded = (newBook: BookReference) => {
-        // Add the new book to the local state
         setLocalBookRef(prev => [...prev, newBook]);
         setShowBookReference(false);
-        onClose(); // Close this dialog after adding a book
+        onClose();
     };
 
     return (
         <>
+            {/* Snackbar for notifications */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={closeSnackbar}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
+            >
+                <Alert onClose={closeSnackbar} severity={snackbarStatus} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
             {!showBookReference ? (
                 <Dialog open={true} onClose={onClose} fullWidth maxWidth="md">
                     <DialogTitle>
@@ -123,7 +162,7 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                                                 View Book
                                             </Button>
                                             <IconButton
-                                                onClick={handleDeleteReference}
+                                                onClick={() => handleRemoveReference(book.id, book.book_name)}
                                                 sx={{ color: "#EA4040" }}
                                             >
                                                 <DeleteIcon />
@@ -157,6 +196,27 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
             ) : (
                 <BookReferenceDialog course={course} onClose={handleBookAdded} />
             )}
+
+            {/* Confirmation Dialog */}
+            <Dialog open={openConfirmDialog} onClose={handleCancelRemove}>
+                <DialogTitle>Confirm Removal</DialogTitle>
+                <DialogContent>
+                    <Typography>Are you sure you want to remove the book reference for "{bookToRemove?.book_name}"?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelRemove} variant="text" size="small" sx={{ color: "#EA4040" }}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleConfirmRemove}
+                        variant="contained"
+                        size="small"
+                        sx={{ backgroundColor: "#EA4040", color: "white" }}
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

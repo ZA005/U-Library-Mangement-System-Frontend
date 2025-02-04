@@ -75,6 +75,14 @@ export const updateBookRef = async (id: number, bookRef: BookReference): Promise
     }
 }
 
+export const removeBookReference = async (id: number): Promise<void> => {
+    try {
+        await axios.delete(`${BASE_URL}public/reference/remove/${id}`);
+    } catch (error) {
+        console.error("Error removing book reference:", error);
+        throw error;
+    }
+}
 
 
 // FETCHING BOOKS
