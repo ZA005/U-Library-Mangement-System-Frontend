@@ -49,3 +49,13 @@ export const getAllCourseByProgram = async (id: number): Promise<Course[]> => {
         throw e
     }
 }
+
+export const getAllCourseByRevision = async (id: number): Promise<Course[]> => {
+    try {
+        const response = await axios.get(`${BASE_URL}public/courses/program/curr/rev/${id}`);
+        return response.data;
+    } catch (e) {
+        console.error(e)
+        throw e
+    }
+}
