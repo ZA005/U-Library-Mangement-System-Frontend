@@ -169,6 +169,7 @@ const ManageCirculation: React.FC = () => {
         setSelectedLoan(null);
         setAction(null);
       }
+      await fetchLoans();
     }
   };
   const handleCancelAction = () => {

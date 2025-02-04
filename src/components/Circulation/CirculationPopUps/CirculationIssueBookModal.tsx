@@ -18,7 +18,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   onLoanSuccess
 }) => {
   const [step, setStep] = useState(1);
-  const [idNumber, setIdNumber] = useState(""); // Change libraryCardNumber to idNumber
+  const [idNumber, setIdNumber] = useState("");
   const [title, setTitle] = useState("");
   const [callNumber, setCallNumber] = useState("");
   const [accessionNo, setAccessionNo] = useState("");
@@ -122,8 +122,6 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
 
   const handleConfirm = async () => {
     setErrorMessage(null);
-
-
 
     const newCirculationData = {
       accessionNo: accessionNo,

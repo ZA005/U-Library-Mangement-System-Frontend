@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Reservations } from "../../model/Loan";
 
 const BASE_URL = "http://localhost:8080/";
 
@@ -91,7 +90,7 @@ export const checkBookLoanStatus = async (accessionNo: string): Promise<boolean>
         const response = await axios.get(`${BASE_URL}admin/check-book-loan-status/accessionNo/${accessionNo}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        return response.data.isLoaned;  // Assuming the backend returns a boolean indicating the loan status
+        return response.data.isLoaned;
     } catch (error) {
         throw new Error("Failed to check book loan status: " + error);
     }
