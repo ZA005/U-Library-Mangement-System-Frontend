@@ -18,22 +18,26 @@ import {
     Pagination,
 } from "@mui/material";
 import { PlaylistAddCheck, DoneAll } from "@mui/icons-material";
-import { useFetchAllBooks } from "./useFetchBooks";
+import { useFetchAllBooksNotReferenced } from "./useFetchBooks";
 import { useFilteredBooks } from "./useFilteredBook";
 import { useMultiSelect } from "./useMultiSelect";
 import { useConfirmationDialog } from "./useConfirmationDialog";
 import { Course } from "../../../services/Curriculum/CourseService";
+import useAddBookRef from "./useAddBookRef";
+import useAddMultipleBookRef from "./useAddMultipleBookRef";
 import { Book } from "../../../model/Book";
-
+import { useSnackbar } from "../../../hooks/useSnackbar";
 interface BookReferenceProps {
     course: Course;
     onClose: () => void;
 }
 
-const BookReference: React.FC<BookReferenceProps> = ({ course, onClose }) => {
-    const { books, loading, error } = useFetchAllBooks(true);
+const BookReferenceDialog: React.FC<BookReferenceProps> = ({ course, onClose }) => {
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const { books, loading, error } = useFetchAllBooksNotReferenced(course.course_id, refreshTrigger);
     const [searchTerm, setSearchTerm] = useState<string>("");
-
+    const addBookRefHook = useAddBookRef();
+    const addMultipleBookRefHook = useAddMultipleBookRef();
     const filteredBooks = useFilteredBooks(books, searchTerm);
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
@@ -42,20 +46,45 @@ const BookReference: React.FC<BookReferenceProps> = ({ course, onClose }) => {
     const [rowsPerPage] = useState<number>(5);
 
     const { multiSelectMode, selectedBooks, toggleMultiSelectMode, handleCheckboxChange } = useMultiSelect();
+    const { openSnackbar } = useSnackbar();
 
     const singleSelectConfirmation = useConfirmationDialog(
-        () => alert(`You have selected the book: ${selectedBook?.title}`),
+        async () => {
+            if (selectedBook) {
+                try {
+                    await addBookRefHook.addNewBookRef(course.course_id, course.course_name, selectedBook);
+                    openSnackbar(`Book Reference Added: ${selectedBook.title}`, "success");
+                    setRefreshTrigger(prev => prev + 1);
+                } catch (error) {
+                    openSnackbar("Failed to add book reference. Please try again.", "error");
+                }
+            } else {
+                openSnackbar("No book selected.", "error");
+            }
+            setSelectedBook(null);
+        },
         () => setSelectedBook(null)
     );
 
     const multiSelectConfirmation = useConfirmationDialog(
-        () => {
-            console.log("test")
-            alert(`You have confirmed these books: ${selectedBooks.map((book) => book.title).join(", ")}`);
+        async () => {
+            if (selectedBooks.length > 0) {
+                try {
+                    await addMultipleBookRefHook.addNewMultipleBookRef(course.course_id, course.course_name, selectedBooks);
+                    openSnackbar(`Books successfully added as references: ${selectedBooks.map((book) => book.title).join(", ")}`, "success");
+                    setRefreshTrigger(prev => prev + 1);
+                } catch (error) {
+                    openSnackbar("Failed to add book references. Please try again.", "error");
+                }
+            } else {
+                openSnackbar("No books selected.", "error");
+            }
             toggleMultiSelectMode();
         },
         () => { }
     );
+
+
 
     const handleViewBook = (book: Book) => {
         const bookTitleEncoded = encodeURIComponent(book.title);
@@ -78,7 +107,7 @@ const BookReference: React.FC<BookReferenceProps> = ({ course, onClose }) => {
     return (
         <Dialog open={true} onClose={onClose} fullWidth maxWidth="md">
             <DialogTitle>
-                Recommended Books for {course.course_name}
+                Select Referenced Book for {course.course_name}
                 <Tooltip title={multiSelectMode ? "Exit Multi-Select Mode" : "Enter Multi-Select Mode"}>
                     <IconButton onClick={toggleMultiSelectMode} sx={{ float: "right" }}>
                         {multiSelectMode ? <DoneAll /> : <PlaylistAddCheck />}
@@ -173,8 +202,65 @@ const BookReference: React.FC<BookReferenceProps> = ({ course, onClose }) => {
                     Close
                 </Button>
             </DialogActions>
+
+            {/* Single Selection Confirmation Dialog */}
+            <Dialog open={singleSelectConfirmation.isOpen} onClose={singleSelectConfirmation.cancelAction}>
+                <DialogTitle>Confirm Your Selection</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to select this book?<br />
+                    <strong>{selectedBook?.title}</strong>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={singleSelectConfirmation.confirmAction}
+                        variant="contained"
+                        size="small"
+                        sx={{ backgroundColor: "#EA4040", borderColor: "#EA4040" }}
+                    >
+                        Confirm
+                    </Button>
+                    <Button
+                        onClick={singleSelectConfirmation.cancelAction}
+                        variant="outlined"
+                        size="small"
+                        sx={{ color: "#EA4040", borderColor: "#EA4040" }}
+                    >
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Multi Selection Confirmation Dialog */}
+            <Dialog open={multiSelectConfirmation.isOpen} onClose={multiSelectConfirmation.cancelAction}>
+                <DialogTitle>Confirm Your Selection</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to confirm the following books?
+                    <ul>
+                        {selectedBooks.map((book, index) => (
+                            <li key={index}>{book.title}</li>
+                        ))}
+                    </ul>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={multiSelectConfirmation.cancelAction}
+                        variant="outlined"
+                        size="small"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={multiSelectConfirmation.confirmAction}
+                        variant="contained"
+                        size="small"
+                        sx={{ backgroundColor: "#EA4040" }}
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Dialog>
     );
 };
 
-export default BookReference;
+export default BookReferenceDialog;

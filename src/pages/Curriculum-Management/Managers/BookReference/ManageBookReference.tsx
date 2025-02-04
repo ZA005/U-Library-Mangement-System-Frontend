@@ -13,7 +13,7 @@ import { useDepartments } from "../../../../hooks/useDepartments";
 import { useProgramsByDepartment } from "../../../../hooks/usePrograms";
 import { useFetchAllCurriculumByProgram } from "../../../../hooks/useCourse";
 import useConverter from "./useConvert";
-import BookReference from "../../../../components/CurriculumManagement/BookRefRecommendation/BookReference";
+import ViewBookReference from "../../../../components/CurriculumManagement/ViewBookReferences/ViewBookReference";
 import styles from "../styles.module.css";
 
 const ManageBookReference: React.FC = () => {
@@ -27,9 +27,9 @@ const ManageBookReference: React.FC = () => {
 
     const [departmentId, setDepartmentId] = useState<string>("");
     const [departmentName, setDepartmentName] = useState<string>("");
-    const [programId, setProgramId] = useState<number | undefined>(undefined); // Changed to undefined
+    const [programId, setProgramId] = useState<number | undefined>(undefined);
     const [programDescription, setProgramDescription] = useState<string>("");
-    const [selectedRevision, setSelectedRevision] = useState<number | undefined>(undefined); // Changed to undefined
+    const [selectedRevision, setSelectedRevision] = useState<number | undefined>(undefined);
 
     const { departments, loading: departmentsLoading, error: departmentsError } = useDepartments(true);
     const { programs, loading: programsLoading, error: programsError } = useProgramsByDepartment(departmentId);
@@ -243,8 +243,8 @@ const ManageBookReference: React.FC = () => {
                     </Box>
                 )}
 
-                {selectedCourse && (
-                    <BookReference course={selectedCourse} onClose={handleCloseBookReference} />
+                {selectedCourse && isBookReferenceOpen && (
+                    <ViewBookReference course={selectedCourse} onClose={handleCloseBookReference} /> // Changed to ViewBookReference
                 )}
             </Container>
             <Copyright />
