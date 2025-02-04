@@ -6,12 +6,10 @@ import Carousel from '../components/Carousel/Carousel';
 import ActionButtons from '../components/ActionButtons/ActionButtons';
 import Footer from '../components/Footer/Footer';
 import Line from '../components/Line/Line';
-import { useNavigate } from 'react-router-dom';
-import Login from '../components/Modal/LoginModal/Modal';
+import Login from '../components/Modal/LoginModal/Login';
 import VerifyUser from '../components/Verify/VerifyUser';
 
 const HomeScreen: React.FC = () => {
-  const navigate = useNavigate();
   const [openLogin, setOpenLogin] = useState(false);
   const [openVerifyUser, setOpenVerifyUser] = useState(false);
 
@@ -42,7 +40,7 @@ const HomeScreen: React.FC = () => {
                 onClick={handleSignUp}
                 sx={{ color: '#d32f2f', border: '1px solid #d32f2f', marginRight: '10px' }}
               >
-                Sign Up
+                Activate your account
               </Button>
               <Button
                 color="inherit"
@@ -55,7 +53,7 @@ const HomeScreen: React.FC = () => {
           }
         />
         <Typography variant="h4">Library Management System</Typography>
-        
+
         <Line />
         <Carousel />
         <ActionButtons />

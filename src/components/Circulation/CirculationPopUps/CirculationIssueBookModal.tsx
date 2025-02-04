@@ -28,19 +28,6 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
 
-  // Get the current time in Manila timezone
-  const now = new Date();
-  const manilaTime = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Manila',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  }).format(now);
-
   const {
     snackbarOpen,
     snackbarMessage,
@@ -49,6 +36,22 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
     closeSnackbar,
   } = useSnackbar();
 
+  const dueDateString = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Manila',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).format(due!);
+
+  // Convert the dueDateString back to a Date object
+  const dueDate = new Date(dueDateString.replace(',', ''));
+
+  // Add one day to the date
+  dueDate.setDate(dueDate.getDate() + 1);
 
   const resetState = () => {
     setStep(1);
@@ -107,11 +110,6 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
         if (bookStatus === "Loaned Out") {
           setErrorMessage("This book is already loaned out. Please choose another book.");
         } else {
-          const manilaDate = new Date(manilaTime.replace(',', ''));
-
-          // Add 24 hours to due date
-          const dueDate = new Date(manilaDate.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
-          setDue(dueDate);
           setStep(3); // Proceed to the confirmation step
         }
       } catch (error) {
@@ -125,26 +123,16 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
   const handleConfirm = async () => {
     setErrorMessage(null);
 
+
+
     const newCirculationData = {
       accessionNo: accessionNo,
       title: title,
-      callNumber,
-      authorName: Array.isArray(authors) ? authors.join(", ") : authors,
-      borrower: idNumber, // Use idNumber instead of libraryCardNumber
-      departmentName: department,
-      borrowDate: manilaTime,
-      returnDate: null,
-      dueDate: new Intl.DateTimeFormat('en-US', {
-        timeZone: 'Asia/Manila',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }).format(due!),
-      status: "Borrowed",
+      callnum: callNumber,
+      author: Array.isArray(authors) ? authors : [authors],
+      uncIdNumber: idNumber,
+      department: department,
+      dateReturned: null,
     };
 
     try {
@@ -241,7 +229,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
         {
           label: "Due",
           type: "text",
-          value: due ? due.toLocaleString() : "",
+          value: dueDate.toLocaleString(),
           readOnly: true,
         },
       ];

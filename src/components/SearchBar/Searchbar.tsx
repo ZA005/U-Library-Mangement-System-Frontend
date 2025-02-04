@@ -16,7 +16,7 @@ import {
 import TuneIcon from "@mui/icons-material/Tune";
 import SearchIcon from "@mui/icons-material/Search";
 import { Book } from '../../model/Book';
-import UserService from '../../services/UserService';
+import UserService from '../../services/UserManagement/UserService';
 // import styles from './styles.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getBooksByAdvancedSearch } from '../../services/Cataloging/LocalBooksAPI';
@@ -107,14 +107,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         individualLibrary: source === "All libraries" ? null : source,
       };
       result = await getBooksByAdvancedSearch(advancedSearchParams);
-
+      // Update the parent with the search results
+      onSearch(result, source, advancedSearchParams);
       // Navigate to the BookSearch page with the search results
-      navigate("/admin/catalog/management/search-title", {
+      navigate("/user/catalog/management/search-title", {
         state: { query: advancedSearchParams, books: result, source },
       });
 
-      // Update the parent with the search results
-      onSearch(result, source, advancedSearchParams);
+
     } catch (error) {
       console.error("Error fetching books:", error);
       setError("An error occurred while searching. Please try again.");
@@ -181,7 +181,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                   <InputLabel>Search Index</InputLabel>
                   <Select
                     label="Search Index"
-                    disabled={UserService.isUser()}
                     value={searchIndex || "q"}
                     onChange={(e) => setSearchIndex(e.target.value)}
                   >
@@ -200,8 +199,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                     onChange={(e) => setSource(e.target.value)}
                   >
                     <MenuItem value="All libraries">All libraries</MenuItem>
-                    <MenuItem value="Google Books">Google Books</MenuItem>
-                    <MenuItem value="eLibrary">eLibrary</MenuItem>
+                    <MenuItem value="eLibrary">Main Library</MenuItem>
                     <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
                     <MenuItem value="Law Library">Law Library</MenuItem>
                     <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
@@ -234,23 +232,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
           Advanced Search
         </Button>
 
-        <Button
-          startIcon={<SearchIcon />}
-          sx={{
-            backgroundColor: "transparent", // Transparent background
-            border: "none", // No border
-            textTransform: "none", // Keep text in its original case
-            boxShadow: "none", // No shadow
-            margin: 0, // No margin
-            minWidth: "auto", // Button fits content
-            "&:hover": {
-              backgroundColor: "transparent", // Keep transparent background on hover
-            },
-          }}
-          onClick={handleOpenSRUModal}
-        >
-          Z39.50/SRU
-        </Button>
+        {UserService.adminOnly() && (
+          <Button
+            startIcon={<SearchIcon />}
+            sx={{
+              backgroundColor: "transparent",
+              border: "none",
+              textTransform: "none",
+              boxShadow: "none",
+              margin: 0,
+              minWidth: "auto",
+              "&:hover": {
+                backgroundColor: "transparent",
+              },
+            }}
+            onClick={handleOpenSRUModal}
+          >
+            Z39.50/SRU
+          </Button>
+        )}
+
 
 
         <Z3950SRUSearch

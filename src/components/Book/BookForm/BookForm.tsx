@@ -15,6 +15,7 @@ import { Locations, Sections } from '../../../model/Book';
 import LocationSelect from './LocationSelect';
 import SectionSelect from './SectionSelect';
 import BookConditionSelect from './BookConditionOptions';
+import { SignalCellularNullRounded } from '@mui/icons-material';
 
 interface Book {
     id: string;
@@ -40,14 +41,14 @@ const BookForm: React.FC = () => {
     const [bookCondition, setBookCondition] = useState('New');
     const [collectionType, setCollectionType] = useState('Book');
     const [callNumber, setCallNumber] = useState('');
-    const [purchasePrice, setPurchasePrice] = useState(acquiredBook.purchase_price || '');
+    const [purchasePrice, setPurchasePrice] = useState(acquiredBook?.purchase_price || '');
     const [section, setSection] = useState('');
     const [sections, setSections] = useState<Sections[]>([]);
-    const [dateAcquired, setDateAcquired] = useState(acquiredBook.acquired_date || '');
+    const [dateAcquired, setDateAcquired] = useState(acquiredBook?.acquired_date || '');
     const [categories, setCategories] = useState(book.categories || '');
     const [notes, setNotes] = useState('');
-    const [vendor, setVendor] = useState(acquiredBook.vendor || '');
-    const [fundingSource, setFundingSource] = useState(acquiredBook.funding_source || '');
+    const [vendor, setVendor] = useState(acquiredBook?.vendor || '');
+    const [fundingSource, setFundingSource] = useState(acquiredBook?.funding_source || '');
     const [subjects, setSubjects] = useState('');
     const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
@@ -257,7 +258,7 @@ const BookForm: React.FC = () => {
                             <TextField
                                 fullWidth
                                 label="Purchase Price"
-                                value={purchasePrice}
+                                value={purchasePrice || ""}
                                 onChange={(e) => setPurchasePrice(e.target.value)}
                                 sx={{ mb: 2 }}
                                 size="small"
@@ -283,7 +284,7 @@ const BookForm: React.FC = () => {
                                 fullWidth
                                 label="Date Acquired"
                                 type="date"
-                                value={dateAcquired}
+                                value={dateAcquired || ""}
                                 onChange={(e) => setDateAcquired(e.target.value)}
                                 sx={{ mb: 2 }}
                                 size="small"

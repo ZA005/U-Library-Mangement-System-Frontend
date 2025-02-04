@@ -10,9 +10,8 @@ import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { Book } from "../model/Book";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import SearchBar from "../components/SearchBar/Searchbar";
+import { AccountBalanceWallet, AutoStories, HourglassBottom } from "@mui/icons-material";
 
 const FilterAccordion: React.FC<{ title: string; content: string }> = ({ title, content }) => (
   <Accordion>
@@ -28,12 +27,12 @@ const FilterAccordion: React.FC<{ title: string; content: string }> = ({ title, 
     </AccordionDetails>
   </Accordion>
 );
- 
+
 const CatalogHome: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,7 +85,7 @@ const CatalogHome: React.FC = () => {
   return (
     <Box display="flex" flexDirection="column" height="100vh">
       <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
-      <Container maxWidth="lg" sx={{ flexGrow: 1, padding: 4 }}>
+      <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
         <Header
           buttons={
             <IconButton onClick={handleSideBarClick}>
@@ -110,34 +109,7 @@ const CatalogHome: React.FC = () => {
             <Line />
           </Box>
 
-          <Box sx={{ marginBottom: 3, display: "flex", alignItems: "center", gap: 2 }}>
-            <input
-              type="text"
-              placeholder="Search for a book..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              style={{
-                flex: 1,
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-                fontSize: "1rem",
-              }}
-            />
-            <button
-              onClick={handleSearch}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#EA4040",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              Search
-            </button>
-          </Box>
+          <SearchBar onSearch={handleSearch} />
 
           <Box display="flex" flexDirection="row" justifyContent="space-between">
             <Box
@@ -168,7 +140,7 @@ const CatalogHome: React.FC = () => {
               {books.length === 0 ? (
                 <Typography>No books available.</Typography>
               ) : (
-                <BookList books={books} onBookClick={handleBookClick} />
+                <BookList books={books} onBookClick={handleBookClick} source="" />
               )}
             </Box>
 
@@ -184,7 +156,7 @@ const CatalogHome: React.FC = () => {
               }}
             >
               <Typography variant="h5" fontWeight="bold" textAlign="center">
-                User Summary
+                Account Overview
               </Typography>
 
 
@@ -198,19 +170,19 @@ const CatalogHome: React.FC = () => {
               </Box>
 
               <SummaryBox
-                icon={<LibraryBooksIcon sx={{ fontSize: 40, color: "green" }} />}
+                icon={<AutoStories sx={{ fontSize: 40, color: "green" }} />}
                 value={5}
                 label="Checkouts"
                 color="green"
               />
               <SummaryBox
-                icon={<AssignmentReturnIcon sx={{ fontSize: 40, color: "orange" }} />}
+                icon={<HourglassBottom sx={{ fontSize: 40, color: "orange" }} />}
                 value={3}
                 label="Holds Pending"
                 color="orange"
               />
               <SummaryBox
-                icon={<MonetizationOnIcon sx={{ fontSize: 40, color: "red" }} />}
+                icon={<AccountBalanceWallet sx={{ fontSize: 40, color: "red" }} />}
                 value={25}
                 label="Fines and Charges (₱)"
                 color="red"

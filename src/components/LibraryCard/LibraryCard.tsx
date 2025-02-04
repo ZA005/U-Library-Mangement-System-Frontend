@@ -1,34 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { useLocation } from "react-router-dom";
 import LibraryLogo from "../../assets/images/lms-logo.png";
 import { QRCodeSVG } from "qrcode.react";
 import Style from "./LibraryCard.module.css";
+import { UserDetails } from "../../model/Users";
+import { getUserDetails } from "../../services/UserManagement/StakeholderService";
 
 const LibraryCard: React.FC = () => {
-  const location = useLocation();
-  const {
-    schoolId,
-    firstName,
-    middleName,
-    lastName,
-    department,
-    course,
-    contactNumber,
-    libraryCardNumber,
-  } = location.state || {};
+  const [userDetails, setUserDetails] = useState<UserDetails>();
+  const uncIdNumber = localStorage.getItem("uncIdNumber");
+
 
   // Combine all data into a string for the QR code
-  const qrCodeValue = JSON.stringify({
-    schoolId,
-    firstName,
-    middleName,
-    lastName,
-    department,
-    course,
-    contactNumber,
-    libraryCardNumber,
-  });
+  const qrCodeValue = uncIdNumber || 'Something went wrong';
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (uncIdNumber) {
+        try {
+          const fetchedDetails = await getUserDetails(uncIdNumber);
+          setUserDetails(fetchedDetails);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      } else {
+        console.error("UNC ID Number is null");
+      }
+    };
+
+    fetchUserDetails();
+  }, [uncIdNumber]);
 
   return (
     <Box className={Style.cardContainer}>
@@ -43,7 +44,7 @@ const LibraryCard: React.FC = () => {
         </Box>
         <Box>
           <Typography className={Style.h1}>Student ID</Typography>
-          <Typography className={Style.h2}>{schoolId}</Typography>
+          <Typography className={Style.h2}>{userDetails?.id}</Typography>
         </Box>
       </Box>
 
@@ -52,16 +53,15 @@ const LibraryCard: React.FC = () => {
         <Box className={Style.qrImage}>
           <QRCodeSVG value={qrCodeValue} size={128} />
         </Box>
-
-        <Typography className={Style.qrText}>{libraryCardNumber}</Typography>
       </Box>
 
       {/* Details Section */}
       <Box className={Style.detailsSection} display="flex" flexDirection="column" gap={1}>
-        <Typography className={Style.detailLabel}>Name: {`${firstName} ${middleName} ${lastName}`}</Typography>
-        <Typography className={Style.detailLabel}>Department: {department}</Typography>
-        <Typography className={Style.detailLabel}>Course: {course}</Typography>
-        <Typography className={Style.detailLabel}>Phone Number: {contactNumber}</Typography>
+        <Typography className={Style.detailLabel}>Name: {userDetails?.fullName}</Typography>
+        <Typography className={Style.detailLabel}>Department: {userDetails?.departmentName}</Typography>
+        <Typography className={Style.detailLabel}>Course: {userDetails?.programName}</Typography>
+        <Typography className={Style.detailLabel}>UNC Email add: {userDetails?.emailAdd}</Typography>
+        <Typography className={Style.detailLabel}>Phone Number: {userDetails?.contactNum}</Typography>
       </Box>
     </Box>
   );

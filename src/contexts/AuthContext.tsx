@@ -87,8 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
      * logout function clears the authentication data from local storage and resets the state.
      */
     const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
+        localStorage.clear();
         setIsAuthenticated(false);
         setRole(null);
     };

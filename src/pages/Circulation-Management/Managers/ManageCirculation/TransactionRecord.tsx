@@ -14,11 +14,11 @@ import {
     IconButton
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Header from "../../components/Header/Header";
-import Line from "../../components/Line/Line";
-import Copyright from "../../components/Footer/Copyright";
-import { getAllLoans } from "../../services/Circulation/CirculationApi";
-import { Loan } from "../../model/Loan";
+import Header from "../../../../components/Header/Header";
+import Line from "../../../../components/Line/Line";
+import Copyright from "../../../../components/Footer/Copyright";
+import { getAllLoans } from "../../../../services/Circulation/CirculationApi";
+import { Loan } from "../../../../model/Loan";
 import styles from "./styles.module.css";
 
 const TransactionRecord: React.FC = () => {
@@ -90,23 +90,23 @@ const TransactionRecord: React.FC = () => {
                             </TableHead>
                             <TableBody>
                                 {paginatedLoans.map((loan) => (
-                                    <TableRow key={loan.loanId}>
+                                    <TableRow key={loan.id}>
                                         <TableCell>{loan.accessionNo}</TableCell>
                                         <TableCell>{loan.title}</TableCell>
-                                        <TableCell>{loan.authorName}</TableCell>
-                                        <TableCell>{loan.borrower}</TableCell>
-                                        <TableCell>{loan.departmentName}</TableCell>
+                                        <TableCell>{loan.author}</TableCell>
+                                        <TableCell>{loan.uncIdNumber}</TableCell>
+                                        <TableCell>{loan.department}</TableCell>
                                         <TableCell>
-                                            {loan.borrowDate
-                                                ? new Date(loan.borrowDate).toLocaleString("en-US", {
+                                            {loan.dateBorrowed
+                                                ? new Date(loan.dateBorrowed).toLocaleString("en-US", {
                                                     dateStyle: "short",
                                                     timeStyle: "medium",
                                                 })
                                                 : "N/A"}
                                         </TableCell>
                                         <TableCell>
-                                            {loan.returnDate
-                                                ? new Date(loan.returnDate).toLocaleString("en-US", {
+                                            {loan.dateReturned
+                                                ? new Date(loan.dateReturned).toLocaleString("en-US", {
                                                     dateStyle: "short",
                                                     timeStyle: "medium",
                                                 })
@@ -122,12 +122,12 @@ const TransactionRecord: React.FC = () => {
                                         </TableCell>
                                         <TableCell
                                             className={
-                                                loan.status === "Active"
+                                                loan.loanStatus === "Active"
                                                     ? styles.activeStatus
                                                     : styles.inactiveStatus
                                             }
                                         >
-                                            {loan.status}
+                                            {loan.loanStatus}
                                         </TableCell>
                                     </TableRow>
                                 ))}

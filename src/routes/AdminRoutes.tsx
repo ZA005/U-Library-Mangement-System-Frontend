@@ -1,12 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
 import CurriculumManagement from '../pages/Curriculum-Management/CurriculumManagement';
 import ProtectedRoute from './ProtectedRoute';
-import BookSearch from '../pages/SearchResult/BookSearch';
 import BookForm from '../components/Book/BookForm/BookForm';
 import BookFormFast from '../components/Book/BookForm/BookFormFast';
 import LandingPage from '../pages/LandingPageAdmin/LandingPage';
-import CirculationDashboard from '../pages/CirculationAdmin/CirculationDashboard';
-import ManageCirculation from '../pages/ManageCirculation/ManageCirculation';
+import CirculationDashboard from '../pages/Circulation-Management/CirculationDashboard';
+import ManageCirculation from '../pages/Circulation-Management/Managers/ManageCirculation/ManageCirculation';
 import OverseeOverdue from '../pages/OverseeOverdues/OverseeOverdues';
 import UploadPrograms from '../pages/Curriculum-Management/Managers/UploadPrograms/UploadPrograms';
 import UploadDepartments from '../pages/Curriculum-Management/Managers/UploadDepartments/UploadDepartments';
@@ -18,9 +17,9 @@ import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/Cata
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 import WeedingDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/WeedingDashboard';
 import CriteriaDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/CriteriaDashboard';
+import TransactionRecord from '../pages/Circulation-Management/Managers/ManageCirculation/TransactionRecord';
+import ManageReservation from '../pages/Circulation-Management/Managers/ManageReservation/ManageReservation';
 import UploadManager from '../pages/Curriculum-Management/Managers/UploadManager';
-import TransactionRecord from '../pages/ManageCirculation/TransactionRecord';
-import ManageReservation from '../pages/ManageReservation/ManageReservation';
 import BarcodeGenerator from '../pages/Cataloging-Management/Managers/BarcodeManagement/BarcodeGenerator';
 import NoDepartments from '../pages/Curriculum-Management/Managers/UploadPrograms/NoDepartment';
 import NoProgram from '../pages/Curriculum-Management/Managers/UploadCurriculum/NoProgram';
@@ -38,7 +37,6 @@ const AdminRoutes = () => (
       <Route path="catalog/management" element={<CatalogingAdmin />} />
       <Route path="catalog/management/accesion-record" element={<AcquiredItems />} />
       <Route path='catalog/management/marc-record/add' element={<AddMARCRecord />} />
-      <Route path="catalog/management/search-title" element={<BookSearch />} />
       <Route path="catalog/management/book-weeding" element={<WeedingDashboard />} />
       <Route path="catalog/management/criteria" element={<CriteriaDashboard />} />
       <Route path="catalog/management/barcode" element={<BarcodeGenerator />} />
