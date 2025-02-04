@@ -3,7 +3,7 @@ import HomeScreen from '../pages/HomeScreen';
 import Register from '../components/RegistrationForm/RegistrationForm';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import UniversityCurriculumPage from '../pages/Curriculum-Management/UniversityCurriculumPage';
-// import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
+import ProgramPage from '../pages/Curriculum-Management/ProgramPage';
 import VerifyOtp from '../components/Verify/VerifyOtp';
 import VerifyUser from '../components/Verify/VerifyUser';
 import PageNotFound from '../components/PageNotFound/PageNotFound';
@@ -34,10 +34,10 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/library-card" element={<LibraryCardGenerationPage />} />
       <Route path="/university/curriculum" element={<UniversityCurriculumPage />} />
-      {/* <Route
+      <Route
         path="/university/curriculum/:departmentName/:programName"
         element={<ProgramPage />}
-      /> */}
+      />
       <Route path="/verify/user" element={<VerifyUser open={false} onClose={function (): void {
         throw new Error('Function not implemented.');
       }} />} />
