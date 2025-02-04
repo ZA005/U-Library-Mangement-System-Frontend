@@ -68,7 +68,7 @@
     margin-top: 20px;
 }
 
-button {
+/* button {
     padding: 10px 20px;
     font-size: 1rem;
     color: #fff;
@@ -81,7 +81,7 @@ button {
 
 button:hover {
     background-color: #c63737;
-}
+} */
 
 .go-back-button {
     background-color: #ea4040;
