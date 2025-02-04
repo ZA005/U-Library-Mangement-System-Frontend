@@ -2,6 +2,9 @@ import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
 import Copyright from './Copyright';
 import UNCLogo from '../../assets/images/unc-logo.png';
+import YTLogo from '../../assets/svg/youtube.svg'
+import FBLogo from '../../assets/svg/facebook.svg'
+import IGLogo from '../../assets/svg/instagram.svg'
 
 const Footer: React.FC = () => {
   return (
@@ -10,7 +13,7 @@ const Footer: React.FC = () => {
 
         {/* LOGO ALIGNMENT */}
         <Box display="flex" justifyContent="center" alignItems="center">
-          <img src={ UNCLogo} alt="University Logo" height={60} />
+          <img src={UNCLogo} alt="University Logo" height={60} />
           <Box ml={2}>
             <Typography>UNIVERSITY OF</Typography>
             <Typography>NUEVA CACERES</Typography>
@@ -22,10 +25,10 @@ const Footer: React.FC = () => {
           <Box ml={2} display="flex" flexDirection="column" alignItems="center">
             <Typography >J. Hernandez Avenue, Naga City 4404</Typography>
             <Typography >09561301775 | 09071566898</Typography>
-            <Link href="mailto:info@unc.edu.ph"  color="inherit">
+            <Link href="mailto:info@unc.edu.ph" color="inherit">
               info@unc.edu.ph
             </Link>
-            <Link href="mailto:admission@unc.edu.ph"  color="inherit">
+            <Link href="mailto:admission@unc.edu.ph" color="inherit">
               admission@unc.edu.ph
             </Link>
           </Box>
@@ -35,7 +38,7 @@ const Footer: React.FC = () => {
         <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
           <Link href="https://www.youtube.com/@UniversityofNuevaCaceres" target="_blank" color="inherit">
             <img
-              src="src\assets\svg\youtube.svg"
+              src={YTLogo}
               alt="YouTube"
               height={50}
               width={50}
@@ -44,16 +47,16 @@ const Footer: React.FC = () => {
 
           <Link href="https://www.facebook.com/UniversityOfNuevaCaceres" target="_blank" color="inherit">
             <img
-              src="src\assets\svg\facebook.svg"
+              src={FBLogo}
               alt="Facebook"
-              height={50}
-              width={50}
+              height={40}
+              width={40}
             />
           </Link>
 
           <Link href="https://www.instagram.com/uncgreyhounds/" target="_blank" color="inherit">
             <img
-              src="src\assets\svg\instagram.svg"
+              src={IGLogo}
               alt="Instagram"
               height={50}
               width={50}
@@ -61,7 +64,7 @@ const Footer: React.FC = () => {
           </Link>
         </Box>
       </Box>
-      <Copyright/>
+      <Copyright />
     </Box>
   );
 };
