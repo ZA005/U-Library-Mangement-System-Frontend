@@ -4,9 +4,7 @@ import { Box, IconButton, Container, Typography, Icon } from "@mui/material";
 import Header from "../../components/Header/Header";
 import Copyright from "../../components/Footer/Copyright";
 import MenuIcon from "@mui/icons-material/Menu";
-import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
-import BookIcon from "@mui/icons-material/Book";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
@@ -67,16 +65,6 @@ const CurriculumManagement: React.FC = () => {
                   <strong>Upload Curriculum:</strong> Allows you to easily import and manage the university's curriculum by uploading a CSV file. This enables the bulk import of course information, department details, and program structures, ensuring all curriculum data is accurately updated and organized within the system.
                 </Typography>
               </li>
-              {/* <li className={styles.listItem}>
-                <Typography variant="body1">
-                  <strong>Manage Courses:</strong> Add, view, update, or deactivate courses as needed. Ensure each course is linked to the correct materials and available for students to access.
-                </Typography>
-              </li>
-              <li className={styles.listItem}>
-                <Typography variant="body1">
-                  <strong>Manage Subjects:</strong> Create and organize subjects, update their information when necessary, and deactivate any subjects that are no longer relevant to the curriculum.
-                </Typography>
-              </li> */}
               <li className={styles.listItem}>
                 <Typography variant="body1">
                   <strong>Manage Book Reference:</strong> Allows you to select and assign books as references for specific subjects, ensuring that the curriculum is aligned with appropriate reading materials. This helps maintain consistency and relevance in course content, supporting effective teaching and learning.
@@ -89,39 +77,19 @@ const CurriculumManagement: React.FC = () => {
           {/* Right Content */}
           <Box className={styles.rightContent}>
             <Box className={styles.buttonContainer}>
-              <Icon className={styles.icon}>
+              <Icon className={styles.icon} fontSize="large">
                 <LocationCityIcon />
               </Icon>
               <button
                 className={styles.manageButton}
-                onClick={() => navigate('/admin/curriculum/management/upload')}
+                onClick={() => navigate('/admin/curriculum/management/upload-manager')}
               >
-                Upload Curriculum
+                Upload Manager
               </button>
             </Box>
 
-            {/* <Box className={styles.buttonContainer}>
-              <Icon className={styles.icon}>
-                <LocalLibraryIcon />
-              </Icon>
-              <button
-                className={styles.manageButton}
-                onClick={() => navigate('/admin/curriculum/management/programs')}
-              >Manage Courses</button>
-            </Box>
-
             <Box className={styles.buttonContainer}>
-              <Icon className={styles.icon}>
-                <BookIcon />
-              </Icon>
-              <button
-                className={styles.manageButton}
-                onClick={() => navigate('/admin/curriculum/management/subjects')}
-              >Manage Subjects</button>
-            </Box> */}
-
-            <Box className={styles.buttonContainer}>
-              <Icon className={styles.icon}>
+              <Icon className={styles.icon} fontSize="large">
                 <AutoStoriesIcon />
               </Icon>
               <button

@@ -8,7 +8,7 @@ import Footer from '../../Footer/Copyright';
 import { Box, Button, Typography, CardMedia, Collapse, Container, IconButton } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
+// import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { getBooksByAuthor } from '../../../services/Cataloging/LocalBooksAPI';
 import './BookDetails.css';
@@ -163,12 +163,12 @@ const BookDetails: React.FC = () => {
         <Footer />
       </Box>
 
-      <AddBookReferenceModal
+      {/* <AddBookReferenceModal
         open={isAddBookRefModalOpen}
         handleClose={handleAddBookRefModalClose}
         bookName={book.title}
         urlPath={`/user/book/${book.id}`}
-      />
+      /> */}
     </>
   );
 };

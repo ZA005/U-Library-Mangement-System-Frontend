@@ -17,7 +17,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import SearchIcon from "@mui/icons-material/Search";
 import { Book } from '../../model/Book';
 import UserService from '../../services/UserManagement/UserService';
-import styles from './styles.module.css';
+// import styles from './styles.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getBooksByAdvancedSearch } from '../../services/Cataloging/LocalBooksAPI';
 import Z3950SRUSearch from '../Modal/SRUSearch/Z3950SRUSearch';
@@ -139,10 +139,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
   };
 
   return (
-    <div className={styles.searchContainer}>
+    <div /*className={styles.searchContainer}*/>
       <Stack direction="row" spacing={2} alignItems="center">
-        <Box className={styles.actionBar}>
-          <Box className={styles.searchBox}>
+        <Box /*className={styles.actionBar}*/>
+          <Box /*className={styles.searchBox}*/>
             <TextField
               placeholder={`Search in ${searchIndexLabels[searchIndex]} at ${source || "All libraries"}`}
               type="text"
@@ -155,10 +155,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
                 maxWidth: '100%',
               }}
               InputProps={{
-                startAdornment: <SearchIcon className={styles.searchIcon} />,
+                startAdornment: <SearchIcon /*className={styles.searchIcon}*/ />,
                 endAdornment: (
                   <IconButton onClick={handleTuneClick}>
-                    <TuneIcon className={styles.tuneIcon} />
+                    <TuneIcon /*className={styles.tuneIcon} */ />
                   </IconButton>
                 ),
               }}

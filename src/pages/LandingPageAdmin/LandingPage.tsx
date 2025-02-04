@@ -71,11 +71,11 @@ const LandingPage: React.FC = () => {
                                     <strong>Curriculum Management:</strong> Provide quick access to resource information and recommendations.
                                 </Typography>
                             </li>
-                            <li className={styles.listItem}>
+                            {/* <li className={styles.listItem}>
                                 <Typography variant="body1">
                                     <strong>Aquisition:</strong> Handle procurement of books and digital materials.
                                 </Typography>
-                            </li>
+                            </li> */}
                         </ul>
                     </Box>
 
@@ -111,13 +111,13 @@ const LandingPage: React.FC = () => {
                             </Icon>
                             <button
                                 className={styles.manageButton}
-                                onClick={() => navigate('/admin/curriculum/management/page')}
+                                onClick={() => navigate('/admin/curriculum/management')}
                             >
                                 Curriculum Management
                             </button>
                         </Box>
 
-                        <Box className={styles.buttonContainer}>
+                        {/* <Box className={styles.buttonContainer}>
                             <Icon className={styles.icon}>
                                 <LibraryAddIcon />
                             </Icon>
@@ -127,7 +127,7 @@ const LandingPage: React.FC = () => {
                             >
                                 Acquisition
                             </button>
-                        </Box>
+                        </Box> */}
                     </Box>
                 </Box>
             </Container>

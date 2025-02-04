@@ -7,19 +7,23 @@ import LandingPage from '../pages/LandingPageAdmin/LandingPage';
 import CirculationDashboard from '../pages/Circulation-Management/CirculationDashboard';
 import ManageCirculation from '../pages/Circulation-Management/Managers/ManageCirculation/ManageCirculation';
 import OverseeOverdue from '../pages/OverseeOverdues/OverseeOverdues';
-import ManageCourses from '../pages/Curriculum-Management/Managers/ManagePrograms';
-import ManageDepartments from '../pages/Curriculum-Management/Managers/ManageDepartments';
-import ManageSubjects from '../pages/Curriculum-Management/Managers/ManageSubjects';
-import ManageBookReference from '../pages/Curriculum-Management/Managers/ManageBookReference';
+import UploadPrograms from '../pages/Curriculum-Management/Managers/UploadPrograms/UploadPrograms';
+import UploadDepartments from '../pages/Curriculum-Management/Managers/UploadDepartments/UploadDepartments';
+import UploadCourses from '../pages/Curriculum-Management/Managers/UploadCourses/UploadCourses';
+import UploadCurriculum from '../pages/Curriculum-Management/Managers/UploadCurriculum/UploadCurriculum';
+import ManageBookReference from '../pages/Curriculum-Management/Managers/BookReference/ManageBookReference';
 import AcquiredItems from '../pages/Cataloging-Management/Managers/AccessionRecord/AcquiredItems';
 import CatalogingAdmin from '../pages/Cataloging-Management/CatalogingAdmin/CatalogingAdmin';
 import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
 import WeedingDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/WeedingDashboard';
 import CriteriaDashboard from '../pages/Cataloging-Management/Managers/Book-Weeding/CriteriaDashboard';
-import UploadCourseReference from '../pages/Curriculum-Management/Managers/UploadCurriculum';
 import TransactionRecord from '../pages/Circulation-Management/Managers/ManageCirculation/TransactionRecord';
 import ManageReservation from '../pages/Circulation-Management/Managers/ManageReservation/ManageReservation';
+import UploadManager from '../pages/Curriculum-Management/Managers/UploadManager';
 import BarcodeGenerator from '../pages/Cataloging-Management/Managers/BarcodeManagement/BarcodeGenerator';
+import NoDepartments from '../pages/Curriculum-Management/Managers/UploadPrograms/NoDepartment';
+import NoProgram from '../pages/Curriculum-Management/Managers/UploadCurriculum/NoProgram';
+import NoCurriculum from '../pages/Curriculum-Management/Managers/UploadCourses/NoCurriculum';
 
 const AdminRoutes = () => (
   <Routes>
@@ -44,12 +48,16 @@ const AdminRoutes = () => (
 
 
       {/* Curriculum Module  */}
-      <Route path="curriculum/management/page" element={<CurriculumManagement />} />
-      <Route path="curriculum/management/upload" element={<UploadCourseReference />} />
-      <Route path='/curriculum/management/departments' element={<ManageDepartments />} />
-      <Route path='/curriculum/management/programs' element={<ManageCourses />} />
-      <Route path='/curriculum/management/subjects' element={<ManageSubjects />} />
+      <Route path="curriculum/management" element={<CurriculumManagement />} />
+      <Route path="curriculum/management/upload-manager" element={<UploadManager />} />
+      <Route path='/curriculum/management/departments' element={<UploadDepartments />} />
+      <Route path='/curriculum/management/programs' element={<UploadPrograms />} />
+      <Route path="curriculum/management/curriculum" element={<UploadCurriculum />} />
+      <Route path='/curriculum/management/courses' element={<UploadCourses />} />
       <Route path='/curriculum/management/reference' element={<ManageBookReference />} />
+      <Route path='/curriculum/management/no-department' element={<NoDepartments />} />
+      <Route path='/curriculum/management/no-program' element={<NoProgram />} />
+      <Route path='/curriculum/management/no-curriculum' element={<NoCurriculum />} />
 
       {/* Ciculation Module  */}
       <Route path='circulation/management/page' element={<CirculationDashboard />} />
