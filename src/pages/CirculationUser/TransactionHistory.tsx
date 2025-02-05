@@ -22,25 +22,25 @@ const PayFee: React.FC = () => {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh" className={styles.container}>
-      {/* Header */}
-      <Header
-        buttons={
-          <IconButton onClick={handleSideBarClick}>
-            <MenuIcon className={styles.menuIcon} />
-          </IconButton>
-        }
-      />
-      <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
 
+      <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
       {/* Page Content */}
       <Box flex="1">
         <Container maxWidth="lg" className={styles.content}>
+          {/* Header */}
+          <Header
+            buttons={
+              <IconButton onClick={handleSideBarClick}>
+                <MenuIcon className={styles.menuIcon} />
+              </IconButton>
+            }
+          />
           {/* Left-Aligned Title */}
           <Box className={styles.headerTitleContainer}>
             <Typography variant="h3" fontWeight="bold" className={styles.title}>
               Transaction History
             </Typography>
-            <Line className={styles.separator} />
+            <Line />
           </Box>
 
           {/* Transaction Table */}
@@ -48,25 +48,25 @@ const PayFee: React.FC = () => {
             <Table sx={{ minWidth: 650 }} aria-label="transaction history table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Transaction ID</TableCell>
-                  <TableCell align="right">Date</TableCell>
-                  <TableCell align="right">Book Title</TableCell>
-                  <TableCell align="right">Book Author</TableCell>
-                  <TableCell align="right">Amount (₱)</TableCell>
-                  <TableCell align="right">Status</TableCell>
+                  {/* <TableCell>Transaction ID</TableCell> */}
+                  <TableCell align="left">Date</TableCell>
+                  <TableCell align="left">Book Title</TableCell>
+                  <TableCell align="left">Book Author</TableCell>
+                  <TableCell align="left">Amount (₱)</TableCell>
+                  <TableCell align="left">Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {transactions.map((transaction) => (
                   <TableRow key={transaction.id}>
-                    <TableCell component="th" scope="row">
+                    {/* <TableCell component="th" scope="row">
                       {transaction.id}
-                    </TableCell>
-                    <TableCell align="right">{transaction.date}</TableCell>
-                    <TableCell align="right">{transaction.bookTitle}</TableCell>
-                    <TableCell align="right">{transaction.bookAuthor}</TableCell>
-                    <TableCell align="right">{transaction.amount.toFixed(2)}</TableCell>
-                    <TableCell align="right">{transaction.status}</TableCell>
+                    </TableCell> */}
+                    <TableCell align="left">{transaction.date}</TableCell>
+                    <TableCell align="left">{transaction.bookTitle}</TableCell>
+                    <TableCell align="left">{transaction.bookAuthor}</TableCell>
+                    <TableCell align="left">{transaction.amount.toFixed(2)}</TableCell>
+                    <TableCell align="left">{transaction.status}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
