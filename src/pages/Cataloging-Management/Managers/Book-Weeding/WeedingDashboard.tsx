@@ -355,10 +355,24 @@ const WeedingDashboard: React.FC = () => {
         if (statusToDisplay(weedInfo.weedStatus)) {
             if (weedInfo.weedStatus === 'REVIEWED' && isAdmin) {
                 return (
-                    <>
-                        <Button color="error" variant="contained" size="small" onClick={() => handleOpenModal(weedInfo)}>Weed</Button>
-                        <Button onClick={() => onOverrideWeeding(weedInfo.id)} variant="outlined" size="small" sx={{ ml: 1 }}>Override</Button>
-                    </>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Button
+                            color="error"
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleOpenModal(weedInfo)}
+                        >
+                            Weed
+                        </Button>
+                        <Button
+                            onClick={() => onOverrideWeeding(weedInfo.id)}
+                            variant="outlined"
+                            size="small"
+                            sx={{ ml: 2 }} // Using marginLeft instead of margin for better spacing control
+                        >
+                            Override
+                        </Button>
+                    </Box>
                 );
             }
             return <Typography color={statusToDisplay(weedInfo.weedStatus)?.color}>
@@ -482,7 +496,16 @@ const WeedingDashboard: React.FC = () => {
                                         <TableRow key={weedInfo.id}>
                                             <TableCell>{weedInfo.accessionNo}</TableCell>
                                             <TableCell>{weedInfo.callNumber}</TableCell>
-                                            <TableCell>{weedInfo.bookTitle}</TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    maxWidth: '100px', // Adjust this value as needed
+                                                    overflow: 'hidden',
+                                                    wordBreak: 'break-word',
+                                                    // whiteSpace: 'nowrap'
+                                                }}
+                                            >
+                                                {weedInfo.bookTitle}
+                                            </TableCell>
                                             <TableCell>{weedInfo.authors}</TableCell>
                                             <TableCell>{weedInfo.weedingCriteriaDdc}</TableCell>
                                             <TableCell>
@@ -497,19 +520,21 @@ const WeedingDashboard: React.FC = () => {
                 </TableContainer>
             </Container>
 
-            {currentWeedInfo && (
-                <ReviewModal
-                    open={openModal}
-                    handleClose={handleCloseModal}
-                    onConfirm={isArchiving ? finalizeArchiving : (allProcessed ? finalizeProcess : handleWeedBook)}
-                    weedInfo={currentWeedInfo}
-                    isOverride={isOverride}
-                    processNotes={processNotes}
-                    setProcessNotes={setProcessNotes}
-                    isFinalizingProcess={allProcessed}
-                    isArchiving={isArchiving}
-                />
-            )}
+            {
+                currentWeedInfo && (
+                    <ReviewModal
+                        open={openModal}
+                        handleClose={handleCloseModal}
+                        onConfirm={isArchiving ? finalizeArchiving : (allProcessed ? finalizeProcess : handleWeedBook)}
+                        weedInfo={currentWeedInfo}
+                        isOverride={isOverride}
+                        processNotes={processNotes}
+                        setProcessNotes={setProcessNotes}
+                        isFinalizingProcess={allProcessed}
+                        isArchiving={isArchiving}
+                    />
+                )
+            }
             <ConfirmationDialog
                 open={confirmationOpen}
                 onClose={() => {
@@ -530,7 +555,7 @@ const WeedingDashboard: React.FC = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-        </Box>
+        </Box >
     );
 };
 
