@@ -215,10 +215,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         <Button
           variant="contained"
           color="primary"
+          size='small'
           onClick={handleSearch}
           disabled={loading || !query}
-          className={styles.searchButton}
+          // className={styles.searchButton}
           endIcon={loading && <CircularProgress size={20} color="inherit" />}
+
         >
           {loading ? 'Searching...' : 'Search'}
         </Button>
@@ -226,6 +228,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         <Button
           variant="outlined"
           color="secondary"
+          size='small'
           onClick={() => navigate('/user/advanced/search')}
           className={styles.advanceSearchButton}
         >
@@ -235,16 +238,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
         {UserService.adminOnly() && (
           <Button
             startIcon={<SearchIcon />}
+            variant='text'
+            size='small'
             sx={{
-              backgroundColor: "transparent",
-              border: "none",
-              textTransform: "none",
-              boxShadow: "none",
-              margin: 0,
-              minWidth: "auto",
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
+              color: "#EA4040"
             }}
             onClick={handleOpenSRUModal}
           >
