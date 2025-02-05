@@ -8,7 +8,7 @@ export interface Book {
     isbn13?: string;
     thumbnail: string;
     description: string;
-    pageCount: string;
+    pageCount: number;
     categories: string[];
     language: string;
     printType: string;
@@ -18,7 +18,7 @@ export interface Book {
     section: string;
     dateAcquired: Date;
     notes: string;
-    sublocation: string;
+    location: string;
     vendor: string;
     fundingSource: string;
     subjects: string;

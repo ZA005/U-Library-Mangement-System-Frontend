@@ -20,16 +20,24 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
     setLoading(true);
 
     try {
+      // check if already activated
+      const activationStatus = await UserService.isActivated(studentId);
+      if (activationStatus) {
+        setError('This UNC ID number is already activated.');
+        return;
+      }
+
+      // If not activated, proceed with verification
       const data = await UserService.verifyUser(studentId);
       if (data && data.id) {
         localStorage.setItem('emailAdd', data.emailAdd);
         navigate('/verify/user/otp', { state: { userData: data } });
-        localStorage.setItem('uncIdNumber', studentId)
+        localStorage.setItem('uncIdNumber', studentId);
       } else {
         setError('Student not found or not currently enrolled.');
       }
     } catch (error) {
-      setError('Error verifying student ID.' + error);
+      setError('Error verifying student ID: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setLoading(false);
     }

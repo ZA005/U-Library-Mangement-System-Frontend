@@ -63,6 +63,13 @@
   border-radius: 5px;
   font-size: 1rem;
 }
+.advanceSearchButton {
+  background-color: #ea4040;
+  color: white;
+  cursor: pointer;
+  max-height: min-content;
+  font-size: small;
+}
 
 .searchButton:disabled {
   background-color: #cccccc;

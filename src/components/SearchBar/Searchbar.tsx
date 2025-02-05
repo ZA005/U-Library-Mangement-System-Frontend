@@ -230,7 +230,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
           color="secondary"
           size='small'
           onClick={() => navigate('/user/advanced/search')}
-          sx={{ color: "#EA4040", borderColor: "#ea4040" }}
+          className={styles.advanceSearchButton}
         >
           Advanced Search
         </Button>

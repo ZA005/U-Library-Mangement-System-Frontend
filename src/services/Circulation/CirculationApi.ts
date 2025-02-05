@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Reservations } from "../../model/Loan";
 
 const BASE_URL = "http://localhost:8080/";
 
@@ -91,7 +90,7 @@ export const checkBookLoanStatus = async (accessionNo: string): Promise<boolean>
         const response = await axios.get(`${BASE_URL}admin/check-book-loan-status/accessionNo/${accessionNo}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        return response.data.isLoaned;  // Assuming the backend returns a boolean indicating the loan status
+        return response.data.isLoaned;
     } catch (error) {
         throw new Error("Failed to check book loan status: " + error);
     }
@@ -131,7 +130,9 @@ export const getAllFineDetails = async () => {
 
 export const getUserCirculationDetails = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}adminuser/get-user-circulation-details`);
+        const response = await axios.get(`${BASE_URL}adminuser/get-user-circulation-details`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         throw new Error("Failed to fetch user circulation details: " + error);
@@ -141,7 +142,9 @@ export const getUserCirculationDetails = async () => {
 //Resertvation Controller
 export const getAllReservations = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}adminuser/reservation/all-reservations`);
+        const response = await axios.get(`${BASE_URL}adminuser/reservation/all-reservations`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         console.log("Failed to fetch reservations: " + error);
@@ -150,7 +153,9 @@ export const getAllReservations = async () => {
 
 export const getBookDetailsForReservation = async (accessionNo: string) => {
     try {
-        const response = await axios.get(`${BASE_URL}adminuser/reservation/accessionNo/${accessionNo}`);
+        const response = await axios.get(`${BASE_URL}adminuser/reservation/accessionNo/${accessionNo}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         console.log("Error fetching book detaoils for reservation", error);
@@ -159,7 +164,9 @@ export const getBookDetailsForReservation = async (accessionNo: string) => {
 
 export const saveReservation = async (reservation: unknown) => {
     try {
-        const response = await axios.post(`${BASE_URL}adminuser/reservation/save-reservation`, reservation);
+        const response = await axios.post(`${BASE_URL}adminuser/reservation/save-reservation`, reservation, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         console.log("Error saving reservation", error);

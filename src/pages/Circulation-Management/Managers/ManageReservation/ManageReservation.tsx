@@ -72,8 +72,10 @@ const ManageReservation: React.FC = () => {
                 const reservesData = await getAllReservations();
                 setReserves(reservesData);
                 setFilteredReservations(reservesData);
+                openSnackbar("Fetched reservations successfully!", "success");
             } catch (error) {
                 console.error(error);
+                openSnackbar("Fetching criteria failed!", "error");
             } finally {
                 setIsLoading(false);
             }

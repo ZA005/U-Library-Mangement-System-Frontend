@@ -10,8 +10,8 @@ interface UserData {
 class UserService {
     static BASE_URL = "http://localhost:8080";
 
-    static async login(uncIdNumber: string, password: string) {
-        const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { uncIdNumber, password });
+    static async login(schoolId: string, password: string) {
+        const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { schoolId, password });
         console.log('Login Response:', response); //Debugging
         return response.data;
     }
@@ -25,7 +25,7 @@ class UserService {
     static async verifyUser(id: string) {
         console.log(`${UserService.BASE_URL}/verify/${id}`);
         const response = await axios.get(`${UserService.BASE_URL}/verify/${id}`);
-        console.log('Verify Student Response:', response); //Debugging
+        console.log('Verify Student Response:', response);
         return response.data;
     }
 
@@ -34,6 +34,11 @@ class UserService {
             emailAdd,
             otp
         });
+        return response.data;
+    }
+
+    static async isActivated(uncIdNumber: string) {
+        const response = await axios.get(`${UserService.BASE_URL}/verify/activation-status/${uncIdNumber}`);
         return response.data;
     }
 

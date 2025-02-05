@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Chip
+    Container, Box, Typography, Select, MenuItem, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Chip,
+    Alert,
+    Snackbar
 } from '@mui/material';
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../Header/Header';
@@ -11,31 +13,48 @@ import Copyright from '../../Footer/Copyright';
 import useGenerateCallNumber from './useGenerateCallNumber';
 import { useGenerateAccessionNumbers } from './useGenerateAccessionNumber';
 import { saveBook } from '../../../services/Cataloging/GoogleBooksApi';
-import LocationSelect from './LocationSelect';
 import { Locations, Sections } from '../../../model/Book';
-import SectionSelect from './SectionSelect';
-import BookConditionSelect from './BookConditionOptions';
+import BookDetailsForm from './BookDetailsForm';
+import BookMetadataForm from './BookMetadataForm';
+import { useSnackbar } from '../../../hooks/useSnackbar';
 
 
 const BookFormFast: React.FC = () => {
     const { state } = useLocation();
     const bookData = state?.bookData;
     const navigate = useNavigate();
+    const [step, setStep] = useState(1);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [isbn] = useState(bookData?.isbn || '');
-    const [author, setAuthor] = useState('');
-    const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
-    const [section, setSection] = useState('');
-    const [sections, setSections] = useState<Sections[]>([]);
-    const [categories, setCategories] = useState('');
-    const [description, setDescription] = useState('');
     const [ddcNumber, setDDCNumber] = useState('');
-    const [publishedDate, setPublishedDate] = useState('');
-    const [locations, setLocations] = useState<Locations[]>([]);
+    const [title, setTitle] = useState(bookData.book_title || '');
+    const [author, setAuthor] = useState<string[]>([]);
+    const [publisher, setPublisher] = useState(bookData.publisher || '');
+    const [publishedDate, setPublishedDate] = useState(bookData.publishedDate || '');
+    const [isbn10, setIsbn10] = useState(bookData.isbn10 || '');
+    const [isbn, setIsbn] = useState(bookData?.isbn || '');
+    const [description, setDescription] = useState('');
+    const [pageCount, setPageCount] = useState<number | null>(bookData.pageCount || null);
+    const [categories, setCategories] = useState<string[]>(Array.isArray(bookData.categories) ? bookData.categories : []);
+    const [language, setLanguage] = useState(bookData.language || '');
+    const [printType, setPrintType] = useState(bookData.printType || '');
+    const [status, setStatus] = useState<string>('Available');
+    const callNumber = useGenerateCallNumber({ bookTitle: bookData?.book_title || '', author: author.join(', '), ddcNumber, publishedDate: bookData?.published_date });
+    const [purchasePrice, setPurchasePrice] = useState(bookData?.purchase_price || '');
+    const [section, setSection] = useState('');
+    const [dateAcquired, setDateAcquired] = useState(bookData?.acquired_date || '');
+    const [notes, setNotes] = useState('');
+    const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [selectedLocation, setSelectedLocation] = useState('');
+    const [vendor, setVendor] = useState(bookData?.vendor || '');
+    const [fundingSource, setFundingSource] = useState(bookData?.funding_source || '');
+    const [sections, setSections] = useState<Sections[]>([]);
+    const [subjects, setSubjects] = useState('');
+    const [locations, setLocations] = useState<Locations[]>([]);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [bookCondition, setBookCondition] = useState('New');
     const [collectionType, setCollectionType] = useState('Book');
+
+
 
     const ddcClasses = [
         { value: '000', label: '[000] General Information' },
@@ -50,7 +69,13 @@ const BookFormFast: React.FC = () => {
         { value: '900', label: '[900] Geography and History' }
     ];
 
-    const callNumber = useGenerateCallNumber({ bookTitle: bookData?.book_title || '', author, ddcNumber, publishedDate: bookData?.published_date });
+    const {
+        snackbarOpen,
+        snackbarMessage,
+        snackbarStatus,
+        openSnackbar,
+        closeSnackbar,
+    } = useSnackbar();
 
     // Find the location object that matches the selectedLocation
     const selectedLoc = locations.find(loc => loc.locationCodeName === selectedLocation);
@@ -69,7 +94,7 @@ const BookFormFast: React.FC = () => {
 
     const handleSave = async () => {
         if (numberOfCopies! < 1) {
-            alert("Number of copies must be at least 1.");
+            openSnackbar("Please specify a valid number of copies and Location to ensure accession numbers are generated.", "error");
             return;
         }
         setConfirmOpen(true);
@@ -101,7 +126,7 @@ const BookFormFast: React.FC = () => {
                         : categories
                             ? [categories]
                             : [],
-                    notes: "",
+                    notes: notes,
                     location: selectedLoc?.locationName,
                     vendor: bookData?.vendor,
                     fundingSource: bookData?.funding_source,
@@ -109,7 +134,7 @@ const BookFormFast: React.FC = () => {
                     thumbnail: "",
                     description: description || "No description available",
                     isbn13: bookData?.isbn,
-                    isbn10: "",
+                    isbn10: isbn10,
                     language: "en",
                     pageCount: 264,
                     publishedDate,
@@ -134,12 +159,14 @@ const BookFormFast: React.FC = () => {
 
         } catch (error) {
             console.error('Error saving book copies:', error);
-            alert(`An error occurred while saving the book copies. ${error}`);
+            openSnackbar(`${title} failed to add to the catalog. Please try again`, "error");
         }
     };
 
     const handleCancel = () => navigate('/admin/catalog/management/accesion-record');
     const handleCloseConfirm = () => setConfirmOpen(false);
+    const handleNext = () => { setStep(2); };
+    const handleBack = () => { if (step === 2) setStep(1); };
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -176,122 +203,97 @@ const BookFormFast: React.FC = () => {
                             )}
                         </Box>
 
-                        <Box component="form" sx={{ mt: 2 }}>
-                            <TextField
-                                fullWidth
-                                label="Author"
-                                value={author}
-                                onChange={(e) => setAuthor(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-                            <TextField
-                                fullWidth
-                                label="Published Date"
-                                type="date"
-                                value={publishedDate}
-                                onChange={(e) => setPublishedDate(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                                InputLabelProps={{ shrink: true }}
-                            />
+                        {step === 1 ? (
+                            <>
+                                <FormControl fullWidth sx={{ mb: 2 }}>
+                                    <InputLabel id="ddc-label">Dewey Decimal Classification</InputLabel>
+                                    <Select
+                                        labelId="ddc-label"
+                                        value={ddcNumber}
+                                        onChange={(e) => setDDCNumber(e.target.value)}
+                                        label="Dewey Decimal Classification"
+                                        size="small"
+                                    >
+                                        {ddcClasses.map((ddc) => (
+                                            <MenuItem key={ddc.value} value={ddc.value}>{ddc.label}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <BookDetailsForm
+                                    handleNext={handleNext}
+                                    title={title}
+                                    setTitle={setTitle}
+                                    authors={Array.isArray(author) ? author : [author]}
+                                    setAuthors={setAuthor}
+                                    publisher={publisher}
+                                    setPublisher={setPublisher}
+                                    publishedDate={publishedDate}
+                                    setPublishedDate={setPublishedDate}
+                                    isbn10={isbn10}
+                                    setIsbn10={setIsbn10}
+                                    isbn13={isbn}
+                                    setIsbn13={setIsbn}
+                                    desc={description}
+                                    setDesc={setDescription}
+                                    pageCount={pageCount}
+                                    setPageCount={setPageCount}
+                                    categories={categories}
+                                    setCategories={setCategories}
+                                    language={language}
+                                    setLanguage={setLanguage}
+                                    printType={printType}
+                                    setPrintType={setPrintType}
+                                />
+                            </>
 
-                            <TextField
-                                fullWidth
-                                label="Number of Copies"
-                                type="number"
-                                value={numberOfCopies !== null ? numberOfCopies : ""}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setNumberOfCopies(value === "" ? null : Number(value));
-                                }}
-                                onBlur={() => {
-                                    if (numberOfCopies === null) {
-                                        setNumberOfCopies(1);
-                                    }
-                                }}
-                                inputProps={{ min: 1 }}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="ddc-label">Dewey Decimal Classification</InputLabel>
-                                <Select
-                                    labelId="ddc-label"
-                                    value={ddcNumber}
-                                    onChange={(e) => setDDCNumber(e.target.value)}
-                                    label="Dewey Decimal Classification"
-                                    size="small"
-                                >
-                                    {ddcClasses.map((ddc) => (
-                                        <MenuItem key={ddc.value} value={ddc.value}>{ddc.label}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <LocationSelect
-                                selectedLocation={selectedLocation}
+                        ) : (
+                            <BookMetadataForm
+                                handleBack={handleBack}
+                                handleCancel={handleCancel}
+                                handleSave={handleSave}
+                                status={status}
+                                setStatus={setStatus}
+                                numberOfCopies={numberOfCopies}
+                                setNumberOfCopies={setNumberOfCopies}
+                                callNumber={callNumber}
+                                // setCallNumber={setCallNumber}
+                                purchasePrice={purchasePrice}
+                                setPurchasePrice={setPurchasePrice}
+                                section={section}
+                                setSection={setSection}
+                                dateAcquired={dateAcquired}
+                                setDateAcquired={setDateAcquired}
+                                notes={notes}
+                                setNotes={setNotes}
+                                location={selectedLocation}
                                 setSelectedLocation={setSelectedLocation}
+                                vendor={vendor}
+                                setVendor={setVendor}
+                                fundingSource={fundingSource}
+                                setFundingSource={setFundingSource}
+                                subjects={subjects}
+                                setSubjects={setSubjects}
                                 locations={locations}
                                 setLocations={setLocations}
-                            />
-
-                            <SectionSelect
-                                selectedSection={section}
-                                setSelectedSection={setSection}
                                 sections={sections}
                                 setSections={setSections}
-                                selectedLocation={selectedLocation}
-                                locations={locations}
+                                bookCondition={bookCondition}
+                                setBookCondition={setBookCondition}
+                                collectionType={collectionType}
+                                setCollectionType={setCollectionType}
                             />
-
-                            <BookConditionSelect bookCondition={bookCondition} setBookCondition={setBookCondition} />
-
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="collectionType-label">Collection Type</InputLabel>
-                                <Select
-                                    labelId="collectionType-label"
-                                    value={collectionType}
-                                    onChange={(e) => setCollectionType(e.target.value)}
-                                    label="Collection Type"
-                                    size="small"
-                                >
-                                    <MenuItem value="Book">Book</MenuItem>
-                                    <MenuItem value="Journals">Journals</MenuItem>
-                                    <MenuItem value="Theses & Dissertation">Theses & Dissertation</MenuItem>
-                                    <MenuItem value="Special Collections">Special Collections</MenuItem>
-                                    <MenuItem value="Museum and Archival Materials">Museum and Archival Materials</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            <TextField
-                                fullWidth
-                                label="Categories"
-                                value={categories}
-                                onChange={(e) => setCategories(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Description"
-                                multiline
-                                rows={3}
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                sx={{ mb: 2 }}
-                            />
-
-                            <Box sx={{ mt: 2 }} paddingBottom="15px">
-                                <Button variant="contained" onClick={handleSave} sx={{ mr: 2, background: "#ea4040" }}>Save</Button>
-                                <Button variant="outlined" onClick={handleCancel} sx={{ borderColor: "#ea4040", color: "#ea4040" }}>Cancel</Button>
-                            </Box>
-                        </Box>
+                        )}
                     </Box>
                 </Box>
             </Container>
             <Copyright />
+
+            <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={closeSnackbar} anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
+                <Alert onClose={closeSnackbar} severity={snackbarStatus}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
             <Dialog
                 open={confirmOpen}
                 onClose={handleCloseConfirm}
