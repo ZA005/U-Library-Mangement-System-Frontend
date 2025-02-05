@@ -12,6 +12,7 @@ import SearchBar from '../../../components/SearchBar/Searchbar';
 import Sidebar from '../../../components/Sidebar';
 import Copyright from '../../../components/Footer/Copyright';
 import { Book } from '../../../model/Book';
+import { CropFree, PlaylistRemove } from '@mui/icons-material';
 
 const CatalogingAdmin: React.FC = () => {
     const navigate = useNavigate();
@@ -122,7 +123,10 @@ const CatalogingAdmin: React.FC = () => {
                             </button>
                         </Box>
 
-                        {/* <Box className={styles.buttonContainer}>
+                        <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <CropFree />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={() => navigate('/admin/catalog/management/barcode')}
@@ -131,7 +135,7 @@ const CatalogingAdmin: React.FC = () => {
                             </button>
                         </Box>
 
-                        <Box className={styles.buttonContainer}>
+                        {/* <Box className={styles.buttonContainer}>
                             <button
                                 className={styles.manageButton}
                                 onClick={() => navigate('/admin/catalog/management/book-weeding')}
