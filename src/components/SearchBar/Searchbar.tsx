@@ -17,7 +17,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import SearchIcon from "@mui/icons-material/Search";
 import { Book } from '../../model/Book';
 import UserService from '../../services/UserManagement/UserService';
-// import styles from './styles.module.css';
+import styles from './styles.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getBooksByAdvancedSearch } from '../../services/Cataloging/LocalBooksAPI';
 import Z3950SRUSearch from '../Modal/SRUSearch/Z3950SRUSearch';
@@ -227,7 +227,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '', initialSource 
           variant="outlined"
           color="secondary"
           onClick={() => navigate('/user/advanced/search')}
-          className={styles.searchButton}
+          className={styles.advanceSearchButton}
         >
           Advanced Search
         </Button>

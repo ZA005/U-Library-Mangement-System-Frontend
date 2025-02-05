@@ -130,7 +130,9 @@ export const getAllFineDetails = async () => {
 
 export const getUserCirculationDetails = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}adminuser/get-user-circulation-details`);
+        const response = await axios.get(`${BASE_URL}adminuser/get-user-circulation-details`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         throw new Error("Failed to fetch user circulation details: " + error);
@@ -140,7 +142,9 @@ export const getUserCirculationDetails = async () => {
 //Resertvation Controller
 export const getAllReservations = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}adminuser/reservation/all-reservations`);
+        const response = await axios.get(`${BASE_URL}adminuser/reservation/all-reservations`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         console.log("Failed to fetch reservations: " + error);
@@ -149,7 +153,9 @@ export const getAllReservations = async () => {
 
 export const getBookDetailsForReservation = async (accessionNo: string) => {
     try {
-        const response = await axios.get(`${BASE_URL}adminuser/reservation/accessionNo/${accessionNo}`);
+        const response = await axios.get(`${BASE_URL}adminuser/reservation/accessionNo/${accessionNo}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         console.log("Error fetching book detaoils for reservation", error);
@@ -158,7 +164,9 @@ export const getBookDetailsForReservation = async (accessionNo: string) => {
 
 export const saveReservation = async (reservation: unknown) => {
     try {
-        const response = await axios.post(`${BASE_URL}adminuser/reservation/save-reservation`, reservation);
+        const response = await axios.post(`${BASE_URL}adminuser/reservation/save-reservation`, reservation, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         console.log("Error saving reservation", error);

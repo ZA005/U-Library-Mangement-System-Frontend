@@ -11,7 +11,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import styles from "./styles.module.css";
 import Sidebar from '../../components/Sidebar';
-
+import { Helmet } from "react-helmet";
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -23,6 +23,11 @@ const LandingPage: React.FC = () => {
     const handleSidebarClose = () => {
         setSidebarOpen(false);
     };
+    <Helmet>
+        <meta charSet="utf-8" />
+        <title>My Title</title>
+        <link rel="canonical" href="http://mysite.com/example" />
+    </Helmet>
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">

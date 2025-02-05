@@ -9,7 +9,9 @@ const BASE_URL_ADMIN = "http://localhost:8080/admin/";
 
 export const getAllBooks = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}all-books`);
+        const response = await axios.get(`${BASE_URL}all-books`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data; // return the data from the response
     } catch (error) {
         throw new Error("Failed to fetch books from the database.");
@@ -18,7 +20,10 @@ export const getAllBooks = async () => {
 
 export const getBooksByAuthor = async (authorName: string) => {
     try {
-        const response = await axios.get(`${BASE_URL}books-by-author`, { params: { authorName } });
+        const response = await axios.get(`${BASE_URL}books-by-author`, {
+            params: { authorName },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data;
     } catch (error) {
         throw new Error("Failed to fetch books by the author.");
@@ -29,6 +34,8 @@ export const fetchLastAccessionNumber = async (locationPrefix: string): Promise<
     try {
         const response = await axios.get(`${BASE_URL}last-accession-number`, {
             params: { locationPrefix },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+
         });
         return response.data; // Returns the last accession number as a string
     } catch (error) {
@@ -41,6 +48,7 @@ export const fetchCopyNumBookExist = async (title: string, isbn10: string, isbn1
     try {
         const response = await axios.get(`${BASE_URL}latest-accession`, {
             params: { title, isbn10, isbn13, locationPrefix },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         return response.data; // Returns the latest accession number as a string
     } catch (error) {
@@ -54,9 +62,7 @@ export const getBooksByAdvancedSearch = async (searchParams: any) => {
     console.log(searchParams);
     try {
         const response = await axios.post(`${BASE_URL}advance-search`, searchParams, {
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         return response.data;
     } catch (error) {
@@ -69,9 +75,7 @@ export const getBooksByAdvancedSearch = async (searchParams: any) => {
 export const getLastAccessionNumber = async () => {
     try {
         const response = await axios.get(`${BASE_URL}last-added-accession`, {
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         return response.data; // Return the last added accession number
     } catch (e) {
