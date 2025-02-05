@@ -36,16 +36,16 @@ const HomeScreen: React.FC = () => {
           buttons={
             <>
               <Button
-                color="inherit"
+                variant='outlined'
                 onClick={handleSignUp}
-                sx={{ color: '#d32f2f', border: '1px solid #d32f2f', marginRight: '10px' }}
+                sx={{ color: '#d32f2f', borderColor: ' #d32f2f', marginRight: '10px' }}
               >
-                Activate your account
+                Activate account
               </Button>
               <Button
-                color="inherit"
+                variant='contained'
                 onClick={handleLogin}
-                sx={{ color: '#d32f2f', border: '1px solid #d32f2f' }}
+                sx={{ backgroundColor: '#d32f2f' }}
               >
                 Login
               </Button>

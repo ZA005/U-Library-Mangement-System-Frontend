@@ -7,7 +7,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import './LoginModal.css';
 import UserService from '../../../services/UserManagement/UserService';
 import { useAuth } from '../../../contexts/AuthContext';
-
+import VerifyUser from '../../Verify/VerifyUser';
 interface LoginProps {
   open: boolean;
   onClose: () => void;
@@ -74,99 +74,111 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     }
   };
 
+  const [openVerifyUser, setOpenVerifyUser] = useState(false);
+
+  const handleActivateAcc = () => {
+    setOpenVerifyUser(true);
+    onClose()
+  };
+
+  const handleCloseVerifyUser = () => {
+    setOpenVerifyUser(false);
+  };
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="login-modal" aria-describedby="login-modal-description">
-      <Box className="outer-container">
-        <Box className="header-container">
-          <img src="/src/assets/images/lms-logo.png" alt="Library Logo" className="modal-logo" />
-          <Box>
-            <Typography variant="h5" className="title">ACQUIRE</Typography>
-            <Typography variant="subtitle1" className="subtitle">Library Management System</Typography>
-          </Box>
-        </Box>
-
-        <Box className="modal-box">
-          <Box className="login-header">
-            <Typography variant="h6" className="login-text">Login</Typography>
+    <>
+      <Modal open={open} onClose={onClose} aria-labelledby="login-modal" aria-describedby="login-modal-description">
+        <Box className="outer-container">
+          <Box className="header-container">
+            <img src="/src/assets/images/lms-logo.png" alt="Library Logo" className="modal-logo" />
+            <Box>
+              <Typography variant="h5" className="title">ACQUIRE</Typography>
+              <Typography variant="subtitle1" className="subtitle">Library Management System</Typography>
+            </Box>
           </Box>
 
-          <form onSubmit={handleLogin}>
-            <TextField
-              label="UNC ID number"
-              placeholder='Enter you Student/Employee ID number'
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              className="modal-input"
-              value={uncIdNumber}
-              onChange={(e) => setUncIdNumber(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccountCircle />
-                  </InputAdornment>
-                ),
-              }}
-            />
+          <Box className="modal-box">
+            <Box className="login-header">
+              <Typography variant="h6" className="login-text">Login</Typography>
+            </Box>
 
-            <TextField
-              label="Password"
-              placeholder='Enter your password'
-              type={showPassword ? 'text' : 'password'}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              className="modal-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={togglePasswordVisibility} edge="end">
-                      <Visibility />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <form onSubmit={handleLogin}>
+              <TextField
+                label="UNC ID number"
+                placeholder='Student/Employee ID'
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                className="modal-input"
+                value={uncIdNumber}
+                onChange={(e) => setUncIdNumber(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-            {error && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                {error}
-              </Typography>
-            )}
+              <TextField
+                label="Password"
+                placeholder='Password'
+                type={showPassword ? 'text' : 'password'}
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                className="modal-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={togglePasswordVisibility} edge="end">
+                        <Visibility />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{ backgroundColor: '#d32f2f', color: '#fff', mt: 2 }}
-            >
-              Sign In
-            </Button>
-          </form>
+              {error && (
+                <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                  {error}
+                </Typography>
+              )}
 
-          <Typography variant="body2" className="modal-footer" sx={{ mt: 2 }}>
-            Don't have an account?{' '}
-            <Button
-              color="inherit"
-              sx={{ color: '#d32f2f', textDecoration: 'underline' }}
-              onClick={() => {
-                onClose();
-                navigate('/register');
-              }}
-            >
-              Sign up
-            </Button>
-          </Typography>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{ backgroundColor: '#d32f2f', color: '#fff', mt: 2 }}
+              >
+                Sign In
+              </Button>
+            </form>
+
+            <Typography variant="body2" className="modal-footer" sx={{ mt: 1 }}>
+              <Button
+                variant='outlined'
+                color="inherit"
+                fullWidth
+                sx={{ color: '#d32f2f' }}
+                onClick={handleActivateAcc}
+              >
+                Activate Account
+              </Button>
+            </Typography>
+          </Box>
         </Box>
-      </Box>
-    </Modal>
+      </Modal>
+      <VerifyUser open={openVerifyUser} onClose={handleCloseVerifyUser} />
+    </>
+
   );
 };
 
