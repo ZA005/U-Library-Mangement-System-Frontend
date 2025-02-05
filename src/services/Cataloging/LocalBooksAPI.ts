@@ -162,7 +162,9 @@ export const deleteSection = async (id: number) => {
 
 export const getAllAccessionNo = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}all-accession-number`);
+        const response = await axios.get(`${BASE_URL}all-accession-number`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return response.data; // return the data from the response
     } catch (error) {
         throw new Error("Failed to fetch books from the database.");
