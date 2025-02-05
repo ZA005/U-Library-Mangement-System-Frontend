@@ -57,11 +57,11 @@ const LibraryCard: React.FC = () => {
 
       {/* Details Section */}
       <Box className={Style.detailsSection} display="flex" flexDirection="column" gap={1}>
-        <Typography className={Style.detailLabel}>Name: {userDetails?.fullName}</Typography>
-        <Typography className={Style.detailLabel}>Department: {userDetails?.departmentName}</Typography>
-        <Typography className={Style.detailLabel}>Course: {userDetails?.programName}</Typography>
-        <Typography className={Style.detailLabel}>UNC Email add: {userDetails?.emailAdd}</Typography>
-        <Typography className={Style.detailLabel}>Phone Number: {userDetails?.contactNum}</Typography>
+        <Typography className={Style.detailLabel}><strong>Name:</strong> {userDetails?.fullName}</Typography>
+        <Typography className={Style.detailLabel}><strong>Department:</strong> {userDetails?.departmentName}</Typography>
+        <Typography className={Style.detailLabel}><strong>Program:</strong> {userDetails?.programName}</Typography>
+        <Typography className={Style.detailLabel}><strong>Email:</strong> {userDetails?.emailAdd}</Typography>
+        <Typography className={Style.detailLabel}><strong>Phone Number:</strong> {userDetails?.contactNum}</Typography>
       </Box>
     </Box>
   );
