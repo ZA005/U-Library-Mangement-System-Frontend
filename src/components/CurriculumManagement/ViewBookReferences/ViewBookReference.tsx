@@ -115,7 +115,7 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
             </Snackbar>
 
             {!showBookReference ? (
-                <Dialog open={true} onClose={onClose} fullWidth maxWidth="md">
+                <Dialog open={true} onClose={onClose} fullWidth maxWidth="lg">
                     <DialogTitle>
                         Referenced Book for {course.course_name}
                         <Box sx={{ position: 'absolute', right: '10px', top: '10px' }}>

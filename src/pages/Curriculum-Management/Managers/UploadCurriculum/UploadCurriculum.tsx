@@ -133,6 +133,9 @@ const UploadCurriculum: React.FC = () => {
             openSnackbar(uploadError, "error");
         } else if (parsedData) {
             openSnackbar("Programs uploaded successfully!", "success");
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         }
     }, [uploadError, parsedData, openSnackbar]);
 
