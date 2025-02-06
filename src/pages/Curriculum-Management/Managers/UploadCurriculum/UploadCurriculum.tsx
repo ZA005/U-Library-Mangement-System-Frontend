@@ -244,8 +244,9 @@ const UploadCurriculum: React.FC = () => {
                         <Table stickyHeader>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><strong>ID</strong></TableCell>
-                                    <TableCell><strong>PROGRAM</strong></TableCell>
+                                    {/* <TableCell><strong>ID</strong></TableCell> */}
+                                    <TableCell><strong>CODE</strong></TableCell>
+                                    <TableCell><strong>NAME</strong></TableCell>
                                     <TableCell><strong>REVISION NO</strong></TableCell>
                                     <TableCell><strong>SEMESTER</strong></TableCell>
                                     <TableCell><strong>SCHOOL YEAR</strong></TableCell>
@@ -256,8 +257,8 @@ const UploadCurriculum: React.FC = () => {
                                 {filteredCurriculum.length > 0 ? (
                                     filteredCurriculum.map((curr) => (
                                         <TableRow key={curr.curr_id}>
-                                            <TableCell width="10%">{curr.curr_id}</TableCell>
-                                            <TableCell width="10%">{curr.program_code}</TableCell>
+                                            <TableCell width="5%">{curr.program_code}</TableCell>
+                                            <TableCell width="15%">{curr.program_description}</TableCell>
                                             <TableCell width="10%">{curr.revision_no}</TableCell>
                                             <TableCell width="10%">{curr.effectivity_sem}</TableCell>
                                             <TableCell width="10%">{curr.effectivity_sy}</TableCell>
