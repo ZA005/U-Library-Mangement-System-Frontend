@@ -177,8 +177,7 @@ const BookForm: React.FC = () => {
         if (!numberOfCopies || numberOfCopies < 1 || accessionNumbers.length === 0) {
             openSnackbar("Please specify a valid number of copies and Location to ensure accession numbers are generated.", "error");
             return;
-        }
-
+        } setConfirmOpen(true);
 
     };
 
