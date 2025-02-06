@@ -38,7 +38,7 @@ const WeedingDashboard: React.FC = () => {
 
     const handleCloseModal = () => {
         setOpenModal(false);
-        setIsOverride(false); // Reset override state when closing modal
+        setIsOverride(false); 
     };
 
     const handleSideBarClick = () => {
@@ -538,11 +538,10 @@ const WeedingDashboard: React.FC = () => {
             <ConfirmationDialog
                 open={confirmationOpen}
                 onClose={() => {
-                    setConfirmationOpen(false); // Close the confirmation dialog
-                    setIsArchiving(false); // Set isArchiving to false
+                    setConfirmationOpen(false); 
+                    setIsArchiving(false);
                     checkAllProcessed();
                 }}
-
                 onConfirm={() => handleArchiving(true)}
                 title="Confirm Action"
                 message="Do you want to archive this book?"
