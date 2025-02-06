@@ -95,6 +95,10 @@ const UploadDepartments: React.FC = () => {
             setSnackbarMessage("Departments uploaded successfully!");
             setSnackbarStatus("success");
             setSnackbarOpen(true);
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         }
     }, [uploadError, parsedData]);
 
