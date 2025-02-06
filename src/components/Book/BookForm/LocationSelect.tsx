@@ -1,8 +1,7 @@
 import React from 'react';
-import { Select, MenuItem, FormControl, InputLabel, IconButton, Tooltip, Alert, Snackbar } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel, Alert, Snackbar } from '@mui/material';
 import { Locations } from '../../../model/Book';
-import { addLibrary, getAllLibraries, deleteLocation } from '../../../services/Cataloging/LocalBooksAPI';
+import { addLibrary, getAllLibraries, updateLocationStatus } from '../../../services/Cataloging/LocalBooksAPI';
 import ModalForm from '../../Modal/ModalForm';
 import { useSnackbar } from '../../../hooks/useSnackbar';
 
@@ -19,7 +18,6 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     locations,
     setLocations
 }) => {
-
     const [showLocationModal, setShowLocationModal] = React.useState(false);
     const [newLibraryCodeName, setNewLibraryCodeName] = React.useState('');
     const [newLibraryName, setNewLibraryName] = React.useState('');
@@ -60,7 +58,8 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
             try {
                 const newLocation = {
                     locationCodeName: newLibraryCodeName,
-                    locationName: newLibraryName
+                    locationName: newLibraryName,
+                    status: true  // New locations start as active
                 };
 
                 const addedLocation = await addLibrary(newLocation);
@@ -69,8 +68,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                 setShowLocationModal(false);
                 setNewLibraryCodeName('');
                 setNewLibraryName('');
-                // console.log('New location added:', addedLocation);
-                openSnackbar("New Library added", "success");
+                openSnackbar("New Location added", "success");
             } catch (error) {
                 console.error('Failed to add new location:', error);
                 alert('Failed to add new location. Please try again.');
@@ -79,31 +77,43 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
         }
     };
 
-    const handleDeleteLocation = async (id: number) => {
+    const handleSwitchChange = async (id: number, status: boolean) => {
         try {
-            await deleteLocation(id);
-            setLocations(locations.filter(loc => loc.id !== id));
-            if (selectedLocation === locations.find(loc => loc.id === id)?.locationCodeName) {
+            const updatedLocation = await updateLocationStatus(id, !status);
+            setLocations(locations.map(loc =>
+                loc.id === id ? { ...loc, status: !status } : loc
+            ));
+            // If the location becomes inactive, deselect it
+            if (!status && selectedLocation === locations.find(loc => loc.id === id)?.locationCodeName) {
                 setSelectedLocation('');
-            } else {
-                if (!locations.some(loc => loc.locationCodeName === selectedLocation)) {
-                    setSelectedLocation('');
-                }
             }
         } catch (error) {
-            console.error('Failed to delete location:', error);
-            alert('Failed to delete location. Please try again.');
+            console.error('Failed to update location status:', error);
+            alert('Failed to update location status. Please try again.');
         }
     };
+
     return (
         <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="location-label">Library</InputLabel>
+            <InputLabel id="location-label">Location</InputLabel>
             <Select
                 labelId="location-label"
                 value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
+                onChange={(e) => {
+                    const selectedLoc = locations.find(loc => loc.locationCodeName === e.target.value);
+
+                    if (selectedLoc) {
+                        if (!selectedLoc.status) {
+                            // Notify the user and close the dropdown
+                            openSnackbar("This location is inactive and cannot be selected.", "warning");
+                        } else {
+                            setSelectedLocation(e.target.value);
+                        }
+                    }
+                }}
+                onClose={() => { }}
                 label="Location"
-                placeholder='Please select a library'
+                placeholder='Please select a location'
                 size="small"
                 required
             >
@@ -112,30 +122,47 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     <MenuItem
                         key={loc.id}
                         value={loc.locationCodeName}
-                        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            opacity: loc.status ? 1 : 0.5,
+                            paddingRight: '40px'
+                        }}
+                        onClick={() => {
+                            if (!loc.status) {
+                                openSnackbar("This location is inactive and cannot be selected.", "warning");
+                            }
+                        }}
                     >
                         <span>{loc.locationName}</span>
+
                         {selectedLocation !== loc.locationCodeName && (
-                            <Tooltip title="Remove Library" placement="right">
-                                <IconButton
-                                    onClick={(e) => {
-                                        e.stopPropagation(); // Prevents the menu from closing
-                                        handleDeleteLocation(loc.id!);
-                                    }}
-                                    size="small"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
+                            <div
+                                style={{ marginLeft: 'auto' }}
+                                onClick={(event) => event.stopPropagation()}
+                            >
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={loc.status}
+                                            onChange={() => handleSwitchChange(loc.id!, loc.status)}
+                                            color="primary"
+                                        />
+                                    }
+                                    label={loc.status ? "Active" : "Inactive"}
+                                    labelPlacement="start"
+                                />
+                            </div>
                         )}
                     </MenuItem>
                 ))}
-                <MenuItem onClick={handleAddNewLocation} value="">Add a Library</MenuItem>
+                <MenuItem onClick={handleAddNewLocation} value="">Add Location</MenuItem>
             </Select>
             <ModalForm
                 open={showLocationModal}
                 handleClose={handleLocationModalClose}
-                title="Add New Library"
+                title="Add New Location"
                 fields={[
                     {
                         label: "Library Code Name",
@@ -153,7 +180,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     }
                 ]}
                 onConfirm={handleLocationModalConfirm}
-                confirmText="Add Library"
+                confirmText="Add Location"
             />
 
             <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={closeSnackbar} anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
