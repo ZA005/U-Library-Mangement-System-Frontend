@@ -30,47 +30,39 @@ const CirculationDashboard: React.FC = () => {
                     sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                     fontWeight="bold"
                 >
-                    Circulation Admin
+                    Manage Circulation
                 </Typography>
                 <Line />
 
                 <Box className={styles.container}>
                     {/* Left Content */}
                     <Box className={styles.leftContent}>
-                        <Typography variant="body1">
-                            📚 What is Circulation? Circulation is at the heart of library operations, ensuring the smooth flow of books and resources between the library and its users. Whether you're issuing, returning, or reserving materials, this system simplifies and automates the process for efficiency and accuracy.
+                        <Typography textAlign="justify" variant="body1">
+                            What is Circulation? Circulation is at the heart of library operations, ensuring the smooth flow of books and resources between the library and its users. Whether you're issuing, returning, or reserving materials, this system simplifies and automates the process for efficiency and accuracy.
                         </Typography>
 
                         <Typography variant="body1">
-                            ✨ What You Can Do Here:
-                        </Typography>
-                        <Typography variant="body1">
-                            As an Admin You Can:
+                            <strong>What You Can Do Here:</strong>
                         </Typography>
                         <ul>
                             <li className={styles.listItem}>
                                 <Typography variant="body1">
-                                    <strong>Issue Book:</strong> Quickly lend books to users while keeping detailed records.
+                                    <strong>Transaction History:</strong> Quickly lend books to users while keeping detailed records.
                                 </Typography>
                             </li>
                             <li className={styles.listItem}>
                                 <Typography variant="body1">
-                                    <strong>Return Book:</strong> Record returned items and update the library inventory.
+                                    <strong>Manage Circulation:</strong> Record returned items and update the library inventory.
                                 </Typography>
                             </li>
                             <li className={styles.listItem}>
                                 <Typography variant="body1">
-                                    <strong>Renew Book:</strong> Extend borrowing periods seamlessly.
+                                    <strong>Manage Reservations:</strong> Approve, deny, or modify user requests for reserved items efficiently.
                                 </Typography>
                             </li>
                             <li className={styles.listItem}>
                                 <Typography variant="body1">
-                                    <strong>Manage Reservations:</strong> Approve or deny user requests for reserved items.
-                                </Typography>
-                            </li>
-                            <li className={styles.listItem}>
-                                <Typography variant="body1">
-                                    <strong>Overdues:</strong> Track late returns and handle fines efficiently.
+                                    <strong>Oversee Overdue:</strong> Monitor overdue books, send reminders, and manage fines for late returns.
                                 </Typography>
                             </li>
                         </ul>

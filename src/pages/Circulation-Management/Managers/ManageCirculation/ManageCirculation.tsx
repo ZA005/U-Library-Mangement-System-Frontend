@@ -23,6 +23,7 @@ import {
   DialogTitle,
   Alert,
   Snackbar,
+  Pagination
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -49,6 +50,8 @@ const ManageCirculation: React.FC = () => {
   const [accessionNo, setAccessionNo] = useState<string>("");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+  const [page, setPage] = useState<number>(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchLoans = async () => {
@@ -157,7 +160,7 @@ const ManageCirculation: React.FC = () => {
       };
       try {
         const status = updatedLoan.status === "Borrowed" ? "Renewed" : "Returned";
-        openSnackbar(`Successfully returned ${selectedLoan.title}.`, "success");
+        openSnackbar(`Successfully ${status} ${selectedLoan.title}.`, "success");
         await updateLoanStatus(BigInt(updatedLoan.id), updatedLoan.status, status);
 
         // Update the local state directly after the API call succeeds
@@ -177,6 +180,13 @@ const ManageCirculation: React.FC = () => {
     setSelectedLoan(null);
     setAction(null);
   };
+
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  const paginatedLoans = filteredLoans.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
   return (
     <Box className={styles.rootContainer}>
       <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
@@ -245,7 +255,7 @@ const ManageCirculation: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredLoans.map((loan) => (
+                {paginatedLoans.map((loan) => (
                   <TableRow key={loan.id}>
                     <TableCell>{loan.accessionNo}</TableCell>
                     <TableCell>{loan.title}</TableCell>
@@ -290,6 +300,13 @@ const ManageCirculation: React.FC = () => {
             </Table>
           </TableContainer>
         )}
+        <Box display="flex" justifyContent="center" mt={2}>
+          <Pagination
+            count={Math.ceil(filteredLoans.length / itemsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+          />
+        </Box>
       </Container>
 
       <CirculationIssueBookModal

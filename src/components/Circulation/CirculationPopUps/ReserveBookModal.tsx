@@ -128,13 +128,13 @@ const ReserveBookModal: React.FC<ReserveBookModalProps> = ({
 
         try {
             const savedLoan = await saveReservation(newCirculationData);
-            openSnackbar(`Successfully borrowed ${title}.`, "success");
+            openSnackbar(`Successfully reserved ${title}.`, "success");
             handleClose();
             resetState();
             onReserveSuccess(savedLoan);
         } catch (error) {
-            console.error("Error saving loan information:", error);
-            setErrorMessage("Failed to save loan information. Please try again.");
+            console.error("Error saving reservation information:", error);
+            setErrorMessage("Failed to save reservation information. Please try again.");
         }
     };
 
@@ -238,7 +238,7 @@ const ReserveBookModal: React.FC<ReserveBookModalProps> = ({
                     handleClose();
                     resetState();
                 }}
-                title={step === 1 ? "Enter ID Number" : step === 2 ? "Enter Accession Number" : "Confirm Loan"}
+                title={step === 1 ? "Enter ID Number" : step === 2 ? "Enter Accession Number" : "Confirm Reservation"}
                 fields={getFieldsForStep()}
                 onConfirm={step === 3 ? handleConfirm : handleNext}
                 confirmText={step === 3 ? "Save" : "Next"}

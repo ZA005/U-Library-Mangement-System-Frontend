@@ -36,6 +36,7 @@ import { useFetchAllCurriculumByProgram } from "../../../../hooks/useCourse";
 import { useCsvUploader } from "./useUploadCourses";
 import { useSnackbar } from "../../../../hooks/useSnackbar";
 import { useDialog } from "../../../../hooks/useDialog";
+import useConverter from "../BookReference/useConvert";
 import styles from "../styles.module.css";
 
 const UploadCourses: React.FC = () => {
@@ -64,7 +65,15 @@ const UploadCourses: React.FC = () => {
     const { uploadCsv, isUploading, uploadError, parsedData } = useCsvUploader();
     const { isOpen, dialogContent, openDialog, closeDialog } = useDialog();
 
-    const filteredCourses = courses.filter((course) =>
+    const { yearLevelConverter, semesterConverter } = useConverter();
+
+    const processedCourses = courses?.map((course) => ({
+        ...course,
+        year_level: yearLevelConverter(course.year_level),
+        sem: semesterConverter(course.sem),
+    })) || [];
+
+    const filteredCourses = processedCourses.filter((course) =>
         course.course_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -252,7 +261,7 @@ const UploadCourses: React.FC = () => {
                                     filteredCourses.map((course) => (
                                         <TableRow key={course.course_id}>
                                             <TableCell width="15%">{course.course_code}</TableCell>
-                                            <TableCell width="50%">{course.course_name}</TableCell>
+                                            <TableCell width="40%">{course.course_name}</TableCell>
                                             <TableCell width="10%">{course.revision_no}</TableCell>
                                             <TableCell width="10%">{course.year_level}</TableCell>
                                             <TableCell width="10%">{course.sem}</TableCell>

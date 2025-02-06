@@ -47,7 +47,7 @@ const LandingPage: React.FC = () => {
                     sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                     fontWeight="bold"
                 >
-                    Admin Landing Page
+                    Library Control Center
                 </Typography>
                 <Line />
 
@@ -55,7 +55,7 @@ const LandingPage: React.FC = () => {
                     {/* Left Content */}
                     <Box className={styles.leftContent}>
                         <Typography variant="body1">
-                            Welcome! This is the Admins Dashboard, your central hub for managing the Library Management System (LMS).
+                            Welcome! This is your central hub for managing the Library Management System (LMS).
                         </Typography>
                         <Typography variant="body1">
                             With just a few clicks, you can:
