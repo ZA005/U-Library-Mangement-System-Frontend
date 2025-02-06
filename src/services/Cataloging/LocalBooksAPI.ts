@@ -110,15 +110,17 @@ export const addLibrary = async (library: Locations) => {
     }
 };
 
-export const deleteLocation = async (id: number) => {
+export const updateLocationStatus = async (id: number, status: boolean) => {
     try {
-        const response = await axios.delete(`${BASE_URL_ADMIN}location/${id}`, {
+        const response = await axios.put(`${BASE_URL_ADMIN}location/${id}/status`, null, {
+            params: {
+                status: status
+            },
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-
-        return response.data;
+        return response.data as Locations;
     } catch (error) {
-        console.error('Failed to delete location:', error);
+        console.error('Failed to update location status:', error);
         throw error;
     }
 };

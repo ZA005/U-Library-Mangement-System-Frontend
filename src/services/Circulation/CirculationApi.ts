@@ -175,7 +175,9 @@ export const saveReservation = async (reservation: unknown) => {
 
 export const updateFinePaidStatus = async (id: number) => {
     try {
-        const res = await axios.put(`${BASE_URL}adminuser/paid/${id}`);
+        const res = await axios.put(`${BASE_URL}adminuser/paid/${id}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         return res.data;
     } catch (e) {
         console.error(e)

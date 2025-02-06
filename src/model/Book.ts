@@ -28,6 +28,7 @@ export interface Locations {
     id?: number;
     locationCodeName: string;
     locationName: string;
+    status: boolean;
 }
 
 export interface Sections {
