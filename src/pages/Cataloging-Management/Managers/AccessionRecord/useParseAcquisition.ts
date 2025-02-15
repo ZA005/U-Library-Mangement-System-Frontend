@@ -8,7 +8,7 @@ export const useCSVParser = () => {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [parseStatus, setParseStatus] = useState(false);
     const expectedHeaders = [
-        "book_title", "isbn", "publisher", "edition", "published_date",
+        "id", "book_title", "isbn", "publisher", "edition", "published_date",
         "purchase_price", "purchase_date", "acquired_date", "vendor",
         "vendor_location", "funding_source"
     ];
@@ -35,8 +35,11 @@ export const useCSVParser = () => {
                         setParseStatus(false);
                         return;
                     }
-
+                    console.log('RESULTS', result)
                     const fileHeaders = Object.keys(result.data[0]);
+                    console.log('RAW', fileHeaders)
+                    console.log('FILEHEADERS', JSON.stringify(fileHeaders.sort()))
+                    console.log('EXPECTEDHEADERS', JSON.stringify(expectedHeaders.sort()))
                     if (JSON.stringify(fileHeaders.sort()) !== JSON.stringify(expectedHeaders.sort())) {
                         setErrorMessage("CSV headers do not match the expected format.");
                         setParseStatus(false);
@@ -54,7 +57,7 @@ export const useCSVParser = () => {
                 } catch (error) {
                     setErrorMessage(
                         error instanceof Error
-                            ? `Failed to add records: ${error.message}`
+                            ? `${error.message}`
                             : "An unexpected error occurred while adding records."
                     );
                     setParseStatus(false);

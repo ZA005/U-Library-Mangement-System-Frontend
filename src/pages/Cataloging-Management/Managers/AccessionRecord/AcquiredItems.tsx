@@ -45,7 +45,7 @@ const AcquiredItems: React.FC = () => {
     const [selectedOption, setSelectedOption] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [canImport, setCanImport] = useState<boolean>(true);
+    // const [canImport, setCanImport] = useState<boolean>(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [fileToUpload, setFileToUpload] = useState<File | null>(null);
     const [page, setPage] = useState<number>(1);
@@ -77,7 +77,7 @@ const AcquiredItems: React.FC = () => {
                 }
                 const records = await fetchAllPendingCatalogRecords();
                 setArray(records);
-                setCanImport(records.length === 0);
+                // setCanImport(records.length === 0);
             } catch (error) {
                 if (error instanceof Error) {
                     setErrorMessage(`Error loading records from server: ${error.message}`);
@@ -126,10 +126,10 @@ const AcquiredItems: React.FC = () => {
     };
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!canImport) {
-            setErrorMessage('Please catalog all pending records before importing new ones.');
-            return;
-        }
+        // if (!canImport) {
+        //     setErrorMessage('Please catalog all pending records before importing new ones.');
+        //     return;
+        // }
 
         if (e.target.files) {
             const selectedFile = e.target.files[0];
@@ -148,7 +148,7 @@ const AcquiredItems: React.FC = () => {
             try {
                 await validateAndParseCSV(fileToUpload, (allRecords) => {
                     setArray(allRecords);
-                    setCanImport(allRecords.length === 0);
+                    // setCanImport(allRecords.length === 0);
                 });
             } finally {
                 setIsLoading(false);
@@ -196,8 +196,8 @@ const AcquiredItems: React.FC = () => {
                     <Button
                         variant="outlined"
                         component="label"
-                        disabled={isLoading || !canImport}
-                        startIcon={!canImport && <Typography variant="body2" color="error" sx={{ mt: -0.5 }}>!</Typography>}
+                        disabled={isLoading}
+                    // startIcon={!canImport && <Typography variant="body2" color="error" sx={{ mt: -0.5 }}>!</Typography>}
                     >
                         Choose File
                         <Input
@@ -205,14 +205,14 @@ const AcquiredItems: React.FC = () => {
                             inputProps={{ accept: '.csv' }}
                             sx={{ display: 'none' }}
                             onChange={handleFileChange}
-                            disabled={isLoading || !canImport}
+                            disabled={isLoading}
                         />
                     </Button>
-                    {!canImport && (
+                    {/* {!canImport && (
                         <Typography variant="body2" color="error" sx={{ ml: 2, mt: 1 }}>
                             Catalog all pending records first.
                         </Typography>
-                    )}
+                    )} */}
                 </Box>
                 {errorMessage && (
                     <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
