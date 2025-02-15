@@ -1,4 +1,4 @@
-import { Box, Container, IconButton, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { Box, Container, IconButton, Typography, Accordion, AccordionSummary, AccordionDetails, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -35,6 +35,11 @@ const CatalogHome: React.FC = () => {
   const [query] = useState("");
   const navigate = useNavigate();
 
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [booksPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -55,6 +60,7 @@ const CatalogHome: React.FC = () => {
           printType: book.printType,
         }));
         setBooks(mappedBookData);
+        setTotalPages(Math.ceil(mappedBookData.length / booksPerPage));
       } catch (err) {
         console.error("Error fetching books:", err);
         setError("Failed to fetch books from the database.");
@@ -62,10 +68,11 @@ const CatalogHome: React.FC = () => {
     };
 
     fetchBooks();
-  }, []);
+  }, [booksPerPage]);
 
   const handleSearch = () => {
     console.log("Search for: ", query);
+    setPage(1); // Reset to first page when searching
   };
 
   const handleBookClick = (book: Book) => {
@@ -80,6 +87,18 @@ const CatalogHome: React.FC = () => {
 
   const handleSidebarClose = () => {
     setSidebarOpen(false);
+  };
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    window.scrollTo(0, 0); // Scroll to top when page changes
+  };
+
+  // Get current books for pagination
+  const getCurrentBooks = () => {
+    const indexOfLastBook = page * booksPerPage;
+    const indexOfFirstBook = indexOfLastBook - booksPerPage;
+    return books.slice(indexOfFirstBook, indexOfLastBook);
   };
 
   return (
@@ -103,7 +122,7 @@ const CatalogHome: React.FC = () => {
             }}
             fontWeight="bold"
           >
-            Library Catalog
+            Browse Books
           </Typography>
           <Box sx={{ width: "100%" }}>
             <Line />
@@ -111,7 +130,7 @@ const CatalogHome: React.FC = () => {
 
           <SearchBar onSearch={handleSearch} />
 
-          <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <Box display="flex" flexDirection="row" justifyContent="space-between" sx={{ marginTop: "30px" }}>
             <Box
               width="15vw"
               sx={{
@@ -130,18 +149,42 @@ const CatalogHome: React.FC = () => {
 
             <Box
               width="50vw"
-              height="100vh"
               sx={{
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
                 marginX: 2,
-                overflow: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                padding: 2,
+                height: "90vh",
+                position: "relative"
               }}
             >
-              {books.length === 0 ? (
-                <Typography>No books available.</Typography>
-              ) : (
-                <BookList books={books} onBookClick={handleBookClick} source="" />
-              )}
+              <Box sx={{
+                overflowY: "auto",
+                height: "calc(100% - 60px)"
+              }}>
+                <BookList books={getCurrentBooks()} onBookClick={handleBookClick} source="" />
+              </Box>
+
+              <Box sx={{
+                // position: "sticky",
+                // bottom: 0,
+                backgroundColor: "white",
+                paddingTop: 2,
+                display: "flex",
+                justifyContent: "center"
+              }}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                  size="large"
+                  showFirstButton
+                  showLastButton
+                />
+              </Box>
             </Box>
 
             <Box
@@ -159,15 +202,13 @@ const CatalogHome: React.FC = () => {
                 Account Overview
               </Typography>
 
-
               <Box
                 bgcolor="#CC0000"
                 sx={{
                   width: "100%",
-                  height: " 1vh"
+                  height: "1vh"
                 }}
-              >
-              </Box>
+              />
 
               <SummaryBox
                 icon={<AutoStories sx={{ fontSize: 40, color: "green" }} />}
@@ -188,7 +229,6 @@ const CatalogHome: React.FC = () => {
                 color="red"
               />
             </Box>
-
           </Box>
         </Box>
 
