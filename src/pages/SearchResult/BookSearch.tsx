@@ -8,6 +8,7 @@ import BookList from "../../components/Book/BookList/BookListComponent";
 import Header from "../../components/Header/Header";
 import MenuIcon from "@mui/icons-material/Menu";
 import Line from "../../components/Line/Line";
+import Copyright from "../../components/Footer/Copyright";
 import Sidebar from "../../components/Sidebar";
 import SearchBar from "../../components/SearchBar/Searchbar";
 import { getBooksByAdvancedSearch } from "../../services/Cataloging/LocalBooksAPI";
@@ -152,9 +153,12 @@ const BookSearch: React.FC = () => {
                 ) : books.length === 0 ? (
                     <Typography>No results found</Typography>
                 ) : (
-                    <BookList books={books} onBookClick={handleBookClick} source={source} />
+                    <Box sx={{ maxHeight: "100vh", overflowY: "auto" }}>
+                        <BookList books={books} onBookClick={handleBookClick} source={source} />
+                    </Box>
                 )}
             </Container>
+            <Copyright />
         </Box>
     );
 };
