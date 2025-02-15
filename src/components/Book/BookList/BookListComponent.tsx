@@ -42,16 +42,16 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
   const uniqueBooks = getUniqueBooks(books);
 
   // Click handler for checkout button
-  const handleCheckout = (book: Book) => {
-    console.log(`Checkout clicked for book: ${book.title}`);
-    // Add your logic for "Checkout" action (like opening a modal or redirecting)
-  };
+  // const handleCheckout = (book: Book) => {
+  //   console.log(`Checkout clicked for book: ${book.title}`);
+  //   // Add your logic for "Checkout" action (like opening a modal or redirecting)
+  // };
 
-  // Click handler for place hold button
-  const handlePlaceHold = (book: Book) => {
-    console.log(`Place Hold clicked for book: ${book.title}`);
-    // Add your logic for "Place Hold" action (like opening a modal or redirecting)
-  };
+  // // Click handler for place hold button
+  // const handlePlaceHold = (book: Book) => {
+  //   console.log(`Place Hold clicked for book: ${book.title}`);
+  //   // Add your logic for "Place Hold" action (like opening a modal or redirecting)
+  // };
 
   return (
     <Container sx={{ p: 2, maxWidth: 'lg' }}>
@@ -123,7 +123,7 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
                 </CardContent>
 
                 {/* Action buttons */}
-                {source !== "Z39.50/SRU" && (
+                {/* {source !== "Z39.50/SRU" && (
                   <Box
                     sx={{
                       display: 'flex',
@@ -156,7 +156,7 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
                       Place Hold
                     </Button>
                   </Box>
-                )}
+                )} */}
               </Card>
             );
           })}

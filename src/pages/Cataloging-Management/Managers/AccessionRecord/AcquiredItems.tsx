@@ -35,6 +35,7 @@ import Line from '../../../../components/Line/Line';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Copyright from '../../../../components/Footer/Copyright';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
+import { useCSVParser } from './useParseAcquisition';
 import { AcquisitionRecord, addRecords, fetchAllPendingCatalogRecords, updateStatus } from '../../../../services/AcquisitionService';
 
 const AcquiredItems: React.FC = () => {
@@ -44,12 +45,12 @@ const AcquiredItems: React.FC = () => {
     const [selectedOption, setSelectedOption] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [canImport, setCanImport] = useState<boolean>(true);
+    // const [canImport, setCanImport] = useState<boolean>(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [fileToUpload, setFileToUpload] = useState<File | null>(null);
     const [page, setPage] = useState<number>(1);
     const itemsPerPage = 5;
-
+    const { isLoading: csvParseLoading, errorMessage: csvParseErrorMsg, successMessage: csvParseSuccessMsg, parseStatus, validateAndParseCSV } = useCSVParser();
     const navigate = useNavigate();
 
     const {
@@ -76,7 +77,7 @@ const AcquiredItems: React.FC = () => {
                 }
                 const records = await fetchAllPendingCatalogRecords();
                 setArray(records);
-                setCanImport(records.length === 0);
+                // setCanImport(records.length === 0);
             } catch (error) {
                 if (error instanceof Error) {
                     setErrorMessage(`Error loading records from server: ${error.message}`);
@@ -125,10 +126,10 @@ const AcquiredItems: React.FC = () => {
     };
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!canImport) {
-            setErrorMessage('Please catalog all pending records before importing new ones.');
-            return;
-        }
+        // if (!canImport) {
+        //     setErrorMessage('Please catalog all pending records before importing new ones.');
+        //     return;
+        // }
 
         if (e.target.files) {
             const selectedFile = e.target.files[0];
@@ -144,69 +145,28 @@ const AcquiredItems: React.FC = () => {
             setIsLoading(true);
             setOpenDialog(false);
 
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-                const csvString = event.target?.result as string;
-                await validateAndParseCSV(csvString);
-            };
-            reader.readAsText(fileToUpload);
+            try {
+                await validateAndParseCSV(fileToUpload, (allRecords) => {
+                    setArray(allRecords);
+                    // setCanImport(allRecords.length === 0);
+                });
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
+
+    useEffect(() => {
+        if (csvParseErrorMsg) {
+            openSnackbar(csvParseErrorMsg, 'error');
+        } else if (csvParseSuccessMsg && parseStatus) {
+            openSnackbar(csvParseSuccessMsg, 'success');
+        }
+    }, [csvParseErrorMsg, csvParseSuccessMsg, parseStatus, openSnackbar]);
 
     const handleCancelUpload = () => {
         setOpenDialog(false);
         setFileToUpload(null);
-    };
-
-    const validateAndParseCSV = async (csvString: string) => {
-        const expectedHeaders = [
-            'book_title', 'isbn', 'publisher', 'edition', 'published_date',
-            'purchase_price', 'purchase_date', 'acquired_date', 'vendor',
-            'vendor_location', 'funding_source'
-        ];
-
-        const resetStates = () => {
-            setOpenDialog(false);
-            setFileToUpload(null);
-        };
-
-        const handleError = (message: string, snackbarMsg: string) => {
-            setErrorMessage(message);
-            openSnackbar(snackbarMsg, 'error');
-            resetStates();
-            setIsLoading(false);
-        };
-
-        Papa.parse(csvString, {
-            header: true,
-            skipEmptyLines: true,
-            complete: async (result) => {
-                if (result.data.length > 0 && JSON.stringify(Object.keys(result.data[0])) === JSON.stringify(expectedHeaders)) {
-                    const parsedData = result.data as unknown as AcquisitionRecord[];
-                    try {
-                        await addRecords(parsedData);
-                        openSnackbar("CSV Parsed Successfully!", "success");
-                        const allRecords = await fetchAllPendingCatalogRecords();
-                        setArray(allRecords);
-                        setCanImport(allRecords.length === 0);
-                    } catch (error) {
-                        handleError(
-                            error instanceof Error ? `Failed to add records to the server: ${error.message}` : 'An unexpected error occurred while adding records.',
-                            error instanceof Error ? "Failed to add records to the server!" : "An unexpected error occurred while adding records!"
-                        );
-                        return;
-                    }
-                } else {
-                    handleError('CSV file headers do not match the expected format or the file is empty.', 'CSV file headers incorrect or file empty!');
-                    return;
-                }
-                setIsLoading(false);
-                // console.log('After processing:', openDialog, fileToUpload);
-            },
-            error: (err) => {
-                handleError(`An error occurred while parsing the CSV file: ${err.message}`, `Error parsing CSV file!`);
-            }
-        });
     };
 
     useEffect(() => {
@@ -236,8 +196,8 @@ const AcquiredItems: React.FC = () => {
                     <Button
                         variant="outlined"
                         component="label"
-                        disabled={isLoading || !canImport}
-                        startIcon={!canImport && <Typography variant="body2" color="error" sx={{ mt: -0.5 }}>!</Typography>}
+                        disabled={isLoading}
+                    // startIcon={!canImport && <Typography variant="body2" color="error" sx={{ mt: -0.5 }}>!</Typography>}
                     >
                         Choose File
                         <Input
@@ -245,14 +205,14 @@ const AcquiredItems: React.FC = () => {
                             inputProps={{ accept: '.csv' }}
                             sx={{ display: 'none' }}
                             onChange={handleFileChange}
-                            disabled={isLoading || !canImport}
+                            disabled={isLoading}
                         />
                     </Button>
-                    {!canImport && (
+                    {/* {!canImport && (
                         <Typography variant="body2" color="error" sx={{ ml: 2, mt: 1 }}>
                             Catalog all pending records first.
                         </Typography>
-                    )}
+                    )} */}
                 </Box>
                 {errorMessage && (
                     <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
