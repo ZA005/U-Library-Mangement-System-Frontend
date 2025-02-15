@@ -8,7 +8,6 @@ import Footer from '../../Footer/Copyright';
 import { Box, Button, Typography, CardMedia, Collapse, Container, IconButton } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-// import AddBookReferenceModal from '../../CurriculumManagement/AddBookReferenceModal';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { getBooksByAuthor } from '../../../services/Cataloging/LocalBooksAPI';
 import './BookDetails.css';
@@ -22,14 +21,11 @@ const BookDetails: React.FC = () => {
   const navigate = useNavigate();
   const [showBooks, setShowBooks] = useState(false);
   const [booksByAuthor, setBooksByAuthor] = useState<Book[] | null>(null);
-  const [isAddBookRefModalOpen, setIsAddBookRefModalOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const book: Book = state?.book;
   const source = state?.source;
   const acquiredBook = state?.acquiredBook;
-  const handleAddBookRefModalOpen = () => setIsAddBookRefModalOpen(true);
-  const handleAddBookRefModalClose = () => setIsAddBookRefModalOpen(false);
 
   const handleToggleBooksByAuthor = async () => {
     setShowBooks((prev) => !prev);
@@ -142,14 +138,6 @@ const BookDetails: React.FC = () => {
               <>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleReserve}>Reserve item</Button>
                 <Button sx={{ backgroundColor: '#ea4040', color: 'white' }} onClick={handleBorrow}>Borrow item</Button>
-                {UserService.adminOnly() && (
-                  <Button
-                    sx={{ backgroundColor: '#ea4040', color: 'white' }}
-                    onClick={handleAddBookRefModalOpen}
-                  >
-                    Add As Book Reference
-                  </Button>
-                )}
 
               </>
 
@@ -162,13 +150,6 @@ const BookDetails: React.FC = () => {
         </Box>
         <Footer />
       </Box>
-
-      {/* <AddBookReferenceModal
-        open={isAddBookRefModalOpen}
-        handleClose={handleAddBookRefModalClose}
-        bookName={book.title}
-        urlPath={`/user/book/${book.id}`}
-      /> */}
     </>
   );
 };
