@@ -9,8 +9,21 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [title, setTitle] = useState<React.ReactNode>("");
 
     return (
-        <Box display="flex" flexDirection="column" height="100vh">
-            <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
+        <Box
+            display="flex"
+            flexDirection="column"
+            minHeight="100vh"
+            sx={{
+                overflowX: "hidden",
+            }}
+        >
+            <Container
+                maxWidth="lg"
+                sx={{
+                    flexGrow: 1,
+                    px: { xs: 2, sm: 4, md: 6 }
+                }}
+            >
                 <Header buttons={headerButtons} title={title} />
                 {/* Pass setHeaderButtons as context without LayoutContext */}
                 <Outlet context={{ setHeaderButtons, setTitle }} />

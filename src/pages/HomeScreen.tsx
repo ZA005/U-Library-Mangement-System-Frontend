@@ -1,7 +1,11 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction } from "react";
-import { Typography, Button } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import Line from "../components/Line/Line";
+import Login from "../components/Modal/Login";
+import VerifyUser from "../components/Modal/Verification/User";
+import { useModal } from "../hooks/Modal/useModal";
+import HeaderButtons from "../components/Header/HeaderButtons";
 
 const HomeScreen: React.FC = () => {
     const { setHeaderButtons, setTitle } = useOutletContext<{
@@ -9,16 +13,15 @@ const HomeScreen: React.FC = () => {
         setTitle: Dispatch<SetStateAction<string>>;
     }>();
 
+    const loginModal = useModal();
+    const verifyModal = useModal();
+
     useEffect(() => {
         setHeaderButtons(
-            <>
-                <Button variant="outlined" sx={{ color: '#d32f2f', borderColor: ' #d32f2f', marginRight: '10px' }}>
-                    Activate Account
-                </Button>
-                <Button variant="contained" sx={{ backgroundColor: '#d32f2f' }}>
-                    Sign In
-                </Button>
-            </>
+            <HeaderButtons
+                onLoginClick={loginModal.open}
+                onVerifyClick={verifyModal.open}
+            />
         );
 
         setTitle("Home - Library Management System");
@@ -27,19 +30,23 @@ const HomeScreen: React.FC = () => {
             setHeaderButtons(null);
             setTitle("");
         };
-    }, [setHeaderButtons, setTitle]);
+    }, [setHeaderButtons, setTitle, loginModal.open, verifyModal.open]);
 
     return (
         <>
             <Typography
                 variant="h4"
                 gutterBottom
-                sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                 fontWeight="bold"
+                sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}
             >
                 Library Management System
             </Typography>
             <Line />
+
+            {/* Modals */}
+            <Login open={loginModal.isOpen} onClose={loginModal.close} />
+            <VerifyUser open={verifyModal.isOpen} onClose={verifyModal.close} />
         </>
     );
 };
