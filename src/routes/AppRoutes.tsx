@@ -19,10 +19,12 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* PUBLIC ROUTES */}
-      <Route
-        path={ROUTES.HOME}
-        element={isAuthenticated ? getDefaultRoute() : <HomeScreen />}
-      />
+      <Route element={<MainLayout />}>
+        <Route
+          path={ROUTES.HOME}
+          element={isAuthenticated ? getDefaultRoute() : <HomeScreen />}
+        />
+      </Route>
 
       {/* PROTECTED ROUTES WRAPPED IN MAINLAYOUT */}
       <Route element={<MainLayout />}>
