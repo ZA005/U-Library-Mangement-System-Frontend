@@ -84,7 +84,7 @@ const CirculationIssueBookModal: React.FC<CirculationIssueBookModalProps> = ({
         const { department, hasCurrentBorrowedBook, registered } = await fetchBorrowerDetails(idNumber); // Fetch based on idNumber
 
         if (!registered) {
-          setErrorMessage("This borrower is not registered. Please verify the ID number.");
+          setErrorMessage("This borrower is not yet activated. Please verify the ID number.");
           return; // Prevent moving to the next step if not registered
         }
 

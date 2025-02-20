@@ -1,5 +1,6 @@
 export interface Book {
     id: string;
+    accessionNo: string;
     title: string;
     authors: string[];
     publisher?: string;
