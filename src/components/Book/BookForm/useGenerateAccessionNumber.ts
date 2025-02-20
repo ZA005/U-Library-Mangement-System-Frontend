@@ -1,59 +1,46 @@
 import { useState, useEffect } from 'react';
 import { getLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
 
-type UseGenerateAccessionNumberProps = {
-    location: string;
+interface UseGenerateAccessionNumbersProps {
+    locationPrefix: string;
     copies: number;
-};
+}
 
-const useGenerateAccessionNumber = ({
-    location,
+export const useGenerateAccessionNumbers = ({
+    locationPrefix,
     copies,
-}: UseGenerateAccessionNumberProps): string => {
-    const [accessionNumber, setAccessionNumber] = useState('');
-    const locationPrefix = getLocationPrefix(location);
+}: UseGenerateAccessionNumbersProps): string[] => {
+    const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
 
     useEffect(() => {
+        if (!locationPrefix) return;
         const fetchLastAccessionNumber = async () => {
             try {
                 const lastAccessionNumber = await getLastAccessionNumber();
                 const accessionParts = lastAccessionNumber.split(' c.');
 
                 const lastNumber = parseInt(accessionParts[0].split('-')[1]) || 0;
+                const newNumbers: string[] = [];
 
-                const newNumber = lastNumber + 1;
-                const formattedNumber = newNumber.toString().padStart(6, '0');
+                for (let i = 0; i < copies; i++) {
+                    const newNumber = lastNumber + i + 1;
+                    const formattedNumber = newNumber.toString().padStart(6, '0');
+                    let newAccessionNumber = `${locationPrefix}-${formattedNumber}`;
 
-                let newAccessionNumber = `${locationPrefix}-${formattedNumber}`;
-
-                // Append copy count for all cases, explicitly showing 'c.1' for a single copy
-                if (copies >= 1) {
-                    newAccessionNumber += ` c.${copies}`;
+                    // Append copy count for all cases, explicitly showing 'c.1' for a single copy
+                    newAccessionNumber += ` c.${i + 1}`;
+                    newNumbers.push(newAccessionNumber);
                 }
 
-                setAccessionNumber(newAccessionNumber);
+                setAccessionNumbers(newNumbers);
             } catch (error) {
                 console.error('Error fetching last accession number:', error);
-                setAccessionNumber('Error');
+                setAccessionNumbers(['Error']);
             }
         };
 
         fetchLastAccessionNumber();
     }, [locationPrefix, copies]);
 
-    return accessionNumber;
+    return accessionNumbers;
 };
-
-const getLocationPrefix = (location: string) => {
-    switch (location) {
-        case 'eLibrary': return 'E';
-        case 'Graduate Studies Library': return 'GS';
-        case 'Law Library': return 'L';
-        case 'Engineering and Architecture Library': return 'EA';
-        case 'High School Library': return 'HS';
-        case 'Elementary Library': return 'EL';
-        default: return '';
-    }
-};
-
-export default useGenerateAccessionNumber;

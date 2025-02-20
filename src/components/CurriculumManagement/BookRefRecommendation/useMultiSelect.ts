@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Book } from "./BookRefRec";
+import { Book } from "../../../model/Book";
 
 export const useMultiSelect = () => {
     const [multiSelectMode, setMultiSelectMode] = useState(false);

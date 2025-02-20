@@ -1,27 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import { Box, Container, IconButton, Typography } from "@mui/material";
+import { Box, Container, IconButton, Typography, Pagination } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Book } from "../../model/Book";
 import BookList from "../../components/Book/BookList/BookListComponent";
 import Header from "../../components/Header/Header";
 import MenuIcon from "@mui/icons-material/Menu";
 import Line from "../../components/Line/Line";
+import Copyright from "../../components/Footer/Copyright";
 import Sidebar from "../../components/Sidebar";
 import SearchBar from "../../components/SearchBar/Searchbar";
 import { getBooksByAdvancedSearch } from "../../services/Cataloging/LocalBooksAPI";
 
 const BookSearch: React.FC = () => {
     const location = useLocation();
-    const state = location.state as { query: any; books: Book[]; source: string; modalParams?: any };
+    const state = location.state as { query: any; books: Book[]; source: string; modalParams?: any; bookData: any; };
 
     const [query, setQuery] = useState(state?.query || null);
     const [source, setSource] = useState(state?.source || "All libraries");
     const [books, setBooks] = useState<Book[]>(state?.books || []);
+    const [acquiredBook] = useState<Book>(state?.bookData || null);
     const [loading, setLoading] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isNavigationSearch, setIsNavigationSearch] = useState(!!state?.query);
+
+    const [page, setPage] = useState(1);
+    const [booksPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
 
     const navigate = useNavigate();
 
@@ -30,7 +36,7 @@ const BookSearch: React.FC = () => {
 
     const handleBookClick = (book: Book) => {
         navigate(`/user/book/${book.id}`, {
-            state: { book, searchState: { query, books, source }, source },
+            state: { book, searchState: { query, books, source }, source, acquiredBook },
         });
     };
 
@@ -39,6 +45,8 @@ const BookSearch: React.FC = () => {
         setSource(newSource);
         setQuery(newQuery);
         setIsNavigationSearch(false);
+        setTotalPages(Math.ceil(newBooks.length / booksPerPage));
+        setPage(1);
     };
 
 
@@ -107,6 +115,16 @@ const BookSearch: React.FC = () => {
         }
     };
 
+    const getCurrentBooks = () => {
+        const indexOfLastBook = page * booksPerPage;
+        const indexOfFirstBook = indexOfLastBook - booksPerPage;
+        return books.slice(indexOfFirstBook, indexOfLastBook);
+    };
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+        window.scrollTo(0, 0);
+    };
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -128,7 +146,7 @@ const BookSearch: React.FC = () => {
                         sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                         fontWeight="bold"
                     >
-                        Catalog
+                        Browse Books
                     </Typography>
                 </Box>
                 <Line />
@@ -151,9 +169,38 @@ const BookSearch: React.FC = () => {
                 ) : books.length === 0 ? (
                     <Typography>No results found</Typography>
                 ) : (
-                    <BookList books={books} onBookClick={handleBookClick} source={source} />
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        position: 'relative',
+                        height: 'calc(100vh - 300px)'  // Adjust this value based on your header/search bar height
+                    }}>
+                        <Box sx={{ overflowY: "auto", flex: 1 }}>
+                            <BookList books={getCurrentBooks()} onBookClick={handleBookClick} source={source} />
+                        </Box>
+                        <Box sx={{
+                            position: 'sticky',
+                            bottom: 0,
+                            backgroundColor: 'white',
+                            paddingTop: 2,
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Pagination
+                                count={totalPages}
+                                page={page}
+                                onChange={handlePageChange}
+                                color="primary"
+                                size="large"
+                                showFirstButton
+                                showLastButton
+                            />
+                        </Box>
+                    </Box>
                 )}
             </Container>
+            <Copyright />
         </Box>
     );
 };

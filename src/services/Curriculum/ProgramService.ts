@@ -1,10 +1,12 @@
 import axios from "axios";
 
 export interface Program {
-    id: number;
-    department_id: number;
+    prog_id: number;
+    dept_id: string;
     department_name: string;
-    name: string;
+    department_code: string
+    code: string;
+    description: string;
     status: number;
 }
 
@@ -32,11 +34,15 @@ export const addProgram = async (newProgram: Program): Promise<Program> => {
 }
 
 // Add multiple programs
-export const addProgramInBulk = async (programs: Program[]): Promise<Program[]> => {
+export const uploadPrograms = async (programs: Program[]): Promise<Program[]> => {
     try {
-        const response = await axios.post(`${BASE_URL}public/programs/bulk`, programs);
-        console.log("Programs added:", response.data);
-        return response.data;
+        const response = await axios.post(`${BASE_URL}public/programs/upload`, programs);
+        if (response.status >= 200 && response.status < 300) {
+            console.log("Programs added:", response.data);
+            return response.data;
+        } else {
+            throw new Error(`Unexpected response status: ${response.status}`);
+        }
     } catch (error) {
         console.error("Error adding programs:", error);
         throw error;
@@ -53,7 +59,7 @@ export const updateProgram = async (id: number, program: Program): Promise<Progr
     }
 }
 
-export const getAllProgramByDepartment = async (id: number): Promise<Program[]> => {
+export const getAllProgramsByDepartment = async (id: string): Promise<Program[]> => {
     try {
         const response = await axios.get(`${BASE_URL}public/programs/department/${id}`);
         console.log('Response', response)

@@ -2,11 +2,11 @@
 .pageContainer {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensures the container spans the full height of the viewport */
+  min-height: 100vh;
 }
 
 .content {
-  flex: 1; /* Expands to fill available space between header and footer */
+  flex: 1;
 }
 
 .rootContainer {
@@ -62,6 +62,13 @@
   border: none;
   border-radius: 5px;
   font-size: 1rem;
+}
+.advanceSearchButton {
+  background-color: #ea4040;
+  color: white;
+  cursor: pointer;
+  max-height: min-content;
+  font-size: small;
 }
 
 .searchButton:disabled {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Box, Stack, Typography, Button } from '@mui/material';
 import { Autocomplete, TextField } from '@mui/material';
 import styles from '../styles.module.css';
-import UserService from '../../../services/UserService';
+import UserService from '../../../services/UserManagement/UserService';
 import { WeedInfos } from '../../../model/Criteria';
 
 const weedingReasons = [

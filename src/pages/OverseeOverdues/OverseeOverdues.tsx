@@ -14,6 +14,14 @@ import {
     TableRow,
     Paper,
     Pagination,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Button,
+    Snackbar,
+    Alert
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,8 +29,8 @@ import Header from "../../components/Header/Header";
 import Line from "../../components/Line/Line";
 import styles from "./styles.module.css";
 import Copyright from "../../components/Footer/Copyright";
-import { calculateFines, getAllFineDetails } from "../../services/Circulation/CirculationApi";
-import logo from "../../assets/images/lms-logo.png"; 
+import { calculateFines, getAllFineDetails, updateFinePaidStatus } from "../../services/Circulation/CirculationApi";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 interface Fine {
     fineId: number;
@@ -35,7 +43,7 @@ interface Fine {
     fineAmount: number;
     returnDate: string;
     user: { userId: number; name: string };
-    paid: boolean;
+    paid: number;
 }
 
 const OverseeOverdue: React.FC = () => {
@@ -44,11 +52,15 @@ const OverseeOverdue: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const itemsPerPage = 6;
 
+    // State for confirmation dialog
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedFineId, setSelectedFineId] = useState<number | null>(null);
+    const { snackbarOpen, snackbarMessage, snackbarStatus, openSnackbar, closeSnackbar } = useSnackbar();
     useEffect(() => {
         const fetchFines = async () => {
             try {
                 await calculateFines();
-                const result = await getAllFineDetails(); // Assuming the backend returns an array of fines
+                const result = await getAllFineDetails();
                 setFines(result);
             } catch (error) {
                 console.error("Error calculating fines:", error);
@@ -66,6 +78,37 @@ const OverseeOverdue: React.FC = () => {
 
     const handleSideBarClick = () => {
         console.log("Hamburger menu clicked!");
+    };
+
+    // Open confirmation dialog
+    const handleOpenDialog = (fineId: number) => {
+        setSelectedFineId(fineId);
+        setOpenDialog(true);
+    };
+
+    // Close dialog
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setSelectedFineId(null);
+    };
+
+    // Mark fine as paid after confirmation
+    const handleConfirmPaid = async () => {
+        if (selectedFineId === null) return;
+
+        try {
+            await updateFinePaidStatus(selectedFineId);
+            const updatedFines = await getAllFineDetails(); // Refresh fines
+            setFines(updatedFines);
+
+            // Show success message
+            openSnackbar("Fine marked as paid successfully!", "success");
+        } catch (error) {
+            console.error("Error updating fine status:", error);
+            openSnackbar("Failed to update fine status", "error");
+        } finally {
+            handleCloseDialog(); // Close the dialog
+        }
     };
 
     return (
@@ -134,19 +177,24 @@ const OverseeOverdue: React.FC = () => {
                                         <TableCell>{new Date(fine.dueDate).toLocaleString()}</TableCell>
                                         <TableCell>{fine.fineAmount} php</TableCell>
                                         <TableCell>
-                                            <Typography
-                                                variant="button"
-                                                sx={{
-                                                    color: "#EA4040",
-                                                    textTransform: "none",
-                                                    cursor: "pointer",
-                                                    ":hover": {
-                                                        color: "#d13333",
-                                                    },
-                                                }}
-                                            >
-                                                Paid
-                                            </Typography>
+                                            {fine.paid === 0 ? (
+                                                <Typography
+                                                    variant="button"
+                                                    sx={{
+                                                        color: "#EA4040",
+                                                        textTransform: "none",
+                                                        cursor: "pointer",
+                                                        ":hover": { color: "#d13333" },
+                                                    }}
+                                                    onClick={() => handleOpenDialog(fine.fineId)}
+                                                >
+                                                    Mark as Paid
+                                                </Typography>
+                                            ) : (
+                                                <Typography variant="button" sx={{ color: "#28a745" }}>
+                                                    Paid
+                                                </Typography>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -165,6 +213,41 @@ const OverseeOverdue: React.FC = () => {
             </Container>
 
             <Copyright />
+
+            {/* Confirmation Dialog */}
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle>Confirm Payment</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to mark this fine as paid? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}
+                        variant="outlined"
+                        sx={{ color: "#EA4040", borderColor: "#EA4040" }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button onClick={handleConfirmPaid}
+                        variant="contained"
+                        autoFocus
+                        sx={{ backgroundColor: "#EA4040" }}
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Snackbar open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={closeSnackbar}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
+            >
+                <Alert onClose={closeSnackbar} severity={snackbarStatus} sx={{ width: "100%" }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };

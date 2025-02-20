@@ -8,10 +8,11 @@ import Header from '../../../../components/Header/Header';
 import MenuIcon from '@mui/icons-material/Menu';
 import { WeedInfos } from '../../../../model/Criteria';
 import ReviewModal from '../../../../components/Modal/WeedingModal/ReviewModal';
-import UserService from '../../../../services/UserService';
+import UserService from '../../../../services/UserManagement/UserService';
 import { useSnackbar } from '../../../../hooks/useSnackbar';
 import ConfirmationDialog from '../../../../components/ConfirmationDialog/ConfirmationDialog';
 import { Helmet } from 'react-helmet';
+import Line from '../../../../components/Line/Line';
 
 const WeedingDashboard: React.FC = () => {
     const [filter, setFilter] = useState<{ criteria?: string, accessionNo?: string, status: string }>({
@@ -38,7 +39,7 @@ const WeedingDashboard: React.FC = () => {
 
     const handleCloseModal = () => {
         setOpenModal(false);
-        setIsOverride(false); // Reset override state when closing modal
+        setIsOverride(false); 
     };
 
     const handleSideBarClick = () => {
@@ -355,10 +356,24 @@ const WeedingDashboard: React.FC = () => {
         if (statusToDisplay(weedInfo.weedStatus)) {
             if (weedInfo.weedStatus === 'REVIEWED' && isAdmin) {
                 return (
-                    <>
-                        <Button color="error" variant="contained" size="small" onClick={() => handleOpenModal(weedInfo)}>Weed</Button>
-                        <Button onClick={() => onOverrideWeeding(weedInfo.id)} variant="outlined" size="small" sx={{ ml: 1 }}>Override</Button>
-                    </>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Button
+                            color="error"
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleOpenModal(weedInfo)}
+                        >
+                            Weed
+                        </Button>
+                        <Button
+                            onClick={() => onOverrideWeeding(weedInfo.id)}
+                            variant="outlined"
+                            size="small"
+                            sx={{ ml: 2 }} // Using marginLeft instead of margin for better spacing control
+                        >
+                            Override
+                        </Button>
+                    </Box>
                 );
             }
             return <Typography color={statusToDisplay(weedInfo.weedStatus)?.color}>
@@ -393,59 +408,63 @@ const WeedingDashboard: React.FC = () => {
                     }
                 />
                 <Typography variant="h4" gutterBottom>Book Weeding Dashboard</Typography>
+                <Line />
 
 
-                <Button
-                    variant="text"
-                    sx={{
-                        color: "#EA4040",
-                        textTransform: "none",
-                        ":hover": {
-                            backgroundColor: "#f2f2f2",
-                            color: "#d13333",
-                        },
-                    }}
-                    onClick={() => navigate('/admin/catalog/management/criteria')}
-                >
-                    View Criteria
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleManualWeeding}
-                    sx={{ mb: 2 }}
-                >
-                    Initiate Book Weeding Process
-                </Button>
 
 
                 {/* Filters */}
-                <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-                    <TextField
-                        label="Criteria"
-                        value={filter.criteria || ''}
-                        onChange={(e) => handleFilterChange('criteria', e.target.value)}
-                        variant="outlined"
-                    />
-                    <TextField
-                        label="Accession number"
-                        value={filter.accessionNo || ''}
-                        onChange={(e) => handleFilterChange('accessionNo', e.target.value)}
-                        variant="outlined"
-                    />
-                    <Select
-                        value={filter.status || ''}
-                        onChange={(e) => handleFilterChange('status', e.target.value as string)}
-                        displayEmpty
-                        variant="outlined"
-                    >
-                        <MenuItem value="">All Status</MenuItem>
-                        <MenuItem value="FLAGGED">FLAGGED</MenuItem>
-                        <MenuItem value="REVIEWED">REVIEWED</MenuItem>
-                        <MenuItem value="KEPT">KEPT</MenuItem>
-                        <MenuItem value="WEEDED">WEEDED</MenuItem>
-                        <MenuItem value="ARCHIVED">ARCHIVED</MenuItem>
-                    </Select>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <TextField
+                            label="Criteria"
+                            value={filter.criteria || ''}
+                            onChange={(e) => handleFilterChange('criteria', e.target.value)}
+                            variant="outlined"
+                        />
+                        <TextField
+                            label="Accession number"
+                            value={filter.accessionNo || ''}
+                            onChange={(e) => handleFilterChange('accessionNo', e.target.value)}
+                            variant="outlined"
+                        />
+                        <Select
+                            value={filter.status || ''}
+                            onChange={(e) => handleFilterChange('status', e.target.value as string)}
+                            displayEmpty
+                            variant="outlined"
+                        >
+                            <MenuItem value="">All Status</MenuItem>
+                            <MenuItem value="FLAGGED">FLAGGED</MenuItem>
+                            <MenuItem value="REVIEWED">REVIEWED</MenuItem>
+                            <MenuItem value="KEPT">KEPT</MenuItem>
+                            <MenuItem value="WEEDED">WEEDED</MenuItem>
+                            <MenuItem value="ARCHIVED">ARCHIVED</MenuItem>
+                        </Select>
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button
+                            variant="text"
+                            sx={{
+                                color: "#EA4040",
+                                textTransform: "none",
+                                ":hover": {
+                                    backgroundColor: "#f2f2f2",
+                                    color: "#d13333",
+                                },
+                            }}
+                            onClick={() => navigate('/admin/catalog/management/criteria')}
+                        >
+                            View Criteria
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleManualWeeding}
+                        >
+                            Initiate Book Weeding Process
+                        </Button>
+                    </Box>
                 </Box>
 
                 {/* Weeding Table */}
@@ -484,7 +503,16 @@ const WeedingDashboard: React.FC = () => {
                                         <TableRow key={weedInfo.id}>
                                             <TableCell>{weedInfo.accessionNo}</TableCell>
                                             <TableCell>{weedInfo.callNumber}</TableCell>
-                                            <TableCell>{weedInfo.bookTitle}</TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    maxWidth: '100px', // Adjust this value as needed
+                                                    overflow: 'hidden',
+                                                    wordBreak: 'break-word',
+                                                    // whiteSpace: 'nowrap'
+                                                }}
+                                            >
+                                                {weedInfo.bookTitle}
+                                            </TableCell>
                                             <TableCell>{weedInfo.authors}</TableCell>
                                             <TableCell>{weedInfo.weedingCriteriaDdc}</TableCell>
                                             <TableCell>
@@ -499,27 +527,28 @@ const WeedingDashboard: React.FC = () => {
                 </TableContainer>
             </Container>
 
-            {currentWeedInfo && (
-                <ReviewModal
-                    open={openModal}
-                    handleClose={handleCloseModal}
-                    onConfirm={isArchiving ? finalizeArchiving : (allProcessed ? finalizeProcess : handleWeedBook)}
-                    weedInfo={currentWeedInfo}
-                    isOverride={isOverride}
-                    processNotes={processNotes}
-                    setProcessNotes={setProcessNotes}
-                    isFinalizingProcess={allProcessed}
-                    isArchiving={isArchiving}
-                />
-            )}
+            {
+                currentWeedInfo && (
+                    <ReviewModal
+                        open={openModal}
+                        handleClose={handleCloseModal}
+                        onConfirm={isArchiving ? finalizeArchiving : (allProcessed ? finalizeProcess : handleWeedBook)}
+                        weedInfo={currentWeedInfo}
+                        isOverride={isOverride}
+                        processNotes={processNotes}
+                        setProcessNotes={setProcessNotes}
+                        isFinalizingProcess={allProcessed}
+                        isArchiving={isArchiving}
+                    />
+                )
+            }
             <ConfirmationDialog
                 open={confirmationOpen}
                 onClose={() => {
-                    setConfirmationOpen(false); // Close the confirmation dialog
-                    setIsArchiving(false); // Set isArchiving to false
+                    setConfirmationOpen(false); 
+                    setIsArchiving(false);
                     checkAllProcessed();
                 }}
-
                 onConfirm={() => handleArchiving(true)}
                 title="Confirm Action"
                 message="Do you want to archive this book?"
@@ -532,7 +561,7 @@ const WeedingDashboard: React.FC = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-        </Box>
+        </Box >
     );
 };
 

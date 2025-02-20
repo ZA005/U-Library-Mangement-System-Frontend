@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   Stack,
-  MenuItem,
 } from "@mui/material";
 import styles from "./styles.module.css";
 
@@ -14,14 +13,15 @@ import styles from "./styles.module.css";
 
 interface Field {
   label: string;
-  type: string;
-  value: string;
-  onChange?: (value: string) => void; // Optional since read-only fields won't need this
-  readOnly: boolean;
-  options?: string[]; // For dropdown fields
+  type: "text" | "button";
+  value?: string;
+  onChange?: (value: string) => void;
+  readOnly?: boolean;
+  options?: string[];
+  onClick?: () => void;
 }
 
-interface ModalFormProps {
+interface CirculationModalFormProps {
   open: boolean;
   handleClose: () => void;
   title: string;
@@ -29,16 +29,17 @@ interface ModalFormProps {
   onConfirm: () => void;
   confirmText: string;
   errorMessage?: string | null;
+  onClick?: () => void;
 }
 
-const ModalForm: React.FC<ModalFormProps> = ({
+const CirculationModalForm: React.FC<CirculationModalFormProps> = ({
   open,
   handleClose,
   title,
   fields,
   onConfirm,
   confirmText,
-  errorMessage, // Include errorMessage here
+  errorMessage,
 }) => {
   return (
     <Modal open={open} onClose={handleClose}>
@@ -53,6 +54,15 @@ const ModalForm: React.FC<ModalFormProps> = ({
             <span className={styles.modalHeaderLine} />
             {title}
           </Typography>
+          {errorMessage && (
+            <Typography
+              variant="body2"
+              color="error"
+              className={styles.errorMessage}
+            >
+              {errorMessage}
+            </Typography>
+          )}
           {fields.map((field, index) => {
             if (field.type === "text") {
               return (
@@ -66,37 +76,21 @@ const ModalForm: React.FC<ModalFormProps> = ({
                   className={styles.textField}
                 />
               );
-            } else if (field.type === "select" && field.options) {
+            } else if (field.type === "button") {
               return (
-                <TextField
+                <Button
                   key={index}
-                  select
-                  label={field.label}
-                  variant="outlined"
-                  value={field.value}
-                  onChange={field.readOnly ? undefined : (e) => field.onChange?.(e.target.value)}
-                  InputProps={{ readOnly: field.readOnly }}
-                  className={styles.textField}
+                  variant="contained"
+                  onClick={field.onClick}
+                  sx={{ mt: 1 }}
                 >
-                  {field.options.map((option, idx) => (
-                    <MenuItem key={idx} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  {field.label}
+                </Button>
               );
             }
             return null;
           })}
-          {errorMessage && (
-            <Typography
-              variant="body2"
-              color="error"
-              className={styles.errorMessage}
-            >
-              {errorMessage}
-            </Typography>
-          )}
+
           <Button
             variant="contained"
             sx={{
@@ -127,4 +121,4 @@ const ModalForm: React.FC<ModalFormProps> = ({
 };
 
 
-export default ModalForm;
+export default CirculationModalForm;

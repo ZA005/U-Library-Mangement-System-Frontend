@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export interface Department {
-    id: number;
+    id: string;
     name: string;
-    status: number;
+    code: string;
 }
 const BASE_URL = "http://localhost:8080/";
 
@@ -42,12 +42,16 @@ export const addDepartment = async (newDepartment: Department): Promise<Departme
     }
 };
 
-// Add multiple departments
-export const addDepartmentInBulk = async (departments: Department[]): Promise<Department[]> => {
+// Upload Department from CSV
+export const uploadDepartments = async (departments: Department[]): Promise<Department[]> => {
     try {
-        const response = await axios.post(`${BASE_URL}public/departments/bulk`, departments);
-        console.log("Departments added:", response.data);
-        return response.data;
+        const response = await axios.post(`${BASE_URL}public/departments/upload`, departments);
+        if (response.status >= 200 && response.status < 300) {
+            console.log("Departments added:", response.data);
+            return response.data;
+        } else {
+            throw new Error(`Unexpected response status: ${response.status}`);
+        }
     } catch (error) {
         console.error("Error adding departments:", error);
         throw error;

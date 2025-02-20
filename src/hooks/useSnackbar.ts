@@ -3,10 +3,10 @@ import { useState, useCallback } from "react";
 export const useSnackbar = () => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarStatus, setSnackbarStatus] = useState<"success" | "error">("success");
+    const [snackbarStatus, setSnackbarStatus] = useState<"success" | "error" | "warning">("success");
 
     // Memoize openSnackbar
-    const openSnackbar = useCallback((message: string, status: "success" | "error") => {
+    const openSnackbar = useCallback((message: string, status: "success" | "error" | "warning") => {
         setSnackbarMessage(message);
         setSnackbarStatus(status);
         setSnackbarOpen(true);

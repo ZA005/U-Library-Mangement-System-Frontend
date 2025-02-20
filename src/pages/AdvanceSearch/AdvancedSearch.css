@@ -56,7 +56,7 @@ body {
 }
 
 /* Set all buttons to #ea4040 */
-.MuiButton-root {
+/* .MuiButton-root {
     background-color: #ea4040 !important;
     color: white !important;
     border: none;
@@ -78,7 +78,7 @@ body {
     color: white !important;
     border-color: #9a1b1b !important;
     background-color: #9a1b1b !important;
-}
+} */
 
 /* Specific styles for Criteria Section */
 .criteria-section {

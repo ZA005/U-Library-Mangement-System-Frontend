@@ -1,4 +1,13 @@
 /* Container for the entire modal */
+.rootContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.container {
+  flex-grow: 1;
+}
 .verify-modal-container {
   display: flex;
   flex-direction: column;
@@ -98,7 +107,8 @@
     font-size: 16px;
   }
 
-  .text-field, .send-otp-button {
+  .text-field,
+  .send-otp-button {
     width: 90%;
   }
 }

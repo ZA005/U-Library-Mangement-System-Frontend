@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography, Container, IconButton, Button, Divider, TextField } from "@mui/material";
-import { Subject, getAllSubjectsByProgram } from "../../services/Curriculum/SubjectService";
-import { BookReference, getAllBookRefBySubject } from "../../services/Curriculum/BookReferenceService";
+// import { Subject, getAllSubjectsByProgram } from "../../services/Curriculum/SubjectService";
+import { Course, getAllCourseByProgram } from "../../services/Curriculum/CourseService";
+import { BookReference, getAllBookRefByCourse } from "../../services/Curriculum/BookReferenceService";
 import Header from "../../components/Header/Header";
 import Copyright from "../../components/Footer/Copyright";
 import Line from "../../components/Line/Line";
@@ -18,7 +19,7 @@ const ProgramPage: React.FC = () => {
     const location = useLocation();
     const program = location.state?.program;
 
-    const [subjects, setSubjects] = useState<Subject[]>([]);
+    const [subjects, setSubjects] = useState<Course[]>([]);
     const [expandedYear, setExpandedYear] = useState<number | null>(null);
 
     // Initialize useNavigate hook
@@ -27,19 +28,20 @@ const ProgramPage: React.FC = () => {
     useEffect(() => {
         const fetchSubjects = async () => {
             try {
-                const fetchedSubjects = await getAllSubjectsByProgram(program?.id);
+                const fetchedSubjects = await getAllCourseByProgram(program?.prog_id);
                 setSubjects(fetchedSubjects);
             } catch (error) {
                 console.error("Error fetching subjects", error);
             }
         };
 
+        // console.log('PROGRAM', program)
         fetchSubjects();
-    }, [program?.id]);
+    }, [program?.prog_id]);
 
     const handleViewBooks = async (subjectId: number) => {
         try {
-            const books = await getAllBookRefBySubject(subjectId);
+            const books = await getAllBookRefByCourse(subjectId);
             setSelectedBooks(books);
         } catch (error) {
             console.error("Error fetching books for subject", error);
@@ -81,7 +83,7 @@ const ProgramPage: React.FC = () => {
                     sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                     fontWeight="bold"
                 >
-                    {program ? `${program.name}` : "No Program Data"}
+                    {program ? `${program.description}` : "No Program Data"}
                 </Typography>
                 <Line />
                 <Box display="flex" justifyContent="space-between">
@@ -89,7 +91,7 @@ const ProgramPage: React.FC = () => {
                         {subjects && subjects.length > 0 ? (
                             <Box>
                                 {["1st Year", "2nd Year", "3rd Year", "4th Year"].map((yearLabel, yearIndex) => {
-                                    const yearSubjects = subjects.filter((subject) => subject.year === yearIndex + 1);
+                                    const yearSubjects = subjects.filter((subject) => subject.year_level === yearIndex + 1);
 
                                     return (
                                         <Box key={yearLabel} mb={2}>
@@ -108,7 +110,7 @@ const ProgramPage: React.FC = () => {
                                                     </Button>
                                                 ) : (
                                                     <Typography variant="body2" color="textSecondary">
-                                                        No subjects available for this year
+                                                        No courses available for this year level
                                                     </Typography>
                                                 )}
                                             </Box>
@@ -122,9 +124,9 @@ const ProgramPage: React.FC = () => {
                                                             alignItems="center"
                                                             mb={1}
                                                         >
-                                                            <Typography variant="body2">{subject.subject_name}</Typography>
+                                                            <Typography variant="body2">{subject.course_name}</Typography>
                                                             <Button
-                                                                onClick={() => handleViewBooks(subject.id)}
+                                                                onClick={() => handleViewBooks(subject.course_id)}
                                                                 sx={{ color: "#EA4040", textTransform: "none" }}
                                                             >
                                                                 View Books
@@ -175,7 +177,7 @@ const ProgramPage: React.FC = () => {
                                                 {book.book_name}
                                             </Typography>
                                             <Typography variant="body2" color="textSecondary">
-                                                Subject: {book.subject_name}
+                                                Subject: {book.course_name}
                                             </Typography>
                                             <Typography variant="body2" color="textSecondary">
                                                 Status: {book.status === 1 ? "Available" : "Unavailable"}

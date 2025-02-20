@@ -25,18 +25,27 @@ export const addRecords = async (records: AcquisitionRecord[]): Promise<Acquisit
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            let errorMessage = "Failed to add records";
             if (error.response) {
-                errorMessage += `: ${error.response.status} - ${error.response.data}`;
+                const statusCode = error.response.status;
+                const responseData = error.response.data;
+
+                if (statusCode === 400) {
+                    throw new Error(`Bad Request: ${responseData.message || JSON.stringify(responseData)}`);
+                } else if (statusCode === 401) {
+                    throw new Error(`Unauthorized: ${responseData.message || JSON.stringify(responseData)}`);
+                } else if (statusCode === 409) {
+                    throw new Error(`${responseData.error || "Conflict"}: ${responseData.message}`);
+                } else if (statusCode >= 500) {
+                    throw new Error(`Server Error: ${responseData.message || JSON.stringify(responseData)}`);
+                } else {
+                    throw new Error(`Error ${statusCode}: ${responseData.message || JSON.stringify(responseData)}`);
+                }
             } else if (error.request) {
-                errorMessage += ": No response received from the server";
+                throw new Error("No response received from the server");
             } else {
-                errorMessage += `: ${error.message}`;
+                throw new Error(error.message);
             }
-            console.error("Error adding records:", errorMessage);
-            throw new Error(errorMessage);
         } else {
-            console.error("Error adding records:", error);
             throw new Error('An unexpected error occurred while adding records');
         }
     }

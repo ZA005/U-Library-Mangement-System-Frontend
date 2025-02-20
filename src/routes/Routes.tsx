@@ -10,8 +10,8 @@ import PageNotFound from '../components/PageNotFound/PageNotFound';
 import AdminRoutes from './AdminRoutes';
 import UserRoutes from './UserRoutes';
 import LibraryCardGenerationPage from '../pages/LibraryCardGeneration/LibraryCardGenerationPage';
-import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
-import BorrowingHistory from '../pages/CirculationUser/BorrowingHistory';
+// import AddMARCRecord from '../pages/MARC-Record/AddMARCRecord';
+// import BorrowingHistory from '../pages/CirculationUser/BorrowingHistory';
 import PayFees from '../pages/CirculationUser/PayFees';
 import TransactionHistory from '../pages/CirculationUser/TransactionHistory';
 
@@ -42,7 +42,7 @@ const AppRoutes = () => {
         throw new Error('Function not implemented.');
       }} />} />
       <Route path="/verify/user/otp" element={<VerifyOtp />} />
-      <Route path='borrowing/history' element={<BorrowingHistory />} />
+      {/* <Route path='borrowing/history' element={<BorrowingHistory />} /> */}
       <Route path='pay/fees' element={<PayFees />} />
       <Route path='transaction/history' element={<TransactionHistory />} />
 

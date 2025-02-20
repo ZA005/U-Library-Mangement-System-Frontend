@@ -5,10 +5,10 @@ import Header from '../../components/Header/Header';
 import MenuIcon from "@mui/icons-material/Menu";
 import Footer from '../../components/Footer/Footer';
 import Line from "../../components/Line/Line";
-import ManageCirculationIcon from "@mui/icons-material/AllInbox"; // Example Icon for Cataloging
-import ManageReservationIcon from "@mui/icons-material/EventNote"; // Example Icon for Circulation
-import SchoolIcon from "@mui/icons-material/School"; // Icon for Curriculum Management
-import LibraryAddIcon from "@mui/icons-material/LibraryAdd"; // Icon for Acquisition
+import ManageCirculationIcon from "@mui/icons-material/AllInbox";
+import ManageReservationIcon from "@mui/icons-material/EventNote";
+import SchoolIcon from "@mui/icons-material/School";
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import styles from "./styles.module.css";
 import Sidebar from '../../components/Sidebar';
 import { Helmet } from 'react-helmet';
@@ -24,6 +24,11 @@ const LandingPage: React.FC = () => {
     const handleSidebarClose = () => {
         setSidebarOpen(false);
     };
+    <Helmet>
+        <meta charSet="utf-8" />
+        <title>My Title</title>
+        <link rel="canonical" href="http://mysite.com/example" />
+    </Helmet>
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -49,7 +54,7 @@ const LandingPage: React.FC = () => {
                     sx={{ fontSize: { xs: "1.8rem", sm: "2rem", md: "2.4rem" } }}
                     fontWeight="bold"
                 >
-                    Admin Landing Page
+                    Library Control Center
                 </Typography>
                 <Line />
 
@@ -57,7 +62,7 @@ const LandingPage: React.FC = () => {
                     {/* Left Content */}
                     <Box className={styles.leftContent}>
                         <Typography variant="body1">
-                            Welcome! This is the Admins Dashboard, your central hub for managing the Library Management System (LMS).
+                            Welcome! This is your central hub for managing the Library Management System (LMS).
                         </Typography>
                         <Typography variant="body1">
                             With just a few clicks, you can:
@@ -78,11 +83,11 @@ const LandingPage: React.FC = () => {
                                     <strong>Curriculum Management:</strong> Provide quick access to resource information and recommendations.
                                 </Typography>
                             </li>
-                            <li className={styles.listItem}>
+                            {/* <li className={styles.listItem}>
                                 <Typography variant="body1">
                                     <strong>Aquisition:</strong> Handle procurement of books and digital materials.
                                 </Typography>
-                            </li>
+                            </li> */}
                         </ul>
                     </Box>
 
@@ -118,13 +123,13 @@ const LandingPage: React.FC = () => {
                             </Icon>
                             <button
                                 className={styles.manageButton}
-                                onClick={() => navigate('/admin/curriculum/management/page')}
+                                onClick={() => navigate('/admin/curriculum/management')}
                             >
                                 Curriculum Management
                             </button>
                         </Box>
 
-                        <Box className={styles.buttonContainer}>
+                        {/* <Box className={styles.buttonContainer}>
                             <Icon className={styles.icon}>
                                 <LibraryAddIcon />
                             </Icon>
@@ -134,7 +139,7 @@ const LandingPage: React.FC = () => {
                             >
                                 Acquisition
                             </button>
-                        </Box>
+                        </Box> */}
                     </Box>
                 </Box>
             </Container>

@@ -1,4 +1,4 @@
-import { Box, Container, IconButton, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { Box, Container, IconButton, Typography, Accordion, AccordionSummary, AccordionDetails, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -7,12 +7,11 @@ import Copyright from "../components/Footer/Copyright";
 import BookList from "../components/Book/BookList/BookListComponent";
 import { getAllBooks } from "../services/Cataloging/LocalBooksAPI";
 import Sidebar from "../components/Sidebar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Book } from "../model/Book";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import SearchBar from "../components/SearchBar/Searchbar";
+import { AccountBalanceWallet, AutoStories, HourglassBottom } from "@mui/icons-material";
 import { Helmet } from "react-helmet";
 
 const FilterAccordion: React.FC<{ title: string; content: string }> = ({ title, content }) => (
@@ -29,45 +28,66 @@ const FilterAccordion: React.FC<{ title: string; content: string }> = ({ title, 
     </AccordionDetails>
   </Accordion>
 );
- 
+
 const CatalogHome: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const bookData = await getAllBooks();
-        const mappedBookData = bookData.map((book: Book) => ({
-          id: book.id,
-          title: book.title,
-          authors: book.authors || [],
-          publisher: book.publisher,
-          publishedDate: book.publishedDate,
-          isbn10: book.isbn10,
-          isbn13: book.isbn13,
-          thumbnail: book.thumbnail || "default-thumbnail.jpg",
-          description: book.description,
-          language: book.language,
-          categories: book.categories,
-          pageCount: book.pageCount,
-          printType: book.printType,
-        }));
-        setBooks(mappedBookData);
-      } catch (err) {
-        console.error("Error fetching books:", err);
-        setError("Failed to fetch books from the database.");
-      }
-    };
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [booksPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
 
+  const fetchBooks = async () => {
+    try {
+      const bookData = await getAllBooks();
+      const mappedBookData = bookData.map((book: Book) => ({
+        id: book.id,
+        accessionNo: book.accessionNo,
+        title: book.title,
+        authors: book.authors || [],
+        publisher: book.publisher,
+        publishedDate: book.publishedDate,
+        isbn10: book.isbn10,
+        isbn13: book.isbn13,
+        thumbnail: book.thumbnail || "default-thumbnail.jpg",
+        description: book.description,
+        language: book.language,
+        categories: book.categories,
+        pageCount: book.pageCount,
+        printType: book.printType,
+        status: book.status // Ensure status is included
+      }));
+      setBooks(mappedBookData);
+      setTotalPages(Math.ceil(mappedBookData.length / booksPerPage));
+    } catch (err) {
+      console.error("Error fetching books:", err);
+      setError("Failed to fetch books from the database.");
+    }
+  };
+
+  useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [booksPerPage]);
+
+  // Check for refresh flag when navigating back from BookDetails
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchBooks();
+      // Clear the refresh flag after fetching
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate]);
+
+
 
   const handleSearch = () => {
     console.log("Search for: ", query);
+    setPage(1); // Reset to first page when searching
   };
 
   const handleBookClick = (book: Book) => {
@@ -84,6 +104,18 @@ const CatalogHome: React.FC = () => {
     setSidebarOpen(false);
   };
 
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    window.scrollTo(0, 0); // Scroll to top when page changes
+  };
+
+  // Get current books for pagination
+  const getCurrentBooks = () => {
+    const indexOfLastBook = page * booksPerPage;
+    const indexOfFirstBook = indexOfLastBook - booksPerPage;
+    return books.slice(indexOfFirstBook, indexOfLastBook);
+  };
+
   return (
     <Box display="flex" flexDirection="column" height="100vh">
 
@@ -95,9 +127,7 @@ const CatalogHome: React.FC = () => {
       </Helmet>
 
       <Sidebar open={isSidebarOpen} onClose={handleSidebarClose} />
-      
-      <Container maxWidth="lg" sx={{ flexGrow: 1, padding: 4 }}>
-
+      <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
         <Header
           buttons={
             <IconButton onClick={handleSideBarClick}>
@@ -115,42 +145,15 @@ const CatalogHome: React.FC = () => {
             }}
             fontWeight="bold"
           >
-            Library Catalog
+            Browse Books
           </Typography>
           <Box sx={{ width: "100%" }}>
             <Line />
           </Box>
 
-          <Box sx={{ marginBottom: 3, display: "flex", alignItems: "center", gap: 2 }}>
-            <input
-              type="text"
-              placeholder="Search for a book..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              style={{
-                flex: 1,
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-                fontSize: "1rem",
-              }}
-            />
-            <button
-              onClick={handleSearch}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#EA4040",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              Search
-            </button>
-          </Box>
+          <SearchBar onSearch={handleSearch} />
 
-          <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <Box display="flex" flexDirection="row" justifyContent="space-between" sx={{ marginTop: "30px" }}>
             <Box
               width="15vw"
               sx={{
@@ -169,18 +172,42 @@ const CatalogHome: React.FC = () => {
 
             <Box
               width="50vw"
-              height="100vh"
               sx={{
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
                 marginX: 2,
-                overflow: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                padding: 2,
+                height: "90vh",
+                position: "relative"
               }}
             >
-              {books.length === 0 ? (
-                <Typography>No books available.</Typography>
-              ) : (
-                <BookList books={books} onBookClick={handleBookClick} source={""} />
-              )}
+              <Box sx={{
+                overflowY: "auto",
+                height: "calc(100% - 60px)"
+              }}>
+                <BookList books={getCurrentBooks()} onBookClick={handleBookClick} source="" />
+              </Box>
+
+              <Box sx={{
+                // position: "sticky",
+                // bottom: 0,
+                backgroundColor: "white",
+                paddingTop: 2,
+                display: "flex",
+                justifyContent: "center"
+              }}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                  size="large"
+                  showFirstButton
+                  showLastButton
+                />
+              </Box>
             </Box>
 
             <Box
@@ -195,39 +222,36 @@ const CatalogHome: React.FC = () => {
               }}
             >
               <Typography variant="h5" fontWeight="bold" textAlign="center">
-                User Summary
+                Account Overview
               </Typography>
-
 
               <Box
                 bgcolor="#CC0000"
                 sx={{
                   width: "100%",
-                  height: " 1vh"
+                  height: "1vh"
                 }}
-              >
-              </Box>
+              />
 
               <SummaryBox
-                icon={<LibraryBooksIcon sx={{ fontSize: 40, color: "green" }} />}
+                icon={<AutoStories sx={{ fontSize: 40, color: "green" }} />}
                 value={5}
                 label="Checkouts"
                 color="green"
               />
               <SummaryBox
-                icon={<AssignmentReturnIcon sx={{ fontSize: 40, color: "orange" }} />}
+                icon={<HourglassBottom sx={{ fontSize: 40, color: "orange" }} />}
                 value={3}
                 label="Holds Pending"
                 color="orange"
               />
               <SummaryBox
-                icon={<MonetizationOnIcon sx={{ fontSize: 40, color: "red" }} />}
+                icon={<AccountBalanceWallet sx={{ fontSize: 40, color: "red" }} />}
                 value={25}
                 label="Fines and Charges (₱)"
                 color="red"
               />
             </Box>
-
           </Box>
         </Box>
 

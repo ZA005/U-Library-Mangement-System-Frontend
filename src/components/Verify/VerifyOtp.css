@@ -1,4 +1,13 @@
 /* Styling for the main verification box */
+.rootContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.container {
+  flex-grow: 1;
+}
 .verify-otp-box {
   background-color: white;
   border-radius: 12px;

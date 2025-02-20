@@ -68,9 +68,8 @@ const AdvancedSearchPage: React.FC = () => {
         };
 
         try {
-            console.log("Request Body:", requestBody);
             const response = await getBooksByAdvancedSearch(requestBody);
-            navigate("/admin/catalog/management/search-title", {
+            navigate("/user/catalog/management/search-title", {
                 state: {
                     query: requestBody,
                     books: response || [],
@@ -79,7 +78,7 @@ const AdvancedSearchPage: React.FC = () => {
             });
         } catch (error) {
             console.error("Error fetching search results:", error);
-            navigate("/admin/catalog/management/search-title", {
+            navigate("/user/catalog/management/search-title", {
                 state: { query: requestBody, books: [], source: "All libraries" },
             });
         }

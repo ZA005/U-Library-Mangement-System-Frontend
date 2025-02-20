@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton
+    Container, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, IconButton,
+    Chip,
+    Alert,
+    Snackbar,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@mui/material';
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../Header/Header';
@@ -9,18 +17,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Copyright from '../../Footer/Copyright';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { generateCallNumber, saveBook } from '../../../services/Cataloging/GoogleBooksApi';
-import { fetchCopyNumBookExist, fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
-
-interface Book {
-    id: string;
-    title: string;
-    authors: string[];
-    callNumber?: string;
-    thumbnail: string;
-    categories?: string
-    isbn10: string;
-    isbn13: string;
-}
+import { fetchLastAccessionNumber } from '../../../services/Cataloging/LocalBooksAPI';
+import { Book, Locations, Sections } from '../../../model/Book';
+import { useSnackbar } from '../../../hooks/useSnackbar';
+import BookDetailsForm from './BookDetailsForm';
+import BookMetadataForm from './BookMetadataForm';
 
 const BookForm: React.FC = () => {
     const { state } = useLocation();
@@ -28,67 +29,73 @@ const BookForm: React.FC = () => {
 
     // Retrieve the book data passed from BookDetails
     const book: Book = state.book;
+    const acquiredBook = state?.acquiredBook;
 
     // Form state management
-    const [status, setStatus] = useState('Available');
-    const [barcode, setBarcode] = useState('');
-    const [callNumber, setCallNumber] = useState('');
-    const [purchasePrice, setPurchasePrice] = useState('');
-    const [section, setSection] = useState('');
-    const [dateAcquired, setDateAcquired] = useState('');
-    const [categories, setCategories] = useState(book.categories || '');
-    const [notes, setNotes] = useState('');
-    const [location, setLocation] = useState('');
-    const [vendor, setVendor] = useState('');
-    const [fundingSource, setFundingSource] = useState('');
-    const [subjects, setSubjects] = useState('');
-    const [numberOfCopies, setNumberOfCopies] = useState(1);
+    const [step, setStep] = useState(1);
+    const [bookCondition, setBookCondition] = useState('New');
+    const [collectionType, setCollectionType] = useState('Book');
+    const [sections, setSections] = useState<Sections[]>([]);
+    const [numberOfCopies, setNumberOfCopies] = useState<number | null>(1);
     const [accessionNumbers, setAccessionNumbers] = useState<string[]>([]);
-
+    const [locations, setLocations] = useState<Locations[]>([]);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-    const handleSideBarClick = () => {
-        setSidebarOpen(!isSidebarOpen);
-    };
-
-    const handleSidebarClose = () => {
-        setSidebarOpen(false);
-    };
+    const [title, setTitle] = useState(book.title || '');
+    const [authors, setAuthors] = useState<string[]>(book.authors || []);
+    const [publisher, setPublisher] = useState(book.publisher || '');
+    const [publishedDate, setPublishedDate] = useState(book.publishedDate || '');
+    const [isbn10, setIsbn10] = useState(book.isbn10 || '');
+    const [isbn13, setIsbn13] = useState(book.isbn13 || '');
+    const [desc, setDesc] = useState(book.description || '');
+    const [pageCount, setPageCount] = useState<number | null>(book.pageCount || null);
+    const [categories, setCategories] = useState<string[]>(Array.isArray(book.categories) ? book.categories : []);
+    const [language, setLanguage] = useState(book.language || '');
+    const [printType, setPrintType] = useState(book.printType || '');
+    const [status, setStatus] = useState<string>('Available');
+    const [callNumber, setCallNumber] = useState('');
+    const [purchasePrice, setPurchasePrice] = useState(acquiredBook?.purchase_price || '');
+    const [section, setSection] = useState('');
+    const [dateAcquired, setDateAcquired] = useState(acquiredBook?.acquired_date || '');
+    const [notes, setNotes] = useState('');
+    const [location, setSelectedLocation] = useState('');
+    const [vendor, setVendor] = useState(acquiredBook?.vendor || '');
+    const [fundingSource, setFundingSource] = useState(acquiredBook?.funding_source || '');
+    const [subjects, setSubjects] = useState('');
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const {
+        snackbarOpen,
+        snackbarMessage,
+        snackbarStatus,
+        openSnackbar,
+        closeSnackbar,
+    } = useSnackbar();
+    const handleSideBarClick = () => { setSidebarOpen(!isSidebarOpen); };
+    const handleSidebarClose = () => { setSidebarOpen(false); };
+    const handleCloseConfirm = () => setConfirmOpen(false);
 
     const generateAccessionNumbers = useCallback(async () => {
-        const locationPrefixes: { [key: string]: string } = {
-            eLibrary: 'E',
-            'Graduate Studies Library': 'GS',
-            'Law Library': 'L',
-            'Engineering and Architecture Library': 'EA',
-            'High School Library': 'HS',
-            'Elementary Library': 'EL',
-        };
+        // Find the location object that matches the selectedLocation
+        const selectedLoc = locations.find(loc => loc.locationCodeName === location);
 
-        const prefix = locationPrefixes[location] || 'UNK';
+        // Use locationCodeName if found, otherwise default to 'UNK'
+        const prefix = selectedLoc ? selectedLoc.locationCodeName : 'UNK';
 
         try {
-            // Fetch the generated accession numbers from the backend
-            const response = await fetchCopyNumBookExist(book.title, book.isbn10, book.isbn13, prefix);
-
-            if (response !== "NOTFOUND") {
-                console.log("Generated Accession Numbers:", response);
-                // setAccessionNumbers(response); // Backend returns a list of accession numbers
-            } else {
-                alert('No accession numbers found for this book. Please try again.');
-            }
+            const lastAccessionNumber = await fetchLastAccessionNumber(prefix);
+            const lastNumber = parseInt(lastAccessionNumber.split('-')[1], 10) || 0;
+            const baseNumber = (lastNumber + 1).toString().padStart(6, '0');
+            const baseAccessionNumber = `${prefix}-${baseNumber}`;
+            const numbers = Array.from({ length: numberOfCopies! }, (_, index) =>
+                `${baseAccessionNumber} c.${index + 1}`
+            );
+            setAccessionNumbers(numbers);
+            openSnackbar("Accession number/s generated!", "success");
         } catch (error) {
             console.error('Error fetching accession numbers:', error);
-            alert('Failed to fetch accession numbers. Please try again.');
+            openSnackbar("Failed to generate accession number/s", "error");
         }
-    }, [location, book.title, book.isbn10, book.isbn13]);
-
-
-
-
-
-
-
+    }, [location, locations, numberOfCopies, openSnackbar]);
 
     const handleGenerateCallNumber = useCallback(async () => {
         try {
@@ -97,59 +104,57 @@ const BookForm: React.FC = () => {
             const publishedDate = state.book.publishedDate;
             const title = book.title;
             const callNumber = await generateCallNumber(category, authors, publishedDate, title);
-            setCallNumber(callNumber); // Update the state with the generated call number
+            setCallNumber(callNumber);
         } catch (error) {
-            alert('Error generating call number. Please try again.');
+            openSnackbar("Failed to generate Call number", "error");
             console.error(error);
         }
-    }, [state.book.categories, state.book.publishedDate, book.authors, book.title]);
+    }, [state.book.categories, state.book.publishedDate, book.authors, book.title, openSnackbar]);
 
     useEffect(() => {
+        setCallNumber(book.callNumber || '');
         if (!book.callNumber) {
             handleGenerateCallNumber(); // Generate call number if it doesn't exist
         }
     }, [book.callNumber, handleGenerateCallNumber]);
 
     useEffect(() => {
-        if (location && numberOfCopies > 0) {
+        if (location && numberOfCopies! > 0) {
             generateAccessionNumbers();
         }
     }, [location, numberOfCopies, generateAccessionNumbers]);
 
-    const handleSave = async () => {
-        // Ensure all fields are valid before proceeding
-        if (!numberOfCopies || numberOfCopies < 1 || accessionNumbers.length === 0) {
-            alert("Please specify a valid number of copies and ensure accession numbers are generated.");
-            return;
-        }
-
-
+    const confirmSave = async () => {
+        setConfirmOpen(false);
+        // Find the location object that matches the locationCodeName
+        const selectedLoc = locations.find(loc => loc.locationCodeName === location);
         const booksToSave = accessionNumbers.map((accessionNumber) => ({
             bookId: book.id,
-            title: book.title,
-            accessionNo: accessionNumber, // Unique for each copy
-            authors: book.authors.map((author) => ({ name: author })),
+            title: title,
+            accessionNo: accessionNumber,
+            authors: authors.map((author) => ({ name: author })),
             callNumber,
             purchasePrice,
             status,
-            barcode,
             section,
             dateAcquired,
-            categories: Array.isArray(categories) ? categories : categories?.split(','),
+            categories,
             notes,
-            location,
+            location: selectedLoc?.locationName,
             vendor,
             fundingSource,
             subjects: subjects.split(','),
             thumbnail: book.thumbnail,
-            description: state.book.description,
-            isbn13: state.book.isbn13,
-            isbn10: state.book.isbn10,
-            language: state.book.language,
-            pageCount: state.book.pageCount,
-            publishedDate: state.book.publishedDate,
-            publisher: state.book.publisher,
-            printType: state.book.printType,
+            description: desc,
+            isbn13: isbn13,
+            isbn10: isbn10,
+            language: language,
+            pageCount: pageCount,
+            publishedDate: publishedDate,
+            publisher: publisher,
+            printType: printType,
+            collectionType,
+            bookCondition
         }));
 
         try {
@@ -157,19 +162,30 @@ const BookForm: React.FC = () => {
             // Save each book entry
             for (const bookData of booksToSave) {
                 await saveBook(bookData);
+                openSnackbar(`${bookData.title} added to the catalog`, "success");
             }
 
-            alert('Book details saved successfully!');
-            navigate(-1); // Go back to the previous page
+            navigate(-1);
         } catch (error) {
             console.error(error);
-            alert('Failed to save book. Please try again.');
+            openSnackbar(`${title} failed to add to the catalog. Please try again`, "error");
         }
+    }
+
+    const handleSave = async () => {
+        // Ensure all fields are valid before proceeding
+        if (!numberOfCopies || numberOfCopies < 1 || accessionNumbers.length === 0) {
+            openSnackbar("Please specify a valid number of copies and Location to ensure accession numbers are generated.", "error");
+            return;
+        } setConfirmOpen(true);
+
     };
 
     const handleCancel = () => {
-        navigate(-1); // Go back to the previous page
+        navigate(-1);
     };
+    const handleNext = () => { setStep(2); };
+    const handleBack = () => { if (step === 2) setStep(1); };
 
     return (
         <Box display="flex" flexDirection="column" height="100vh">
@@ -195,165 +211,109 @@ const BookForm: React.FC = () => {
                         <Typography variant="h4"><strong>Title:</strong> {book.title}</Typography>
                         <Typography variant="h6"><strong>Authors:</strong> {book.authors.join(', ')}</Typography>
                         <Typography variant="h6"><strong>Call Number:</strong> {callNumber || 'N/A'}</Typography>
-
-                        <Box component="form" sx={{ mt: 2 }}>
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="status-label">Status</InputLabel>
-                                <Select
-                                    labelId="status-label"
-                                    value={status}
-                                    onChange={(e) => setStatus(e.target.value)}
-                                    label="Status"
-                                    size="small"
-                                >
-                                    <MenuItem value="Available">Available</MenuItem>
-                                    <MenuItem value="In Processing">In Processing</MenuItem>
-                                    <MenuItem value="Loaned Out">Loaned Out</MenuItem>
-                                    <MenuItem value="On Order">On Order</MenuItem>
-                                    <MenuItem value="Out for Repairs">Out for Repairs</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            <TextField
-                                fullWidth
-                                label="Number of Copies"
-                                type="number"
-                                value={numberOfCopies}
-                                onChange={(e) => setNumberOfCopies(Number(e.target.value))}
-                                inputProps={{ min: 1 }}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Starting Barcode"
-                                value={barcode}
-                                onChange={(e) => setBarcode(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Call Number"
-                                value={callNumber}
-                                onChange={(e) => setCallNumber(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Purchase Price"
-                                value={purchasePrice}
-                                onChange={(e) => setPurchasePrice(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="location-label">Location</InputLabel>
-                                <Select
-                                    labelId="location-label"
-                                    value={location}
-                                    onChange={(e) => setLocation(e.target.value)}
-                                    label="Location"
-                                    size="small"
-                                >
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="eLibrary">eLibrary</MenuItem>
-                                    <MenuItem value="Graduate Studies Library">Graduate Studies Library</MenuItem>
-                                    <MenuItem value="Law Library">Law Library</MenuItem>
-                                    <MenuItem value="Engineering and Architecture Library">Engineering and Architecture Library</MenuItem>
-                                    <MenuItem value="High School Library">High School Library</MenuItem>
-                                    <MenuItem value="Elementary Library">Elementary Library</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel id="section-label">Section</InputLabel>
-                                <Select
-                                    labelId="section-label"
-                                    value={section}
-                                    onChange={(e) => setSection(e.target.value)}
-                                    label="Section"
-                                    size="small"
-                                >
-                                    <MenuItem value="">Select</MenuItem>
-                                    <MenuItem value="General Reference">General Reference</MenuItem>
-                                    <MenuItem value="Circulation">Circulation</MenuItem>
-                                    <MenuItem value="Periodical">Periodical</MenuItem>
-                                    <MenuItem value="Filipiniana">Filipiniana</MenuItem>
-                                    <MenuItem value="Special Collection">Special Collection</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            <TextField
-                                fullWidth
-                                label="Date Acquired"
-                                type="date"
-                                value={dateAcquired}
-                                onChange={(e) => setDateAcquired(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                                InputLabelProps={{ shrink: true }}
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Categories"
-                                value={categories}
-                                onChange={(e) => setCategories(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Notes"
-                                multiline
-                                rows={3}
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
-                                sx={{ mb: 2 }}
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Vendor"
-                                value={vendor}
-                                onChange={(e) => setVendor(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Funding Source"
-                                value={fundingSource}
-                                onChange={(e) => setFundingSource(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <TextField
-                                fullWidth
-                                label="Subjects"
-                                value={subjects}
-                                onChange={(e) => setSubjects(e.target.value)}
-                                sx={{ mb: 2 }}
-                                size="small"
-                            />
-
-                            <Box sx={{ mt: 2 }} paddingBottom="15px">
-                                <Button variant="contained" onClick={handleSave} sx={{ mr: 2, background: "#ea4040" }}>Save</Button>
-                                <Button variant="outlined" onClick={handleCancel} sx={{ borderColor: "#ea4040", color: "#ea4040" }}>Cancel</Button>
-                            </Box>
+                        <Typography variant="h6"><strong>ISBN:</strong> {state.book.isbn13}</Typography>
+                        <Typography variant="h6"><strong>Accession Numbers:</strong></Typography>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', maxWidth: '100%', overflowX: 'auto', padding: 1 }}>
+                            {accessionNumbers.length > 0 ? (
+                                accessionNumbers.map((number, index) => (
+                                    <Chip key={index} label={number} sx={{ backgroundColor: '#f5f5f5', fontSize: '0.9rem' }} />
+                                ))
+                            ) : (
+                                <Typography variant="body1">N/A - Set Location to generate Accession number/s</Typography>
+                            )}
                         </Box>
+                        {step === 1 ? (
+                            <BookDetailsForm
+                                handleNext={handleNext}
+                                title={title}
+                                setTitle={setTitle}
+                                authors={authors}
+                                setAuthors={setAuthors}
+                                publisher={publisher}
+                                setPublisher={setPublisher}
+                                publishedDate={publishedDate}
+                                setPublishedDate={setPublishedDate}
+                                isbn10={isbn10}
+                                setIsbn10={setIsbn10}
+                                isbn13={isbn13}
+                                setIsbn13={setIsbn13}
+                                desc={desc}
+                                setDesc={setDesc}
+                                pageCount={pageCount}
+                                setPageCount={setPageCount}
+                                categories={categories}
+                                setCategories={setCategories}
+                                language={language}
+                                setLanguage={setLanguage}
+                                printType={printType}
+                                setPrintType={setPrintType}
+                            />
+                        ) : (
+                            <BookMetadataForm
+                                handleBack={handleBack}
+                                handleCancel={handleCancel}
+                                handleSave={handleSave}
+                                status={status}
+                                setStatus={setStatus}
+                                numberOfCopies={numberOfCopies}
+                                setNumberOfCopies={setNumberOfCopies}
+                                callNumber={callNumber}
+                                setCallNumber={setCallNumber}
+                                purchasePrice={purchasePrice}
+                                setPurchasePrice={setPurchasePrice}
+                                section={section}
+                                setSection={setSection}
+                                dateAcquired={dateAcquired}
+                                setDateAcquired={setDateAcquired}
+                                notes={notes}
+                                setNotes={setNotes}
+                                location={location}
+                                setSelectedLocation={setSelectedLocation}
+                                vendor={vendor}
+                                setVendor={setVendor}
+                                fundingSource={fundingSource}
+                                setFundingSource={setFundingSource}
+                                subjects={subjects}
+                                setSubjects={setSubjects}
+                                locations={locations}
+                                setLocations={setLocations}
+                                sections={sections}
+                                setSections={setSections}
+                                bookCondition={bookCondition}
+                                setBookCondition={setBookCondition}
+                                collectionType={collectionType}
+                                setCollectionType={setCollectionType}
+                            />
+                        )}
                     </Box>
                 </Box>
             </Container>
+            <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={closeSnackbar} anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
+                <Alert onClose={closeSnackbar} severity={snackbarStatus}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+            <Dialog
+                open={confirmOpen}
+                onClose={handleCloseConfirm}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Confirm Save"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to save this data?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseConfirm} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={confirmSave} color="primary" autoFocus>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Copyright />
         </Box>
     );

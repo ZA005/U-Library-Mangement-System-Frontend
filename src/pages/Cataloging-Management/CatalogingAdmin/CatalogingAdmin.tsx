@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
-import { Box, Container, IconButton, Typography } from '@mui/material';
+import { Box, Container, Icon, IconButton, Typography } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header/Header';
 import Line from '../../../components/Line/Line';
 import styles from './styles.module.css';
 import MenuIcon from "@mui/icons-material/Menu";
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+import InventoryIcon from "@mui/icons-material/Inventory";
 import SearchBar from '../../../components/SearchBar/Searchbar';
 import Sidebar from '../../../components/Sidebar';
 import Copyright from '../../../components/Footer/Copyright';
 import { Book } from '../../../model/Book';
 import { Helmet } from 'react-helmet';
+import { CropFree, PlaylistRemove } from '@mui/icons-material';
 
 const CatalogingAdmin: React.FC = () => {
     const navigate = useNavigate();
@@ -104,6 +107,9 @@ const CatalogingAdmin: React.FC = () => {
                     {/* Right Content */}
                     <Box className={styles.rightContent}>
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <LibraryAddIcon />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={() => navigate('/admin/catalog/management/accesion-record')}
@@ -113,6 +119,9 @@ const CatalogingAdmin: React.FC = () => {
                         </Box>
 
                         <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <InventoryIcon />
+                            </Icon>
                             <button
                                 className={styles.manageButton}
                                 onClick={() => navigate('/admin/catalog/management/book-weeding')}
@@ -120,6 +129,27 @@ const CatalogingAdmin: React.FC = () => {
                                 Book Weeding
                             </button>
                         </Box>
+
+                        <Box className={styles.buttonContainer}>
+                            <Icon className={styles.icon}>
+                                <CropFree />
+                            </Icon>
+                            <button
+                                className={styles.manageButton}
+                                onClick={() => navigate('/admin/catalog/management/barcode')}
+                            >
+                                Barcode Generator
+                            </button>
+                        </Box>
+
+                        {/* <Box className={styles.buttonContainer}>
+                            <button
+                                className={styles.manageButton}
+                                onClick={() => navigate('/admin/catalog/management/book-weeding')}
+                            >
+                                Label Creator
+                            </button>
+                        </Box> */}
                     </Box>
                 </Box>
             </Container>

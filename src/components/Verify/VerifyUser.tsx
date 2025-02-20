@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Modal, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import UserService from '../../services/UserService';
+import UserService from '../../services/UserManagement/UserService';
 import './VerifyUser.css';
 
 interface VerifyUserModalProps {
@@ -20,16 +20,24 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
     setLoading(true);
 
     try {
+      // check if already activated
+      const activationStatus = await UserService.isActivated(studentId);
+      if (activationStatus) {
+        setError('This UNC ID number is already activated.');
+        return;
+      }
+
+      // If not activated, proceed with verification
       const data = await UserService.verifyUser(studentId);
       if (data && data.id) {
         localStorage.setItem('emailAdd', data.emailAdd);
         navigate('/verify/user/otp', { state: { userData: data } });
-        console.log(data);
+        localStorage.setItem('uncIdNumber', studentId);
       } else {
         setError('Student not found or not currently enrolled.');
       }
     } catch (error) {
-      setError('Error verifying student ID.' + error);
+      setError('Error verifying student ID: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setLoading(false);
     }
@@ -62,6 +70,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
             {/* TextField for Student ID */}
             <TextField
               label="UNC ID Number"
+              placeholder='Enter your Student/Employee UNC ID number'
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
               required
