@@ -7,7 +7,7 @@ import Copyright from "../components/Footer/Copyright";
 import BookList from "../components/Book/BookList/BookListComponent";
 import { getAllBooks } from "../services/Cataloging/LocalBooksAPI";
 import Sidebar from "../components/Sidebar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Book } from "../model/Book";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchBar from "../components/SearchBar/Searchbar";
@@ -33,6 +33,7 @@ const CatalogHome: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [query] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
 
   // Pagination states
@@ -40,35 +41,48 @@ const CatalogHome: React.FC = () => {
   const [booksPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const bookData = await getAllBooks();
-        const mappedBookData = bookData.map((book: Book) => ({
-          id: book.id,
-          title: book.title,
-          authors: book.authors || [],
-          publisher: book.publisher,
-          publishedDate: book.publishedDate,
-          isbn10: book.isbn10,
-          isbn13: book.isbn13,
-          thumbnail: book.thumbnail || "default-thumbnail.jpg",
-          description: book.description,
-          language: book.language,
-          categories: book.categories,
-          pageCount: book.pageCount,
-          printType: book.printType,
-        }));
-        setBooks(mappedBookData);
-        setTotalPages(Math.ceil(mappedBookData.length / booksPerPage));
-      } catch (err) {
-        console.error("Error fetching books:", err);
-        setError("Failed to fetch books from the database.");
-      }
-    };
+  const fetchBooks = async () => {
+    try {
+      const bookData = await getAllBooks();
+      const mappedBookData = bookData.map((book: Book) => ({
+        id: book.id,
+        accessionNo: book.accessionNo,
+        title: book.title,
+        authors: book.authors || [],
+        publisher: book.publisher,
+        publishedDate: book.publishedDate,
+        isbn10: book.isbn10,
+        isbn13: book.isbn13,
+        thumbnail: book.thumbnail || "default-thumbnail.jpg",
+        description: book.description,
+        language: book.language,
+        categories: book.categories,
+        pageCount: book.pageCount,
+        printType: book.printType,
+        status: book.status // Ensure status is included
+      }));
+      setBooks(mappedBookData);
+      setTotalPages(Math.ceil(mappedBookData.length / booksPerPage));
+    } catch (err) {
+      console.error("Error fetching books:", err);
+      setError("Failed to fetch books from the database.");
+    }
+  };
 
+  useEffect(() => {
     fetchBooks();
   }, [booksPerPage]);
+
+  // Check for refresh flag when navigating back from BookDetails
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchBooks();
+      // Clear the refresh flag after fetching
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate]);
+
+
 
   const handleSearch = () => {
     console.log("Search for: ", query);

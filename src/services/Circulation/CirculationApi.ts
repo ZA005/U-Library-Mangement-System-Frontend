@@ -1,15 +1,29 @@
 import axios from "axios";
+import { Book } from "../../model/Book";
 
 const BASE_URL = "http://localhost:8080/";
 
 export const saveLoanDetails = async (loanData: unknown) => {
     try {
-        await axios.post(`${BASE_URL}admin/save-loan`, loanData, {
+        await axios.post(`${BASE_URL}adminuser/save-loan`, loanData, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return loanData;
     } catch (error) {
         throw new Error("Failed to save loan details: " + error);
+    }
+};
+
+export const getBooksByISBN = async (isbn13: string): Promise<Book[]> => {
+    try {
+        const response = await axios.get(`${BASE_URL}adminuser/isbn13/${isbn13}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        const books = response.data;
+        return books;
+    } catch (error) {
+        console.log("Failed to fetch book: " + error);
+        return [];
     }
 };
 
@@ -42,7 +56,7 @@ export const fetchBorrowerDetails = async (idNumber: string): Promise<{
     reservationCount: number
 }> => {
     try {
-        const response = await axios.get(`${BASE_URL}admin/borrower-details/${idNumber}`, {
+        const response = await axios.get(`${BASE_URL}adminuser/borrower-details/${idNumber}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         return response.data;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Book } from '../../../model/Book';
-import { Box, Button, Typography, Card, CardContent, CardMedia, Container } from '@mui/material';
+import { Box, Typography, Card, CardContent, CardMedia, Container } from '@mui/material';
 
 interface BookListProps {
   books: Book[];
@@ -11,13 +11,13 @@ interface BookListProps {
 const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
 
   // Function to remove duplicates based on book id
-  const getUniqueBooks = (books: Book[]) => {
+  const getUniqueBooks = (books: Book[]): Book[] => {
     const uniqueBooks: Book[] = [];
-    const seenIds = new Set();
+    const seenISBNs = new Set<string>();
 
     books.forEach((book) => {
-      if (!seenIds.has(book.id)) {
-        seenIds.add(book.id);
+      if (book.isbn13 && !seenISBNs.has(book.isbn13)) {
+        seenISBNs.add(book.isbn13);
         uniqueBooks.push(book);
       }
     });
@@ -26,16 +26,21 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
   };
 
   // Function to determine the availability status based on the number of duplicates
-  const availabilityStatus = (book: Book, bookCount: number) => {
-    if (bookCount > 1) {
-      return `Available (${bookCount} copies)`; // Adjust the message based on the count of duplicates
+  const availabilityStatus = (book: Book, availableCount: number) => {
+    if (availableCount === 0) {
+      return 'Not Available';
+    } else if (availableCount > 1) {
+      return `${availableCount} Copies Available`;
     }
-    return 'Available'; // If there's only one copy, it's available
+    return 'Available';
   };
 
   // Count the duplicates of each book
   const countBookDuplicates = (book: Book) => {
-    return books.filter(b => b.id === book.id).length;
+    return books.filter(b =>
+      b.isbn13 === book.isbn13 &&
+      b.status !== "Loaned Out"
+    ).length;
   };
 
   // Get unique books (no duplicates)
@@ -59,7 +64,7 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {uniqueBooks.map((book) => {
             // Get the number of duplicates for this book
-            const bookCount = countBookDuplicates(book);
+            const availableCount = countBookDuplicates(book);
 
             return (
               <Card
@@ -114,10 +119,12 @@ const BookList: React.FC<BookListProps> = ({ books, onBookClick, source }) => {
                       variant="body2"
                       sx={{
                         fontWeight: 'bold',
-                        color: availabilityStatus(book, bookCount) === 'Available' ? 'success.main' : 'error.main',
+                        color: availableCount === 0 ? 'error.main' :
+                          availableCount === 1 ? 'warning.main' :
+                            'success.main',
                       }}
                     >
-                      {availabilityStatus(book, bookCount)}
+                      {availabilityStatus(book, availableCount)}
                     </Typography>
                   )}
                 </CardContent>
