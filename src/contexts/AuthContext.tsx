@@ -32,9 +32,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     /**
      * login function saves token and role in localStorage and updates state.
      */
-    const login = (token: string, role: string) => {
+    const login = (token: string, role: string, user_id: string) => {
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
+        localStorage.setItem("id", user_id)
         setIsAuthenticated(true);
         setRole(role);
 

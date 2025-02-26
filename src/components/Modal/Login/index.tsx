@@ -32,8 +32,8 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
         onSuccess: (data) => {
             console.log('Login successful', data);
             // If token and role are provided, update AuthContext and close the modal.
-            if (data.token && data.role) {
-                authLogin(data.token, data.role);
+            if (data.token && data.role && data.user_id) {
+                authLogin(data.token, data.role, data.user_id);
                 onClose();
             } else {
                 setErrorMessage('Login failed: Missing token or role.');
