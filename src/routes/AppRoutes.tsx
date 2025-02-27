@@ -2,8 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { ROUTES } from "./routeConfig";
 import { useAuth } from "../contexts/AuthContext";
 import PrivateRoute from "./PrivateRoute";
-import HomeScreen from "../pages/HomeScreen";
-import PageNotFound from "../pages/PageNotFound";
+import * as Pages from "./../pages"
 import MainLayout from "../layouts/MainLayout";
 
 const AppRoutes = () => {
@@ -13,7 +12,7 @@ const AppRoutes = () => {
     if (role === "STUDENT") return <Navigate to={ROUTES.USER_BROWSE} />;
     if (role === "LIBRARIAN" || role === "ADMIN")
       return <Navigate to={ROUTES.ADMIN_LIBRARY} />;
-    return <HomeScreen />;
+    return <Pages.HomeScreen />;
   };
 
   return (
@@ -22,7 +21,7 @@ const AppRoutes = () => {
       <Route element={<MainLayout />}>
         <Route
           path={ROUTES.HOME}
-          element={isAuthenticated ? getDefaultRoute() : <HomeScreen />}
+          element={isAuthenticated ? getDefaultRoute() : <Pages.AccountLibraryCard />}
         />
       </Route>
 
@@ -44,7 +43,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* DEFAULT CATCH-ALL ROUTE */}
-      <Route path={ROUTES.NOT_FOUND} element={<PageNotFound />} />
+      <Route path={ROUTES.NOT_FOUND} element={<Pages.PageNotFound />} />
     </Routes>
   );
 };
