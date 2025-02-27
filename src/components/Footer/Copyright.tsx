@@ -4,7 +4,7 @@ import { Box, Typography } from "@mui/material";
 const Copyright: React.FC = () => {
   return (
     <Box
-      position='absolute'
+      // position='absolute'
       width='100%'
       bgcolor="#282828"
       alignItems="center"
@@ -12,7 +12,7 @@ const Copyright: React.FC = () => {
       color="white"
       fontSize={{ xs: "10px", md: "12px" }}
       textAlign="center"
-      bottom='0'
+    // bottom='0'
     >
       <Typography variant="caption">
         &copy; 2023 University of Nueva Caceres. All Rights Reserved.
