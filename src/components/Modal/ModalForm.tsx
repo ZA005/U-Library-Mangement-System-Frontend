@@ -131,7 +131,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
                             ":hover": { backgroundColor: "#d13333" },
                         }}
                         onClick={onConfirm}
-                        disabled={!isFormValid} // Prevent submission if form is invalid
+                        disabled={!isFormValid}
                     >
                         {confirmText}
                     </Button>

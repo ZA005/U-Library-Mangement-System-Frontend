@@ -34,7 +34,6 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
 
     const handleResend = () => {
         console.log("Resend OTP triggered");
-        // Add your resend OTP logic here
     };
 
     const handleChange = (index: number, value: string) => {
