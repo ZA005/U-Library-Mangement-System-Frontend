@@ -21,6 +21,16 @@ const AppRoutes = () => {
       <Route element={<MainLayout />}>
         <Route
           path={ROUTES.HOME}
+          element={isAuthenticated ? getDefaultRoute() : <Pages.HomeScreen />}
+        />
+
+        <Route
+          path={ROUTES.REGISTER}
+          element={isAuthenticated ? getDefaultRoute() : <Pages.ActivateUser />}
+        />
+
+        <Route
+          path={ROUTES.ELIBCARD}
           element={isAuthenticated ? getDefaultRoute() : <Pages.AccountLibraryCard />}
         />
       </Route>

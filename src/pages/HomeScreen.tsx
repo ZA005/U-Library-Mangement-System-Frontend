@@ -1,9 +1,9 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction } from "react";
 import { Typography } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import Line from "../components/Line/Line";
-import Login from "../components/Modal/Login";
-import VerifyUser from "../components/Modal/Verification/User";
+import Line from "../components/Line";
+import { Login } from "../components/Modal";
+import VerifyUser from "../components/Modal/Verification/sendOTP";
 import { useModal } from "../hooks/Modal/useModal";
 import HeaderButtons from "../components/Header/HeaderButtons";
 
@@ -24,7 +24,7 @@ const HomeScreen: React.FC = () => {
             />
         );
 
-        setTitle("Home - Library Management System");
+        setTitle("University Library Management System");
 
         return () => {
             setHeaderButtons(null);
