@@ -1,16 +1,10 @@
 import { createApiClient } from "../api/apiClient";
-import { LoginResponse } from "../../types";
-/**
- * Logs in the user by calling the authentication API and returns the response.
- * @param user_id The user's ID
- * @param password The user's password
- * @returns A promise that resolves with the login response
- */
+import { AuthResponse } from "../../types";
 
-export const login = async (user_id: string, password: string): Promise<LoginResponse> => {
+const login = async (user_id: string, password: string): Promise<AuthResponse> => {
     const apiClient = createApiClient('auth');
     try {
-        const response = await apiClient.post<LoginResponse>('/login', {
+        const response = await apiClient.post<AuthResponse>('/login', {
             user_id,
             password,
         });
@@ -20,3 +14,5 @@ export const login = async (user_id: string, password: string): Promise<LoginRes
         throw error;
     }
 };
+
+export default login;
