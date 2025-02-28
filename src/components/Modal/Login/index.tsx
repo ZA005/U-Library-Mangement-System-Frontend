@@ -7,8 +7,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import elibLogo from '../../../assets/images/lms-logo.png'
 import { useAuth } from '../../../contexts/AuthContext';
 import { useMutation } from '@tanstack/react-query';
-import { login } from '../../../services/Authentication/login';
-import { LoginResponse } from '../../../types';
+import { login } from '../../../services/Authentication';
+import { AuthResponse } from '../../../types';
 import styles from './styles.module.css';
 
 interface LoginProps {
@@ -23,7 +23,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const { login: authLogin } = useAuth();
 
-    const loginMutation = useMutation<LoginResponse, Error, { userId: string; password: string }>({
+    const loginMutation = useMutation<AuthResponse, Error, { userId: string; password: string }>({
         mutationFn: async ({ userId, password }) => {
             // 2-second delay before calling login
             await new Promise((resolve) => setTimeout(resolve, 2000));
