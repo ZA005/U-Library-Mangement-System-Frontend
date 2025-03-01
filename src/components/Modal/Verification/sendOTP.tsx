@@ -3,6 +3,7 @@ import { Box, Typography, TextField, Button, Modal, CircularProgress } from '@mu
 import eliblogo from '../../../assets/images/lms-logo.png';
 import VerifyOtp from './confirmOTP';
 import { useSendOTP } from './useSendOTP';
+import { useIsActivated } from './useIsActivated';
 import { UserData } from '../../../types';
 
 interface VerifyUserModalProps {
@@ -15,12 +16,25 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [otpModalOpen, setOtpModalOpen] = useState(false);
-
     const { sendOtp, isPending, isError, error: otpError } = useSendOTP();
+    const { isActivated, isLoading, error: activateError, checkIsActivated } = useIsActivated();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+
+        if (!userId) {
+            setError("User ID is required");
+            return;
+        }
+
+        // Manually trigger the activation check
+        const result = await checkIsActivated(userId);
+        console.log("RESULT", result)
+        if (result?.data?.isActivated) {
+            setError("User is already activated.");
+            return;
+        }
 
         sendOtp(userId, {
             onSuccess: (data) => {
@@ -101,11 +115,12 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
                             />
 
                             {/* Error Message */}
-                            {(error || (isError && otpError)) && (
+                            {(error || (isError && otpError) || activateError) && (
                                 <Typography color="red" marginBottom="16px" fontSize="15px">
-                                    {error || otpError?.message}
+                                    {error || otpError?.message || activateError?.message}
                                 </Typography>
                             )}
+
 
                             {/* Submit Button */}
                             <Button
@@ -121,7 +136,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
                                     },
                                 }}
                             >
-                                {isPending ? <CircularProgress size={24} color="inherit" /> : "Send OTP"}
+                                {isPending || isLoading ? <CircularProgress size={24} color="inherit" /> : "Send OTP"}
                             </Button>
                         </form>
                     </Box>
