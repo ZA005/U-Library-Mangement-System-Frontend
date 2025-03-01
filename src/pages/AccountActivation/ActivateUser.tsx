@@ -1,4 +1,4 @@
-import React, { useEffect, Dispatch, ReactNode, SetStateAction } from "react";
+import React, { useEffect, Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { useLocation, useNavigate, generatePath, useOutletContext } from "react-router-dom";
 import { ROUTES } from "../../routes/routeConfig";
 import { Typography, Box, TextField, Container, Button, Divider } from "@mui/material";
@@ -11,6 +11,7 @@ const ActivateUser: React.FC = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const [userData, setUserData] = useState<UserData | null>(null);
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -24,10 +25,12 @@ const ActivateUser: React.FC = () => {
         setHeaderButtons(<></>);
         setTitle("Verify - Library Management System");
 
-        if (!location.state || !(location.state as { userData: UserData }).userData) {
-            // Redirect or display an error if the component is accessed directly without proper state.
-            navigate(ROUTES.HOME);
+        if (!location.state || !("userData" in location.state)) {
+            navigate(ROUTES.HOME, { replace: true }); // Prevents back navigation to this page
+            return;
         }
+
+        setUserData(location.state.userData);
 
         return () => {
             setHeaderButtons(null);
@@ -35,14 +38,17 @@ const ActivateUser: React.FC = () => {
         };
     }, [setHeaderButtons, setTitle, location.state, navigate]);
 
-    const { userData } = location.state as { userData: UserData };
     const { register } = useRegister();
 
-    const fullName = `${userData.firstName} ${userData.middleName} ${userData.lastName} ${userData.suffix}`;
-    const [password, setPassword] = React.useState("");
-    const [confirmPassword, setConfirmPassword] = React.useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleSubmit = () => {
+        if (!userData) {
+            navigate(ROUTES.HOME, { replace: true });
+            return;
+        }
+
         if (password !== confirmPassword) {
             alert("Passwords do not match!");
             return;
@@ -65,6 +71,13 @@ const ActivateUser: React.FC = () => {
             }
         );
     };
+
+    if (!userData) {
+        return null;
+    }
+
+    const fullName = `${userData.firstName} ${userData.middleName || ''} ${userData.lastName} ${userData.suffix || ''}`.trim();
+
     return (
         <>
             <Typography

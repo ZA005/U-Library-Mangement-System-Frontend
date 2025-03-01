@@ -17,31 +17,41 @@ const AccountLibraryCard: React.FC = () => {
         setTitle: Dispatch<SetStateAction<string>>;
     }>();
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const libraryCardRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [userData, setUserData] = useState<UserData | null>(null);
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
         setHeaderButtons(<></>);
         setTitle("Account QR Code - Library Management System");
 
+        if (!location.state || !("userData" in location.state)) {
+            navigate(ROUTES.HOME, { replace: true });
+            return;
+        }
+
+        setUserData(location.state.userData);
+
         return () => {
             setHeaderButtons(null);
             setTitle("");
         };
-    }, [setHeaderButtons, setTitle]);
+    }, [setHeaderButtons, setTitle, location.state, navigate]);
 
     /////////////////////////////////////////////////////////////////////////////////////
-
-    const location = useLocation()
-    const navigate = useNavigate()
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    const { userData } = location.state as { userData: UserData };
 
     const handleDownload = async () => {
-        if (!libraryCardRef.current) {
-            console.error("Library Card element not found");
+        if (!libraryCardRef.current || !userData) {
+            console.error("Library Card element not found or user data missing");
             return;
         }
 
@@ -65,9 +75,15 @@ const AccountLibraryCard: React.FC = () => {
         }
     };
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const handleSignIn = () => {
-        navigate(ROUTES.HOME)
+        navigate(ROUTES.HOME);
     };
+
+    if (!userData) {
+        return null;
+    }
 
     return (
         <>
