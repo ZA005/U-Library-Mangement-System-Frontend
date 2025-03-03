@@ -17,7 +17,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
     const [error, setError] = useState<string | null>(null);
     const [otpModalOpen, setOtpModalOpen] = useState(false);
     const { sendOtp, isPending, isError, error: otpError } = useSendOTP();
-    const { isActivated, isLoading, error: activateError, checkIsActivated } = useIsActivated();
+    const { verifyUser, isPending: verifyPending, error: activateError } = useIsActivated();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,23 +28,26 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
             return;
         }
 
-        // Manually trigger the activation check
-        const result = await checkIsActivated(userId);
-        console.log("RESULT", result)
-        if (result?.data?.isActivated) {
-            setError("User is already activated.");
-            return;
-        }
-
-        sendOtp(userId, {
+        verifyUser(userId, {
             onSuccess: (data) => {
-                setUserData(data);
-                setOtpModalOpen(true);
-                onClose();
+                if (data) {
+                    setError("User ID is already verified.");
+                    return;
+                }
+
+                sendOtp(userId, {
+                    onSuccess: (data) => {
+                        setUserData(data);
+                        setOtpModalOpen(true);
+                        onClose();
+                    },
+                    onError: (err) => setError(err.message),
+                });
             },
-            onError: (err) => setError(err.message),
+            onError: (err) => setError(err.message || "Verification failed. Please try again."),
         });
     };
+
 
     const handleOtpModalClose = () => {
         setOtpModalOpen(false);
@@ -136,7 +139,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
                                     },
                                 }}
                             >
-                                {isPending || isLoading ? <CircularProgress size={24} color="inherit" /> : "Send OTP"}
+                                {isPending || verifyPending ? <CircularProgress size={24} color="inherit" /> : "Send OTP"}
                             </Button>
                         </form>
                     </Box>
