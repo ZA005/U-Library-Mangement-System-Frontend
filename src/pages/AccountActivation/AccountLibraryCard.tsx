@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, Dispatch, ReactNode, SetStateAction } from "react";
 import { useLocation } from "react-router-dom";
-import { ROUTES } from "../../routes/routeConfig";
+import { ROUTES } from "../../config/routeConfig";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../../types";
 import { useOutletContext } from "react-router-dom";

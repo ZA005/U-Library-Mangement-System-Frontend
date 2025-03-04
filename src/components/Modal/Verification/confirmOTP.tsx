@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate, generatePath } from "react-router-dom";
-import { ROUTES } from "../../../routes/routeConfig";
+import { ROUTES } from "../../../config/routeConfig";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import { UserData } from "../../../types";

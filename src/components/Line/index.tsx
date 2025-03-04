@@ -1,10 +1,22 @@
 import React from 'react';
-import LineStyle from './line.module.css';
 
 const Line: React.FC = () => {
     return (
-        <div className={ LineStyle.rectangle}>
-            <div className={ LineStyle.line }></div>
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            backgroundColor: "#cc0000",
+            width: "8vw",
+            height: "1vw",
+            marginTop: "10px",
+            marginBottom: "25px"
+        }}>
+            <div style={{
+                backgroundColor: "#cc0000",
+                width: "35vw",
+                height: "0.1vw",
+            }}></div>
         </div>
     );
 };

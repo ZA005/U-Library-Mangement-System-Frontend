@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { isActivated } from "../../../services/Authentication";
+// import { isActivated } from "../../../services/Authentication";
 
 export const useIsActivated = () => {
     const {
@@ -11,8 +11,9 @@ export const useIsActivated = () => {
         data,
     } = useMutation({
         mutationFn: async (user_id: string) => {
+            const { default: isActivated } = await import("../../../services/Authentication/isActivated")
             const result = await isActivated(user_id);
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            // await new Promise((resolve) => setTimeout(resolve, 3000));
             return result;
         },
     })

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Container, Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Footer from "../components/Footer/Footer";
-import Header from "../components/Header/Header";
+import { Footer, Header } from "../components";
 
 const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [headerButtons, setHeaderButtons] = useState<React.ReactNode>(null);

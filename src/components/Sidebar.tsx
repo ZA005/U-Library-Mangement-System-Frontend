@@ -1,12 +1,12 @@
-// source code from https://mui.com/material-ui/react-drawer/
 import React from "react";
+import loadable from "@loadable/component";
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import HomeIcon from "@mui/icons-material/Home";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../contexts/AuthContext";
-import { ManageAccounts } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { menuItems } from "../config/menuConfig";
+
+const LogoutIcon = loadable(() => import("@mui/icons-material/Logout"));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -16,25 +16,21 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-start",
 }));
 
-const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
-  open,
-  onClose,
-}) => {
+const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, role } = useAuth();
 
   const handleLogout = () => {
     logout();
     localStorage.clear();
     navigate("/");
   };
+
+  const roleMenu = menuItems[role as keyof typeof menuItems] || [];
+
   return (
     <>
-      <Backdrop
-        open={open}
-        onClick={onClose}
-        sx={{ zIndex: (theme) => theme.zIndex.drawer - 1 }}
-      />
+      <Backdrop open={open} onClick={onClose} sx={{ zIndex: (theme) => theme.zIndex.drawer - 1 }} />
       <Drawer
         sx={{
           width: 240,
@@ -57,34 +53,23 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({
       >
         <DrawerHeader />
         <List>
-
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate("/")}>
-              <ListItemIcon>
-                <HomeIcon sx={{ color: "#FFF" }} />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate("/user/library/myaccount")}>
-              <ListItemIcon>
-                <ManageAccounts sx={{ color: "#FFF" }} />
-              </ListItemIcon>
-              <ListItemText primary="My Account" />
-            </ListItemButton>
-          </ListItem>
+          {roleMenu.map((item, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton onClick={() => navigate(item.path)}>
+                <ListItemIcon>{React.createElement(item.icon)}</ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            </ListItem>
+          ))}
 
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon>
-                <LogoutIcon sx={{ color: "#FFF" }} />
+                <LogoutIcon />
               </ListItemIcon>
               <ListItemText primary="Logout" />
             </ListItemButton>
           </ListItem>
-
         </List>
       </Drawer>
     </>

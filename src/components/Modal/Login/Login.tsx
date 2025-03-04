@@ -4,12 +4,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AccountCircle from '@mui/icons-material/LibraryBooks';
 import LockIcon from '@mui/icons-material/Lock';
-import elibLogo from '../../../assets/images/lms-logo.png'
-import { useAuth } from '../../../contexts/AuthContext';
-import { useMutation } from '@tanstack/react-query';
-import { login } from '../../../services/Authentication';
-import { AuthResponse } from '../../../types';
+import elibLogo from '../../../assets/images/lms-logo.png';
 import styles from './styles.module.css';
+import { useLogin } from './useLogin';
 
 interface LoginProps {
     open: boolean;
@@ -20,48 +17,30 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const { login: authLogin } = useAuth();
 
-    const loginMutation = useMutation<AuthResponse, Error, { userId: string; password: string }>({
-        mutationFn: async ({ userId, password }) => {
-            // 2-second delay before calling login
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            return login(userId, password);
-        },
-        onSuccess: (data) => {
-            console.log('Login successful', data);
-            // If token and role are provided, update AuthContext and close the modal.
-            if (data.token && data.role && data.user_id) {
-                authLogin(data.token, data.role, data.user_id);
-                onClose();
-            } else {
-                setErrorMessage('Login failed: Missing token or role.');
-            }
-        },
-        onError: (error) => {
-            console.error('Login error:', error);
-            setErrorMessage('Invalid credentials or server error. Please try again.');
-        },
-    });
+    const { login, errorMessage, setErrorMessage } = useLogin(onClose);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setErrorMessage(null);
-        loginMutation.mutate({ userId, password });
+        login.mutate({ userId, password });
     };
-
+    const handleClose = () => {
+        setUserId("")
+        setPassword("")
+        onClose()
+    }
     return (
         <Modal
             open={open}
-            onClose={onClose}
+            onClose={handleClose}
             aria-labelledby="login-modal"
             aria-describedby="login-modal-description"
         >
             <Box className={styles.outerContainer}>
                 {/* Header Section */}
                 <Box className={styles.headerContainer}>
-                    <img src={elibLogo} alt="Library Logo" className={styles.modalLogo} />
+                    <img src={elibLogo} alt="Library Logo" className={styles.modalLogo} loading='lazy' />
                     <Box>
                         <Typography variant="h5" className={styles.title}>
                             ACQUIRE
@@ -143,9 +122,9 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                             variant="contained"
                             fullWidth
                             sx={{ backgroundColor: '#d32f2f', color: '#fff', mt: 2 }}
-                            disabled={loginMutation.isPending}
+                            disabled={login.isPending}
                         >
-                            {loginMutation.isPending ? (
+                            {login.isPending ? (
                                 <CircularProgress size={24} color="inherit" />
                             ) : (
                                 'Sign In'
@@ -160,7 +139,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                             color="inherit"
                             fullWidth
                             sx={{ color: '#d32f2f' }}
-                            disabled={loginMutation.isPending}
+                            disabled={login.isPending}
                         >
                             Activate Account
                         </Button>
