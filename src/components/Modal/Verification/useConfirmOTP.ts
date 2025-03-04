@@ -1,5 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { confirmOTP } from "../../../services/Authentication";
 
 export const useConfirmOTP = () => {
     const {
@@ -11,6 +10,7 @@ export const useConfirmOTP = () => {
         data,
     } = useMutation({
         mutationFn: async ({ email, otp }: { email: string; otp: string }) => {
+            const { default: confirmOTP } = await import("../../../services/Authentication/confirmOTP")
             return confirmOTP(email, otp);
         },
     });

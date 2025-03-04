@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Modal, CircularProgress } from '@mui/material';
 import eliblogo from '../../../assets/images/lms-logo.png';
-import VerifyOtp from './confirmOTP';
+import { ConfirmOTP } from '../..';
 import { useSendOTP } from './useSendOTP';
 import { useIsActivated } from './useIsActivated';
 import { UserData } from '../../../types';
@@ -30,8 +30,8 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
 
         verifyUser(userId, {
             onSuccess: (data) => {
-                if (data) {
-                    setError("User ID is already verified.");
+                console.log(data)
+                if (data == 409) {
                     return;
                 }
 
@@ -53,9 +53,14 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
         setOtpModalOpen(false);
     };
 
+    const handleModalClose = () => {
+        setUserId("");
+        onClose();
+    };
+
     return (
         <>
-            <Modal open={open} onClose={onClose} aria-labelledby="verify-modal" aria-describedby="verify-modal-description">
+            <Modal open={open} onClose={handleModalClose} aria-labelledby="verify-modal" aria-describedby="verify-modal-description">
                 <Box
                     display="flex"
                     flexDirection="column"
@@ -77,7 +82,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
                     {/* Header */}
                     <Box display="flex" width="100%" padding="16px 0 16px 5vw" color="white" gap="12px" sx={{ backgroundColor: "#d32f2f" }}>
                         <Box display="flex" flexDirection="row">
-                            <img src={eliblogo} alt="e-library-logo" style={{ width: "50px" }} />
+                            <img src={eliblogo} alt="e-library-logo" style={{ width: "50px" }} loading='lazy' />
                             <Box>
                                 <Typography variant="subtitle1" fontWeight="bold" fontFamily="Spartan, sans-serif !important">
                                     ACQUIRE
@@ -148,7 +153,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
 
             {/* OTP Modal */}
             {otpModalOpen && userData && (
-                <VerifyOtp open={otpModalOpen} onClose={handleOtpModalClose} userData={userData} />
+                <ConfirmOTP open={otpModalOpen} onClose={handleOtpModalClose} userData={userData} />
             )}
         </>
     );

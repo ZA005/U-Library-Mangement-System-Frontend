@@ -1,11 +1,8 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction } from "react";
 import { Typography } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import Line from "../components/Line";
-import { Login } from "../components/Modal";
-import VerifyUser from "../components/Modal/Verification/sendOTP";
 import { useModal } from "../hooks/Modal/useModal";
-import HeaderButtons from "../components/Header/HeaderButtons";
+import { HeaderButtons, Line, SendOTP, Login } from "../components";
 
 const HomeScreen: React.FC = () => {
     const { setHeaderButtons, setTitle } = useOutletContext<{
@@ -46,7 +43,7 @@ const HomeScreen: React.FC = () => {
 
             {/* Modals */}
             <Login open={loginModal.isOpen} onClose={loginModal.close} />
-            <VerifyUser open={verifyModal.isOpen} onClose={verifyModal.close} />
+            <SendOTP open={verifyModal.isOpen} onClose={verifyModal.close} />
         </>
     );
 };

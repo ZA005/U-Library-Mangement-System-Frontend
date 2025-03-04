@@ -1,5 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { sendOTP } from "../../../services/Authentication";
 
 export const useSendOTP = () => {
     const {
@@ -12,6 +11,8 @@ export const useSendOTP = () => {
     } = useMutation({
         mutationFn: async (userId: string) => {
             if (!userId) throw new Error("User ID is required");
+
+            const { default: sendOTP } = await import("../../../services/Authentication/sendOTP")
             const result = await sendOTP(userId);
             await new Promise((resolve) => setTimeout(resolve, 3000));
             return result;

@@ -1,17 +1,15 @@
-export { default as HomeScreen } from './HomeScreen';
-export { default as PageNotFound } from './PageNotFound';
-export { default as ActivateUser } from './AccountActivation/ActivateUser';
-export { default as AccountLibraryCard } from './AccountActivation/AccountLibraryCard';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
-// export { default as  } from './';
+import loadable from "@loadable/component"
+
+export const HomeScreen = loadable(() => import("./HomeScreen"));
+export const PageNotFound = loadable(() => import("./PageNotFound"))
+export const ActivateUser = loadable(() => import("./AccountActivation/ActivateUser"))
+export const AccountLibraryCard = loadable(() => import("./AccountActivation/AccountLibraryCard"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
+// export const = loadable(() => import("./"))
