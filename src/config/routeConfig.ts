@@ -7,4 +7,5 @@ export const ROUTES = {
     USER: "/user",
     USER_BROWSE: "/user/browse",
     NOT_FOUND: "*",
+    TEST: "/test"
 };

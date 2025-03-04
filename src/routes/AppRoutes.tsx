@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ROUTES } from "./routeConfig";
+import { ROUTES } from "../config/routeConfig";
 import { useAuth } from "../contexts/AuthContext";
 import PrivateRoute from "./PrivateRoute";
 import * as Pages from "./../pages"
@@ -32,6 +32,11 @@ const AppRoutes = () => {
         <Route
           path={ROUTES.ELIBCARD}
           element={isAuthenticated ? getDefaultRoute() : <Pages.AccountLibraryCard />}
+        />
+
+        <Route
+          path={ROUTES.TEST}
+          element={isAuthenticated ? getDefaultRoute() : <Pages.TestingPage />}
         />
       </Route>
 
