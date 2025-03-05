@@ -50,6 +50,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
         variant="persistent"
         anchor="right"
         open={open}
+        onClose={onClose} // Allow closing when clicking outside
       >
         <DrawerHeader />
         <List>

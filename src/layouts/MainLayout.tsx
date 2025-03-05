@@ -6,6 +6,7 @@ import { Footer, Header } from "../components";
 const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [headerButtons, setHeaderButtons] = useState<React.ReactNode>(null);
     const [title, setTitle] = useState<React.ReactNode>("");
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
         <Box
@@ -23,9 +24,13 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
                     px: { xs: 2, sm: 4, md: 6 }
                 }}
             >
-                <Header buttons={headerButtons} title={title} />
-                {/* Pass setHeaderButtons as context without LayoutContext */}
-                <Outlet context={{ setHeaderButtons, setTitle }} />
+                <Header
+                    buttons={headerButtons}
+                    title={title}
+                    setSidebarOpen={setSidebarOpen}
+                    sidebarOpen={sidebarOpen}
+                />
+                <Outlet context={{ setHeaderButtons, setTitle, setSidebarOpen }} />
                 {children}
             </Container>
             <Footer />

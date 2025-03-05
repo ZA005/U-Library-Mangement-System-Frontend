@@ -4,16 +4,18 @@ import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import eliblogo from "../../assets/images/lms-logo.png";
 import loadable from "@loadable/component";
+
 interface HeaderProps {
   buttons?: React.ReactNode;
   title?: React.ReactNode;
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  sidebarOpen: boolean;
 }
 
-const MenuIcon = loadable(() => import("@mui/icons-material/Menu"))
-const Sidebar = loadable(() => import("../Sidebar"))
+const MenuIcon = loadable(() => import("@mui/icons-material/Menu"));
+const Sidebar = loadable(() => import("../Sidebar"));
 
-const Header: React.FC<HeaderProps> = ({ buttons, title }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+const Header: React.FC<HeaderProps> = ({ buttons, title, setSidebarOpen, sidebarOpen }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const theme = useTheme();
@@ -65,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ buttons, title }) => {
             <IconButton
               sx={{ display: { xs: "block", md: "none" } }}
               onClick={() =>
-                isHomePage ? setMobileOpen(true) : setSidebarOpen(true)
+                isHomePage ? setMobileOpen(true) : setSidebarOpen(prev => !prev)
               }
             >
               <MenuIcon />
@@ -74,8 +76,8 @@ const Header: React.FC<HeaderProps> = ({ buttons, title }) => {
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar for non-home pages */}
-      {!isHomePage && <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
+      {/* Sidebar now correctly responds to sidebarOpen state */}
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Mobile Drawer for Home Page Buttons */}
       <Drawer

@@ -8,7 +8,6 @@ import {
     Stack,
     MenuItem,
 } from "@mui/material";
-import styles from "./styles.module.css";
 
 type FieldType = "text" | "select" | "number";
 
@@ -78,7 +77,13 @@ const ModalForm: React.FC<ModalFormProps> = ({
     return (
         <Modal open={open} onClose={handleClose}>
             <Box
-                className={styles.modalBox}
+                position="absolute"
+                top="50%"
+                left="50%"
+                width="400px"
+                padding="16px"
+                boxShadow="24px 24px 24px rgba(0, 0, 0, 0.2)"
+                borderRadius="8px"
                 sx={{
                     maxHeight: "90vh",
                     overflowY: "auto",
@@ -88,11 +93,13 @@ const ModalForm: React.FC<ModalFormProps> = ({
                     "&::-webkit-scrollbar": { display: "none" },
                     "-ms-overflow-style": "none",
                     "scrollbar-width": "none",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "white"
                 }}
             >
                 <Stack spacing={2}>
-                    <Typography variant="h6" fontWeight="bold" className={styles.modalHeader}>
-                        <span className={styles.modalHeaderLine} />
+                    <Typography variant="h6" fontWeight="bold" display="flex" alignItems="center" marginBottom="16px">
+                        {/* <span className={styles.modalHeaderLine} /> */}
                         {title}
                     </Typography>
 
@@ -103,7 +110,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
                             variant="outlined"
                             value={field.value}
                             onChange={(e) => handleFieldChange(e.target.value, index)}
-                            className={styles.textField}
+
                             error={!!fieldErrors[index]}
                             helperText={fieldErrors[index]}
                             select={field.type === "select"}
@@ -111,6 +118,9 @@ const ModalForm: React.FC<ModalFormProps> = ({
                             disabled={field.disabled}
                             InputProps={{
                                 readOnly: field.readonly,
+                            }}
+                            sx={{
+                                marginBottom: "16px"
                             }}
                         >
                             {field.type === "select" &&
