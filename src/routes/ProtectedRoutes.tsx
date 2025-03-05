@@ -16,12 +16,11 @@ const ProtectedRoutes = () => {
                 }
             />
 
-            {/* Only ADMIN can access this test page */}
             <Route
-                path={PROTECTED_ROUTES.TEST}
+                path={PROTECTED_ROUTES.ACCESSION}
                 element={
-                    <PrivateRoute allowedRoles={["ADMIN"]}>
-                        <Pages.TestingPage />
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.AccessionRecord />
                     </PrivateRoute>
                 }
             />

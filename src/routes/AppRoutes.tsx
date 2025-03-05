@@ -55,7 +55,7 @@ const AppRoutes = () => {
 
       {/* PROTECTED ROUTES WRAPPED IN MAINLAYOUT */}
       <Route element={<MainLayout />}>
-        <Route path={PROTECTED_ROUTES.ADMIN + "/*"} element={<ProtectedRoutes />} />
+        <Route path={"/*"} element={<ProtectedRoutes />} />
         <Route path={PROTECTED_ROUTES.USER + "/*"} element={<PublicRoutes />} />
       </Route>
 

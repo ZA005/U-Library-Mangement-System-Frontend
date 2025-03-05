@@ -9,7 +9,7 @@ export const PUBLIC_ROUTES = {
 export const PROTECTED_ROUTES = {
     ADMIN: "/admin",
     CATALOG: "/library/catalog",
-    TEST: "/test",
+    ACCESSION: "/library/accession",
 
     USER: "/user",
     USER_BROWSE: "/user/browse",
