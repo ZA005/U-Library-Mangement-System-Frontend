@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { register } from "../../services/Authentication";
+// import { register } from "../../services/Authentication";
 import { AccountData } from "../../types";
 export const useRegister = () => {
 
@@ -12,7 +12,7 @@ export const useRegister = () => {
         data,
     } = useMutation({
         mutationFn: async ({ account }: { account: AccountData; }) => {
-            console.log("ACCOUNT: ", account)
+            const { default: register } = await import("../../services/Authentication/register")
             return register(account);
         }
     })

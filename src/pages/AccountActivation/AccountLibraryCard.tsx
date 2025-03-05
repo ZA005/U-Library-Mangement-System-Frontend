@@ -9,6 +9,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import LoginIcon from '@mui/icons-material/Login';
 import LibraryCard from "../../components/LibraryCard";
 import Line from "../../components/Line";
+import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import html2canvas from "html2canvas";
 
 const AccountLibraryCard: React.FC = () => {
@@ -18,7 +19,7 @@ const AccountLibraryCard: React.FC = () => {
     }>();
 
     /////////////////////////////////////////////////////////////////////////////////////
-
+    const showSnackbar = useSnackbarContext()
     const libraryCardRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
     const [userData, setUserData] = useState<UserData | null>(null);
@@ -31,6 +32,7 @@ const AccountLibraryCard: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
+        showSnackbar(`Account ${userData?.id} successfully activated!`, "success")
         setHeaderButtons(<></>);
         setTitle("Account QR Code - Library Management System");
 
@@ -45,7 +47,7 @@ const AccountLibraryCard: React.FC = () => {
             setHeaderButtons(null);
             setTitle("");
         };
-    }, [setHeaderButtons, setTitle, location.state, navigate]);
+    }, [setHeaderButtons, setTitle, location.state, navigate, showSnackbar, userData]);
 
     /////////////////////////////////////////////////////////////////////////////////////
 

@@ -1,7 +1,8 @@
-import React, { useEffect, Dispatch, ReactNode, SetStateAction, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, generatePath, useOutletContext } from "react-router-dom";
 import { ROUTES } from "../../config/routeConfig";
-import { Typography, Box, TextField, Container, Button, Divider } from "@mui/material";
+import { Typography, Box, TextField, Container, Button, Divider, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { UserData, AccountData } from "../../types";
 import { useRegister } from "./useRegister";
 import Line from "../../components/Line";
@@ -11,22 +12,31 @@ const ActivateUser: React.FC = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const { register } = useRegister();
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const [userData, setUserData] = useState<UserData | null>(null);
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [errors, setErrors] = useState({ password: "", confirmPassword: "" });
+    const [showPassword, setShowPassword] = useState({ password: false, confirmPassword: false });
 
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { setHeaderButtons, setTitle } = useOutletContext<{
-        setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
-        setTitle: Dispatch<SetStateAction<string>>;
+        setHeaderButtons: React.Dispatch<React.SetStateAction<React.ReactNode>>;
+        setTitle: React.Dispatch<React.SetStateAction<string>>;
     }>();
 
+    /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
-        setHeaderButtons(<></>);
+        setHeaderButtons(null);
         setTitle("Verify - Library Management System");
 
-        if (!location.state || !("userData" in location.state)) {
-            navigate(ROUTES.HOME, { replace: true }); // Prevents back navigation to this page
+        if (!location.state?.userData) {
+            navigate(ROUTES.HOME, { replace: true });
             return;
         }
 
@@ -38,25 +48,38 @@ const ActivateUser: React.FC = () => {
         };
     }, [setHeaderButtons, setTitle, location.state, navigate]);
 
-    const { register } = useRegister();
+    /////////////////////////////////////////////////////////////////////////////////////
 
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const togglePasswordVisibility = (field: "password" | "confirmPassword") => {
+        setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
+    };
 
-    const handleSubmit = () => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const handleSubmit = async () => {
         if (!userData) {
             navigate(ROUTES.HOME, { replace: true });
             return;
         }
 
+        setErrors({ password: "", confirmPassword: "" });
+
+        const { default: validatePassword } = await import("../../utils/validatePassword");
+
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+            setErrors((prev) => ({ ...prev, password: passwordError }));
+            return;
+        }
+
         if (password !== confirmPassword) {
-            alert("Passwords do not match!");
+            setErrors((prev) => ({ ...prev, confirmPassword: "Passwords do not match." }));
             return;
         }
 
         const account: AccountData = {
             user_id: userData.id,
-            password: password,
+            password,
             role: userData.role.toUpperCase(),
         };
 
@@ -65,43 +88,28 @@ const ActivateUser: React.FC = () => {
             {
                 onSuccess: () => {
                     console.log("Account activated successfully!");
-                    const path = generatePath(ROUTES.ELIBCARD, { user_id: userData.id });
-                    navigate(path, { state: { userData } });
-                }
+                    navigate(generatePath(ROUTES.ELIBCARD, { user_id: userData.id }), { state: { userData } });
+                },
             }
         );
     };
 
-    if (!userData) {
-        return null;
-    }
+    if (!userData) return null;
 
-    const fullName = `${userData.firstName} ${userData.middleName || ''} ${userData.lastName} ${userData.suffix || ''}`.trim();
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const fullName = `${userData.firstName} ${userData.middleName || ""} ${userData.lastName} ${userData.suffix || ""}`.trim();
 
     return (
         <>
-            <Typography
-                variant="h4"
-                gutterBottom
-                fontWeight="bold"
-                sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}
-            >
+            <Typography variant="h4" gutterBottom fontWeight="bold" sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}>
                 Account Verification
             </Typography>
             <Line />
 
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                <Box
-                    component="form"
-                    display="flex"
-                    flexDirection="column"
-                    gap={3}
-                    sx={{ border: "1px solid #C4C4C4", padding: "20px", borderRadius: "10px" }}
-                >
-                    {/* Account Information */}
-                    <Typography variant="h6" fontWeight="bold">
-                        Account Information
-                    </Typography>
+                <Box component="form" display="flex" flexDirection="column" gap={3} sx={{ border: "1px solid #C4C4C4", padding: "20px", borderRadius: "10px" }}>
+                    <Typography variant="h6" fontWeight="bold">Account Information</Typography>
                     <Box display="flex" flexWrap="wrap" gap={2}>
                         <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 calc(50% - 16px)" } }}>
                             <TextField label="Account ID" fullWidth value={userData?.id || ""} disabled required />
@@ -113,12 +121,8 @@ const ActivateUser: React.FC = () => {
 
                     <Divider />
 
-                    {/* Personal Information */}
-                    <Typography variant="h6" fontWeight="bold">
-                        Personal Information
-                    </Typography>
+                    <Typography variant="h6" fontWeight="bold">Personal Information</Typography>
                     <Box display="flex" flexWrap="wrap" gap={2}>
-                        {/* Full-width on all breakpoints */}
                         <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 100%" } }}>
                             <TextField label="Name" fullWidth value={fullName.toUpperCase()} disabled required />
                         </Box>
@@ -138,41 +142,46 @@ const ActivateUser: React.FC = () => {
 
                     <Divider />
 
-                    {/* Security Information */}
-                    <Typography variant="h6" fontWeight="bold">
-                        Security Information
-                    </Typography>
+                    <Typography variant="h6" fontWeight="bold">Security Information</Typography>
                     <Box display="flex" flexWrap="wrap" gap={2}>
                         <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 calc(50% - 16px)" } }}>
                             <TextField
                                 label="Password"
                                 fullWidth
                                 required
-                                type="password"
+                                type={showPassword.password ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                error={!!errors.password}
+                                helperText={errors.password}
+                                InputProps={{
+                                    endAdornment: (
+                                        <IconButton onClick={() => togglePasswordVisibility("password")} edge="end">
+                                            {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    ),
+                                }}
                             />
                         </Box>
+
                         <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 calc(50% - 16px)" } }}>
                             <TextField
                                 label="Confirm Password"
                                 fullWidth
                                 required
-                                type="password"
+                                type={showPassword.confirmPassword ? "text" : "password"}
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
+                                error={!!errors.confirmPassword}
+                                helperText={errors.confirmPassword}
                             />
                         </Box>
+
                     </Box>
 
-                    <Button
-                        variant="contained"
-                        fullWidth
-                        onClick={() => handleSubmit()}
-                    >
+                    <Button variant="contained" fullWidth onClick={handleSubmit}>
                         Submit
                     </Button>
-
                 </Box>
             </Container>
         </>
