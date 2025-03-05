@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { Typography, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
-const TestPage: React.FC = () => {
+const Catalog: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
         setTitle: Dispatch<SetStateAction<string>>;
@@ -11,7 +11,7 @@ const TestPage: React.FC = () => {
     }>();
 
     useEffect(() => {
-        setTitle("Testing Page");
+        setTitle("Catalog Page");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
                 <MenuIcon />
@@ -26,9 +26,9 @@ const TestPage: React.FC = () => {
 
     return (
         <>
-            <Typography>Hello world</Typography>
+            <Typography>Catalog</Typography>
         </>
     );
 };
 
-export default TestPage;
+export default Catalog;
