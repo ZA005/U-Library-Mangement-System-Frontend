@@ -32,7 +32,6 @@ const AccountLibraryCard: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
-        showSnackbar(`Account ${userData?.id} successfully activated!`, "success")
         setHeaderButtons(<></>);
         setTitle("Account QR Code - Library Management System");
 
@@ -40,7 +39,7 @@ const AccountLibraryCard: React.FC = () => {
             navigate(ROUTES.HOME, { replace: true });
             return;
         }
-
+        showSnackbar(`Account ${userData?.id} successfully activated!`, "success")
         setUserData(location.state.userData);
 
         return () => {
