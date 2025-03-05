@@ -1,18 +1,16 @@
-export const ROUTES = {
+export const PUBLIC_ROUTES = {
     HOME: "/",
     REGISTER: "/activate/:user_id",
     ELIBCARD: "/:user_id/e-card",
-
-
-
-    ADMIN: "/admin",
-    CATALOG: "/library/catalog",
-
-
-    USER: "/user",
-    USER_BROWSE: "/user/browse",
-
-
     NOT_FOUND: "*",
     TEST: "/test"
 };
+
+export const PROTECTED_ROUTES = {
+    ADMIN: "/admin",
+    CATALOG: "/library/catalog",
+    TEST: "/test",
+
+    USER: "/user",
+    USER_BROWSE: "/user/browse",
+}

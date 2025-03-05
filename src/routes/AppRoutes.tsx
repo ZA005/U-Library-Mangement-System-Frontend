@@ -1,64 +1,66 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ROUTES } from "../config/routeConfig";
+import { PUBLIC_ROUTES, PROTECTED_ROUTES } from "../config/routeConfig";
 import { useAuth } from "../contexts/AuthContext";
-import PrivateRoute from "./PrivateRoute";
 import * as Pages from "./../pages"
 import MainLayout from "../layouts/MainLayout";
+import loadable from "@loadable/component";
+
+const ProtectedRoutes = loadable(() => import("./ProtectedRoutes"))
+const PublicRoutes = loadable(() => import("./PublicRoutes"))
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
 
   const getDefaultRoute = () => {
-    if (role === "STUDENT") return <Navigate to={ROUTES.USER_BROWSE} />;
-    if (role === "LIBRARIAN" || role === "ADMIN")
-      return <Navigate to={ROUTES.ADMIN_LIBRARY} />;
-    return <Pages.HomeScreen />;
+    if (!isAuthenticated) return <Pages.HomeScreen />;
+
+    switch (role) {
+      case "STUDENT":
+        return <Navigate to={PROTECTED_ROUTES.USER_BROWSE} replace />;
+      case "LIBRARIAN":
+        return <Pages.TestingPage />;
+      case "ADMIN":
+        return <Navigate to={PROTECTED_ROUTES.ADMIN} replace />;
+      default:
+        return <Pages.HomeScreen />;
+    }
   };
+
+
 
   return (
     <Routes>
       {/* PUBLIC ROUTES */}
       <Route element={<MainLayout />}>
         <Route
-          path={ROUTES.HOME}
+          path={PUBLIC_ROUTES.HOME}
           element={isAuthenticated ? getDefaultRoute() : <Pages.HomeScreen />}
         />
 
         <Route
-          path={ROUTES.REGISTER}
+          path={PUBLIC_ROUTES.REGISTER}
           element={isAuthenticated ? getDefaultRoute() : <Pages.ActivateUser />}
         />
 
         <Route
-          path={ROUTES.ELIBCARD}
+          path={PUBLIC_ROUTES.ELIBCARD}
           element={isAuthenticated ? getDefaultRoute() : <Pages.AccountLibraryCard />}
         />
 
-        <Route
+        {/* <Route
           path={ROUTES.TEST}
           element={isAuthenticated ? getDefaultRoute() : <Pages.TestingPage />}
-        />
+        /> */}
       </Route>
 
       {/* PROTECTED ROUTES WRAPPED IN MAINLAYOUT */}
       <Route element={<MainLayout />}>
-        <Route
-          element={<PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]} />}
-        >
-          {/* <Route path={ROUTES.ADMIN + "/*"} element={<AdminRoutes />} /> */}
-        </Route>
-
-        <Route
-          element={
-            <PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]} />
-          }
-        >
-          {/* <Route path={ROUTES.USER + "/*"} element={<UserRoutes />} /> */}
-        </Route>
+        <Route path={PROTECTED_ROUTES.ADMIN + "/*"} element={<ProtectedRoutes />} />
+        <Route path={PROTECTED_ROUTES.USER + "/*"} element={<PublicRoutes />} />
       </Route>
 
       {/* DEFAULT CATCH-ALL ROUTE */}
-      <Route path={ROUTES.NOT_FOUND} element={<Pages.PageNotFound />} />
+      <Route path={PUBLIC_ROUTES.NOT_FOUND} element={<Pages.PageNotFound />} />
     </Routes>
   );
 };
