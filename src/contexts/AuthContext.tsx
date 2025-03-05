@@ -1,52 +1,49 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { AuthContextType } from "../types";
-import { isTokenExpired } from "../utils/jwtUtils";
 
-/**
- * AuthContext provides authentication state and methods.
- */
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/**
- * AuthProvider component wraps the app and provides authentication context.
- */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [role, setRole] = useState<string | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const savedRole = localStorage.getItem("role");
+        const initializeAuth = async () => {
+            const token = localStorage.getItem("token");
+            const savedRole = localStorage.getItem("role");
 
-        if (token && savedRole && !isTokenExpired(token)) {
-            setIsAuthenticated(true);
-            setRole(savedRole);
-        } else {
-            logout(); // Logout if token is expired or doesn't exist
-        }
+            if (token && savedRole) {
+                const { isTokenExpired } = await import("../utils/jwtUtils");
+                if (!isTokenExpired(token)) {
+                    setIsAuthenticated(true);
+                    setRole(savedRole);
+                } else {
+                    logout();
+                }
+            } else {
+                logout();
+            }
 
-        setIsInitialized(true); // Mark initialization complete.
+            setIsInitialized(true);
+        };
+
+        initializeAuth();
     }, []);
 
-    /**
-     * login function saves token and role in localStorage and updates state.
-     */
-    const login = (token: string, role: string, user_id: string) => {
+    const login = async (token: string, role: string, user_id: string) => {
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
-        localStorage.setItem("id", user_id)
+        localStorage.setItem("id", user_id);
         setIsAuthenticated(true);
         setRole(role);
 
+        const { isTokenExpired } = await import("../utils/jwtUtils");
         if (isTokenExpired(token)) {
-            logout(); // Log out immediately if token is expired
+            logout();
         }
     };
 
-    /**
-     * logout function clears the authentication data from local storage and resets state.
-     */
     const logout = () => {
         localStorage.clear();
         setIsAuthenticated(false);
@@ -64,10 +61,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-/**
- * Custom hook for consuming authentication context.
- * Throws an error if used outside AuthProvider.
- */
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {

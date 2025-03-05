@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, generatePath, useOutletContext } from "react-router-dom";
 import { ROUTES } from "../../config/routeConfig";
 import { Typography, Box, TextField, Container, Button, Divider, IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import loadable from "@loadable/component";
 import { UserData, AccountData } from "../../types";
 import { useRegister } from "./useRegister";
 import Line from "../../components/Line";
+
+const Visibility = loadable(() => import('@mui/icons-material/Visibility'));
+const VisibilityOff = loadable(() => import('@mui/icons-material/VisibilityOff'));
 
 const ActivateUser: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////

@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Modal, TextField, IconButton, InputAdornment, CircularProgress } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import AccountCircle from '@mui/icons-material/LibraryBooks';
-import LockIcon from '@mui/icons-material/Lock';
 import elibLogo from '../../../assets/images/lms-logo.png';
 import styles from './styles.module.css';
 import { useLogin } from './useLogin';
-
+import loadable from '@loadable/component';
 interface LoginProps {
     open: boolean;
     onClose: () => void;
 }
+
+const Visibility = loadable(() => import('@mui/icons-material/Visibility'));
+const VisibilityOff = loadable(() => import('@mui/icons-material/VisibilityOff'));
+const LockIcon = loadable(() => import('@mui/icons-material/Lock'))
+const AccountCircle = loadable(() => import('@mui/icons-material/LibraryBooks'))
 
 const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     const [userId, setUserId] = useState('');

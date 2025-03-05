@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { AppBar, Toolbar, Box, Typography, IconButton, Drawer, useMediaQuery, useTheme } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useLocation } from "react-router-dom";
-import LibraryLogo from "../../assets/images/lms-logo.png";
 import { Helmet } from "react-helmet";
 import eliblogo from "../../assets/images/lms-logo.png";
-import Sidebar from "../Sidebar";
+import loadable from "@loadable/component";
 interface HeaderProps {
   buttons?: React.ReactNode;
   title?: React.ReactNode;
 }
+
+const MenuIcon = loadable(() => import("@mui/icons-material/Menu"))
+const Sidebar = loadable(() => import("../Sidebar"))
 
 const Header: React.FC<HeaderProps> = ({ buttons, title }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -40,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ buttons, title }) => {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           {/* Left Section - Logo & Title */}
           <Box display="flex" alignItems="center">
-            <img src={LibraryLogo} alt="Library Logo" height={40} />
+            <img src={eliblogo} alt="Library Logo" height={40} />
             <Box ml={2} display="flex" flexDirection="column">
               <Typography
                 variant="caption"
