@@ -5,13 +5,19 @@ import { useModal } from "../hooks/Modal/useModal";
 import { HeaderButtons, Line, SendOTP, Login } from "../components";
 
 const HomeScreen: React.FC = () => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const { setHeaderButtons, setTitle } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
         setTitle: Dispatch<SetStateAction<string>>;
     }>();
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const loginModal = useModal();
     const verifyModal = useModal();
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
         setHeaderButtons(
@@ -28,6 +34,8 @@ const HomeScreen: React.FC = () => {
             setTitle("");
         };
     }, [setHeaderButtons, setTitle, loginModal.open, verifyModal.open]);
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     return (
         <>

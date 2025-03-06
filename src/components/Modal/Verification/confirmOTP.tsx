@@ -13,10 +13,17 @@ interface VerifyOtpProps {
 }
 
 const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const navigate = useNavigate();
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const { confirmOTP, isError, error } = useConfirmOTP();
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     const handleSubmit = (otpCode: string) => {
         confirmOTP(
@@ -32,9 +39,13 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
         );
     };
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const handleResend = () => {
         console.log("Resend OTP triggered");
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     const handleChange = (index: number, value: string) => {
         if (/^\d?$/.test(value)) {
@@ -52,6 +63,8 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
         }
     };
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === "Backspace") {
             if (!otp[index] && index > 0) {
@@ -63,6 +76,8 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
             }
         }
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     return (
         <Modal open={open} onClose={onClose} aria-labelledby="verify-otp-modal" aria-describedby="verify-otp-description">

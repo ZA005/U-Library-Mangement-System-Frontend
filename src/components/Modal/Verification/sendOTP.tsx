@@ -12,12 +12,19 @@ interface VerifyUserModalProps {
 }
 
 const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const [userId, setUserId] = useState("");
     const [userData, setUserData] = useState<UserData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [otpModalOpen, setOtpModalOpen] = useState(false);
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const { sendOtp, isPending, isError, error: otpError } = useSendOTP();
     const { verifyUser, isPending: verifyPending, error: activateError } = useIsActivated();
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,15 +55,20 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
         });
     };
 
+    /////////////////////////////////////////////////////////////////////////////////////
 
     const handleOtpModalClose = () => {
         setOtpModalOpen(false);
     };
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const handleModalClose = () => {
         setUserId("");
         onClose();
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     return (
         <>

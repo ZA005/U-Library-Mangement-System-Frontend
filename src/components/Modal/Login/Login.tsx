@@ -17,22 +17,35 @@ const LockIcon = loadable(() => import('@mui/icons-material/Lock'))
 const AccountCircle = loadable(() => import('@mui/icons-material/LibraryBooks'))
 
 const Login: React.FC<LoginProps> = ({ open, onClose }) => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const verifyModal = useModal();
     const { login, errorMessage, setErrorMessage } = useLogin(onClose);
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setErrorMessage(null);
         login.mutate({ userId, password });
     };
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const handleClose = () => {
         setUserId("")
         setPassword("")
         onClose()
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
     return (
         <>
             <Modal

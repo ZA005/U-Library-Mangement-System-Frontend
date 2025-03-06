@@ -13,6 +13,8 @@ import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import html2canvas from "html2canvas";
 
 const AccountLibraryCard: React.FC = () => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const { setHeaderButtons, setTitle } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
         setTitle: Dispatch<SetStateAction<string>>;

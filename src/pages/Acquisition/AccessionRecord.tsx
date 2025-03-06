@@ -1,4 +1,4 @@
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import { IconButton, Typography, Container, Box, Button, CircularProgress } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -7,15 +7,21 @@ import { useCSVParser } from "../../hooks/CSVParse/useCSVParser";
 import { useUploadRecords } from "./useUploadRecords";
 import { useSnackbarContext } from "../../contexts/SnackbarContext";
 const AccessionRecord: React.FC = () => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
         setTitle: Dispatch<SetStateAction<ReactNode>>;
         setSidebarOpen: Dispatch<SetStateAction<boolean>>;
     }>();
 
+    /////////////////////////////////////////////////////////////////////////////////////
+
     const { isLoading, validateAndParseCSV } = useCSVParser();
     const { uploadRecords } = useUploadRecords();
     const showSnackbar = useSnackbarContext();
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
         setTitle("Accession Record - Library Management System");
@@ -29,6 +35,8 @@ const AccessionRecord: React.FC = () => {
             setTitle("");
         };
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
+
+    /////////////////////////////////////////////////////////////////////////////////////
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -48,6 +56,7 @@ const AccessionRecord: React.FC = () => {
         }
     };
 
+    /////////////////////////////////////////////////////////////////////////////////////
     return (
         <>
             <Typography

@@ -70,6 +70,7 @@ const ActivateUser: React.FC = () => {
         const { default: validatePassword } = await import("../../utils/validatePassword");
 
         const passwordError = validatePassword(password);
+
         if (passwordError) {
             setErrors((prev) => ({ ...prev, password: passwordError }));
             return;
