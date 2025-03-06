@@ -69,7 +69,14 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                             fullWidth
                             margin="normal"
                             value={userId}
-                            onChange={(e) => setUserId(e.target.value)}
+                            onChange={(e) => {
+                                const input = e.target.value;
+                                // Allow only digits and enforce the "XX-XXXXX" pattern
+                                const formattedInput = input.replace(/[^\d-]/g, "").slice(0, 8);
+                                if (/^\d{0,2}(-\d{0,5})?$/.test(formattedInput)) {
+                                    setUserId(formattedInput);
+                                }
+                            }}
                             className={styles.modalInput}
                             InputProps={{
                                 startAdornment: (
