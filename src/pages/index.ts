@@ -8,6 +8,7 @@ export const AccountLibraryCard = loadable(() => import("./AccountActivation/Acc
 
 
 export const AccessionRecord = loadable(() => import("./Acquisition/AccessionRecord"))
+export const Browse = loadable(() => import("./Browse/Page"))
 export const TestingPage = loadable(() => import("./TestPage"))
 export const Catalog = loadable(() => import("./Catalog"))
 // export const = loadable(() => import("./"))

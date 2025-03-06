@@ -1,15 +1,15 @@
 import { Route, Routes } from "react-router-dom";
 import * as Pages from "../pages"
-import { PUBLIC_ROUTES } from "../config/routeConfig";
+import { GENERAL_ROUTES } from "../config/routeConfig";
 import PrivateRoute from "./PrivateRoute";
 
 const PublicRoutes = () => {
     return (
         <Routes>
             <Route
-                path={PUBLIC_ROUTES.TEST}
-                element={<PrivateRoute allowedRoles={["STUDENT"]}>
-                    <Pages.HomeScreen />
+                path={GENERAL_ROUTES.BROWSE}
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                    <Pages.Browse />
                 </PrivateRoute>}
             />
             <Route path="*" element={<Pages.PageNotFound />} />

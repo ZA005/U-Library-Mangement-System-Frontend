@@ -6,7 +6,7 @@ const HomeIcon = loadable(() => import("@mui/icons-material/home"));
 export const menuItems = {
     LIBRARIAN: [
         { label: "Home", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
-        { label: "Catalog", path: PROTECTED_ROUTES.ADMIN + PROTECTED_ROUTES.CATALOG, icon: HomeIcon },
+        { label: "Catalog", path: PROTECTED_ROUTES.CATALOG, icon: HomeIcon },
         { label: "Circulation", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
     ],
     STUDENT: [

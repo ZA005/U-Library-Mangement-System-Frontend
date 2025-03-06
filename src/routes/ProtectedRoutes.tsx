@@ -6,7 +6,7 @@ import PrivateRoute from "./PrivateRoute";
 const ProtectedRoutes = () => {
     return (
         <Routes>
-            {/* Only LIBRARIAN and ADMIN can access the catalog */}
+
             <Route
                 path={PROTECTED_ROUTES.CATALOG}
                 element={

@@ -1,12 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { PUBLIC_ROUTES, PROTECTED_ROUTES } from "../config/routeConfig";
+import { GENERAL_ROUTES, PROTECTED_ROUTES } from "../config/routeConfig";
 import { useAuth } from "../contexts/AuthContext";
 import * as Pages from "./../pages"
 import MainLayout from "../layouts/MainLayout";
 import loadable from "@loadable/component";
 
 const ProtectedRoutes = loadable(() => import("./ProtectedRoutes"))
-const PublicRoutes = loadable(() => import("./PublicRoutes"))
+const PublicRoutes = loadable(() => import("./GeneralRoutes"))
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
@@ -16,11 +16,11 @@ const AppRoutes = () => {
 
     switch (role) {
       case "STUDENT":
-        return <Navigate to={PROTECTED_ROUTES.USER_BROWSE} replace />;
+        return <Navigate to={GENERAL_ROUTES.BROWSE} replace />;
       case "LIBRARIAN":
-        return <Pages.TestingPage />;
+        return <Navigate to={GENERAL_ROUTES.BROWSE} replace />;
       case "ADMIN":
-        return <Navigate to={PROTECTED_ROUTES.ADMIN} replace />;
+        return <Navigate to={GENERAL_ROUTES.BROWSE} replace />;
       default:
         return <Pages.HomeScreen />;
     }
@@ -33,17 +33,17 @@ const AppRoutes = () => {
       {/* PUBLIC ROUTES */}
       <Route element={<MainLayout />}>
         <Route
-          path={PUBLIC_ROUTES.HOME}
+          path={GENERAL_ROUTES.HOME}
           element={isAuthenticated ? getDefaultRoute() : <Pages.HomeScreen />}
         />
 
         <Route
-          path={PUBLIC_ROUTES.REGISTER}
+          path={GENERAL_ROUTES.REGISTER}
           element={isAuthenticated ? getDefaultRoute() : <Pages.ActivateUser />}
         />
 
         <Route
-          path={PUBLIC_ROUTES.ELIBCARD}
+          path={GENERAL_ROUTES.ELIBCARD}
           element={isAuthenticated ? getDefaultRoute() : <Pages.AccountLibraryCard />}
         />
 
@@ -60,7 +60,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* DEFAULT CATCH-ALL ROUTE */}
-      <Route path={PUBLIC_ROUTES.NOT_FOUND} element={<Pages.PageNotFound />} />
+      <Route path={GENERAL_ROUTES.NOT_FOUND} element={<Pages.PageNotFound />} />
     </Routes>
   );
 };

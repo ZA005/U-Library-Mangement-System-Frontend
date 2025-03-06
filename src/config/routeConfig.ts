@@ -1,9 +1,9 @@
-export const PUBLIC_ROUTES = {
+export const GENERAL_ROUTES = {
     HOME: "/",
     REGISTER: "/activate/:user_id",
     ELIBCARD: "/:user_id/e-card",
+    BROWSE: "/browse",
     NOT_FOUND: "*",
-    TEST: "/test"
 };
 
 export const PROTECTED_ROUTES = {
