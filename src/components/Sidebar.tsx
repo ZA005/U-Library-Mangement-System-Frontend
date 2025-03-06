@@ -24,6 +24,12 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
     logout();
     localStorage.clear();
     navigate("/");
+    onClose();
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    onClose();
   };
 
   const roleMenu = menuItems[role as keyof typeof menuItems] || [];
@@ -56,7 +62,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
         <List>
           {roleMenu.map((item, index) => (
             <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => navigate(item.path)}>
+              <ListItemButton onClick={() => handleNavigation(item.path)}>
                 <ListItemIcon>{React.createElement(item.icon)}</ListItemIcon>
                 <ListItemText primary={item.label} />
               </ListItemButton>
