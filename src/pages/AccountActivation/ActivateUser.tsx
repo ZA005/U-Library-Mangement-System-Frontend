@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, generatePath, useOutletContext } from "react-router-dom";
-import { ROUTES } from "../../config/routeConfig";
+import { GENERAL_ROUTES } from "../../config/routeConfig";
 import { Typography, Box, TextField, Container, Button, Divider, IconButton } from "@mui/material";
 import loadable from "@loadable/component";
 import { UserData, AccountData } from "../../types";

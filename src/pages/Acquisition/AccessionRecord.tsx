@@ -1,10 +1,11 @@
+import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Typography, Container, Box, Button, CircularProgress } from "@mui/material";
-import React, { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Line } from "../../components";
 import { useCSVParser } from "../../hooks/CSVParse/useCSVParser";
-
+import { useUploadRecords } from "./useUploadRecords";
+import { useSnackbarContext } from "../../contexts/SnackbarContext";
 const AccessionRecord: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
@@ -13,6 +14,8 @@ const AccessionRecord: React.FC = () => {
     }>();
 
     const { isLoading, validateAndParseCSV } = useCSVParser();
+    const { uploadRecords } = useUploadRecords();
+    const showSnackbar = useSnackbarContext();
 
     useEffect(() => {
         setTitle("Accession Record - Library Management System");
@@ -32,7 +35,16 @@ const AccessionRecord: React.FC = () => {
         if (file) {
             validateAndParseCSV(file, "acquisition", (parsedData) => {
                 console.log("Parsed CSV Data:", parsedData);
+
+
+                uploadRecords(parsedData, {
+                    onSuccess: () => {
+                        showSnackbar("CSV Parsed Successfully!", "success");
+                    },
+                    onError: (error) => showSnackbar(`${error}`, "error")
+                })
             });
+            (event.target as HTMLInputElement).value = '';
         }
     };
 
