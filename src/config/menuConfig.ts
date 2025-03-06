@@ -1,24 +1,24 @@
 import loadable from "@loadable/component"
-import { PROTECTED_ROUTES, PUBLIC_ROUTES } from "./routeConfig"
+import { PROTECTED_ROUTES, GENERAL_ROUTES } from "./routeConfig"
 
 const HomeIcon = loadable(() => import("@mui/icons-material/home"));
 
 export const menuItems = {
     LIBRARIAN: [
-        { label: "Home", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
+        { label: "Home", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
         { label: "Catalog", path: PROTECTED_ROUTES.CATALOG, icon: HomeIcon },
-        { label: "Circulation", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
+        { label: "Circulation", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
     ],
     STUDENT: [
-        { label: "Home", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
-        { label: "Account Management", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
+        { label: "Home", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
+        { label: "Account Management", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
     ],
     PROGRAMHEAD: [
-        { label: "Curriculum", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
+        { label: "Curriculum", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
     ],
     FACULTY: [
-        { label: "Curriculum", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
-        { label: "Browse Books", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
-        { label: "Home", path: PUBLIC_ROUTES.HOME, icon: HomeIcon },
+        { label: "Curriculum", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
+        { label: "Browse Books", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
+        { label: "Home", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
     ],
 }

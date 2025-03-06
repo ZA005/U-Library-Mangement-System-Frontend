@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, Box } from "@mui/material";
 import { Outlet, useLocation } from "react-router-dom";
 import { Footer, Header, Copyright } from "../components";
-import { PUBLIC_ROUTES } from "../config/routeConfig";
+import { GENERAL_ROUTES } from "../config/routeConfig";
 
 const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [headerButtons, setHeaderButtons] = useState<React.ReactNode>(null);
@@ -10,7 +10,7 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const location = useLocation();
 
-    const isPublicRoute = Object.values(PUBLIC_ROUTES).includes(location.pathname);
+    const isPublicRoute = Object.values(GENERAL_ROUTES).includes(location.pathname);
 
     return (
         <Box

@@ -16,11 +16,11 @@ const AppRoutes = () => {
 
     switch (role) {
       case "STUDENT":
-        return <Navigate to={GENERAL_ROUTES.BROWSE} replace />;
+        return <Navigate to={PROTECTED_ROUTES.BROWSE} replace />;
       case "LIBRARIAN":
-        return <Navigate to={GENERAL_ROUTES.BROWSE} replace />;
+        return <Navigate to={PROTECTED_ROUTES.BROWSE} replace />;
       case "ADMIN":
-        return <Navigate to={GENERAL_ROUTES.BROWSE} replace />;
+        return <Navigate to={PROTECTED_ROUTES.BROWSE} replace />;
       default:
         return <Pages.HomeScreen />;
     }
@@ -56,7 +56,7 @@ const AppRoutes = () => {
       {/* PROTECTED ROUTES WRAPPED IN MAINLAYOUT */}
       <Route element={<MainLayout />}>
         <Route path={"/*"} element={<ProtectedRoutes />} />
-        <Route path={PROTECTED_ROUTES.USER + "/*"} element={<PublicRoutes />} />
+        <Route path={"/*"} element={<PublicRoutes />} />
       </Route>
 
       {/* DEFAULT CATCH-ALL ROUTE */}

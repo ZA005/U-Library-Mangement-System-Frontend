@@ -6,6 +6,12 @@ import PrivateRoute from "./PrivateRoute";
 const ProtectedRoutes = () => {
     return (
         <Routes>
+            <Route
+                path={PROTECTED_ROUTES.BROWSE}
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                    <Pages.Browse />
+                </PrivateRoute>}
+            />
 
             <Route
                 path={PROTECTED_ROUTES.CATALOG}

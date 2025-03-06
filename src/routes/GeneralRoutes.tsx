@@ -6,12 +6,12 @@ import PrivateRoute from "./PrivateRoute";
 const PublicRoutes = () => {
     return (
         <Routes>
-            <Route
+            {/* <Route
                 path={GENERAL_ROUTES.BROWSE}
                 element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
                     <Pages.Browse />
                 </PrivateRoute>}
-            />
+            /> */}
             <Route path="*" element={<Pages.PageNotFound />} />
         </Routes>
     )
