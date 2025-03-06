@@ -6,7 +6,7 @@ import MainLayout from "../layouts/MainLayout";
 import loadable from "@loadable/component";
 
 const ProtectedRoutes = loadable(() => import("./ProtectedRoutes"))
-const PublicRoutes = loadable(() => import("./GeneralRoutes"))
+// const PublicRoutes = loadable(() => import("./GeneralRoutes"))
 
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
@@ -56,7 +56,6 @@ const AppRoutes = () => {
       {/* PROTECTED ROUTES WRAPPED IN MAINLAYOUT */}
       <Route element={<MainLayout />}>
         <Route path={"/*"} element={<ProtectedRoutes />} />
-        <Route path={"/*"} element={<PublicRoutes />} />
       </Route>
 
       {/* DEFAULT CATCH-ALL ROUTE */}

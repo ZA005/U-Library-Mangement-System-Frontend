@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, Dispatch, ReactNode, SetStateAction } from "react";
 import { useLocation } from "react-router-dom";
-import { PUBLIC_ROUTES } from "../../config/routeConfig";
+import { GENERAL_ROUTES } from "../../config/routeConfig";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../../types";
 import { useOutletContext } from "react-router-dom";
@@ -36,7 +36,7 @@ const AccountLibraryCard: React.FC = () => {
         setTitle("Account QR Code - Library Management System");
 
         if (!location.state || !("userData" in location.state)) {
-            navigate(PUBLIC_ROUTES.HOME, { replace: true });
+            navigate(GENERAL_ROUTES.HOME, { replace: true });
             return;
         }
         showSnackbar(`Account ${userData?.id} successfully activated!`, "success")
@@ -79,7 +79,7 @@ const AccountLibraryCard: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const handleSignIn = () => {
-        navigate(PUBLIC_ROUTES.HOME);
+        navigate(GENERAL_ROUTES.HOME);
     };
 
     if (!userData) {

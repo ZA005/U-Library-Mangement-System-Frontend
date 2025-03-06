@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate, generatePath } from "react-router-dom";
-import { ROUTES } from "../../../config/routeConfig";
+import { GENERAL_ROUTES } from "../../../config/routeConfig";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import { UserData } from "../../../types";
@@ -24,7 +24,7 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
             {
                 onSuccess: () => {
                     onClose();
-                    const path = generatePath(ROUTES.REGISTER, { user_id: userData.id });
+                    const path = generatePath(GENERAL_ROUTES.REGISTER, { user_id: userData.id });
                     navigate(path, { state: { userData } });
                     console.log("TO REGISTER: ", userData)
                 },

@@ -39,7 +39,7 @@ const ActivateUser: React.FC = () => {
         setTitle("Verify - Library Management System");
 
         if (!location.state?.userData) {
-            navigate(ROUTES.HOME, { replace: true });
+            navigate(GENERAL_ROUTES.HOME, { replace: true });
             return;
         }
 
@@ -61,7 +61,7 @@ const ActivateUser: React.FC = () => {
 
     const handleSubmit = async () => {
         if (!userData) {
-            navigate(ROUTES.HOME, { replace: true });
+            navigate(GENERAL_ROUTES.HOME, { replace: true });
             return;
         }
 
@@ -91,7 +91,7 @@ const ActivateUser: React.FC = () => {
             {
                 onSuccess: () => {
                     console.log("Account activated successfully!");
-                    navigate(generatePath(ROUTES.ELIBCARD, { user_id: userData.id }), { state: { userData } });
+                    navigate(generatePath(GENERAL_ROUTES.ELIBCARD, { user_id: userData.id }), { state: { userData } });
                 },
             }
         );
