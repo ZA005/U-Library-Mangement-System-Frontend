@@ -23,7 +23,7 @@ export const useLogin = (onSuccessCallback: () => void) => {
             }
         },
         onError: () => {
-            setErrorMessage('Invalid credentials or server error. Please try again.');
+            setErrorMessage('Incorrect UNC ID or Password.');
         },
     });
 

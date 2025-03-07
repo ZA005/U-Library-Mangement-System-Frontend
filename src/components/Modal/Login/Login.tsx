@@ -41,6 +41,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     const handleClose = () => {
         setUserId("")
         setPassword("")
+        setErrorMessage("")
         onClose()
     }
 
