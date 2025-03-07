@@ -27,6 +27,8 @@ const Browse: React.FC = () => {
     return (
         <>
             <Typography>Browse</Typography>
+            <Typography>This page shows the browsing of books</Typography>
+
         </>
     );
 };

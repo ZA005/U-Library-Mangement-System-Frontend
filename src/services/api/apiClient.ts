@@ -1,13 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-/**
- * Creates an Axios instance with dynamic base URL and default headers.
- * @param basePath The base path for the API (e.g., 'adminuser', 'student', 'faculty', etc.)
- * @returns AxiosInstance
- */
 export const createApiClient = (basePath: string): AxiosInstance => {
     const apiClient = axios.create({
-        baseURL: `http://localhost:8080/${basePath}`,
+        baseURL: `${API_BASE_URL}/${basePath}`,
         headers: {
             'Content-Type': 'application/json',
         },
