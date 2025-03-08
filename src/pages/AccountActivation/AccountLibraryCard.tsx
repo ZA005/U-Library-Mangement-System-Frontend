@@ -8,7 +8,7 @@ import { Typography, Box, Container, List, ListItem, ListItemText, Button } from
 import DownloadIcon from '@mui/icons-material/Download';
 import LoginIcon from '@mui/icons-material/Login';
 import LibraryCard from "../../components/LibraryCard";
-import Line from "../../components/Line";
+import { PageTitle } from "../../components";
 import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import html2canvas from "html2canvas";
 
@@ -90,16 +90,7 @@ const AccountLibraryCard: React.FC = () => {
 
     return (
         <>
-            <Typography
-                variant="h4"
-                gutterBottom
-                fontWeight="bold"
-                sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}
-            >
-                E-Library Card
-            </Typography>
-
-            <Line />
+            <PageTitle title="E-Library Card" />
 
             <Container maxWidth="lg">
                 <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={4} alignItems="center" justifyContent="space-between" marginBottom="25px">

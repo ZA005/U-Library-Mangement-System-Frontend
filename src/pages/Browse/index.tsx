@@ -1,7 +1,8 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Typography, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { PageTitle } from "../../components";
 
 const Browse: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -26,8 +27,7 @@ const Browse: React.FC = () => {
 
     return (
         <>
-            <Typography>Browse</Typography>
-            <Typography>This page shows the browsing of books</Typography>
+            <PageTitle title="Browse Books" />
 
         </>
     );

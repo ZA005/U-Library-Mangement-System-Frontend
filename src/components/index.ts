@@ -13,7 +13,7 @@ export const HeaderButtons = loadable(() => import("./Header/HeaderButtons"))
 export const eCard = loadable(() => import("./LibraryCard"))
 
 // LINE
-export const Line = loadable(() => import("./Line"))
+export const PageTitle = loadable(() => import("./PageTitle"))
 
 // VERIFICATION
 export const Login = loadable(() => import("./Modal/Login/Login"))

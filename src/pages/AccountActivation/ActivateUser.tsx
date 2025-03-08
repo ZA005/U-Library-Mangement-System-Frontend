@@ -5,7 +5,7 @@ import { Typography, Box, TextField, Container, Button, Divider, IconButton } fr
 import loadable from "@loadable/component";
 import { UserData, AccountData } from "../../types";
 import { useRegister } from "./useRegister";
-import Line from "../../components/Line";
+import Line from "../../components/PageTitle";
 
 const Visibility = loadable(() => import('@mui/icons-material/Visibility'));
 const VisibilityOff = loadable(() => import('@mui/icons-material/VisibilityOff'));

@@ -1,8 +1,7 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction } from "react";
-import { Typography } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { useModal } from "../hooks/Modal/useModal";
-import { HeaderButtons, Line, SendOTP, Login } from "../components";
+import { HeaderButtons, PageTitle, SendOTP, Login } from "../components";
 
 const HomeScreen: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -39,15 +38,7 @@ const HomeScreen: React.FC = () => {
 
     return (
         <>
-            <Typography
-                variant="h4"
-                gutterBottom
-                fontWeight="bold"
-                sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}
-            >
-                Library Management System
-            </Typography>
-            <Line />
+            <PageTitle title="Library Management System" />
 
             {/* Modals */}
             <Login open={loginModal.isOpen} onClose={loginModal.close} />

@@ -1,8 +1,8 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { IconButton, Typography, Container, Box, Button, CircularProgress } from "@mui/material";
+import { IconButton, Container, Box, Button, CircularProgress } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Line, DynamicTable, DynamicTableCell } from "../../components";
+import { PageTitle, DynamicTable, DynamicTableCell } from "../../components";
 import { useCSVParser } from "../../hooks/CSVParse/useCSVParser";
 import { useUploadRecords } from "./useUploadRecords";
 import { useSnackbarContext } from "../../contexts/SnackbarContext";
@@ -100,15 +100,7 @@ const AccessionRecord: React.FC = () => {
 
     return (
         <>
-            <Typography
-                variant="h4"
-                gutterBottom
-                fontWeight="bold"
-                sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}
-            >
-                Accession Record
-            </Typography>
-            <Line />
+            <PageTitle title="Accession Record" />
 
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <Box width="100%">
