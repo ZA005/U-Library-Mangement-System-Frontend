@@ -6,18 +6,20 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [role, setRole] = useState<string | null>(null);
+    const [id, setId] = useState<string | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
         const initializeAuth = async () => {
             const token = localStorage.getItem("token");
             const savedRole = localStorage.getItem("role");
-
+            const savedId = localStorage.getItem("id")
             if (token && savedRole) {
                 const { isTokenExpired } = await import("../utils/jwtUtils");
                 if (!isTokenExpired(token)) {
                     setIsAuthenticated(true);
                     setRole(savedRole);
+                    setId(savedId);
                 } else {
                     logout();
                 }
@@ -55,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, role, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, role, id, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
