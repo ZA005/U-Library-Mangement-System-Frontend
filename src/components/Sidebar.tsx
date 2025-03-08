@@ -1,13 +1,13 @@
 import React from "react";
 import loadable from "@loadable/component";
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop } from "@mui/material";
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop, Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { menuItems } from "../config/menuConfig";
 
-const LogoutIcon = loadable(() => import("@mui/icons-material/Logout"));
-
+const LogoutIcon = loadable(() => import("lucide-react").then((icon) => ({ default: icon.LogOut })));
+const HomeIcon = loadable(() => import("lucide-react").then((icon) => ({ default: icon.Home })));
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -18,7 +18,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
   const navigate = useNavigate();
-  const { logout, role } = useAuth();
+  const { logout, role, id } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -59,11 +59,32 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
         onClose={onClose}
       >
         <DrawerHeader />
+
         <List>
+          <ListItem>
+            <Box>
+              <Typography variant="h5" fontWeight="bold">{role}</Typography>
+              <Typography variant="subtitle2">{id}</Typography>
+            </Box>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => {
+              navigate("/");
+              onClose();
+            }}>
+              <ListItemIcon sx={{ color: "white" }}>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItemButton>
+          </ListItem>
+
           {roleMenu.map((item, index) => (
             <ListItem key={index} disablePadding>
               <ListItemButton onClick={() => handleNavigation(item.path)}>
-                <ListItemIcon>{React.createElement(item.icon)}</ListItemIcon>
+                <ListItemIcon sx={{ color: "white" }}>
+                  {React.createElement(item.icon, { color: "white", size: 20 })}
+                </ListItemIcon>
                 <ListItemText primary={item.label} />
               </ListItemButton>
             </ListItem>
@@ -71,7 +92,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
 
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ color: "white" }}>
                 <LogoutIcon />
               </ListItemIcon>
               <ListItemText primary="Logout" />
