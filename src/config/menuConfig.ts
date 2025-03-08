@@ -8,6 +8,7 @@ export const menuItems = {
         { label: "Home", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
         { label: "Catalog", path: PROTECTED_ROUTES.CATALOG, icon: HomeIcon },
         { label: "Circulation", path: GENERAL_ROUTES.HOME, icon: HomeIcon },
+        { label: "Accession Record", path: PROTECTED_ROUTES.ACCESSION, icon: HomeIcon },
     ],
     STUDENT: [
         { label: "Home", path: GENERAL_ROUTES.HOME, icon: HomeIcon },

@@ -20,6 +20,10 @@ export const Login = loadable(() => import("./Modal/Login/Login"))
 export const ConfirmOTP = loadable(() => import("./Modal/Verification/confirmOTP"))
 export const SendOTP = loadable(() => import("./Modal/Verification/sendOTP"))
 export const ModalForm = loadable(() => import("./Modal/ModalForm"))
+
+// TABLE
+export const DynamicTable = loadable(() => import("./Table"))
+export const DynamicTableCell = loadable(() => import("./Table/ActionCell"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))

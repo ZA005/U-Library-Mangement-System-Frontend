@@ -8,6 +8,7 @@ const getPendingRecords = async (): Promise<AcquisitionRecord[]> => {
         const response = await apiClient.get<AcquisitionRecord[]>(`acquisition/pending`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
+        // console.log(response.data)
         return response.data;
     } catch (e) {
         console.error(e)
