@@ -1,5 +1,5 @@
 export interface Curriculum {
-    curr_id: string;
+    id: string;
     program_id: number;
     program_code: string;
     program_description: string;
