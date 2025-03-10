@@ -37,23 +37,7 @@ const books = [
         publisher: "Peachpit Press",
         copiesAvailable: 4,
         thumbnail: "https://dummyimage.com/1600x2560/000/fff"
-    },
-    {
-        title: "Advanced TypeScript",
-        authors: "Anders Hejlsberg",
-        isbn: "978-1-23-456789-2",
-        publisher: "Packt Publishing",
-        copiesAvailable: 2,
-        thumbnail: "https://dummyimage.com/1600x2560/000/fff"
-    },
-    {
-        title: "UI/UX Design",
-        authors: "Steve Krug",
-        isbn: "978-1-23-456789-3",
-        publisher: "Peachpit Press",
-        copiesAvailable: 4,
-        thumbnail: "https://dummyimage.com/1600x2560/000/fff"
-    },
+    }
 ];
 
 const BookGrid: React.FC<BookGridProps> = ({ searchQuery }) => {
