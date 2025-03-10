@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import loadable from "@loadable/component";
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop, Typography, Box } from "@mui/material";
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop, Typography, Box, Collapse } from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ import { menuItems } from "../config/menuConfig";
 
 const LogoutIcon = loadable(() => import("lucide-react").then((icon) => ({ default: icon.LogOut })));
 const HomeIcon = loadable(() => import("lucide-react").then((icon) => ({ default: icon.Home })));
+
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -19,6 +21,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { logout, role, id } = useAuth();
+  const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
 
   const handleLogout = () => {
     logout();
@@ -30,6 +33,10 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
   const handleNavigation = (path: string) => {
     navigate(path);
     onClose();
+  };
+
+  const handleToggle = (label: string) => {
+    setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
   const roleMenu = menuItems[role as keyof typeof menuItems] || [];
@@ -46,11 +53,6 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
             backgroundColor: "#282828",
             color: "#FFF",
             boxSizing: "border-box",
-            transition: (theme) =>
-              theme.transitions.create("transform", {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-              }),
           },
         }}
         variant="persistent"
@@ -67,11 +69,9 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
               <Typography variant="subtitle2">{id}</Typography>
             </Box>
           </ListItem>
+
           <ListItem disablePadding>
-            <ListItemButton onClick={() => {
-              navigate("/");
-              onClose();
-            }}>
+            <ListItemButton onClick={() => handleNavigation("/")}>
               <ListItemIcon sx={{ color: "white" }}>
                 <HomeIcon />
               </ListItemIcon>
@@ -80,14 +80,35 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
           </ListItem>
 
           {roleMenu.map((item, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => handleNavigation(item.path)}>
-                <ListItemIcon sx={{ color: "white" }}>
-                  {React.createElement(item.icon, { color: "white", size: 20 })}
-                </ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItemButton>
-            </ListItem>
+            <React.Fragment key={index}>
+              {item.children ? (
+                <>
+                  <ListItemButton onClick={() => handleToggle(item.label)}>
+                    <ListItemIcon sx={{ color: "white" }}>
+                      {React.createElement(item.icon, { color: "white", size: 20 })}
+                    </ListItemIcon>
+                    <ListItemText primary={item.label} />
+                    {openMenus[item.label] ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openMenus[item.label]} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {item.children.map((child, idx) => (
+                        <ListItemButton key={idx} sx={{ pl: 4 }} onClick={() => handleNavigation(child.path)}>
+                          <ListItemText primary={child.label} />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Collapse>
+                </>
+              ) : (
+                <ListItemButton onClick={() => handleNavigation(item.path)}>
+                  <ListItemIcon sx={{ color: "white" }}>
+                    {React.createElement(item.icon, { color: "white", size: 20 })}
+                  </ListItemIcon>
+                  <ListItemText primary={item.label} />
+                </ListItemButton>
+              )}
+            </React.Fragment>
           ))}
 
           <ListItem disablePadding>

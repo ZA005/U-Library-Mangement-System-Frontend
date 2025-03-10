@@ -6,13 +6,35 @@ const CatalogIcon = loadable(() => import("lucide-react").then((m) => ({ default
 const CurriculumIcon = loadable(() => import("lucide-react").then((m) => ({ default: m.BookOpenCheck })));
 const CirculationIcon = loadable(() => import("lucide-react").then((m) => ({ default: m.ArrowLeftRight })));
 const UserIcon = loadable(() => import("lucide-react").then((m) => ({ default: m.User })));
-
 export const menuItems = {
     LIBRARIAN: [
-        { label: "Catalog", path: PROTECTED_ROUTES.CATALOG, icon: CatalogIcon },
-        { label: "Circulation", path: GENERAL_ROUTES.HOME, icon: CirculationIcon },
-        { label: "Accession Record", path: PROTECTED_ROUTES.ACCESSION, icon: AcquisitionIcon },
-        { label: "Curriculum", path: GENERAL_ROUTES.HOME, icon: CurriculumIcon },
+        {
+            label: "Catalog",
+            children: [
+                { label: "Accession Record", path: PROTECTED_ROUTES.ACCESSION },
+                { label: "Book Weeding", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+                { label: "Barcode Generator", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+            ],
+            icon: CatalogIcon,
+        },
+        {
+            label: "Circulation",
+            children: [
+                { label: "Transaction History", path: PROTECTED_ROUTES.UPLOAD_MANAGER },
+                { label: "Manage Circulation", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+                { label: "Reservations", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+                { label: "Oversee Overdues", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+            ],
+            icon: CirculationIcon
+        },
+        {
+            label: "Curriculum",
+            children: [
+                { label: "Upload Manager", path: PROTECTED_ROUTES.UPLOAD_MANAGER },
+                { label: "Book Referencing", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+            ],
+            icon: CurriculumIcon,
+        },
     ],
     STUDENT: [
         { label: "Account Management", path: GENERAL_ROUTES.HOME, icon: UserIcon },
