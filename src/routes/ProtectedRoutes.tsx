@@ -31,6 +31,14 @@ const ProtectedRoutes = () => {
                 }
             />
 
+            <Route
+                path={PROTECTED_ROUTES.CURRICULUM}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.Curriculum />
+                    </PrivateRoute>
+                }
+            />
             {/* Default fallback to PageNotFound */}
             <Route path="*" element={<Pages.PageNotFound />} />
         </Routes>

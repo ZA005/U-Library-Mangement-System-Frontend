@@ -27,6 +27,10 @@ export const TestingPage = loadable(() => import("./TestPage"), {
 export const Catalog = loadable(() => import("./Catalog"), {
     fallback: LoadingSpinner(),
 });
+
+export const Curriculum = loadable(() => import("./Curriculum/CurriculumManagement"), {
+    fallback: LoadingSpinner(),
+});
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
