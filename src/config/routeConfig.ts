@@ -6,11 +6,9 @@ export const GENERAL_ROUTES = {
 };
 
 export const PROTECTED_ROUTES = {
-    ADMIN: "/admin",
     CATALOG: "/library/catalog",
     ACCESSION: "/library/accession",
     BROWSE: "/browse",
-    USER: "/user",
     USER_BROWSE: "/user/browse",
     CURRICULUM: "/curriculum",
     UPLOAD_MANAGER: "/curriculum/upload-manager",
