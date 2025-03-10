@@ -20,14 +20,14 @@ const PageTitle: React.FC<LineProps> = ({ title }) => {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                backgroundColor: "#cc0000",
+                backgroundColor: "#d32f2f",
                 width: "8vw",
                 height: "1vw",
                 marginTop: "10px",
                 marginBottom: "25px"
             }}>
                 <div style={{
-                    backgroundColor: "#cc0000",
+                    backgroundColor: "#d32f2f",
                     width: "35vw",
                     height: "0.1vw",
                 }}></div>

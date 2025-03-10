@@ -29,9 +29,9 @@ const LibraryCard: React.FC<LibraryCardProps> = ({ userData }) => {
 				width="100%"
 				height="8vh"
 				padding="5px 10px"
-				border="1.5px groove #cc0000"
+				border="1.5px groove #d32f2f"
 				color="white"
-				sx={{ background: "#cc0000" }}
+				sx={{ background: "#d32f2f" }}
 			>
 				<Box display="flex" alignItems="center">
 					<Box marginRight="10px">

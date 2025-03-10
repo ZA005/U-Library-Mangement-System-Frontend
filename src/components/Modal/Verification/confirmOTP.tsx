@@ -103,7 +103,7 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
                     <CheckCircleOutlinedIcon
                         sx={{
                             fontSize: { xs: 60, sm: 80, md: 90 },
-                            color: "#cc0000",
+                            color: "#d32f2f",
                             backgroundColor: "white",
                             borderRadius: "50%",
                             padding: "8px",
@@ -167,7 +167,7 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
                     <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
                         Didn’t receive a code?{" "}
                         <span
-                            style={{ cursor: "pointer", color: "#cc0000", textDecoration: "underline" }}
+                            style={{ cursor: "pointer", color: "#d32f2f", textDecoration: "underline" }}
                             onClick={handleResend}
                         >
                             Resend
