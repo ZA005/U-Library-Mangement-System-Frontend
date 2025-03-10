@@ -1,10 +1,10 @@
 import loadable from "@loadable/component";
 import LoadingSpinner from "../components/LoadingSpinner";
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const HomeScreen = loadable(() => import("./HomeScreen"), {
     fallback: LoadingSpinner(),
 });
-
 export const PageNotFound = loadable(() => import("./PageNotFound"), {
     fallback: LoadingSpinner(),
 });
@@ -14,6 +14,12 @@ export const ActivateUser = loadable(() => import("./AccountActivation/ActivateU
 export const AccountLibraryCard = loadable(() => import("./AccountActivation/AccountLibraryCard"), {
     fallback: LoadingSpinner(),
 });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 export const AccessionRecord = loadable(() => import("./Acquisition/AccessionRecord"), {
     fallback: LoadingSpinner(),
@@ -28,10 +34,16 @@ export const Catalog = loadable(() => import("./Catalog"), {
     fallback: LoadingSpinner(),
 });
 
-export const Curriculum = loadable(() => import("./Curriculum/CurriculumManagement"), {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export const UploadManager = loadable(() => import("./Curriculum/UploadManager"), {
     fallback: LoadingSpinner(),
 });
-// export const = loadable(() => import("./"))
+
+export const UploadDepartment = loadable(() => import("./Curriculum/Uploader/Department"), {
+    fallback: LoadingSpinner(),
+});
+
+
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))

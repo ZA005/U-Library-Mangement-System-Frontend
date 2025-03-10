@@ -32,10 +32,19 @@ const ProtectedRoutes = () => {
             />
 
             <Route
-                path={PROTECTED_ROUTES.CURRICULUM}
+                path={PROTECTED_ROUTES.UPLOAD_MANAGER}
                 element={
                     <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
-                        <Pages.Curriculum />
+                        <Pages.UploadManager />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path={PROTECTED_ROUTES.UPLOAD_DEPARTMENT}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.UploadDepartment />
                     </PrivateRoute>
                 }
             />

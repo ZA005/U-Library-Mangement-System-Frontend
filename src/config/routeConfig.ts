@@ -12,5 +12,7 @@ export const PROTECTED_ROUTES = {
     USER_BROWSE: "/user/browse",
     CURRICULUM: "/curriculum",
     UPLOAD_MANAGER: "/curriculum/upload-manager",
+    UPLOAD_DEPARTMENT: "/curriculum/upload-department",
     BOOK_REFERENCING: "/curriculum/book-referencing",
+
 }
