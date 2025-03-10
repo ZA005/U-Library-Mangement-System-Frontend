@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("id", user_id);
         setIsAuthenticated(true);
         setRole(role);
-
+        setId(user_id);
         const { isTokenExpired } = await import("../utils/jwtUtils");
         if (isTokenExpired(token)) {
             logout();

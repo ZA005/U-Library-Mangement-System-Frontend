@@ -24,10 +24,12 @@ export const ModalForm = loadable(() => import("./Modal/ModalForm"))
 // TABLE
 export const DynamicTable = loadable(() => import("./Table"))
 export const DynamicTableCell = loadable(() => import("./Table/ActionCell"))
-// export const = loadable(() => import("./"))
-// export const = loadable(() => import("./"))
-// export const = loadable(() => import("./"))
-// export const = loadable(() => import("./"))
+
+// BROWSE PAGE SECTION
+export const FeaturedBookSection = loadable(() => import("./Sections/FeaturedBooks"))
+export const NewlyAcquiredBookSection = loadable(() => import("./Sections/NewlyAcquiredBooks"))
+export const BrowseBookSection = loadable(() => import("./Sections/BrowseBooks"))
+export const AccountOverviewSection = loadable(() => import("./Sections/AccountOverview"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
