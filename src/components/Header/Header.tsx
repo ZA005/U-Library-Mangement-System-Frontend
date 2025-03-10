@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ buttons, title, setSidebarOpen, sidebar
           {/* Menu Icon for Mobile */}
           {isMobile && (
             <IconButton
-              sx={{ display: { xs: "block", md: "none" } }}
+              sx={{ display: { xs: "block", md: "none" }, color: "#d32f2f" }}
               onClick={() =>
                 isHomePage ? setMobileOpen(true) : setSidebarOpen(prev => !prev)
               }

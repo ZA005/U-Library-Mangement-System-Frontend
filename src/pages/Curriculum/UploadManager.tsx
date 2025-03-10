@@ -17,7 +17,7 @@ const CurriculumManagement: React.FC = () => {
         setTitle("Upload Manager - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <Menu />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
 

@@ -14,7 +14,7 @@ const Catalog: React.FC = () => {
         setTitle("Catalog Page");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
-                <MenuIcon />
+                <MenuIcon sx={{ color: "d32f2f" }} />
             </IconButton>
         );
 

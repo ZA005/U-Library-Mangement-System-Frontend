@@ -33,7 +33,7 @@ const AccessionRecord: React.FC = () => {
         setTitle("Accession Record - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <MenuIcon />
+                <MenuIcon sx={{ color: "d32f2f" }} />
             </IconButton>
         );
         return () => {
