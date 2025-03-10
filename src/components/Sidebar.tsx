@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import loadable from "@loadable/component";
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop, Typography, Box, Collapse } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -40,6 +40,13 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
   };
 
   const roleMenu = menuItems[role as keyof typeof menuItems] || [];
+
+  useEffect(() => {
+    if (!open) {
+      setOpenMenus({});
+    }
+  }, [open]);
+
 
   return (
     <>
