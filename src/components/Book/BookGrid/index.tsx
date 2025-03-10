@@ -4,7 +4,7 @@ import CardComponent from "../../Book/BookCard";
 interface BookGridProps {
     searchQuery?: string;
 }
-
+// UPDATE INTEFACE TO ACCEPT BOOK OBJECT TO BE RENDERED
 const books = [
     {
         title: "React Guide asd asd asd asd  asd asd asd ",
