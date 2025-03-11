@@ -6,13 +6,22 @@ export const GENERAL_ROUTES = {
 };
 
 export const PROTECTED_ROUTES = {
-    CATALOG: "/library/catalog",
-    ACCESSION: "/library/accession",
+    //////////////////////////////////////
+
     BROWSE: "/browse",
-    USER_BROWSE: "/user/browse",
+
+    //////////////////////////////////////
+
+    CATALOG: "/library/accession/catalog",
+    ACCESSION: "/library/accession",
+
+    //////////////////////////////////////
+
     CURRICULUM: "/curriculum",
     UPLOAD_MANAGER: "/curriculum/upload-manager",
     UPLOAD_DEPARTMENT: "/curriculum/upload-department",
     BOOK_REFERENCING: "/curriculum/book-referencing",
+
+    //////////////////////////////////////
 
 }
