@@ -15,7 +15,7 @@ const Browse: React.FC = () => {
         setTitle("Books - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
-                <MenuIcon sx={{ color: "d32f2f" }} />
+                <MenuIcon sx={{ color: "#d32f2f" }} />
             </IconButton>
         );
 

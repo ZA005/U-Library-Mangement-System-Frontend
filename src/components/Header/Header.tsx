@@ -70,7 +70,7 @@ const Header: React.FC<HeaderProps> = ({ buttons, title, setSidebarOpen, sidebar
                 isHomePage ? setMobileOpen(true) : setSidebarOpen(prev => !prev)
               }
             >
-              <MenuIcon />
+              <MenuIcon sx={{ color: "#d32f2f" }} />
             </IconButton>
           )}
         </Toolbar>

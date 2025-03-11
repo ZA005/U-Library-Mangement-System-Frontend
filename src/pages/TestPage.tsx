@@ -14,7 +14,7 @@ const TestPage: React.FC = () => {
         setTitle("Testing Page");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
-                <MenuIcon sx={{ color: "d32f2f" }} />
+                <MenuIcon sx={{ color: "#d32f2f" }} />
             </IconButton>
         );
 
