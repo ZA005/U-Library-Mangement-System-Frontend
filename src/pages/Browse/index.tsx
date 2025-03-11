@@ -4,12 +4,15 @@ import { IconButton, Container, Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { FeaturedBookSection, NewlyAcquiredBookSection, BrowseBookSection, AccountOverviewSection } from "../../components";
 import CustomSearchBar from "../../components/CustomSearchBar";
+import { useFetchAllBooks } from "./useFetchAllBooks";
 const Browse: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
         setTitle: Dispatch<SetStateAction<string>>;
         setSidebarOpen: Dispatch<SetStateAction<boolean>>;
     }>();
+
+
 
     useEffect(() => {
         setTitle("Books - Library Management System");
@@ -26,6 +29,7 @@ const Browse: React.FC = () => {
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
 
     const [searchQuery, setSearchQuery] = useState("");
+    const { isLoading: isFetching, data: allBooks, error, refetch } = useFetchAllBooks();
 
     return (
         <>
@@ -38,7 +42,7 @@ const Browse: React.FC = () => {
                     <Box flex={3} display="flex" flexDirection="column" gap={2}>
                         <FeaturedBookSection />
                         <NewlyAcquiredBookSection />
-                        <BrowseBookSection />
+                        <BrowseBookSection books={allBooks || []} />
                     </Box>
 
                     {/* Right Side: Sidebar */}
