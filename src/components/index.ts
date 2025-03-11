@@ -30,7 +30,10 @@ export const FeaturedBookSection = loadable(() => import("./Sections/FeaturedBoo
 export const NewlyAcquiredBookSection = loadable(() => import("./Sections/NewlyAcquiredBooks"))
 export const BrowseBookSection = loadable(() => import("./Sections/BrowseBooks"))
 export const AccountOverviewSection = loadable(() => import("./Sections/AccountOverview"))
-// export const = loadable(() => import("./"))
+
+// BOOK FORM
+export const FirstPage = loadable(() => import("./Book/BookForm/FirstPage"))
+export const SecondPage = loadable(() => import("./Book/BookForm/SecondPage"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))

@@ -1,13 +1,14 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Container, Box, Button, CircularProgress } from "@mui/material";
-import { useOutletContext } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { PageTitle, DynamicTable, DynamicTableCell } from "../../components";
+import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import { useCSVParser } from "../../hooks/CSVParse/useCSVParser";
 import { useUploadRecords } from "./useUploadRecords";
 import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import { useFetchPendingRecords } from "./useFetchPendingRecords";
 import { AcquisitionRecord } from "../../types";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const AccessionRecord: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -20,6 +21,7 @@ const AccessionRecord: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
+    const navigate = useNavigate();
     const { isLoading: isParsing, validateAndParseCSV } = useCSVParser();
     const { uploadRecords } = useUploadRecords();
     const showSnackbar = useSnackbarContext();
@@ -67,6 +69,12 @@ const AccessionRecord: React.FC = () => {
 
     const handleAction = (value: string, record: AcquisitionRecord) => {
         console.log(`Action selected: ${value} for`, record);
+
+        if (value === "fastCatalog") {
+            navigate(PROTECTED_ROUTES.CATALOG.replace(":isbn", record.isbn), {
+                state: { acquisitionData: record }
+            });
+        }
     };
 
     /////////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@ export const PROTECTED_ROUTES = {
 
     //////////////////////////////////////
 
-    CATALOG: "/library/accession/catalog",
+    CATALOG: "/library/accession/catalog/:isbn",
     ACCESSION: "/library/accession",
 
     //////////////////////////////////////

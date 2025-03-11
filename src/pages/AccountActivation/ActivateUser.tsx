@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, generatePath, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { GENERAL_ROUTES } from "../../config/routeConfig";
 import { Typography, Box, TextField, Container, Button, Divider, IconButton } from "@mui/material";
 import loadable from "@loadable/component";
@@ -92,7 +92,8 @@ const ActivateUser: React.FC = () => {
             {
                 onSuccess: () => {
                     console.log("Account activated successfully!");
-                    navigate(generatePath(GENERAL_ROUTES.ELIBCARD, { user_id: userData.id }), { state: { userData } });
+                    navigate(GENERAL_ROUTES.ELIBCARD.replace(":user_id", userData.id), { state: { userData } });
+
                 },
             }
         );
@@ -106,10 +107,7 @@ const ActivateUser: React.FC = () => {
 
     return (
         <>
-            <Typography variant="h4" gutterBottom fontWeight="bold" sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}>
-                Account Verification
-            </Typography>
-            <Line />
+            <Line title="Account Verification" />
 
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Box component="form" display="flex" flexDirection="column" gap={3} sx={{ border: "1px solid #C4C4C4", padding: "20px", borderRadius: "10px" }}>

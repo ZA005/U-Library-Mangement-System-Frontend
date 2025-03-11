@@ -1,5 +1,6 @@
 export * from './AcquisitionRecord';
 export * from './AcquisitionDetails';
+export * from './GoogleBookData'
 //Catalog
 export * from './Catalog/Book';
 export * from './Catalog/BookCatalog'
