@@ -5,10 +5,9 @@ import { Books } from "../../../types";
 interface BookGridProps {
     searchQuery?: string;
     books: Books[];
-    limit?: number;
 }
 
-const BookGrid: React.FC<BookGridProps> = ({ searchQuery, books = [], limit }) => {
+const BookGrid: React.FC<BookGridProps> = ({ searchQuery, books = [] }) => {
     const filteredBooks = books.filter(book =>
         searchQuery ? book.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
     );
@@ -27,16 +26,10 @@ const BookGrid: React.FC<BookGridProps> = ({ searchQuery, books = [], limit }) =
             justifyContent="center"
             width="100%"
         >
-            {displayedBooks.length > 0 ? (
-                displayedBooks.map((book, index) => (
+            {filteredBooks.length > 0 ? (
+                filteredBooks.map((book) => (
                     <CardComponent
-                        key={index}
-                        title={book.title}
-                        authors={book.authors}
-                        isbn={book.isbn13}
-                        publisher={book.publisher}
-                        copiesAvailable={book.bookCatalog.copies}
-                        thumbnail={book.thumbnail}
+                        book={book}
                     />
                 ))
             ) : (

@@ -7,6 +7,8 @@ interface NewlyAcquiredBooksProps {
 }
 
 const NewlyAcquiredBooks: React.FC<NewlyAcquiredBooksProps> = ({ books }) => {
+
+    const limitedBooks = books.slice(0, 4);
     return (
         <Box border="2px solid #EFF3EA" padding={2}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -17,7 +19,7 @@ const NewlyAcquiredBooks: React.FC<NewlyAcquiredBooksProps> = ({ books }) => {
             </Box>
 
             <Divider sx={{ marginY: 1 }} />
-            <BookGrid books={books} limit={4} />
+            <BookGrid books={limitedBooks} />
         </Box>
     );
 };
