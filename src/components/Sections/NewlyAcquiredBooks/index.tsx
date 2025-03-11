@@ -1,7 +1,14 @@
 import { Box, Typography, Divider } from "@mui/material";
 import BookGrid from "../../Book/BookGrid";
+import { Books } from "../../../types";
 
-const NewlyAcquiredBooks: React.FC = () => {
+interface NewlyAcquiredBooksProps {
+    books: Books[];
+}
+
+const NewlyAcquiredBooks: React.FC<NewlyAcquiredBooksProps> = ({ books }) => {
+
+    const limitedBooks = books.slice(0, 4);
     return (
         <Box border="2px solid #EFF3EA" padding={2}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -12,7 +19,7 @@ const NewlyAcquiredBooks: React.FC = () => {
             </Box>
 
             <Divider sx={{ marginY: 1 }} />
-            <BookGrid />
+            <BookGrid books={limitedBooks} />
         </Box>
     );
 };

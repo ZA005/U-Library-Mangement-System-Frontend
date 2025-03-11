@@ -1,21 +1,12 @@
 import { Card, CardContent, CardMedia, Typography, Box, Button } from "@mui/material";
+import { Books } from "../../../types";
 
 interface BookCardProps {
-    thumbnail: string;
-    title: string;
-    authors: string[];
-    isbn: string;
-    publisher: string;
-    copiesAvailable: number;
+    book: Books;
 }
 
 const CardComponent: React.FC<BookCardProps> = ({
-    thumbnail,
-    title,
-    authors,
-    isbn,
-    publisher,
-    copiesAvailable
+    book
 }) => {
     return (
         <Card
@@ -31,8 +22,8 @@ const CardComponent: React.FC<BookCardProps> = ({
             {/* Thumbnail */}
             <CardMedia
                 component="img"
-                image={thumbnail}
-                alt={title}
+                image={book.thumbnail}
+                alt={book.title}
                 sx={{
                     width: 90,
                     height: 130,
@@ -55,7 +46,7 @@ const CardComponent: React.FC<BookCardProps> = ({
                         overflow: "hidden"
                     }}
                 >
-                    {title}
+                    {book.title}
                 </Typography>
                 <Box>
                     <Typography variant="body2"
@@ -67,13 +58,13 @@ const CardComponent: React.FC<BookCardProps> = ({
                             color: "text.secondary"
                         }}
                     >
-                        <strong>Author(s):</strong> {authors}
+                        <strong>Author(s):</strong> {book.authors}
                     </Typography>
                     <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                        <strong>ISBN:</strong> {isbn}
+                        <strong>ISBN:</strong> {book.isbn13}
                     </Typography>
                     <Typography variant="body2" paddingBottom="10px">
-                        <strong>Copies Available:</strong> {copiesAvailable}
+                        <strong>Copies Available:</strong> {book.bookCatalog.copies}
                     </Typography>
                     <Button sx={{ padding: "0", lineHeight: "0", }}>view book</Button>
                 </Box>
