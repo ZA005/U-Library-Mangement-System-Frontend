@@ -3,10 +3,10 @@ import { Card, CardContent, CardMedia, Typography, Box, Button } from "@mui/mate
 interface BookCardProps {
     thumbnail: string;
     title: string;
-    authors: string;
+    authors?: string;
     isbn: string;
-    publisher: string;
-    copiesAvailable: number;
+    publisher?: string;
+    copiesAvailable?: number;
 }
 
 const CardComponent: React.FC<BookCardProps> = ({

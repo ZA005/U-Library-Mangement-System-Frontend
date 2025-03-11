@@ -30,7 +30,7 @@ export const Browse = loadable(() => import("./Browse"), {
 export const TestingPage = loadable(() => import("./TestPage"), {
     fallback: LoadingSpinner(),
 });
-export const Catalog = loadable(() => import("./Catalog"), {
+export const Catalog = loadable(() => import("./Catalog/Form"), {
     fallback: LoadingSpinner(),
 });
 
