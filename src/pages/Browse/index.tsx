@@ -5,6 +5,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { FeaturedBookSection, NewlyAcquiredBookSection, BrowseBookSection, AccountOverviewSection } from "../../components";
 import CustomSearchBar from "../../components/CustomSearchBar";
 import { useFetchAllBooks } from "./useFetchAllBooks";
+import { useFetchAllNewlyAcquiredBooks } from "./useFetchAllNewlyAcquiredBooks";
+
+
 const Browse: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
@@ -30,7 +33,7 @@ const Browse: React.FC = () => {
 
     const [searchQuery, setSearchQuery] = useState("");
     const { isLoading: isFetching, data: allBooks, error, refetch } = useFetchAllBooks();
-
+    const { isLoading: isFetchingNewlyAcquired, data: allNewlyAcquiredBooks, error: errorFetching, refetch: refetchNewlyAcquired } = useFetchAllNewlyAcquiredBooks();
     return (
         <>
             {/* <PageTitle title="Browse Books" /> */}
@@ -41,7 +44,7 @@ const Browse: React.FC = () => {
                     {/* Left Side: Main Content */}
                     <Box flex={3} display="flex" flexDirection="column" gap={2}>
                         <FeaturedBookSection />
-                        <NewlyAcquiredBookSection />
+                        <NewlyAcquiredBookSection books={allNewlyAcquiredBooks || []} />
                         <BrowseBookSection books={allBooks || []} />
                     </Box>
 
