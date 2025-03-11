@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, TextField, Button } from "@mui/material";
 
 /**
@@ -25,7 +26,7 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
             <TextField fullWidth label="Status" name="status" value={formData.status} onChange={handleChange} />
             <TextField fullWidth label="Number of Copies" name="numberOfCopies" value={formData.numberOfCopies} onChange={handleChange} />
             <TextField fullWidth label="Purchase Price" name="purchasePrice" value={formData.purchase_price} onChange={handleChange} />
-            <TextField fullWidth label="Location" name="location" value={formData.vendor_location} onChange={handleChange} />
+            <TextField fullWidth label="Library" name="location" value={formData.vendor_location} onChange={handleChange} />
             <TextField fullWidth label="Section" name="section" value={formData.section} onChange={handleChange} />
             <TextField fullWidth label="Date Acquired" name="dateAcquired" value={formData.acquired_date} onChange={handleChange} />
             <TextField fullWidth label="Vendor" name="vendor" value={formData.vendor} onChange={handleChange} />

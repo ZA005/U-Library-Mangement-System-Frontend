@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, TextField, Button } from "@mui/material";
 
 /**
@@ -23,9 +24,9 @@ const FirstPage: React.FC<FirstPageProps> = ({ onNext, formData, setFormData }) 
     return (
         <Box display="grid" gap={2}>
             <TextField fullWidth label="Title" name="title" value={formData.book_title} disabled InputLabelProps={{ shrink: true }} />
-            <TextField fullWidth label="Author(s)" name="authors" value={formData.authors} disabled InputLabelProps={{ shrink: true }} />
-            <TextField fullWidth label="ISBN10" name="isbn10" value={formData.isbn} onChange={handleChange} />
-            <TextField fullWidth label="ISBN13" name="isbn13" value={formData.isbn13} onChange={handleChange} />
+            <TextField fullWidth label="Author(s)" name="authors" value={formData.authors} InputLabelProps={{ shrink: true }} />
+            <TextField fullWidth label="ISBN10" name="isbn10" value={formData.isbn10} onChange={handleChange} />
+            <TextField fullWidth label="ISBN13" name="isbn13" value={formData.isbn} onChange={handleChange} />
             <TextField fullWidth label="Call Number" name="callNumber" value={formData.callNumber} onChange={handleChange} />
             <TextField fullWidth label="Accession Numbers" name="accessionNumbers" value={formData.accessionNumbers} onChange={handleChange} />
             <TextField fullWidth label="Copyright" name="copyright" value={formData.copyright} onChange={handleChange} />
