@@ -8,13 +8,13 @@ export const GENERAL_ROUTES = {
 export const PROTECTED_ROUTES = {
     //////////////////////////////////////
 
-    BROWSE: "/browse",
+    BROWSE: "/library/browse",
 
     //////////////////////////////////////
 
     CATALOG: "/library/accession/catalog/:isbn",
     ACCESSION: "/library/accession",
-
+    NEWLYACQUIRED: "/library/newly-acquired-books",
     //////////////////////////////////////
 
     CURRICULUM: "/curriculum",

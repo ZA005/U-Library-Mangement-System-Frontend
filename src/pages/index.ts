@@ -30,7 +30,9 @@ export const Browse = loadable(() => import("./Browse"), {
 export const Catalog = loadable(() => import("./Catalog/Form"), {
     fallback: LoadingSpinner(),
 });
-
+export const NewlyAcquiredBooks = loadable(() => import("./Browse/NewlyAcquiredBook"), {
+    fallback: LoadingSpinner(),
+})
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const UploadManager = loadable(() => import("./Curriculum/UploadManager"), {
     fallback: LoadingSpinner(),

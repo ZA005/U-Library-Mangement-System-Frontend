@@ -14,6 +14,13 @@ const ProtectedRoutes = () => {
             />
 
             <Route
+                path={PROTECTED_ROUTES.NEWLYACQUIRED}
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                    <Pages.NewlyAcquiredBooks />
+                </PrivateRoute>}
+            />
+
+            <Route
                 path={PROTECTED_ROUTES.CATALOG}
                 element={
                     <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
