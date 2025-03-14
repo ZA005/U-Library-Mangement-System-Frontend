@@ -1,11 +1,10 @@
-import React, { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
+import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { PageTitle, DynamicTable, UploadButton } from "../../../../components";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { useUploadDepartments } from "./useUploadDepartments";
 import { useFetchAllDepartments } from "./useFetchAllDepartments";
-// import { Department } from "../../../../types";
 import MenuIcon from "@mui/icons-material/Menu";
 
 const UploadDepartments: React.FC = () => {
@@ -38,6 +37,9 @@ const UploadDepartments: React.FC = () => {
     const showSnackbar = useSnackbarContext();
     const { isLoading, data: departments = [], error, refetch } = useFetchAllDepartments()
 
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 10;
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     const handleUploadDepartment = (parsedData: any) => {
@@ -53,10 +55,13 @@ const UploadDepartments: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const columns = [
-        { key: "id", label: "ID" },
-        { key: "name", label: "NAME" },
-        { key: "code", label: "CODE" },
-    ]
+        { key: "dept_id", label: "ID" },
+        { key: "dept_name", label: "NAME" },
+        { key: "dept_code", label: "CODE" },
+    ];
+
+
+    console.log("Fetched departments:", departments);
     return (
         <>
             <PageTitle title="Upload Department" />
@@ -76,9 +81,9 @@ const UploadDepartments: React.FC = () => {
                         data={departments}
                         loading={isLoading}
                         error={error}
-                    // page={page}
-                    // itemsPerPage={itemsPerPage}
-                    // onPageChange={(_, value) => setPage(value)}
+                        page={page}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={(_, value) => setPage(value)}
                     />
                 </Box>
             </Container>
