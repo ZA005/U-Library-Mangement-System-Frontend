@@ -13,7 +13,6 @@ export const menuItems = {
             label: "Catalog",
             children: [
                 { label: "Accession Record", path: PROTECTED_ROUTES.ACCESSION },
-                { label: "Catalog Demo", path: PROTECTED_ROUTES.CATALOG },
                 { label: "Book Weeding", path: PROTECTED_ROUTES.BOOK_REFERENCING },
                 { label: "Barcode Generator", path: PROTECTED_ROUTES.BOOK_REFERENCING },
             ],
