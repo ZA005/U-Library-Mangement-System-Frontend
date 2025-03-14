@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Box, Typography, Divider } from "@mui/material";
 import BookGrid from "../../Book/BookGrid";
-import { Books } from "../../../types";
+import { useFetchAllBooks } from "./useFetchAllBooks";
 
-interface BrowseBooksProps {
-    books: Books[];
-}
-const BrowseBooks: React.FC<BrowseBooksProps> = ({ books }) => {
+const BrowseBooks: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState("");
 
-    const limitedBooks = books.slice(0, 6);
+    const { data: allBooks = [] } = useFetchAllBooks();
+    const limitedBooks = allBooks?.slice(0, 6) || [];
 
     return (
         <Box border="2px solid #EFF3EA" padding={2}>

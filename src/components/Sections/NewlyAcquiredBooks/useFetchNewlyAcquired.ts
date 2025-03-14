@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { Books } from "../../types"
-import getNewlyAcquired from "../../services/Catalog/getNewlyAcquired";
+import { Books } from "../../../types"
+import getNewlyAcquired from "../../../services/Catalog/getNewlyAcquired";
 
 export const useFetchNewlyAcquired = () => {
     const {

@@ -2,10 +2,8 @@ import { useEffect, Dispatch, ReactNode, SetStateAction, useState } from "react"
 import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { FeaturedBookSection, NewlyAcquiredBookSection, BrowseBookSection, AccountOverviewSection } from "../../components";
+import { NewlyAcquiredBookSection, BrowseBookSection, AccountOverviewSection } from "../../components";
 import CustomSearchBar from "../../components/CustomSearchBar";
-import { useFetchAllBooks } from "./useFetchAllBooks";
-import { useFetchNewlyAcquired } from "./useFetchNewlyAcquired";
 const Browse: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
@@ -30,8 +28,6 @@ const Browse: React.FC = () => {
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
 
     const [searchQuery, setSearchQuery] = useState("");
-    const { isLoading: isFetching, data: allBooks, error, refetch } = useFetchAllBooks();
-    const { data: newlyAcquired } = useFetchNewlyAcquired();
 
     return (
         <>
@@ -43,8 +39,8 @@ const Browse: React.FC = () => {
                     {/* Left Side: Main Content */}
                     <Box flex={3} display="flex" flexDirection="column" gap={2}>
                         {/* <FeaturedBookSection /> */}
-                        <NewlyAcquiredBookSection books={newlyAcquired || []} />
-                        <BrowseBookSection books={allBooks || []} />
+                        <NewlyAcquiredBookSection />
+                        <BrowseBookSection />
                     </Box>
 
                     {/* Right Side: Sidebar */}

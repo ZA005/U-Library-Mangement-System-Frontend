@@ -27,9 +27,6 @@ export const AccessionRecord = loadable(() => import("./Acquisition/AccessionRec
 export const Browse = loadable(() => import("./Browse"), {
     fallback: LoadingSpinner(),
 });
-export const TestingPage = loadable(() => import("./TestPage"), {
-    fallback: LoadingSpinner(),
-});
 export const Catalog = loadable(() => import("./Catalog/Form"), {
     fallback: LoadingSpinner(),
 });

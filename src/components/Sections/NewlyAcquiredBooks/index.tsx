@@ -1,14 +1,12 @@
 import { Box, Typography, Divider } from "@mui/material";
 import BookGrid from "../../Book/BookGrid";
-import { Books } from "../../../types";
+import { useFetchNewlyAcquired } from "./useFetchNewlyAcquired";
 
-interface NewlyAcquiredBooksProps {
-    books: Books[];
-}
+const NewlyAcquiredBooks: React.FC = () => {
 
-const NewlyAcquiredBooks: React.FC<NewlyAcquiredBooksProps> = ({ books }) => {
+    const { data: allNewlyAcquired = [] } = useFetchNewlyAcquired()
 
-    const limitedBooks = books.slice(0, 4);
+    const limitedBooks = allNewlyAcquired.slice(0, 4) || [];
     return (
         <Box border="2px solid #EFF3EA" padding={2}>
             <Box display="flex" justifyContent="space-between" alignItems="center">

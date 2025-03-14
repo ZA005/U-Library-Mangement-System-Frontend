@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { Books } from "../../types"
-import getAllBooks from "../../services/Catalog/getAllBooks"
+import { Books } from "../../../types"
+import getAllBooks from "../../../services/Catalog/getAllBooks"
 
 export const useFetchAllBooks = () => {
     const {
