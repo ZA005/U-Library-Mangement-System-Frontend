@@ -1,6 +1,7 @@
 import { Card, CardContent, CardMedia, Typography, Box, Button } from "@mui/material";
 import { Books } from "../../../types";
-
+import { useNavigate } from "react-router-dom";
+import { PROTECTED_ROUTES } from "../../../config/routeConfig";
 interface BookCardProps {
     book: Books;
 }
@@ -8,6 +9,12 @@ interface BookCardProps {
 const CardComponent: React.FC<BookCardProps> = ({
     book
 }) => {
+    const navigate = useNavigate();
+
+    const handleViewBook = () => {
+        navigate(PROTECTED_ROUTES.BOOKINFORMATION.replace(":isbn", book.isbn13 || book.isbn10), { state: { book } })
+    };
+
     return (
         <Card
             sx={{
@@ -66,7 +73,9 @@ const CardComponent: React.FC<BookCardProps> = ({
                     <Typography variant="body2" paddingBottom="10px">
                         <strong>Copies Available:</strong> {book.bookCatalog.copies}
                     </Typography>
-                    <Button sx={{ padding: "0", lineHeight: "0", }}>view book</Button>
+                    <Button sx={{ padding: "0", lineHeight: "0" }} onClick={handleViewBook}>
+                        View Book
+                    </Button>
                 </Box>
 
 
