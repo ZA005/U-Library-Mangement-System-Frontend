@@ -11,8 +11,8 @@ interface NoDataPageProps {
 const NoDataPage: React.FC<NoDataPageProps> = ({ missingEntity, dependentEntity }) => {
     const navigate = useNavigate();
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
-            <Typography variant="h4" color="error" fontWeight="bold" gutterBottom>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="80vh">
+            <Typography variant="h4" color="error" fontWeight="bold" textAlign="center" gutterBottom>
                 No {missingEntity} Found
             </Typography>
             <Typography variant="body1" textAlign="center" maxWidth="600px" mb={3}>
