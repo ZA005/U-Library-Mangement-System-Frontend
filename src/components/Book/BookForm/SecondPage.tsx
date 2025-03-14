@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, TextField, Button } from "@mui/material";
+import LocationSelect from "./Location";
+import { LibraryLocations } from "../../../types/Catalog/LibraryLocation";
+import { useFetchAllLibraryLocations } from "./Location/useFetchLibraryLocations";
 
 /**
  * SecondPage Component
@@ -14,11 +17,22 @@ interface SecondPageProps {
 }
 
 const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }) => {
+
+    const { data: allLibraryLocations = [] } = useFetchAllLibraryLocations();
+
+    const selectedLocation = allLibraryLocations.find(
+        (loc) => loc.codeName === formData.location
+    ) || null;
+
     /**
      * Handles input changes and updates formData state
      */
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleLocationChange = (selectedLocation: LibraryLocations | null) => {
+        setFormData({ ...formData, location: selectedLocation?.codeName || "" });
     };
     console.log("DATA", formData);
     return (
@@ -26,7 +40,7 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
             <TextField fullWidth label="Status" name="status" value={formData.status} onChange={handleChange} />
             <TextField fullWidth label="Number of Copies" name="numberOfCopies" value={formData.numberOfCopies} onChange={handleChange} />
             <TextField fullWidth label="Purchase Price" name="purchasePrice" value={formData.purchase_price} onChange={handleChange} />
-            <TextField fullWidth label="Library" name="location" value={formData.vendor_location} onChange={handleChange} />
+            <LocationSelect selectedLocation={selectedLocation} onLocationChange={handleLocationChange} />
             <TextField fullWidth label="Section" name="section" value={formData.section} onChange={handleChange} />
             <TextField fullWidth label="Date Acquired" name="dateAcquired" value={formData.acquired_date} onChange={handleChange} />
             <TextField fullWidth label="Vendor" name="vendor" value={formData.vendor} onChange={handleChange} />
