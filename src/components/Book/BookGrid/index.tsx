@@ -12,8 +12,6 @@ const BookGrid: React.FC<BookGridProps> = ({ searchQuery, books = [] }) => {
         searchQuery ? book.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
     );
 
-    const displayedBooks = filteredBooks.slice(0, limit || 20);
-
     return (
         <Box
             display="grid"
