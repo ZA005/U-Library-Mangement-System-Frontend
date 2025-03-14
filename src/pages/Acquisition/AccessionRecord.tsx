@@ -1,14 +1,13 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { PageTitle, DynamicTable, DynamicTableCell } from "../../components";
+import { PageTitle, DynamicTable, DynamicTableCell, UploadButton } from "../../components";
 import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import { useUploadRecords } from "./useUploadRecords";
 import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import { useFetchPendingRecords } from "./useFetchPendingRecords";
 import { AcquisitionRecord } from "../../types";
 import MenuIcon from "@mui/icons-material/Menu";
-import CSVUploadButton from "../../components/UploadButton";
 
 const AccessionRecord: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +102,7 @@ const AccessionRecord: React.FC = () => {
 
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <Box width="100%">
-                    <CSVUploadButton
+                    <UploadButton
                         fileType="acquisition"
                         onSuccess={handleUploadSuccess}
                         onError={(error) => showSnackbar(error, "error")}
