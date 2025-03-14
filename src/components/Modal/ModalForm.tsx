@@ -1,196 +1,166 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
-  Modal,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Stack,
-  MenuItem,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Button,
+    Stack,
+    MenuItem,
 } from "@mui/material";
-import styles from "./styles.module.css";
 
 type FieldType = "text" | "select" | "number";
 
 interface Field {
-  label: string;
-  type: FieldType;
-  value: string;
-  onChange: (value: string) => void;
-  options?: string[];
-  required?: boolean;
-  disabled?: boolean;
-  readonly?: boolean;
+    label: string;
+    type: FieldType;
+    value: string;
+    onChange: (value: string) => void;
+    options?: string[];
+    required?: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
 }
 
 interface ModalFormProps {
-  open: boolean;
-  handleClose: () => void;
-  title: string;
-  fields: Field[];
-  onConfirm: () => void;
-  confirmText: string;
+    open: boolean;
+    handleClose: () => void;
+    title: string;
+    fields: Field[];
+    onConfirm: () => void;
+    confirmText: string;
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({
-  open,
-  handleClose,
-  title,
-  fields,
-  onConfirm,
-  confirmText,
+    open,
+    handleClose,
+    title,
+    fields,
+    onConfirm,
+    confirmText,
 }) => {
-  // Validation state to track field errors
-  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+    const [fieldErrors, setFieldErrors] = useState<{ [key: number]: string }>({});
 
-  // Validate fields when the modal opens or fields change
-  useEffect(() => {
-    const initialErrors: { [key: string]: string } = {};
+    useEffect(() => {
+        const validateFields = () => {
+            const errors: { [key: number]: string } = {};
+            fields.forEach((field, index) => {
+                if (field.required && !field.value.trim()) {
+                    errors[index] = `${field.label} is required`;
+                }
+            });
+            setFieldErrors(errors);
+        };
 
-    fields.forEach((field, index) => {
-      if (field.required && !field.value) {
-        initialErrors[index] = `${field.label} is required`;
-      }
-    });
+        validateFields();
+    }, [fields, open]);
 
-    setFieldErrors(initialErrors);
-  }, [fields, open]);
+    const handleFieldChange = useCallback(
+        (value: string, index: number) => {
+            fields[index].onChange(value);
 
-  // Handle field changes and validation
-  const handleFieldChange = (value: string, index: number) => {
-    const newFields = [...fields];
-    newFields[index].onChange(value);
+            setFieldErrors((prevErrors) => {
+                const newErrors = { ...prevErrors };
+                if (fields[index].required && !value.trim()) {
+                    newErrors[index] = `${fields[index].label} is required`;
+                } else {
+                    delete newErrors[index];
+                }
+                return newErrors;
+            });
+        },
+        [fields]
+    );
 
-    // Update validation errors
-    const newErrors = { ...fieldErrors };
-    if (newFields[index].required && !value) {
-      newErrors[index] = `${newFields[index].label} is required`;
-    } else {
-      delete newErrors[index];
-    }
+    const isFormValid = useMemo(() => Object.keys(fieldErrors).length === 0, [fieldErrors]);
 
-    setFieldErrors(newErrors);
-  };
+    return (
+        <Modal open={open} onClose={handleClose}>
+            <Box
+                position="absolute"
+                top="50%"
+                left="50%"
+                width="400px"
+                padding="16px"
+                boxShadow="24px 24px 24px rgba(0, 0, 0, 0.2)"
+                borderRadius="8px"
+                sx={{
+                    maxHeight: "90vh",
+                    overflowY: "auto",
+                    padding: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    "&::-webkit-scrollbar": { display: "none" },
+                    "-ms-overflow-style": "none",
+                    "scrollbar-width": "none",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "white"
+                }}
+            >
+                <Stack spacing={2}>
+                    <Typography variant="h6" fontWeight="bold" display="flex" alignItems="center" marginBottom="16px">
+                        {/* <span className={styles.modalHeaderLine} /> */}
+                        {title}
+                    </Typography>
 
-  // Check if any field has an error or is empty
-  const isFormValid = Object.keys(fieldErrors).length === 0;
+                    {fields.map((field, index) => (
+                        <TextField
+                            key={index}
+                            label={field.label}
+                            variant="outlined"
+                            value={field.value}
+                            onChange={(e) => handleFieldChange(e.target.value, index)}
 
-  return (
-    <Modal open={open} onClose={handleClose}>
-      <Box className={styles.modalBox}
-        sx={{
-          maxHeight: '90vh',  // Set max height for scrollable area
-          overflowY: 'auto',  // Enable vertical scrolling
-          padding: 2,  // Add padding to the modal content
-          display: 'flex',
-          flexDirection: 'column',
-          // Hide scrollbars
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
-          '-ms-overflow-style': 'none',  // For Internet Explorer
-          'scrollbar-width': 'none',  // For Firefox
-        }}
-      >
-        <Stack spacing={2}>
-          <Typography
-            variant="h6"
-            component="h2"
-            fontWeight="bold"
-            className={styles.modalHeader}
-          >
-            <span className={styles.modalHeaderLine} />
-            {title}
-          </Typography>
-          {fields.map((field, index) => {
-            if (field.type === "text") {
-              return (
-                <TextField
-                  key={index}
-                  label={field.label}
-                  variant="outlined"
-                  value={field.value}
-                  onChange={(e) => handleFieldChange(e.target.value, index)}
-                  className={styles.textField}
-                  error={!!fieldErrors[index]}
-                  helperText={fieldErrors[index]}
-                />
-              );
-            } else if (field.type === "select" && field.options) {
-              return (
-                <TextField
-                  key={index}
-                  select
-                  label={field.label}
-                  variant="outlined"
-                  value={field.value}
-                  onChange={(e) => handleFieldChange(e.target.value, index)}
-                  className={styles.textField}
-                  SelectProps={{
-                    MenuProps: {
-                      PaperProps: {
-                        style: {
-                          maxHeight: 150,
-                          overflow: "auto",
-                        },
-                      },
-                    },
-                  }}
-                  error={!!fieldErrors[index]}
-                  helperText={fieldErrors[index]}
-                >
-                  {field.options.map((option, idx) => (
-                    <MenuItem key={idx} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              );
-            } else if (field.type === "number") {
-              return (
-                <TextField
-                  key={index}
-                  label={field.label}
-                  variant="outlined"
-                  value={field.value}
-                  onChange={(e) => handleFieldChange(e.target.value, index)}
-                  type="number" // Specify the input type as number
-                  className={styles.textField}
-                  error={!!fieldErrors[index]}
-                  helperText={fieldErrors[index]}
-                />
-              );
-            }
-            return null;;
-          })}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#EA4040",
-              color: "#fff",
-              textTransform: "none",
-              ":hover": { backgroundColor: "#d13333" },
-            }}
-            onClick={onConfirm}
-            disabled={!isFormValid} // Disable the button if form is invalid
-          >
-            {confirmText}
-          </Button>
-          <Button
-            variant="text"
-            sx={{
-              color: "#EA4040",
-              textTransform: "none",
-              ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
-            }}
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-        </Stack>
-      </Box>
-    </Modal>
-  );
+                            error={!!fieldErrors[index]}
+                            helperText={fieldErrors[index]}
+                            select={field.type === "select"}
+                            type={field.type === "number" ? "number" : "text"}
+                            disabled={field.disabled}
+                            InputProps={{
+                                readOnly: field.readonly,
+                            }}
+                            sx={{
+                                marginBottom: "16px"
+                            }}
+                        >
+                            {field.type === "select" &&
+                                field.options?.map((option, idx) => (
+                                    <MenuItem key={idx} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                        </TextField>
+                    ))}
+
+                    <Button
+                        variant="contained"
+                        sx={{
+                            backgroundColor: "#EA4040",
+                            color: "#fff",
+                            textTransform: "none",
+                            ":hover": { backgroundColor: "#d13333" },
+                        }}
+                        onClick={onConfirm}
+                        disabled={!isFormValid}
+                    >
+                        {confirmText}
+                    </Button>
+
+                    <Button
+                        variant="text"
+                        sx={{
+                            color: "#EA4040",
+                            textTransform: "none",
+                            ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
+                        }}
+                        onClick={handleClose}
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
+            </Box>
+        </Modal>
+    );
 };
 
 export default ModalForm;
