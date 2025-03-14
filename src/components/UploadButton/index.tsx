@@ -38,7 +38,14 @@ const CSVUploadButton: React.FC<CSVUploadButtonProps> = ({ fileType, onSuccess, 
                 onChange={handleFileUpload}
             />
             <label htmlFor={`csv-upload-${fileType}`}>
-                <Button variant="outlined" component="span" disabled={isLoading || isUploading}>
+                <Button
+                    variant="contained"
+                    component="span"
+                    disabled={isLoading || isUploading}
+                    sx={{
+                        backgroundColor: "#d32f2f"
+                    }}
+                >
                     {isLoading || isUploading ? <CircularProgress size={24} /> : label}
                 </Button>
             </label>
