@@ -1,73 +1,50 @@
-// src/screens/HomeScreen.tsx
-import React, { useState } from 'react';
-import { Container, Box, Typography, Button } from '@mui/material';
-import Header from '../components/Header/Header';
-import Carousel from '../components/Carousel/Carousel';
-import ActionButtons from '../components/ActionButtons/ActionButtons';
-import Footer from '../components/Footer/Footer';
-import Line from '../components/Line/Line';
-import Login from '../components/Modal/LoginModal/Login';
-import VerifyUser from '../components/Verify/VerifyUser';
+import { useEffect, Dispatch, ReactNode, SetStateAction } from "react";
+import { useOutletContext } from "react-router-dom";
+import { useModal } from "../hooks/Modal/useModal";
+import { HeaderButtons, PageTitle, SendOTP, Login } from "../components";
 
 const HomeScreen: React.FC = () => {
-  const [openLogin, setOpenLogin] = useState(false);
-  const [openVerifyUser, setOpenVerifyUser] = useState(false);
+    /////////////////////////////////////////////////////////////////////////////////////
 
-  const handleLogin = () => {
-    setOpenLogin(true);
-  };
+    const { setHeaderButtons, setTitle } = useOutletContext<{
+        setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
+        setTitle: Dispatch<SetStateAction<string>>;
+    }>();
 
-  const handleCloseLogin = () => {
-    setOpenLogin(false);
-  };
+    /////////////////////////////////////////////////////////////////////////////////////
 
-  const handleSignUp = () => {
-    setOpenVerifyUser(true); // Open the Verify User modal
-  };
+    const loginModal = useModal();
+    const verifyModal = useModal();
 
-  const handleCloseVerifyUser = () => {
-    setOpenVerifyUser(false); // Close the Verify User modal
-  };
+    /////////////////////////////////////////////////////////////////////////////////////
 
-  return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
-        <Header
-          buttons={
-            <>
-              <Button
-                variant='outlined'
-                onClick={handleSignUp}
-                sx={{ color: '#d32f2f', borderColor: ' #d32f2f', marginRight: '10px' }}
-              >
-                Activate account
-              </Button>
-              <Button
-                variant='contained'
-                onClick={handleLogin}
-                sx={{ backgroundColor: '#d32f2f' }}
-              >
-                Login
-              </Button>
-            </>
-          }
-        />
-        <Typography variant="h4">Library Management System</Typography>
+    useEffect(() => {
+        setHeaderButtons(
+            <HeaderButtons
+                onLoginClick={loginModal.open}
+                onVerifyClick={verifyModal.open}
+            />
+        );
 
-        <Line />
-        <Carousel />
-        <ActionButtons />
-      </Container>
+        setTitle("University Library Management System");
 
-      <Footer />
+        return () => {
+            setHeaderButtons(null);
+            setTitle("");
+        };
+    }, [setHeaderButtons, setTitle, loginModal.open, verifyModal.open]);
 
-      {/* Login Modal */}
-      <Login open={openLogin} onClose={handleCloseLogin} />
+    /////////////////////////////////////////////////////////////////////////////////////
 
-      {/* Verify User Modal */}
-      <VerifyUser open={openVerifyUser} onClose={handleCloseVerifyUser} />
-    </Box>
-  );
+    return (
+        <>
+            <PageTitle title="Library Management System" />
+
+            {/* Modals */}
+            <Login open={loginModal.isOpen} onClose={loginModal.close} />
+            <SendOTP open={verifyModal.isOpen} onClose={verifyModal.close} />
+        </>
+    );
 };
 
 export default HomeScreen;
