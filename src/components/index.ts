@@ -34,6 +34,9 @@ export const AccountOverviewSection = loadable(() => import("./Sections/AccountO
 // BOOK FORM
 export const FirstPage = loadable(() => import("./Book/BookForm/FirstPage"))
 export const SecondPage = loadable(() => import("./Book/BookForm/SecondPage"))
+
+// BOOK DETAILS
+export const BookDetails = loadable(() => import("./Book/BookDetails"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))

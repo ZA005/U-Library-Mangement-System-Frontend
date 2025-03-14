@@ -15,7 +15,7 @@ const BrowseBooks: React.FC = () => {
     return (
         <Box border="2px solid #EFF3EA" padding={2}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h5" fontWeight="bold">BROWSE Books</Typography>
+                <Typography variant="h5" fontWeight="bold">Browse Books</Typography>
                 <Typography
                     variant="caption"
                     sx={{ cursor: "pointer", color: "#d32f2f" }}

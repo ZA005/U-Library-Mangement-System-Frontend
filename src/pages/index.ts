@@ -36,6 +36,13 @@ export const NewlyAcquiredBooks = loadable(() => import("./Browse/NewlyAcquiredB
 export const BrowseAllBooks = loadable(() => import("./Browse/BrowseBooks"), {
     fallback: LoadingSpinner(),
 })
+export const BookInformation = loadable(() => import("./Catalog/Information"), {
+    fallback: LoadingSpinner(),
+})
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const UploadManager = loadable(() => import("./Curriculum/UploadManager"), {
     fallback: LoadingSpinner(),
