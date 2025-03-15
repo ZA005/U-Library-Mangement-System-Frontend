@@ -19,9 +19,11 @@ interface TableProps {
     page: number;
     itemsPerPage: number;
     onPageChange: (event: React.ChangeEvent<unknown>, value: number) => void;
+    customMsg?: string;
+    hasSelection?: boolean;
 }
 
-const DynamicTable: React.FC<TableProps> = ({ columns, data, loading, error, page, itemsPerPage, onPageChange }) => {
+const DynamicTable: React.FC<TableProps> = ({ columns, data, loading, error, page, itemsPerPage, onPageChange, customMsg, hasSelection }) => {
     const paginatedData = React.useMemo(() => {
         return data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
     }, [data, page, itemsPerPage]);
@@ -30,7 +32,9 @@ const DynamicTable: React.FC<TableProps> = ({ columns, data, loading, error, pag
         <Box>
             {loading && <CircularProgress />}
             {error && <Typography color="error">Failed to fetch records</Typography>}
-            {!loading && !error && data.length === 0 && <Typography>No records found</Typography>}
+            {!loading && !error && data.length === 0 && (
+                <Typography>{hasSelection ? "No records found" : customMsg ?? "No data available"}</Typography>
+            )}
 
             {!loading && !error && data.length > 0 && (
                 <>
