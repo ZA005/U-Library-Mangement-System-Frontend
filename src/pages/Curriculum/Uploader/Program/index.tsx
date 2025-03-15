@@ -7,7 +7,7 @@ import { useFetchAllDepartments } from "../Department/useFetchAllDepartments";
 import { useFetchAllProgramsByDepartment } from "./useFetchAllProgramsByDepartment";
 import { useUploadPrograms } from "./useUploadPrograms";
 import NoDataPage from "../../NoDataPage";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 
 const UploadPrograms: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ const UploadPrograms: React.FC = () => {
         setTitle("Upload Programs - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
         return () => {

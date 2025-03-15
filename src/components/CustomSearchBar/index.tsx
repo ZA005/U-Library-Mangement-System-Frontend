@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, TextField, Button, Menu, MenuItem, FormControl, InputLabel, Select, IconButton } from "@mui/material";
-import FilterListIcon from "@mui/icons-material/FilterList";
+import { ListFilter } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface CustomSearchBarProps {
@@ -35,7 +35,7 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ searchQuery, setSearc
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <IconButton onClick={handleFilterClick} sx={{ position: "absolute", right: 8 }}>
-                    <FilterListIcon />
+                    <ListFilter />
                 </IconButton>
             </Box>
 

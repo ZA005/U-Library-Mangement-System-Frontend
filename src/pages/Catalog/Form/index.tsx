@@ -1,7 +1,7 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { useLocation, useOutletContext } from "react-router-dom";
 import { IconButton, Container, Paper } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 import CardComponent from "../../../components/Book/BookCard/catalogingCard";
 import { FirstPage, SecondPage } from "../../../components";
 const CatalogForm: React.FC = () => {
@@ -19,7 +19,7 @@ const CatalogForm: React.FC = () => {
         setTitle("Catalog - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
 

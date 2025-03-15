@@ -2,13 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { GENERAL_ROUTES } from "../../config/routeConfig";
 import { Typography, Box, TextField, Container, Button, Divider, IconButton } from "@mui/material";
-import loadable from "@loadable/component";
+import { Eye, EyeOff } from "lucide-react";
 import { UserData, AccountData } from "../../types";
 import { useRegister } from "./useRegister";
 import Line from "../../components/PageTitle";
-
-const Visibility = loadable(() => import('@mui/icons-material/Visibility'));
-const VisibilityOff = loadable(() => import('@mui/icons-material/VisibilityOff'));
 
 const ActivateUser: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -159,7 +156,7 @@ const ActivateUser: React.FC = () => {
                                 InputProps={{
                                     endAdornment: (
                                         <IconButton onClick={() => togglePasswordVisibility("password")} edge="end">
-                                            {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                                            {showPassword.password ? <EyeOff /> : <Eye />}
                                         </IconButton>
                                     ),
                                 }}
