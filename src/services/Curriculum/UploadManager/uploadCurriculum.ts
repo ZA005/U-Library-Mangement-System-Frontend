@@ -5,7 +5,9 @@ export const uploadCurriculums = async (curriculums: Curriculum[]): Promise<Curr
     const apiClient = createApiClient("public/curriculums")
 
     try {
-        const response = await apiClient.post('/upload', curriculums);
+        const response = await apiClient.post('/upload', curriculums, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        })
         return response.data;
     } catch (e) {
         console.error(e)
