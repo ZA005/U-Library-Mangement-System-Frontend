@@ -13,7 +13,6 @@ export const useFetchAllCurriculumByProgram = (id: number) => {
         queryFn: () => getAllCurriculumsByProgram(id),
         enabled: !!id
     })
-
     return {
         isLoading,
         error,

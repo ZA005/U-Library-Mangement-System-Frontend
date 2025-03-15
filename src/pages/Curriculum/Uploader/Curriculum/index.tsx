@@ -1,15 +1,25 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { IconButton, Container, Box, FormControl, Select, MenuItem, InputLabel } from "@mui/material";
+import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import { PageTitle, DynamicTable, UploadButton, Loading } from "../../../../components";
+import { PageTitle, DynamicTable, UploadButton, Dropdown, Loading } from "../../../../components";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { useFetchAllDepartments } from "../Department/useFetchAllDepartments";
 import { useFetchAllPrograms } from "../Program/useFetchAllPrograms";
 import { useFetchAllProgramsByDepartment } from "../Program/useFetchAllProgramsByDepartment";
+import { useFetchAllCurriculumByProgram } from "./useFetchAllCurriculumsByProgram";
+import { useUploadCurriculums } from "./useUploadCurriculum";
+import { Program } from "../../../../types";
 import NoDataPage from "../../NoDataPage";
 import MenuIcon from "@mui/icons-material/Menu";
 
 const UploadDepartments: React.FC = () => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const { isLoading: isFetchingAllPrograms, data: allPrograms } = useFetchAllPrograms()
+    const { data: departments } = useFetchAllDepartments();
+    const [selectedDepartment, setSelectedDepartment] = useState("");
+    const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -35,16 +45,20 @@ const UploadDepartments: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    const { isLoading: isFetchingAllPrograms, data: allPrograms } = useFetchAllPrograms()
-    const { isLoading: isFetchingDepartment, data: departments } = useFetchAllDepartments();
-
-    const [selectedDepartment, setSelectedDepartment] = useState("");
-    const { isLoading: isFetchingProgram, data: programs } =
-        useFetchAllProgramsByDepartment(selectedDepartment);
+    const { data: programs } = useFetchAllProgramsByDepartment(selectedDepartment);
+    const { isLoading: isFetchingCurriculum, data: curriculums = [], error, refetch } = useFetchAllCurriculumByProgram(selectedProgram?.program_id ?? 0);
+    const { uploadCurriculums } = useUploadCurriculums()
 
     const showSnackbar = useSnackbarContext();
     const [page, setPage] = useState(1);
     const itemsPerPage = 10;
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    useEffect(() => {
+        setSelectedProgram(null);
+    }, [selectedDepartment]);
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     if (isFetchingAllPrograms) {
@@ -61,14 +75,73 @@ const UploadDepartments: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-
+    const handleUploadCurriculum = (parsedData: any) => {
+        uploadCurriculums(parsedData, {
+            onSuccess: () => {
+                showSnackbar("CSV Parsed Successfully!", "success");
+                refetch()
+            },
+            onError: (error) => showSnackbar(`${error}`, "error"),
+        })
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////
+    const columns = [
+        { key: "program_code", label: "CODE" },
+        { key: "program_description", label: "NAME" },
+        { key: "revision_no", label: "REVISION" },
+        { key: "effectivity_sem", label: "SEMESTER" },
+        { key: "effectivity_sy", label: "YEAR" },
+    ]
+
     return (
         <>
             <PageTitle title="Upload Curriculum" />
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
+                <Box
+                    display="grid"
+                    gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr 1fr" }}
+                    alignItems="center"
+                    gap={2}
+                >
+                    <UploadButton
+                        fileType="curriculum"
+                        onSuccess={handleUploadCurriculum}
+                        onError={(error) => showSnackbar(error, "error")}
+                        label="Upload Curriculum"
+                    />
 
+                    <Dropdown
+                        label="Select Department"
+                        value={selectedDepartment ?? ""}
+                        onChange={(e) => setSelectedDepartment(e.target.value)}
+                        options={departments?.map((dept) => ({ id: dept.dept_id, name: dept.dept_name }))}
+                    />
+
+                    <Dropdown
+                        label="Select Program"
+                        value={selectedProgram?.program_id ?? ""}
+                        onChange={(e) => {
+                            const program = programs?.find((prog) => prog.program_id === Number(e.target.value));
+                            setSelectedProgram(program || null);
+                        }}
+                        options={programs?.map((prog) => ({ id: prog.program_id, name: prog.description })) || []}
+                        disabled={!selectedDepartment}
+                    />
+
+                </Box>
+
+                <Box mt={4}>
+                    <DynamicTable
+                        columns={columns}
+                        data={curriculums}
+                        loading={isFetchingCurriculum}
+                        error={error}
+                        page={page}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={(_, value) => setPage(value)}
+                    />
+                </Box>
             </Container>
         </>
     )
