@@ -13,6 +13,7 @@ const ActionCell: React.FC<ActionCellProps> = ({ type, buttonText, options, onAc
         return (
             <FormControl fullWidth >
                 <Select
+                    size="small"
                     defaultValue=""
                     onChange={(e) => onAction(e.target.value)}
                     displayEmpty

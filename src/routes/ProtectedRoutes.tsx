@@ -97,6 +97,15 @@ const ProtectedRoutes = () => {
                 }
             />
 
+            <Route
+                path={PROTECTED_ROUTES.BOOK_REFERENCING}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.BookReferencing />
+                    </PrivateRoute>
+                }
+            />
+
 
 
 

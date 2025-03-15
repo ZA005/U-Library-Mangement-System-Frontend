@@ -60,7 +60,7 @@ export const UploadCurriculum = loadable(() => import("./Curriculum/Uploader/Cur
 export const UploadCourse = loadable(() => import("./Curriculum/Uploader/Course"), {
     fallback: LoadingSpinner(),
 });
-
+export const BookReferencing = loadable(() => import("./Curriculum/Referencing"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
