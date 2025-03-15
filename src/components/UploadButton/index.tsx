@@ -13,17 +13,19 @@ const CSVUploadButton: React.FC<CSVUploadButtonProps> = ({ fileType, onSuccess, 
     const { isLoading, validateAndParseCSV } = useCSVParser();
     const [isUploading, setIsUploading] = useState(false);
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file) {
-            setIsUploading(true);
-            validateAndParseCSV(file, fileType, (parsedData) => {
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            await validateAndParseCSV(file, fileType, (parsedData) => {
                 onSuccess(parsedData);
-                setIsUploading(false);
-            }).catch((error) => {
-                if (onError) onError(error.toString());
-                setIsUploading(false);
             });
+        } catch (error) {
+            if (onError) onError(error.toString());
+        } finally {
+            setIsUploading(false);
             (event.target as HTMLInputElement).value = "";
         }
     };
@@ -36,17 +38,21 @@ const CSVUploadButton: React.FC<CSVUploadButtonProps> = ({ fileType, onSuccess, 
                 id={`csv-upload-${fileType}`}
                 style={{ display: "none" }}
                 onChange={handleFileUpload}
+                disabled={isUploading || isLoading}
             />
             <label htmlFor={`csv-upload-${fileType}`}>
                 <Button
                     variant="contained"
                     component="span"
-                    disabled={isLoading || isUploading}
+                    disabled={isUploading || isLoading}
                     sx={{
-                        backgroundColor: "#d32f2f"
+                        backgroundColor: "#d32f2f",
+                        "&:disabled": {
+                            backgroundColor: "#b71c1c",
+                        },
                     }}
                 >
-                    {isLoading || isUploading ? <CircularProgress size={24} /> : label}
+                    {isUploading || isLoading ? <CircularProgress size={24} /> : label}
                 </Button>
             </label>
         </>
