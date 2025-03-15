@@ -1,7 +1,7 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import { PageTitle, DynamicTable, UploadButton, Menu, Loading } from "../../../../components";
+import { PageTitle, DynamicTable, UploadButton, Dropdown, Loading } from "../../../../components";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { useFetchAllDepartments } from "../Department/useFetchAllDepartments";
 import { useFetchAllProgramsByDepartment } from "./useFetchAllProgramsByDepartment";
@@ -92,7 +92,7 @@ const UploadPrograms: React.FC = () => {
                         />
                     </Box>
 
-                    <Menu
+                    <Dropdown
                         label="Select Department"
                         value={selectedDepartment}
                         onChange={(e) => setSelectedDepartment(e.target.value)}
