@@ -1,13 +1,29 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import { PageTitle, DynamicTable, UploadButton } from "../../../../components";
+import { PageTitle, DynamicTable, UploadButton, Dropdown, Loading } from "../../../../components";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
-import { useUploadDepartments } from "./useUploadDepartments";
-import { useFetchAllDepartments } from "./useFetchAllDepartments";
+import { useFetchAllDepartments } from "../Department/useFetchAllDepartments";
+import { useFetchAllProgramsByDepartment } from "./useFetchAllProgramsByDepartment";
+import { useUploadPrograms } from "./useUploadPrograms";
+import NoDataPage from "../../NoDataPage";
 import { Menu } from "lucide-react";
 
-const UploadDepartments: React.FC = () => {
+const UploadPrograms: React.FC = () => {
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const { isLoading: isFetchingDepartment, data: departments } = useFetchAllDepartments();
+
+    const [selectedDepartment, setSelectedDepartment] = useState("");
+
+    const { isLoading: isFetchingProgram, data: programs = [], error, refetch } =
+        useFetchAllProgramsByDepartment(selectedDepartment);
+    const showSnackbar = useSnackbarContext();
+    const { uploadPrograms } = useUploadPrograms()
+
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 10;
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -19,7 +35,7 @@ const UploadDepartments: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
-        setTitle("Upload Departments - Library Management System");
+        setTitle("Upload Programs - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
                 <Menu color="#d32f2f" />
@@ -33,17 +49,22 @@ const UploadDepartments: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    const { uploadDepartments } = useUploadDepartments()
-    const showSnackbar = useSnackbarContext();
-    const { isLoading, data: departments = [], error, refetch } = useFetchAllDepartments()
+    if (isFetchingDepartment) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <Loading />
+            </Box>
+        );
+    }
 
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
+    if (!departments || departments.length === 0) {
+        return <NoDataPage missingEntity="Department" dependentEntity="Programs" />;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    const handleUploadDepartment = (parsedData: any) => {
-        uploadDepartments(parsedData, {
+    const handleUploadProgram = (parsedData: any) => {
+        uploadPrograms(parsedData, {
             onSuccess: () => {
                 showSnackbar("CSV Parsed Successfully!", "success");
                 refetch()
@@ -53,18 +74,13 @@ const UploadDepartments: React.FC = () => {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
-
     const columns = [
-        { key: "dept_id", label: "ID" },
-        { key: "dept_name", label: "NAME" },
-        { key: "dept_code", label: "CODE" },
+        { key: "code", label: "CODE" },
+        { key: "description", label: "DESCRIPTION" },
     ];
-
-
-    console.log("Fetched departments:", departments);
     return (
         <>
-            <PageTitle title="Upload Department" />
+            <PageTitle title="Upload Program" />
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <Box
                     display="grid"
@@ -73,18 +89,29 @@ const UploadDepartments: React.FC = () => {
                     gap={2}
                 >
                     <UploadButton
-                        fileType="department"
-                        onSuccess={handleUploadDepartment}
+                        fileType="program"
+                        onSuccess={handleUploadProgram}
                         onError={(error) => showSnackbar(error, "error")}
-                        label="Upload Department"
+                        label="Upload Program"
+                    />
+
+
+                    <Dropdown
+                        label="Select Department"
+                        value={selectedDepartment}
+                        onChange={(e) => setSelectedDepartment(e.target.value)}
+                        options={departments?.map((dept) => ({ id: dept.dept_id, name: dept.dept_name }))}
                     />
                 </Box>
+
+
+
 
                 <Box mt={4}>
                     <DynamicTable
                         columns={columns}
-                        data={departments}
-                        loading={isLoading}
+                        data={programs}
+                        loading={isFetchingProgram}
                         error={error}
                         page={page}
                         itemsPerPage={itemsPerPage}
@@ -96,4 +123,4 @@ const UploadDepartments: React.FC = () => {
     )
 }
 
-export default UploadDepartments
+export default UploadPrograms

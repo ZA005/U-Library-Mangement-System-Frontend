@@ -5,7 +5,9 @@ const uploadCourse = async (courses: Course[]): Promise<Course[]> => {
     const apiClient = createApiClient("public/courses")
 
     try {
-        const response = await apiClient.post('/upload', courses);
+        const response = await apiClient.post('/upload', courses, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        })
         return response.data;
     } catch (e) {
         console.error(e)

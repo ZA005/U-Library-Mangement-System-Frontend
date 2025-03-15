@@ -69,6 +69,48 @@ const ProtectedRoutes = () => {
                     </PrivateRoute>
                 }
             />
+
+            <Route
+                path={PROTECTED_ROUTES.UPLOAD_PROGRAM}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.UploadProgram />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path={PROTECTED_ROUTES.UPLOAD_CURRICULUM}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.UploadCurriculum />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path={PROTECTED_ROUTES.UPLOAD_COURSE}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.UploadCourse />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path={PROTECTED_ROUTES.BOOK_REFERENCING}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.BookReferencing />
+                    </PrivateRoute>
+                }
+            />
+
+
+
+
+
+
             {/* Default fallback to PageNotFound */}
             <Route path="*" element={<Pages.PageNotFound />} />
         </Routes>

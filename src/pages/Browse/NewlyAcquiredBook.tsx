@@ -1,7 +1,7 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 import CustomSearchBar from "../../components/CustomSearchBar";
 import { useFetchNewlyAcquired } from "../../components/Sections/NewlyAcquiredBooks/useFetchNewlyAcquired";
 import BookGrid from "../../components/Book/BookGrid";
@@ -17,7 +17,7 @@ const NewlyAcquiredBookPage: React.FC = () => {
         setTitle("Newly Acquired Books - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
 

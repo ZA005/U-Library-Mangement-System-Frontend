@@ -3,6 +3,7 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import { IconButton, Container, Box, Typography, Card, CardContent } from "@mui/material";
 import { Menu, Building, GraduationCap, BookOpen, FileText } from "lucide-react";
 import { PageTitle } from "../../components";
+import { PROTECTED_ROUTES } from "../../config/routeConfig";
 
 const CurriculumManagement: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -50,25 +51,25 @@ const CurriculumManagement: React.FC = () => {
                             title: "Upload Departments",
                             description: "Import and manage university departments with CSV files, including names and codes.",
                             icon: Building,
-                            path: "/admin/curriculum/management/departments"
+                            path: PROTECTED_ROUTES.UPLOAD_DEPARTMENT
                         },
                         {
                             title: "Upload Programs",
                             description: "Manage academic programs with details like code, description, and department.",
                             icon: GraduationCap,
-                            path: "/admin/curriculum/management/programs"
+                            path: PROTECTED_ROUTES.UPLOAD_PROGRAM
                         },
                         {
                             title: "Upload Curriculum",
                             description: "Track curriculum changes, including revisions, effectivity semester, and school year.",
                             icon: BookOpen,
-                            path: "/admin/curriculum/management/curriculum"
+                            path: PROTECTED_ROUTES.UPLOAD_CURRICULUM
                         },
                         {
                             title: "Upload Courses",
                             description: "Maintain course details like codes, curriculum, and year level with a structured view.",
                             icon: FileText,
-                            path: "/admin/curriculum/management/courses"
+                            path: PROTECTED_ROUTES.UPLOAD_COURSE
                         }
                     ].map((item, index) => (
                         <Card

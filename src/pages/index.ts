@@ -51,8 +51,16 @@ export const UploadManager = loadable(() => import("./Curriculum/UploadManager")
 export const UploadDepartment = loadable(() => import("./Curriculum/Uploader/Department"), {
     fallback: LoadingSpinner(),
 });
-
-
+export const UploadProgram = loadable(() => import("./Curriculum/Uploader/Program"), {
+    fallback: LoadingSpinner(),
+});
+export const UploadCurriculum = loadable(() => import("./Curriculum/Uploader/Curriculum"), {
+    fallback: LoadingSpinner(),
+});
+export const UploadCourse = loadable(() => import("./Curriculum/Uploader/Course"), {
+    fallback: LoadingSpinner(),
+});
+export const BookReferencing = loadable(() => import("./Curriculum/Referencing"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))

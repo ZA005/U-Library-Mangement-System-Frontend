@@ -21,9 +21,11 @@ export const ConfirmOTP = loadable(() => import("./Modal/Verification/confirmOTP
 export const SendOTP = loadable(() => import("./Modal/Verification/sendOTP"))
 export const ModalForm = loadable(() => import("./Modal/ModalForm"))
 
-// TABLE
+// TABLE AND BUTTON
 export const DynamicTable = loadable(() => import("./Table"))
 export const DynamicTableCell = loadable(() => import("./Table/ActionCell"))
+export const UploadButton = loadable(() => import("./UploadButton"))
+export const Dropdown = loadable(() => import("./SelectMenu"))
 
 // BROWSE PAGE SECTION
 export const FeaturedBookSection = loadable(() => import("./Sections/FeaturedBooks"))
@@ -37,6 +39,8 @@ export const SecondPage = loadable(() => import("./Book/BookForm/SecondPage"))
 
 // BOOK DETAILS
 export const BookDetails = loadable(() => import("./Book/BookDetails"))
+
+export const Loading = loadable(() => import("./LoadingSpinner"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))

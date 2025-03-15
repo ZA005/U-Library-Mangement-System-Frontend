@@ -1,14 +1,13 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { IconButton, Container, Box, Button, CircularProgress } from "@mui/material";
+import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { PageTitle, DynamicTable, DynamicTableCell } from "../../components";
+import { PageTitle, DynamicTable, DynamicTableCell, UploadButton } from "../../components";
 import { PROTECTED_ROUTES } from "../../config/routeConfig";
-import { useCSVParser } from "../../hooks/CSVParse/useCSVParser";
 import { useUploadRecords } from "./useUploadRecords";
 import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import { useFetchPendingRecords } from "./useFetchPendingRecords";
 import { AcquisitionRecord } from "../../types";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 
 const AccessionRecord: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -22,20 +21,20 @@ const AccessionRecord: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const navigate = useNavigate();
-    const { isLoading: isParsing, validateAndParseCSV } = useCSVParser();
     const { uploadRecords } = useUploadRecords();
     const showSnackbar = useSnackbarContext();
     const { isLoading: isFetching, data: pendingRecords = [], error, refetch } = useFetchPendingRecords();
 
     const [page, setPage] = useState(1);
     const itemsPerPage = 5;
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
         setTitle("Accession Record - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
         return () => {
@@ -46,23 +45,14 @@ const AccessionRecord: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            validateAndParseCSV(file, "acquisition", (parsedData) => {
-                console.log("Parsed CSV Data:", parsedData);
-
-
-                uploadRecords(parsedData, {
-                    onSuccess: () => {
-                        showSnackbar("CSV Parsed Successfully!", "success");
-                        refetch();
-                    },
-                    onError: (error) => showSnackbar(`${error}`, "error")
-                })
-            });
-            (event.target as HTMLInputElement).value = '';
-        }
+    const handleUploadSuccess = (parsedData: any) => {
+        uploadRecords(parsedData, {
+            onSuccess: () => {
+                showSnackbar("CSV Parsed Successfully!", "success");
+                refetch();
+            },
+            onError: (error) => showSnackbar(`${error}`, "error"),
+        });
     };
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +80,7 @@ const AccessionRecord: React.FC = () => {
         { key: "funding_source", label: "Funding Source" },
         {
             key: "action",
-            label: "Action",
+            label: "",
             render: (row: AcquisitionRecord) => (
                 <DynamicTableCell
                     type="menu"
@@ -112,20 +102,12 @@ const AccessionRecord: React.FC = () => {
 
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <Box width="100%">
-                    <input
-                        type="file"
-                        accept=".csv"
-                        id="csv-upload"
-                        style={{ display: "none" }}
-                        onChange={handleFileChange}
+                    <UploadButton
+                        fileType="acquisition"
+                        onSuccess={handleUploadSuccess}
+                        onError={(error) => showSnackbar(error, "error")}
+                        label="Upload CSV"
                     />
-
-                    <label htmlFor="csv-upload">
-                        <Button variant="outlined" component="span" disabled={isParsing}>
-                            {isParsing ? <CircularProgress size={24} /> : "Choose CSV File"}
-                        </Button>
-                    </label>
-
                 </Box>
 
                 {/* Table to display pending records */}
