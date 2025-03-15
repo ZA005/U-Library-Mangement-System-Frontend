@@ -3,6 +3,7 @@ import { Course } from "../../../../types";
 
 export const useUploadCourse = () => {
     const {
+        mutate: uploadCourses,
         isPending,
         isError,
         error,
@@ -17,6 +18,7 @@ export const useUploadCourse = () => {
     })
 
     return {
+        uploadCourses,
         isPending,
         isError,
         error,

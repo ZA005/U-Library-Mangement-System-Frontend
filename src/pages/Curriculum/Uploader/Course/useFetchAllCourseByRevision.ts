@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import getAllCourseByRevision from "../../../../services/Curriculum/Course/getAllCourseByRevision";
 import { Course } from "../../../../types";
 
-export const useFetchAllCourseByProgram = (revision_no: number) => {
+export const useFetchAllCourseByRevision = (revision_no: number) => {
     const {
         isLoading,
         data,
