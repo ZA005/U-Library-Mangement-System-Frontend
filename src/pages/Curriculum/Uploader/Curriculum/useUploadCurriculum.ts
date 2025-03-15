@@ -12,7 +12,7 @@ export const useUploadCurriculums = () => {
     } = useMutation({
         mutationFn: async (curriculums: Curriculum[]) => {
             const { default: uploadCurriculums } = await import("../../../../services/Curriculum/UploadManager/uploadCurriculum")
-
+            console.log("CURRICULUM", curriculums)
             return uploadCurriculums(curriculums);
         }
     })

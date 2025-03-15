@@ -82,15 +82,19 @@ const UploadPrograms: React.FC = () => {
         <>
             <PageTitle title="Upload Program" />
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
-                <Box display="flex">
-                    <Box width="100%">
-                        <UploadButton
-                            fileType="program"
-                            onSuccess={handleUploadProgram}
-                            onError={(error) => showSnackbar(error, "error")}
-                            label="Upload Program"
-                        />
-                    </Box>
+                <Box
+                    display="grid"
+                    gridTemplateColumns={{ xs: "1fr", md: "1fr auto" }}
+                    alignItems="center"
+                    gap={2}
+                >
+                    <UploadButton
+                        fileType="program"
+                        onSuccess={handleUploadProgram}
+                        onError={(error) => showSnackbar(error, "error")}
+                        label="Upload Program"
+                    />
+
 
                     <Dropdown
                         label="Select Department"
@@ -98,8 +102,10 @@ const UploadPrograms: React.FC = () => {
                         onChange={(e) => setSelectedDepartment(e.target.value)}
                         options={departments?.map((dept) => ({ id: dept.dept_id, name: dept.dept_name }))}
                     />
-
                 </Box>
+
+
+
 
                 <Box mt={4}>
                     <DynamicTable

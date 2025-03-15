@@ -46,11 +46,13 @@ const CSVUploadButton: React.FC<CSVUploadButtonProps> = ({ fileType, onSuccess, 
                     component="span"
                     disabled={isUploading || isLoading}
                     sx={{
+                        width: { xs: "100%", md: "200px" },
                         backgroundColor: "#d32f2f",
                         "&:disabled": {
                             backgroundColor: "#b71c1c",
                         },
                     }}
+
                 >
                     {isUploading || isLoading ? <CircularProgress size={24} /> : label}
                 </Button>

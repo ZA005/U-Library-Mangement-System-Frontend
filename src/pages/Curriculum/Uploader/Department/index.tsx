@@ -66,7 +66,12 @@ const UploadDepartments: React.FC = () => {
         <>
             <PageTitle title="Upload Department" />
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
-                <Box width="100%">
+                <Box
+                    display="grid"
+                    gridTemplateColumns={{ xs: "1fr", md: "1fr auto" }}
+                    alignItems="center"
+                    gap={2}
+                >
                     <UploadButton
                         fileType="department"
                         onSuccess={handleUploadDepartment}
