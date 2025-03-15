@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { UserData } from "../../types";
 import { useOutletContext } from "react-router-dom";
 import { Typography, Box, Container, List, ListItem, ListItemText, Button } from "@mui/material";
-import DownloadIcon from '@mui/icons-material/Download';
-import LoginIcon from '@mui/icons-material/Login';
+import { Download, LogIn } from "lucide-react";
 import LibraryCard from "../../components/LibraryCard";
 import { PageTitle } from "../../components";
 import { useSnackbarContext } from "../../contexts/SnackbarContext";
@@ -137,7 +136,7 @@ const AccountLibraryCard: React.FC = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                startIcon={<DownloadIcon />}
+                                startIcon={<Download />}
                                 fullWidth
                                 onClick={handleDownload}
                                 disabled={isDownloading}
@@ -148,7 +147,7 @@ const AccountLibraryCard: React.FC = () => {
                             <Button
                                 variant="outlined"
                                 color="primary"
-                                startIcon={<LoginIcon />}
+                                startIcon={<LogIn />}
                                 fullWidth
                                 onClick={handleSignIn}
                                 sx={{ flex: "1 1 auto", height: 56 }}

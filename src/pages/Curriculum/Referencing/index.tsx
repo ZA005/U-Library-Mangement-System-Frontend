@@ -9,7 +9,7 @@ import { useFetchRevisionsByProgram } from "../Uploader/Curriculum/useFetchRevis
 import { useFetchAllCourseByRevision } from "../Uploader/Course/useFetchAllCourseByRevision";
 import { Program, Course } from "../../../types";
 import { Search } from "lucide-react";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 
 const BookReferencing: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ const BookReferencing: React.FC = () => {
         setTitle("Book Referencing - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
         return () => {

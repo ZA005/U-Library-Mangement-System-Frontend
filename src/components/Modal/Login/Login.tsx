@@ -3,18 +3,13 @@ import { Box, Typography, Button, Modal, TextField, IconButton, InputAdornment, 
 import elibLogo from '../../../assets/images/lms-logo.png';
 import styles from './styles.module.css';
 import { useLogin } from './useLogin';
-import loadable from '@loadable/component';
 import { useModal } from '../../../hooks/Modal/useModal';
 import { SendOTP } from '../..';
+import { Eye, EyeOff, Lock, CircleUser } from 'lucide-react';
 interface LoginProps {
     open: boolean;
     onClose: () => void;
 }
-
-const Visibility = loadable(() => import('@mui/icons-material/Visibility'));
-const VisibilityOff = loadable(() => import('@mui/icons-material/VisibilityOff'));
-const LockIcon = loadable(() => import('@mui/icons-material/Lock'))
-const AccountCircle = loadable(() => import('@mui/icons-material/LibraryBooks'))
 
 const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +93,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <AccountCircle />
+                                            <CircleUser />
                                         </InputAdornment>
                                     ),
                                 }}
@@ -118,7 +113,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <LockIcon />
+                                            <Lock />
                                         </InputAdornment>
                                     ),
                                     endAdornment: (
@@ -128,7 +123,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                                                 onClick={() => setShowPassword((prev) => !prev)}
                                                 aria-label="toggle password visibility"
                                             >
-                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                {showPassword ? <EyeOff /> : <Eye />}
                                             </IconButton>
                                         </InputAdornment>
                                     ),

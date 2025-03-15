@@ -10,7 +10,7 @@ import { useFetchAllCurriculumByProgram } from "./useFetchAllCurriculumsByProgra
 import { useUploadCurriculums } from "./useUploadCurriculum";
 import { Program } from "../../../../types";
 import NoDataPage from "../../NoDataPage";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 
 const UploadDepartments: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ const UploadDepartments: React.FC = () => {
         setTitle("Upload Curriculum - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
         return () => {

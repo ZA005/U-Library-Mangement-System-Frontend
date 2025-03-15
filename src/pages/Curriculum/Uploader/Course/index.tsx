@@ -10,7 +10,7 @@ import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { convertYear, convertSem } from "../../../../utils/yearAndSemConverter";
 import NoDataPage from "../../NoDataPage";
 import { Program } from "../../../../types";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 import { useUploadCourse } from "./useUploadCourse";
 const UploadDepartments: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ const UploadDepartments: React.FC = () => {
         setTitle("Upload Course - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
         return () => {

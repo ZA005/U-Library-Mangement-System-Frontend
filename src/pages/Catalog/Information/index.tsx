@@ -1,6 +1,6 @@
 import { useEffect, useState, Dispatch, ReactNode, SetStateAction } from "react";
 import { useOutletContext, useLocation, useNavigate } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 import { IconButton, Container, Box, Typography, Button, Collapse, Divider } from "@mui/material";
 import { BookDetails, PageTitle } from "../../../components";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -37,7 +37,7 @@ const CatalogBookInformation: React.FC = () => {
         setTitle(`${book.title} - Library Management System`);
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
 

@@ -5,7 +5,7 @@ import { PageTitle, DynamicTable, UploadButton } from "../../../../components";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { useUploadDepartments } from "./useUploadDepartments";
 import { useFetchAllDepartments } from "./useFetchAllDepartments";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 
 const UploadDepartments: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ const UploadDepartments: React.FC = () => {
         setTitle("Upload Departments - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
         return () => {

@@ -4,15 +4,13 @@ import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import eliblogo from "../../assets/images/lms-logo.png";
 import loadable from "@loadable/component";
-
+import { Menu } from "lucide-react";
 interface HeaderProps {
   buttons?: React.ReactNode;
   title?: React.ReactNode;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   sidebarOpen: boolean;
 }
-
-const MenuIcon = loadable(() => import("@mui/icons-material/Menu"));
 const Sidebar = loadable(() => import("../Sidebar"));
 
 const Header: React.FC<HeaderProps> = ({ buttons, title, setSidebarOpen, sidebarOpen }) => {
@@ -70,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({ buttons, title, setSidebarOpen, sidebar
                 isHomePage ? setMobileOpen(true) : setSidebarOpen(prev => !prev)
               }
             >
-              <MenuIcon sx={{ color: "#d32f2f" }} />
+              <Menu color="#d32f2f" />
             </IconButton>
           )}
         </Toolbar>

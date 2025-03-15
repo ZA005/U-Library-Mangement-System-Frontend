@@ -1,10 +1,10 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import CustomSearchBar from "../../components/CustomSearchBar";
 import { useFetchAllBooks } from "../../components/Sections/BrowseBooks/useFetchAllBooks";
 import BookGrid from "../../components/Book/BookGrid";
+import { Menu } from "lucide-react";
 
 const BrowseBookPage: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -17,7 +17,7 @@ const BrowseBookPage: React.FC = () => {
         setTitle("Browse Books - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
-                <MenuIcon sx={{ color: "#d32f2f" }} />
+                <Menu color="#d32f2f" />
             </IconButton>
         );
 

@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useNavigate, generatePath } from "react-router-dom";
 import { GENERAL_ROUTES } from "../../../config/routeConfig";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import { BadgeCheck } from "lucide-react";
 import { UserData } from "../../../types";
 import { useConfirmOTP } from "./useConfirmOTP";
 
@@ -100,14 +100,15 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
                 }}
             >
                 <Box padding="24px" width="100%" textAlign="center">
-                    <CheckCircleOutlinedIcon
-                        sx={{
-                            fontSize: { xs: 60, sm: 80, md: 90 },
+                    <BadgeCheck
+                        style={{
+                            width: 60,
+                            height: 60,
                             color: "#d32f2f",
                             backgroundColor: "white",
                             borderRadius: "50%",
                             padding: "8px",
-                            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)"
+                            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
                         }}
                     />
                     <Typography variant="h5" sx={{ fontWeight: "bold", mt: 2 }}>
