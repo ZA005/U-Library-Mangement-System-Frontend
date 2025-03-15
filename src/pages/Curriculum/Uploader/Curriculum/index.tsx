@@ -140,6 +140,8 @@ const UploadDepartments: React.FC = () => {
                         page={page}
                         itemsPerPage={itemsPerPage}
                         onPageChange={(_, value) => setPage(value)}
+                        customMsg="Please select Department and Program to view Curriculum"
+                        hasSelection={!!selectedDepartment && !!selectedProgram}
                     />
                 </Box>
             </Container>
