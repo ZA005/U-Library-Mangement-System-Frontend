@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, TextField, Button } from "@mui/material";
-import LocationSelect from "./Location";
 import { LibraryLocations } from "../../../types/Catalog/LibraryLocation";
 import { useFetchAllLibraryLocations } from "./Location/useFetchLibraryLocations";
+import LocationSelectWrapper from "./Location";
+import SectionSelectWrapper from "./Section";
+import { useFetchAllLibrarySections } from "./Section/useFetchLibrarySections";
+import { LibrarySections } from "../../../types/Catalog/LibrarySection";
+import { useEffect, useState } from "react";
 
 /**
  * SecondPage Component
@@ -24,6 +28,22 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
         (loc) => loc.codeName === formData.location
     ) || null;
 
+    const [locationId, setLocationId] = useState<number | null>(selectedLocation?.id || null);
+
+    const { data: allLibrarySections = [] } = useFetchAllLibrarySections(locationId ?? 0);
+
+    useEffect(() => {
+        if (selectedLocation) {
+            setLocationId(selectedLocation.id ?? null);
+        }
+    }, [selectedLocation]);
+
+    const selectedSection: LibrarySections | null = Array.isArray(allLibrarySections)
+        ? allLibrarySections.find((sec) => sec.sectionName === formData.section) || null
+        : null;
+
+
+
     /**
      * Handles input changes and updates formData state
      */
@@ -34,14 +54,25 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
     const handleLocationChange = (selectedLocation: LibraryLocations | null) => {
         setFormData({ ...formData, location: selectedLocation?.codeName || "" });
     };
+    const handleSectionChange = (selectedSection: LibrarySections | null) => {
+        setFormData({
+            ...formData,
+            section: selectedSection?.sectionName || ""
+        });
+    };
     console.log("DATA", formData);
     return (
         <Box display="grid" gap={2}>
             <TextField fullWidth label="Status" name="status" value={formData.status} onChange={handleChange} />
             <TextField fullWidth label="Number of Copies" name="numberOfCopies" value={formData.numberOfCopies} onChange={handleChange} />
             <TextField fullWidth label="Purchase Price" name="purchasePrice" value={formData.purchase_price} onChange={handleChange} />
-            <LocationSelect selectedLocation={selectedLocation} onLocationChange={handleLocationChange} />
-            <TextField fullWidth label="Section" name="section" value={formData.section} onChange={handleChange} />
+            <LocationSelectWrapper selectedLocation={selectedLocation} onLocationChange={handleLocationChange} />
+            <SectionSelectWrapper
+                selectedSection={selectedSection}
+                locationId={selectedLocation?.id || 0}
+                onSectionChange={handleSectionChange}
+                disabled={!selectedLocation}
+            />
             <TextField fullWidth label="Date Acquired" name="dateAcquired" value={formData.acquired_date} onChange={handleChange} />
             <TextField fullWidth label="Vendor" name="vendor" value={formData.vendor} onChange={handleChange} />
             <TextField fullWidth label="Funding Source" name="fundingSource" value={formData.funding_source} onChange={handleChange} />

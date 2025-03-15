@@ -3,7 +3,9 @@ export * from './AcquisitionDetails';
 export * from './GoogleBookData'
 //Catalog
 export * from './Catalog/Book';
-export * from './Catalog/BookCatalog'
+export * from './Catalog/BookCatalog';
+export * from './Catalog/LibraryLocation';
+export * from './Catalog/LibrarySection';
 //Curriculum
 export * from './Curriculum/BookReference'
 export * from './Curriculum/Course'

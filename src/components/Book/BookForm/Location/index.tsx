@@ -1,101 +1,102 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFetchAllLibraryLocations } from "./useFetchLibraryLocations";
-import { useNavigate } from "react-router-dom";
-import { FormControl, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select, Switch } from "@mui/material";
-import { LibraryLocations } from "../../../../types/Catalog/LibraryLocation";
 import { useUpdateLibraryLocationStatus } from "./useUpdateLibraryLocationStats";
+import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
+import { LibraryLocations } from "../../../../types/Catalog/LibraryLocation";
+import EntitySelect from "../../../SelectMenuSwitch";
+import ModalForm from "../../../Modal/ModalForm";
+import { useAddLibraryLocation } from "./useAddLibraryLocation";
 
-interface LocationSeelctProps {
+interface LocationSelectProps {
     selectedLocation: LibraryLocations | null;
     onLocationChange: (location: LibraryLocations | null) => void;
 }
-const LocationSelect: React.FC<LocationSeelctProps> = ({ selectedLocation, onLocationChange }) => {
-    const { data: allLibraryLocations = [] } = useFetchAllLibraryLocations();
+
+const LocationSelectWrapper: React.FC<LocationSelectProps> = ({ selectedLocation, onLocationChange }) => {
+    const { data: allLibraryLocations = [], refetch } = useFetchAllLibraryLocations();
     const { updateStatus } = useUpdateLibraryLocationStatus();
-    const [libraryLocations, setLibraryLocations] = useState<LibraryLocations[]>([]);
-    const navigate = useNavigate();
+    const showSnackbar = useSnackbarContext();
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [newLocationCodeName, setNewLocationCodeName] = useState("");
+    const [newLocationName, setNewLocationName] = useState("");
 
-    const handleSwitchChange = async (id: number, status: boolean) => {
-        // Update the local state
-        setLibraryLocations(libraryLocations.map(loc =>
-            loc.id === id ? { ...loc, status: !status } : loc
-        ));
+    const { addLibraryLocation, isError, error, isSuccess } = useAddLibraryLocation();
 
-        const updatedLoc = libraryLocations.find(loc => loc.id === id);
-        if (!status && selectedLocation?.codeName === updatedLoc?.codeName) {
-            onLocationChange(null); // Reset selection in parent
+    const handleAddNewEntity = () => {
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const handleSubmitNewLocation = () => {
+        if (newLocationCodeName && newLocationName) {
+            const newLocation: LibraryLocations = {
+                codeName: newLocationCodeName,
+                name: newLocationName,
+                status: true,
+            };
+            addLibraryLocation(newLocation);
+        }
+    };
+
+    // Fields for the modal
+    const fields = [
+        {
+            label: "Location Code Name",
+            type: "text" as const,
+            value: newLocationCodeName,
+            onChange: setNewLocationCodeName,
+            required: true,
+        },
+        {
+            label: "Location Name",
+            type: "text" as const,
+            value: newLocationName,
+            onChange: setNewLocationName,
+            required: true,
+        },
+    ];
+
+    useEffect(() => {
+        if (isSuccess) {
+            refetch();
+            showSnackbar("New location added successfully", "success");
+            setNewLocationCodeName("");
+            setNewLocationName("");
+            setModalOpen(false);
         }
 
-        // Call the mutation to update the server
-        updateStatus({ id, status: !status });
-    };
-
-    const handleAddNewLocation = () => {
-        navigate("/add-location");
-    };
-
+        if (isError) {
+            showSnackbar(`Failed to add location: ${error?.message}`, "error");
+        }
+    }, [isSuccess, isError, refetch, showSnackbar, error]);
 
     return (
-        <FormControl >
-            <InputLabel id="location-label">Library Location</InputLabel>
-            <Select
-                labelId="location-label"
-                value={selectedLocation?.codeName || ""}
-                onChange={(e) => {
-                    const selectedLoc = allLibraryLocations.find(loc => loc.codeName === e.target.value);
-                    if (selectedLoc) {
-                        if (!selectedLoc.status) {
-                            console.log("This location is inactive and cannot be selected.", "warning");
-                        } else {
-                            onLocationChange(selectedLoc);
-                        }
-                    }
-                }}
-                input={<OutlinedInput label="Library Location" />}
-                onClose={() => { }}
-                required
-            >
-                <MenuItem disabled value="">
-                    <em>Please select a library location</em>
-                </MenuItem>
-                {allLibraryLocations.map((loc) => (
-                    <MenuItem
-                        key={loc.id}
-                        value={loc.codeName}
-                        onClick={() => {
-                            if (!loc.status) {
-                                console.log("This location is inactive and cannot be selected.");
-                            }
-                        }}
-                    >
-                        <span>{loc.name}</span>
-                        {selectedLocation?.codeName !== loc.codeName && (
-                            <div
-                                style={{ marginLeft: "auto" }}
-                                onClick={(event) => event.stopPropagation()}
-                            >
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={loc.status}
-                                            onChange={() => handleSwitchChange(loc.id!, loc.status)}
-                                            color="primary"
-                                        />
-                                    }
-                                    label={loc.status ? "Active" : "Inactive"}
-                                    labelPlacement="start"
-                                />
-                            </div>
-                        )}
-                    </MenuItem>
-                ))}
-                <MenuItem onClick={handleAddNewLocation} value="">
-                    Add Location
-                </MenuItem>
-            </Select>
-        </FormControl>
+        <>
+            <EntitySelect
+                label="Library Location"
+                entities={allLibraryLocations}
+                selectedEntity={selectedLocation}
+                onEntityChange={onLocationChange}
+                onUpdateStatus={async (id: number, status: boolean) => updateStatus({ id, status })}
+                onAddNewEntity={handleAddNewEntity}
+                showSnackbar={showSnackbar}
+                valueField="codeName"
+                displayField="name"
+            />
+
+            <ModalForm
+                open={isModalOpen}
+                handleClose={handleCloseModal}
+                title="Add New Library Location"
+                fields={fields}
+                onConfirm={handleSubmitNewLocation}
+                confirmText="Submit"
+            />
+        </>
     );
 };
 
-export default LocationSelect; 
+export default LocationSelectWrapper;
