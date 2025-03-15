@@ -16,7 +16,7 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ label, value, onChange, options
             size="small"
             disabled={disabled}
             sx={{
-                width: { xs: "100%", md: "350px" },
+                width: { xs: "100%", md: "250px" },
             }}
         >
             <InputLabel id={`${label}-label`}>{label}</InputLabel>
