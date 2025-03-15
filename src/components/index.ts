@@ -25,6 +25,7 @@ export const ModalForm = loadable(() => import("./Modal/ModalForm"))
 export const DynamicTable = loadable(() => import("./Table"))
 export const DynamicTableCell = loadable(() => import("./Table/ActionCell"))
 export const UploadButton = loadable(() => import("./UploadButton"))
+export const Menu = loadable(() => import("./SelectMenu"))
 
 // BROWSE PAGE SECTION
 export const FeaturedBookSection = loadable(() => import("./Sections/FeaturedBooks"))
