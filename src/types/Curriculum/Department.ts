@@ -1,5 +1,5 @@
 export interface Department {
-    id: string;
-    name: string;
-    code: string;
+    dept_id: string;
+    dept_name: string;
+    dept_code: string;
 }
