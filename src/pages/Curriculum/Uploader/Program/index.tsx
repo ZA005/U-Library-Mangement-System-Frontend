@@ -95,17 +95,16 @@ const UploadPrograms: React.FC = () => {
                         label="Upload Program"
                     />
 
+                    <Box width="250px">
+                        <Dropdown
+                            label="Select Department"
+                            value={selectedDepartment}
+                            onChange={(e) => setSelectedDepartment(e.target.value)}
+                            options={departments?.map((dept) => ({ id: dept.dept_id, name: dept.dept_name }))}
+                        />
+                    </Box>
 
-                    <Dropdown
-                        label="Select Department"
-                        value={selectedDepartment}
-                        onChange={(e) => setSelectedDepartment(e.target.value)}
-                        options={departments?.map((dept) => ({ id: dept.dept_id, name: dept.dept_name }))}
-                    />
                 </Box>
-
-
-
 
                 <Box mt={4}>
                     <DynamicTable
