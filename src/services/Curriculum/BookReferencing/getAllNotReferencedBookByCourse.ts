@@ -1,7 +1,7 @@
 import { createApiClient } from "../../api/apiClient";
 import { Books } from "../../../types";
 
-const getAllUniqueBooks = async (id: number): Promise<Books[]> => {
+const getAllNotReferencedBookByCourse = async (id: number): Promise<Books[]> => {
     const apiClient = createApiClient("public")
     try {
         const response = await apiClient.get(`/reference/book/course/${id}`);
@@ -12,4 +12,4 @@ const getAllUniqueBooks = async (id: number): Promise<Books[]> => {
     }
 }
 
-export default getAllUniqueBooks
+export default getAllNotReferencedBookByCourse
