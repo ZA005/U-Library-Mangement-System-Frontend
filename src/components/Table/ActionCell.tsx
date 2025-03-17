@@ -1,21 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { FormControl, Select, MenuItem, Button } from "@mui/material";
 
 interface ActionCellProps {
     type: "menu" | "button";
-    buttonText?: "";
+    buttonText?: string;
     options?: { value: string; label: string }[];
     onAction: (value: string) => void;
 }
 
 const ActionCell: React.FC<ActionCellProps> = ({ type, buttonText, options, onAction }) => {
+    const [selectedValue, setSelectedValue] = useState<string>("");
+
+    const handleSelectChange = (value: string) => {
+        onAction(value);
+        setSelectedValue("");
+    };
+
     if (type === "menu") {
         return (
-            <FormControl fullWidth >
+            <FormControl fullWidth>
                 <Select
                     size="small"
-                    defaultValue=""
-                    onChange={(e) => onAction(e.target.value)}
+                    value={selectedValue}
+                    onChange={(e) => handleSelectChange(e.target.value)}
+                    onClose={() => setSelectedValue("")}
                     displayEmpty
                 >
                     <MenuItem value="" disabled>Action</MenuItem>

@@ -7,6 +7,8 @@ import { useFetchAllDepartments } from "../Uploader/Department/useFetchAllDepart
 import { useFetchAllProgramsByDepartment } from "../Uploader/Program/useFetchAllProgramsByDepartment";
 import { useFetchRevisionsByProgram } from "../Uploader/Curriculum/useFetchRevisionsByProgram";
 import { useFetchAllCourseByRevision } from "../Uploader/Course/useFetchAllCourseByRevision";
+import ViewBookReference from "./Dialog/View/ViewBookReference";
+import { useDialog } from "../../../hooks/useDialog";
 import { Program, Course } from "../../../types";
 import { Search } from "lucide-react";
 import { Menu } from "lucide-react";
@@ -18,6 +20,7 @@ const BookReferencing: React.FC = () => {
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
     const [selectedRevision, setSelectedRevision] = useState<number | null>(null);
+    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,12 +51,18 @@ const BookReferencing: React.FC = () => {
     const { data: revisions = [], isLoading: isFetchingRevisions } = useFetchRevisionsByProgram(selectedProgram?.program_id ?? 0);
     const { isLoading: isFetchingCourse, data: courses = [], error, refetch } = useFetchAllCourseByRevision(selectedRevision ?? 0);
     const showSnackbar = useSnackbarContext();
+    const { isOpen, openDialog, closeDialog } = useDialog();
     const [searchQuery, setSearchQuery] = useState("");
 
     const [page, setPage] = useState(1);
     const itemsPerPage = 10;
 
     /////////////////////////////////////////////////////////////////////////////////////
+
+    const handleViewReferences = (course: Course) => {
+        setSelectedCourse(course);
+        openDialog();
+    };
 
     const filteredCourses = courses.filter(course =>
         course.course_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -76,9 +85,13 @@ const BookReferencing: React.FC = () => {
                         { value: "viewRef", label: "View References" },
                         { value: "copy", label: "Copy From" },
                     ]}
-                    onAction={() => { console.log("hello") }}
+                    onAction={(action) => {
+                        if (action === "viewRef") {
+                            handleViewReferences(row);
+                        }
+                    }}
                 />
-            )
+            ),
         }
     ]
 
@@ -149,7 +162,11 @@ const BookReferencing: React.FC = () => {
                         hasSelection={!!selectedDepartment && !!selectedProgram && !!selectedRevision}
                     />
                 </Box>
+
             </Container>
+            {isOpen && selectedCourse && (
+                <ViewBookReference course={selectedCourse} onClose={closeDialog} />
+            )}
         </>
     )
 }

@@ -1,5 +1,5 @@
 export interface Course {
-    id: number;
+    course_id: number;
     // CURRICULUM
     curr_id: string;
     revision_no: number;
