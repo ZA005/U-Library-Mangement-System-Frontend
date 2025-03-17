@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import loadable from "@loadable/component";
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop, Typography, Box, Collapse } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { styled } from "@mui/material/styles";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -95,7 +95,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
                       {React.createElement(item.icon, { color: "white", size: 20 })}
                     </ListItemIcon>
                     <ListItemText primary={item.label} />
-                    {openMenus[item.label] ? <ExpandLess /> : <ExpandMore />}
+                    {openMenus[item.label] ? <ChevronUp /> : <ChevronDown />}
                   </ListItemButton>
                   <Collapse in={openMenus[item.label]} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
