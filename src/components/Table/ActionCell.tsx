@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FormControl, Select, MenuItem, Button } from "@mui/material";
+import { FormControl, Select, MenuItem, Typography } from "@mui/material";
 
 interface ActionCellProps {
     type: "menu" | "button";
@@ -38,9 +38,20 @@ const ActionCell: React.FC<ActionCellProps> = ({ type, buttonText, options, onAc
     }
 
     return (
-        <Button variant="text" color="primary" onClick={() => onAction("clicked")}>
+        <Typography
+            component="button"
+            onClick={() => onAction("clicked")}
+            sx={{
+                color: "#d32f2f",
+                background: "none",
+                border: "none",
+                fontSize: "inherit",
+                fontWeight: "inherit",
+                cursor: "pointer",
+            }}
+        >
             {buttonText}
-        </Button>
+        </Typography>
     );
 };
 
