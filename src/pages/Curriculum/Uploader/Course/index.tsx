@@ -5,9 +5,9 @@ import { PageTitle, DynamicTable, UploadButton, Dropdown, Loading } from "../../
 import { useFetchAllCurriculum } from "../Curriculum/useFetchAllCurriculum";
 import { useFetchAllDepartments } from "../Department/useFetchAllDepartments";
 import { useFetchAllProgramsByDepartment } from "../Program/useFetchAllProgramsByDepartment";
-import { useFetchAllCourseByProgram } from "./useFetchAllCoursesByProgram";
+import { useFetchAllCourseByRevision } from "./useFetchAllCourseByRevision";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
-import { convertYear, convertSem } from "../../../../utils/yearAndSemConverter";
+import { useFetchRevisionsByProgram } from "../Curriculum/useFetchRevisionsByProgram";
 import NoDataPage from "../../NoDataPage";
 import { Program } from "../../../../types";
 import { Menu } from "lucide-react";
@@ -19,6 +19,7 @@ const UploadDepartments: React.FC = () => {
     const { data: departments } = useFetchAllDepartments();
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+    const [selectedRevision, setSelectedRevision] = useState<number | null>(null);
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +46,8 @@ const UploadDepartments: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
     const { data: programs } = useFetchAllProgramsByDepartment(selectedDepartment);
-    const { isLoading: isFetchingCourse, data: courses = [], error, refetch } = useFetchAllCourseByProgram(selectedProgram?.program_id ?? 0)
+    const { data: revisions = [], isLoading: isFetchingRevisions } = useFetchRevisionsByProgram(selectedProgram?.program_id ?? 0);
+    const { isLoading: isFetchingCourse, data: courses = [], error, refetch } = useFetchAllCourseByRevision(selectedRevision ?? 0);
     const { uploadCourses } = useUploadCourse()
 
     const showSnackbar = useSnackbarContext();
@@ -96,9 +98,9 @@ const UploadDepartments: React.FC = () => {
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <Box
                     display="grid"
-                    gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr 1fr" }}
+                    gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr 1fr 1fr" }}
                     alignItems="center"
-                    gap={2}
+                    gap={1}
                 >
                     <UploadButton
                         fileType="course"
@@ -120,9 +122,18 @@ const UploadDepartments: React.FC = () => {
                         onChange={(e) => {
                             const program = programs?.find((prog) => prog.program_id === Number(e.target.value));
                             setSelectedProgram(program || null);
+                            setSelectedRevision(null);
                         }}
                         options={programs?.map((prog) => ({ id: prog.program_id, name: prog.description })) || []}
                         disabled={!selectedDepartment}
+                    />
+
+                    <Dropdown
+                        label="Select Revision"
+                        value={selectedRevision ?? ""}
+                        onChange={(e) => setSelectedRevision(Number(e.target.value))}
+                        options={revisions.map((rev) => ({ id: rev, name: `Revision ${rev}` })) || []}
+                        disabled={!selectedProgram || revisions.length === 0}
                     />
                 </Box>
 
@@ -135,8 +146,8 @@ const UploadDepartments: React.FC = () => {
                         page={page}
                         itemsPerPage={itemsPerPage}
                         onPageChange={(_, value) => setPage(value)}
-                        customMsg="Please select Department and Program to view Course"
-                        hasSelection={!!selectedDepartment && !!selectedProgram}
+                        customMsg="Please select Department, Program, and Revision to view Courses"
+                        hasSelection={!!selectedDepartment && !!selectedProgram && !!selectedRevision}
                     />
                 </Box>
             </Container>
