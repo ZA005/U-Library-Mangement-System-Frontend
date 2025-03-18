@@ -72,7 +72,6 @@ const BookReferencing: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const columns = [
-        { key: "revision_no", label: "REVISION" },
         { key: "course_code", label: "CODE" },
         { key: "course_name", label: "NAME" },
         {
@@ -80,16 +79,9 @@ const BookReferencing: React.FC = () => {
             label: "",
             render: (row: Course) => (
                 <DynamicTableCell
-                    type="menu"
-                    options={[
-                        { value: "viewRef", label: "View References" },
-                        { value: "copy", label: "Copy From" },
-                    ]}
-                    onAction={(action) => {
-                        if (action === "viewRef") {
-                            handleViewReferences(row);
-                        }
-                    }}
+                    type="button"
+                    buttonText="View Book Reference"
+                    onAction={() => { handleViewReferences(row) }}
                 />
             ),
         }
@@ -160,6 +152,7 @@ const BookReferencing: React.FC = () => {
                         onPageChange={(_, value) => setPage(value)}
                         customMsg="Please select Department, Program, and Revision to view Courses"
                         hasSelection={!!selectedDepartment && !!selectedProgram && !!selectedRevision}
+                        customSize="180px"
                     />
                 </Box>
 
