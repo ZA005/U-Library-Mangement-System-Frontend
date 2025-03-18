@@ -6,7 +6,7 @@ import { useFetchBookReferencesByCourse } from "./useFetchBookReferenceByCourse"
 import { useFetchBookByID } from "./useFetchBookByID";
 import { useRemoveBookReference } from "./useRemoveBookReference";
 import { useSnackbarContext } from "../../../../../contexts/SnackbarContext";
-import { Plus, Search, Trash } from "lucide-react";
+import { Plus, Search, Trash, Copy } from "lucide-react";
 import { PROTECTED_ROUTES } from "../../../../../config/routeConfig";
 import BookReferenceDialog from "..";
 import AddBookReference from "../Add/AddBookReference";
@@ -131,12 +131,11 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                     open={true}
                     title={`Book References for ${course.course_name}`}
                     onClose={handleViewDialogClose}
-                    iconButton={
-                        <Plus
-                            color="#d32f2f"
-                            onClick={handleAddBookClick}
-                        />
-                    }
+                    iconButtons={[
+                        <Copy size="20px" color="#d32f2f" onClick={handleAddBookClick} />,
+                        <Plus size="20px" color="#d32f2f" onClick={handleAddBookClick} />
+                    ]}
+
                     content={content}
                 />
             )}
@@ -150,11 +149,11 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setIsRemoveDialogOpen(false)} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={confirmRemoveBook} color="secondary">
+                    <Button onClick={confirmRemoveBook} variant="contained" sx={{ backgroundColor: "#d32f2f" }}>
                         Remove
+                    </Button>
+                    <Button onClick={() => setIsRemoveDialogOpen(false)} sx={{ color: "#d32f2f" }}>
+                        Cancel
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -65,8 +65,8 @@ const BookReferencing: React.FC = () => {
     };
 
     const filteredCourses = courses.filter(course =>
-        course.course_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.course_code.toLowerCase().includes(searchQuery.toLowerCase())
+        course?.course_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course?.course_code.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ const BookReferencing: React.FC = () => {
 
     return (
         <>
-            <PageTitle title="Manage Book Reference" />
+            <PageTitle title="Manage Book References" />
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <Box
                     display="grid"
@@ -152,7 +152,7 @@ const BookReferencing: React.FC = () => {
                         onPageChange={(_, value) => setPage(value)}
                         customMsg="Please select Department, Program, and Revision to view Courses"
                         hasSelection={!!selectedDepartment && !!selectedProgram && !!selectedRevision}
-                        customSize="180px"
+                        customSize="200px"
                     />
                 </Box>
 

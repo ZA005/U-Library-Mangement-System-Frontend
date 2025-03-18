@@ -8,6 +8,7 @@ import { useFetchAllPrograms } from "../Program/useFetchAllPrograms";
 import { useFetchAllProgramsByDepartment } from "../Program/useFetchAllProgramsByDepartment";
 import { useFetchAllCurriculumByProgram } from "./useFetchAllCurriculumsByProgram";
 import { useUploadCurriculums } from "./useUploadCurriculum";
+import { convertYearRange } from "../../../../utils/convert";
 import { Program } from "../../../../types";
 import NoDataPage from "../../NoDataPage";
 import { Menu } from "lucide-react";
@@ -90,8 +91,8 @@ const UploadDepartments: React.FC = () => {
         { key: "program_code", label: "CODE" },
         { key: "program_description", label: "NAME" },
         { key: "revision_no", label: "REVISION" },
-        { key: "effectivity_sem", label: "SEMESTER" },
-        { key: "effectivity_sy", label: "YEAR" },
+        // { key: "effectivity_sem", label: "SEMESTER" },
+        { key: "effectivity_sy", label: "YEAR", render: (row: any) => row.effectivity_sy ? convertYearRange(row.effectivity_sy) : `N/A` },
     ]
 
     return (

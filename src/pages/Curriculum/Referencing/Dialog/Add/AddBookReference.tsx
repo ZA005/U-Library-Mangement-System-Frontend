@@ -157,11 +157,11 @@ const AddBookReference: React.FC<AddBookReferenceProps> = ({ course, onClose }) 
                 open={true}
                 title={`Select Book to be reference for ${course.course_name}`}
                 onClose={onClose}
-                iconButton={
+                iconButtons={[
                     <IconButton onClick={toggleMultiSelectMode}>
                         {multiSelectMode ? <CheckCheck color="#d32f2f" /> : <ListPlus color="#d32f2f" />}
                     </IconButton>
-                }
+                ]}
                 content={content}
                 actions={actions}
             />
