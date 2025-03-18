@@ -8,6 +8,7 @@ export interface BookReference {
     // BOOK ATTRIBS
     book_id: number;
     book_name: string;
+    authors: string[];
     isbn10: string;
     isbn13: string;
     copyright: string;

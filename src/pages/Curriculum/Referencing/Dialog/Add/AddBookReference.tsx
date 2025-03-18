@@ -109,7 +109,7 @@ const AddBookReference: React.FC<AddBookReferenceProps> = ({ course, onClose }) 
                             {multiSelectMode && (
                                 <Checkbox checked={selectedBooks.some((b) => b.isbn13 === book.isbn13)} onChange={() => handleSelectBook(book)} />
                             )}
-                            <ListItemText primary={book.title} secondary={`ISBN13: ${book.isbn13}`} />
+                            <ListItemText primary={book.title} secondary={`ISBN13: ${book.isbn13} | Copyright: ${book.copyRight} | Author(s): ${book.authors}`} />
                             {!multiSelectMode && (
                                 <Box display="flex" alignItems="center">
                                     <Button

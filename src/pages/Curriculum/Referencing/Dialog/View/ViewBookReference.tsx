@@ -75,7 +75,7 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                         <ListItem key={index}>
                             <ListItemText
                                 primary={book.book_name}
-                                secondary={`ISBN10: ${book.isbn10} | ISBN13: ${book.isbn13} | Copyright: ${book.copyright}`}
+                                secondary={`ISBN13: ${book.isbn13} | Copyright: ${book.copyright} | Author(s): ${book.authors}`}
                             />
                             <Box display="flex" alignItems="center">
                                 {/* <Button
