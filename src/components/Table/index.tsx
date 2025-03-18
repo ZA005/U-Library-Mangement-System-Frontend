@@ -21,9 +21,13 @@ interface TableProps {
     onPageChange: (event: React.ChangeEvent<unknown>, value: number) => void;
     customMsg?: string;
     hasSelection?: boolean;
+    customSize?: string; // New prop for last column size
 }
 
-const DynamicTable: React.FC<TableProps> = ({ columns, data, loading, error, page, itemsPerPage, onPageChange, customMsg, hasSelection }) => {
+const DynamicTable: React.FC<TableProps> = ({
+    columns, data, loading, error, page, itemsPerPage, onPageChange,
+    customMsg, hasSelection, customSize
+}) => {
     const paginatedData = React.useMemo(() => {
         return data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
     }, [data, page, itemsPerPage]);
@@ -42,16 +46,28 @@ const DynamicTable: React.FC<TableProps> = ({ columns, data, loading, error, pag
                         <Table>
                             <TableHead sx={{ position: "sticky", top: 0, backgroundColor: "white", zIndex: 1 }}>
                                 <TableRow>
-                                    {columns.map((col) => (
-                                        <TableCell key={col.key}><b>{col.label}</b></TableCell>
+                                    {columns.map((col, index) => (
+                                        <TableCell
+                                            key={col.key}
+                                            sx={{
+                                                width: index === columns.length - 1 ? customSize || "auto" : "auto",
+                                            }}
+                                        >
+                                            <b>{col.label}</b>
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {paginatedData.map((row) => (
                                     <TableRow key={row.id}>
-                                        {columns.map((col) => (
-                                            <TableCell key={col.key}>
+                                        {columns.map((col, index) => (
+                                            <TableCell
+                                                key={col.key}
+                                                sx={{
+                                                    width: index === columns.length - 1 ? customSize || "auto" : "auto",
+                                                }}
+                                            >
                                                 {col.render ? col.render(row) : row[col.key]}
                                             </TableCell>
                                         ))}
