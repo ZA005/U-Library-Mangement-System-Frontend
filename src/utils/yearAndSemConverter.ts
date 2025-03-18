@@ -18,9 +18,9 @@ export const convertYear = (year: number) => {
 export const convertSem = (sem: number) => {
     switch (sem) {
         case 1:
-            return "1st Semester";
+            return "1 S";
         case 2:
-            return "2nd Semester";
+            return "2";
         default:
             return "Unknown Semester";
     }

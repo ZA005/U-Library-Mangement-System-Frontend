@@ -85,11 +85,10 @@ const UploadDepartments: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
     const columns = [
+        { key: "year_level", label: "Y/L" },
+        { key: "sem", label: "SEM" },
         { key: "course_code", label: "CODE" },
         { key: "course_name", label: "NAME" },
-        { key: "revision_no", label: "REVISION NO" },
-        { key: "year_level", label: "YEAR", render: (row: any) => convertYear(row.year_level) },
-        { key: "sem", label: "SEMESTER", render: (row: any) => convertSem(row.sem) },
     ]
     return (
         <>

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Course } from "../../../../../types";
-import { List, ListItem, ListItemText, Box, TextField, Typography, InputAdornment, Button } from "@mui/material";
+import { List, ListItem, ListItemText, Box, TextField, Typography, InputAdornment, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { Loading } from "../../../../../components";
 import { useFetchBookReferencesByCourse } from "./useFetchBookReferenceByCourse";
 import { useFetchBookByID } from "./useFetchBookByID";
+import { useRemoveBookReference } from "./useRemoveBookReference";
+import { useSnackbarContext } from "../../../../../contexts/SnackbarContext";
 import { Plus, Search, Trash } from "lucide-react";
 import { PROTECTED_ROUTES } from "../../../../../config/routeConfig";
 import BookReferenceDialog from "..";
@@ -15,12 +17,16 @@ interface ViewBookReferenceProps {
 }
 
 const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }) => {
-    const { isLoading: isFetchingReferences, data: bookReferences, error: errorFetchingReferences } = useFetchBookReferencesByCourse(course.course_id);
+    const { isLoading: isFetchingReferences, data: bookReferences, error: errorFetchingReferences, refetch } = useFetchBookReferencesByCourse(course.course_id);
+    const { removeReference } = useRemoveBookReference();
     const [searchQuery, setSearchQuery] = useState("");
     const [isAddBookOpen, setIsAddBookOpen] = useState(false);
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(true);
     const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
     const { data: bookData } = useFetchBookByID(selectedBookId!);
+    const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
+    const [bookToRemove, setBookToRemove] = useState<{ id: number; name: string } | null>(null);
+    const showSnackbar = useSnackbarContext();
 
     const handleAddBookClick = () => {
         setIsViewDialogOpen(false);
@@ -44,7 +50,24 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
         window.open(bookUrl, "_blank");
     };
 
-    console.log(bookReferences);
+    const handleRemoveBook = (bookId: number, bookName: string) => {
+        setBookToRemove({ id: bookId, name: bookName });
+        setIsRemoveDialogOpen(true);
+    };
+
+    const confirmRemoveBook = () => {
+        if (bookToRemove) {
+            removeReference(bookToRemove.id, {
+                onSuccess: () => {
+                    showSnackbar(`Successfully removed ${bookToRemove.name}`);
+                    refetch();
+                },
+                onError: (error) => showSnackbar(`${error}`, "error"),
+            });
+        }
+        setIsRemoveDialogOpen(false);
+        setBookToRemove(null);
+    };
     const content = (
         <>
             <TextField
@@ -77,25 +100,20 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                                 primary={book.book_name}
                                 secondary={`ISBN13: ${book.isbn13} | Copyright: ${book.copyright} | Author(s): ${book.authors}`}
                             />
-                            <Box display="flex" alignItems="center">
-                                {/* <Button
-                                    variant="contained"
-                                    size="small"
-                                    sx={{ marginRight: 2, backgroundColor: "#EA4040" }}
-                                    onClick={() => handleSaveBook(book.book_id)}
-                                >
-                                    Select Book
-                                </Button> */}
+                            <Box display="flex" alignItems="center" gap={1}>
+
                                 <Button
                                     variant="text"
                                     size="small"
-                                    sx={{ color: "#EA4040", borderColor: "#EA4040" }}
+                                    sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}
                                     onClick={() => handleViewBook(book.book_id)}
                                 >
                                     View Book
                                 </Button>
 
-
+                                <IconButton onClick={() => handleRemoveBook(book.id, book.book_name)}>
+                                    <Trash color="#d32f2f" />
+                                </IconButton>
                             </Box>
                         </ListItem>
                     ))}
@@ -123,6 +141,23 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                 />
             )}
             {isAddBookOpen && <AddBookReference course={course} onClose={handleAddBookClose} />}
+
+            <Dialog open={isRemoveDialogOpen} onClose={() => setIsRemoveDialogOpen(false)}>
+                <DialogTitle>Confirm Removal</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to remove <strong>{bookToRemove?.name}</strong> from the book references?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setIsRemoveDialogOpen(false)} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={confirmRemoveBook} color="secondary">
+                        Remove
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };
