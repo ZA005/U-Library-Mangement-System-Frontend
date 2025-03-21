@@ -29,15 +29,29 @@ const FirstPage: React.FC<FirstPageProps> = ({ onNext, formData, setFormData }) 
                 onChange={handleChange} slotProps={{ inputLabel: { shrink: true, }, }} />
             <TextField fullWidth label="ISBN10" name="isbn10" value={formData.isbn10} onChange={handleChange} />
             <TextField fullWidth label="ISBN13" name="isbn13" value={formData.isbn} onChange={handleChange} />
-            <TextField fullWidth label="Categories" name="categories" value={formData.categories} onChange={handleChange} />
-            <TextField fullWidth label="Call Number" name="callNumber" value={formData.callNumber} onChange={handleChange} />
-
-            <TextField fullWidth label="Copyright" name="copyright" type="date" value={formData.copyright} onChange={handleChange}
-                slotProps={{ inputLabel: { shrink: true, }, }} />
+            <TextField
+                fullWidth
+                label="Copyright"
+                name="copyright"
+                type="number"
+                value={formData.copyright || ""}
+                onChange={handleChange}
+                slotProps={{
+                    inputLabel: { shrink: true },
+                    input: {
+                        inputProps: {
+                            min: 1000,
+                            max: new Date().getFullYear(),
+                        },
+                    },
+                }}
+            />
             <TextField fullWidth label="Publisher" name="publisher" value={formData.publisher} onChange={handleChange}
                 slotProps={{ inputLabel: { shrink: true, }, }} />
             <TextField fullWidth label="Published Date" name="publishedDate" type="date" value={formData.publishedDate || ''} onChange={handleChange}
                 slotProps={{ inputLabel: { shrink: true, }, }} />
+            <TextField fullWidth label="Categories" name="categories" value={formData.categories} onChange={handleChange} />
+            <TextField fullWidth label="Call Number" name="callNumber" value={formData.callNumber} onChange={handleChange} />
             <TextField fullWidth label="Pages" name="pages" value={formData.pages || ''} onChange={handleChange} type="number"
                 slotProps={{ input: { inputMode: 'numeric' } }} />
             <TextField fullWidth label="Language" name="language" value={formData.language} onChange={handleChange} />
