@@ -1,4 +1,4 @@
-import { Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Chip, Typography } from "@mui/material";
 
 interface BookCardProps {
     thumbnail?: string;
@@ -6,7 +6,7 @@ interface BookCardProps {
     callNumber: string;
     isbn: string;
     copyright: string;
-    accessionNumbers: string;
+    accessionNumbers?: string[];
 }
 
 const CardComponent: React.FC<BookCardProps> = ({
@@ -15,7 +15,7 @@ const CardComponent: React.FC<BookCardProps> = ({
     callNumber,
     isbn,
     copyright,
-    accessionNumbers
+    accessionNumbers = []
 }) => {
     const thumbnailInfo = thumbnail || "https://dummyimage.com/1600x2560/000/fff";
     return (
@@ -23,7 +23,7 @@ const CardComponent: React.FC<BookCardProps> = ({
             sx={{
                 display: "flex",
                 alignItems: "center",
-                height: "150px",
+                height: "auto",
                 padding: 2,
                 borderRadius: 2,
                 boxShadow: 2,
@@ -91,8 +91,17 @@ const CardComponent: React.FC<BookCardProps> = ({
                     <strong>Copyright:</strong> {copyright}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    <strong>Accession Numbers:</strong> {accessionNumbers}
+                    <strong>Accession Numbers:</strong>
                 </Typography>
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', maxWidth: '100%', overflowX: 'auto', padding: 1 }}>
+                    {accessionNumbers.length > 0 ? (
+                        accessionNumbers.map((number, index) => (
+                            <Chip key={index} label={number} sx={{ backgroundColor: '#f5f5f5', fontSize: '0.9rem' }} />
+                        ))
+                    ) : (
+                        <Typography variant="body1">N/A - Set Location to generate Accession number/s</Typography>
+                    )}
+                </Box>
             </CardContent>
         </Card>
     );

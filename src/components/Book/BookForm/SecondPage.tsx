@@ -9,6 +9,8 @@ import { LibrarySections } from "../../../types/Catalog/LibrarySection";
 import { useEffect, useState } from "react";
 import { bookConditionOptions, collectionTypeOptions, circulationStatusOptions } from "../../../utils/bookFormOptions";
 import { Dropdown } from "../../../components";
+import { useFetchBaseAccessionNumber } from "./useFetchBaseAccessionNumber";
+import { generateAccessionNumbersCopies } from "../../../utils/generateAccessionNumbersCopies";
 
 /**
  * SecondPage Component
@@ -23,8 +25,8 @@ interface SecondPageProps {
 }
 
 const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }) => {
-
     const { data: allLibraryLocations = [] } = useFetchAllLibraryLocations();
+
 
     const selectedLocation = allLibraryLocations.find(
         (loc) => loc.codeName === formData.location
@@ -34,11 +36,26 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
 
     const { data: allLibrarySections = [] } = useFetchAllLibrarySections(locationId ?? 0);
 
+    const { data: baseAccessionNumber } = useFetchBaseAccessionNumber(
+        formData.isbn || '',
+        selectedLocation?.codeName || ''
+    );
+
     useEffect(() => {
         if (selectedLocation) {
             setLocationId(selectedLocation.id ?? null);
         }
     }, [selectedLocation]);
+
+    useEffect(() => {
+        if (baseAccessionNumber) {
+            const accessionNumbers = generateAccessionNumbersCopies(
+                baseAccessionNumber,
+                formData.numberOfCopies
+            );
+            setFormData({ ...formData, accessionNumbers: accessionNumbers });
+        }
+    }, [baseAccessionNumber, setFormData, formData]);
 
     const selectedSection: LibrarySections | null = Array.isArray(allLibrarySections)
         ? allLibrarySections.find((sec) => sec.sectionName === formData.section) || null
@@ -86,6 +103,7 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
                         inputMode: 'numeric',
                     }
                 }}
+                helperText="Enter the number of copies (must be 1 or more) before selecting a location."
             />
             <TextField fullWidth label="Purchase Price" name="purchasePrice" value={formData.purchase_price} onChange={handleChange} />
             <LocationSelectWrapper selectedLocation={selectedLocation} onLocationChange={handleLocationChange} />
