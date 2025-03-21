@@ -3,8 +3,7 @@ import { useFetchAllLibraryLocations } from "./useFetchLibraryLocations";
 import { useUpdateLibraryLocationStatus } from "./useUpdateLibraryLocationStats";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { LibraryLocations } from "../../../../types/Catalog/LibraryLocation";
-import EntitySelect from "../../../SelectMenuSwitch";
-import ModalForm from "../../../Modal/ModalForm";
+import { DropdownSwitch, ModalForm } from "../../../../components";
 import { useAddLibraryLocation } from "./useAddLibraryLocation";
 
 interface LocationSelectProps {
@@ -75,7 +74,7 @@ const LocationSelectWrapper: React.FC<LocationSelectProps> = ({ selectedLocation
 
     return (
         <>
-            <EntitySelect
+            <DropdownSwitch
                 label="Library Location"
                 entities={allLibraryLocations}
                 selectedEntity={selectedLocation}

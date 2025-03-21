@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { LibrarySections } from "../../../../types/Catalog/LibrarySection";
-import EntitySelect from "../../../SelectMenuSwitch";
 import { useFetchAllLibrarySections } from "./useFetchLibrarySections";
 import { useUpdateLibrarySectionStatus } from "./useUpdateLibrarySectionStatus";
-import ModalForm from "../../../Modal/ModalForm"; // Assuming ModalForm is reusable for this
-
-import { useAddLibrarySection } from "./useAddLibrarySection"; // Assuming similar hook as useAddLibraryLocation
+import { DropdownSwitch, ModalForm } from "../../../../components";
+import { useAddLibrarySection } from "./useAddLibrarySection";
 
 interface SectionSelectProps {
     selectedSection: LibrarySections | null;
@@ -22,27 +20,27 @@ const SectionSelectWrapper: React.FC<SectionSelectProps> = ({ selectedSection, o
 
     // Modal state
     const [isModalOpen, setModalOpen] = useState(false);
-    const [newSectionName, setNewSectionName] = useState(""); // Only one field for section name
+    const [newSectionName, setNewSectionName] = useState("");
 
     const { addLibrarySection, isError, error, isSuccess } = useAddLibrarySection();
 
     const handleAddNewEntity = () => {
-        setModalOpen(true); // Open modal when "Add New Section" is clicked
+        setModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        setModalOpen(false); // Close modal when Cancel is clicked
+        setModalOpen(false);
     };
 
     const handleSubmitNewSection = () => {
         if (newSectionName) {
             const newSection: LibrarySections = {
-                sectionName: newSectionName, // Assuming section name is enough for the new section
+                sectionName: newSectionName,
                 status: true,
                 location: { id: locationId, codeName: "", name: "", status: true }
             };
 
-            addLibrarySection(newSection); // Add new section via the mutation hook
+            addLibrarySection(newSection);
         }
     };
 
@@ -74,7 +72,7 @@ const SectionSelectWrapper: React.FC<SectionSelectProps> = ({ selectedSection, o
 
     return (
         <>
-            <EntitySelect
+            <DropdownSwitch
                 label="Library Section"
                 entities={allLibrarySections}
                 selectedEntity={selectedSection}
