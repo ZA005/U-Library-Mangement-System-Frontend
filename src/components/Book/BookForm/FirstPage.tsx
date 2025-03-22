@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, TextField, Button } from "@mui/material";
+import { useFetchCallNumber } from "./useFetchCallNumber";
 
 /**
  * FirstPage Component
@@ -21,23 +22,45 @@ const FirstPage: React.FC<FirstPageProps> = ({ onNext, formData, setFormData }) 
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // Use the useFetchCallNumber hook
+    const { isLoading, refetch } = useFetchCallNumber(
+        formData.book_title || "",
+        formData.categories || "",
+        formData.authors ? formData.authors.split(",") : [],
+        formData.published_date || ""
+    );
+
+    // Function to handle generating the call number
+    const handleGenerateCallNumber = async () => {
+        const result = await refetch(); // Wait for the refetch to complete
+        if (result.data) {
+            setFormData({ ...formData, callNumber: result.data });
+        }
+    };
+
     return (
         <Box display="grid" gap={2}>
             <TextField fullWidth label="Title" name="title" value={formData.book_title} disabled
-                slotProps={{ inputLabel: { shrink: true, }, }} />
-            <TextField fullWidth label="Author(s)" name="authors" value={formData.authors || ''}
-                onChange={handleChange} slotProps={{ inputLabel: { shrink: true, }, }} />
+                slotProps={{ inputLabel: { shrink: true } }} />
+            <TextField fullWidth label="Author(s)" name="authors" value={formData.authors || ''} onChange={handleChange}
+                slotProps={{ inputLabel: { shrink: true } }} />
             <TextField fullWidth label="ISBN10" name="isbn10" value={formData.isbn10} onChange={handleChange} />
             <TextField fullWidth label="ISBN13" name="isbn13" value={formData.isbn} onChange={handleChange} />
-            <TextField fullWidth label="Categories" name="categories" value={formData.categories} onChange={handleChange} />
-            <TextField fullWidth label="Call Number" name="callNumber" value={formData.callNumber} onChange={handleChange} />
-
-            <TextField fullWidth label="Copyright" name="copyright" type="date" value={formData.copyright} onChange={handleChange}
-                slotProps={{ inputLabel: { shrink: true, }, }} />
+            <TextField fullWidth label="Copyright" name="copyright" type="number" value={formData.copyright || ""} onChange={handleChange}
+                slotProps={{ inputLabel: { shrink: true }, input: { inputProps: { min: 1000, max: new Date().getFullYear(), }, }, }} />
             <TextField fullWidth label="Publisher" name="publisher" value={formData.publisher} onChange={handleChange}
-                slotProps={{ inputLabel: { shrink: true, }, }} />
-            <TextField fullWidth label="Published Date" name="publishedDate" type="date" value={formData.publishedDate || ''} onChange={handleChange}
-                slotProps={{ inputLabel: { shrink: true, }, }} />
+                slotProps={{ inputLabel: { shrink: true } }} />
+            <TextField fullWidth label="Published Date" name="publishedDate" type="date" value={formData.published_date || ''} onChange={handleChange}
+                slotProps={{ inputLabel: { shrink: true } }} />
+
+            <Box display="flex" gap={2}>
+                <TextField fullWidth label="Categories" name="categories" value={formData.categories}
+                    onChange={handleChange} slotProps={{ inputLabel: { shrink: true } }} />
+                <Button variant="outlined" color="primary" onClick={handleGenerateCallNumber} disabled={isLoading}>
+                    {isLoading ? "Generating..." : "Generate Call Number"}
+                </Button>
+            </Box>
+            <TextField fullWidth label="Call Number" name="callNumber" value={formData.callNumber} onChange={handleChange} />
             <TextField fullWidth label="Pages" name="pages" value={formData.pages || ''} onChange={handleChange} type="number"
                 slotProps={{ input: { inputMode: 'numeric' } }} />
             <TextField fullWidth label="Language" name="language" value={formData.language} onChange={handleChange} />

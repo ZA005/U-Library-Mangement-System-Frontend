@@ -141,7 +141,7 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
             <Button fullWidth variant="outlined" color="secondary" onClick={onBack}>
                 Back
             </Button>
-            <Button fullWidth variant="contained" color="primary">
+            <Button fullWidth variant="contained" color="primary" >
                 Save
             </Button>
         </Box>
