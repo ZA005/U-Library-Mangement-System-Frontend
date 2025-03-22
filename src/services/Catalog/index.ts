@@ -8,6 +8,7 @@ export const updateLibraryLocation = loadable.lib(() => import("./Location/updat
 export const addLibraryLocation = loadable.lib(() => import("./Location/addLibraryLocation"))
 export const getBaseAccessionNumber = loadable.lib(() => import("./getBaseAccessionNumber"))
 export const getCallNumber = loadable.lib(() => import("./getCallNumber"))
+export const addBook = loadable.lib(() => import("./addBook"))
 
 export const fetchLibrarySections = loadable.lib(() => import("./Section/getAllLibrarySections"))
 export const updateLibrarySection = loadable.lib(() => import("./Section/updateLibrarySection"))
