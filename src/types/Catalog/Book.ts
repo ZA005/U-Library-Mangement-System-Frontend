@@ -1,14 +1,14 @@
 import { BookCatalog } from "./BookCatalog";
 
 export interface Books {
-    id: number;
+    id?: number;
     accessionNumber: string;
     title: string;
     authors: string[];
     isbn10: string;
     isbn13: string;
     description: string;
-    pages: number;
+    pages: number | undefined;
     thumbnail: string;
     edition: string;
     series?: string;
@@ -16,6 +16,7 @@ export interface Books {
     publishedDate: string;
     publisher: string;
     copyRight: string;
+    categories: string;
     printType: string;
     format: string;
     status: string;
