@@ -106,7 +106,14 @@ const ProtectedRoutes = () => {
                 }
             />
 
-
+            <Route
+                path={PROTECTED_ROUTES.CIRCULATION}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.ManageCirculation />
+                    </PrivateRoute>
+                }
+            />
 
 
 

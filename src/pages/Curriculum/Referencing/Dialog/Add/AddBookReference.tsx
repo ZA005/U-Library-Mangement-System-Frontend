@@ -69,7 +69,7 @@ const AddBookReference: React.FC<AddBookReferenceProps> = ({ course, onClose }) 
 
     const handleViewBook = (book: Books) => {
         const bookUrl = PROTECTED_ROUTES.BOOKINFORMATION.replace(":isbn", book.isbn13 || book.isbn10);
-        sessionStorage.setItem("selectedBook", JSON.stringify(book));
+        sessionStorage.setItem("book", JSON.stringify(book));
         window.open(bookUrl, "_blank");
     };
 
