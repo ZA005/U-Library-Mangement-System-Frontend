@@ -3,9 +3,8 @@ import { useFetchAllLibraryLocations } from "./useFetchLibraryLocations";
 import { useUpdateLibraryLocationStatus } from "./useUpdateLibraryLocationStats";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
 import { LibraryLocations } from "../../../../types/Catalog/LibraryLocation";
-import { DropdownSwitch, ModalForm } from "../../../../components";
 import { useAddLibraryLocation } from "./useAddLibraryLocation";
-
+import { DropdownSwitch, ModalForm } from "../../..";
 interface LocationSelectProps {
     selectedLocation: LibraryLocations | null;
     onLocationChange: (location: LibraryLocations | null) => void;

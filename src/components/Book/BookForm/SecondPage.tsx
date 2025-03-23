@@ -11,6 +11,8 @@ import { bookConditionOptions, collectionTypeOptions, circulationStatusOptions }
 import { Dropdown } from "../../../components";
 import { useFetchBaseAccessionNumber } from "./useFetchBaseAccessionNumber";
 import { generateAccessionNumbersCopies } from "../../../utils/generateAccessionNumbersCopies";
+import { useSnackbarContext } from "../../../contexts/SnackbarContext";
+import { useAddBook } from "./useAddBook";
 
 /**
  * SecondPage Component
@@ -26,8 +28,8 @@ interface SecondPageProps {
 
 const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }) => {
     const { data: allLibraryLocations = [] } = useFetchAllLibraryLocations();
-
-
+    const showSnackbar = useSnackbarContext();
+    const { addBook, isPending: isSaving } = useAddBook();
     const selectedLocation = allLibraryLocations.find(
         (loc) => loc.codeName === formData.location
     ) || null;
@@ -53,7 +55,7 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
                 baseAccessionNumber,
                 formData.numberOfCopies
             );
-            setFormData({ ...formData, accessionNumbers: accessionNumbers });
+            setFormData({ ...formData, accessionNumbers: accessionNumbers, baseAccessionNumber: baseAccessionNumber });
         }
     }, [baseAccessionNumber, setFormData, formData]);
 
@@ -76,7 +78,20 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
     const handleSectionChange = (selectedSection: LibrarySections | null) => {
         setFormData({
             ...formData,
-            section: selectedSection?.sectionName || ""
+            section: selectedSection ? selectedSection.sectionName : "", // Store sectionName for BookCatalog
+            selectedSection: selectedSection // Store full object separately
+        });
+    };
+    const handleSave = () => {
+        addBook(formData, {
+            onSuccess: () => {
+                showSnackbar(`Successfully added "${formData.book_title}" to the catalog`, "success");
+                // // Optionally reset form or navigate away
+                // setFormData({}); // Reset form (adjust as needed)
+            },
+            onError: (err) => {
+                showSnackbar(`Error saving book: ${err.message || err}`, "error");
+            },
         });
     };
     return (
@@ -141,8 +156,8 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
             <Button fullWidth variant="outlined" color="secondary" onClick={onBack}>
                 Back
             </Button>
-            <Button fullWidth variant="contained" color="primary" >
-                Save
+            <Button fullWidth variant="contained" color="primary" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save"}
             </Button>
         </Box>
     );
