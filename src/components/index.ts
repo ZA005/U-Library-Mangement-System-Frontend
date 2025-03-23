@@ -26,6 +26,7 @@ export const DynamicTable = loadable(() => import("./Table"))
 export const DynamicTableCell = loadable(() => import("./Table/ActionCell"))
 export const UploadButton = loadable(() => import("./UploadButton"))
 export const Dropdown = loadable(() => import("./SelectMenu"))
+export const DropdownSwitch = loadable(() => import("./SelectMenuSwitch") as Promise<{ default: React.ComponentType<any> }>);
 
 // BROWSE PAGE SECTION
 export const FeaturedBookSection = loadable(() => import("./Sections/FeaturedBooks"))

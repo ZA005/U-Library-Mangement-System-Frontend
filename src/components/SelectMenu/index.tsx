@@ -7,13 +7,14 @@ interface SelectMenuProps {
     onChange: (event: SelectChangeEvent<string | number>) => void;
     options?: { id: string | number; name: string }[];
     disabled?: boolean;
+    menuSize?: "small" | "medium";
 }
 
-const SelectMenu: React.FC<SelectMenuProps> = ({ label, value, onChange, options = [], disabled = false }) => {
+const SelectMenu: React.FC<SelectMenuProps> = ({ label, value, onChange, options = [], disabled = false, menuSize }) => {
     return (
         <FormControl
             variant="outlined"
-            size="small"
+            size={menuSize || "small"}
             disabled={disabled}
             sx={{
                 width: { xs: "100%", md: "250px", lg: "100%" },
@@ -36,7 +37,7 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ label, value, onChange, options
                     ))
                 )}
             </Select>
-        </FormControl>
+        </FormControl >
     );
 };
 
