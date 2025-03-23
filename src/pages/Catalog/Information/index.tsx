@@ -13,7 +13,7 @@ const CatalogBookInformation: React.FC = () => {
 
     const { role } = useAuth();
     const location = useLocation();
-    const book = location.state?.book || JSON.parse(sessionStorage.getItem("selectedBook") || "null");
+    const book = location.state?.book || JSON.parse(sessionStorage.getItem("book") || "null");
     const navigate = useNavigate();
 
     // State for expanding/collapsing the "More on this author" section

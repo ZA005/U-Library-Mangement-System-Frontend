@@ -98,13 +98,10 @@ const BookReferencing: React.FC = () => {
                     gap={1}
                 >
                     <Dropdown
-                        label="Book Condition"
-                        value={formData.bookCondition ?? ""}
-                        onChange={(e) => setFormData({ ...formData, bookCondition: e.target.value })}
-                        options={bookConditionOptions.map((condition) => ({
-                            id: condition.value,
-                            name: condition.label
-                        }))}
+                        label="Select Department"
+                        value={selectedDepartment ?? ""}
+                        onChange={(e) => setSelectedDepartment(e.target.value)}
+                        options={departments?.map((dept) => ({ id: dept.dept_id, name: dept.dept_name }))}
                     />
 
 
