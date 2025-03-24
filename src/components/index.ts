@@ -19,6 +19,7 @@ export const PageTitle = loadable(() => import("./PageTitle"))
 export const Login = loadable(() => import("./Modal/Login/Login"))
 export const ConfirmOTP = loadable(() => import("./Modal/Verification/confirmOTP"))
 export const SendOTP = loadable(() => import("./Modal/Verification/sendOTP"))
+export const Identification = loadable(() => import("./Modal/Identification"))
 export const ModalForm = loadable(() => import("./Modal/ModalForm"))
 
 // TABLE AND BUTTON
@@ -42,6 +43,7 @@ export const SecondPage = loadable(() => import("./Book/BookForm/SecondPage"))
 export const BookDetails = loadable(() => import("./Book/BookDetails"))
 
 export const Loading = loadable(() => import("./LoadingSpinner"))
+export const CustomDialog = loadable(() => import("./Dialog"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
