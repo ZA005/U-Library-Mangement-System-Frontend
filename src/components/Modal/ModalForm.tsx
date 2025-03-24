@@ -31,6 +31,7 @@ interface ModalFormProps {
     confirmText: string;
     onOptionalClick?: () => void;
     optionalText?: string;
+    disabled?: boolean;
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({
@@ -41,7 +42,8 @@ const ModalForm: React.FC<ModalFormProps> = ({
     onConfirm,
     confirmText,
     onOptionalClick,
-    optionalText
+    optionalText,
+    disabled
 }) => {
     const [fieldErrors, setFieldErrors] = useState<{ [key: number]: string }>({});
 
@@ -145,7 +147,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
                             ":hover": { backgroundColor: "#d13333" },
                         }}
                         onClick={onConfirm}
-                        disabled={!isFormValid}
+                        disabled={!isFormValid || disabled}
                     >
                         {confirmText}
                     </Button>
@@ -159,6 +161,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
                                 ":hover": { backgroundColor: "#f2f2f2", borderColor: "#d13333", color: "#d13333" },
                             }}
                             onClick={onOptionalClick}
+                            disabled={!isFormValid || disabled}
                         >
                             {optionalText}
                         </Button>
@@ -171,6 +174,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
                             ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
                         }}
                         onClick={handleClose}
+                        disabled={!isFormValid || disabled}
                     >
                         Cancel
                     </Button>
