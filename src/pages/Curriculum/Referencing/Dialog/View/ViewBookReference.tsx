@@ -8,7 +8,7 @@ import { useRemoveBookReference } from "./useRemoveBookReference";
 import { useSnackbarContext } from "../../../../../contexts/SnackbarContext";
 import { Plus, Search, Trash, Copy } from "lucide-react";
 import { PROTECTED_ROUTES } from "../../../../../config/routeConfig";
-import BookReferenceDialog from "..";
+import { CustomDialog } from "../../../../../components";
 import AddBookReference from "../Add/AddBookReference";
 
 interface ViewBookReferenceProps {
@@ -127,7 +127,7 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
     return (
         <>
             {isViewDialogOpen && (
-                <BookReferenceDialog
+                <CustomDialog
                     open={true}
                     title={`Book References for ${course.course_name}`}
                     onClose={handleViewDialogClose}
