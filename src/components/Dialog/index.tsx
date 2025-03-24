@@ -8,11 +8,12 @@ interface BookReferenceDialogProps {
     iconButtons?: React.ReactNode[];
     content: React.ReactNode;
     actions?: React.ReactNode;
+    dialogSize?: "xs" | "sm" | "md" | "lg" | "xl";
 }
 
-const BookReferenceDialog: React.FC<BookReferenceDialogProps> = ({ open, title, onClose, iconButtons = [], content, actions }) => {
+const DynamicDialog: React.FC<BookReferenceDialogProps> = ({ open, title, dialogSize, onClose, iconButtons = [], content, actions }) => {
     return (
-        <Dialog open={open} fullWidth maxWidth="md" onClose={onClose}>
+        <Dialog open={open} fullWidth maxWidth={dialogSize || "md"} onClose={onClose}>
             <DialogTitle display="flex" alignItems="center" justifyContent="space-between">
                 {title}
                 {iconButtons.length > 0 && (
@@ -38,4 +39,4 @@ const BookReferenceDialog: React.FC<BookReferenceDialogProps> = ({ open, title, 
     );
 };
 
-export default BookReferenceDialog;
+export default DynamicDialog;

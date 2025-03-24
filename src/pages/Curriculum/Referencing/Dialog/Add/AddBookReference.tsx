@@ -7,7 +7,7 @@ import { useAddMultipleBookReference } from "./useAddMultipleBookReference";
 import { ListPlus, CheckCheck, Search } from "lucide-react";
 import { PROTECTED_ROUTES } from "../../../../../config/routeConfig";
 import { useSnackbarContext } from "../../../../../contexts/SnackbarContext";
-import BookReferenceDialog from "..";
+import { CustomDialog } from "../../../../../components";
 
 interface AddBookReferenceProps {
     course: Course;
@@ -153,7 +153,7 @@ const AddBookReference: React.FC<AddBookReferenceProps> = ({ course, onClose }) 
 
     return (
         <>
-            <BookReferenceDialog
+            <CustomDialog
                 open={true}
                 title={`Select Book to be reference for ${course.course_name}`}
                 onClose={onClose}

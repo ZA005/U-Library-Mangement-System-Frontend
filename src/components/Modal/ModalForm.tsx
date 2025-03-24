@@ -29,6 +29,9 @@ interface ModalFormProps {
     fields: Field[];
     onConfirm: () => void;
     confirmText: string;
+    onOptionalClick?: () => void;
+    optionalText?: string;
+    disabled?: boolean;
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({
@@ -38,6 +41,9 @@ const ModalForm: React.FC<ModalFormProps> = ({
     fields,
     onConfirm,
     confirmText,
+    onOptionalClick,
+    optionalText,
+    disabled
 }) => {
     const [fieldErrors, setFieldErrors] = useState<{ [key: number]: string }>({});
 
@@ -97,7 +103,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
                     backgroundColor: "white"
                 }}
             >
-                <Stack spacing={2}>
+                <Stack spacing={1}>
                     <Typography variant="h6" fontWeight="bold" display="flex" alignItems="center" marginBottom="16px">
                         {/* <span className={styles.modalHeaderLine} /> */}
                         {title}
@@ -141,11 +147,25 @@ const ModalForm: React.FC<ModalFormProps> = ({
                             ":hover": { backgroundColor: "#d13333" },
                         }}
                         onClick={onConfirm}
-                        disabled={!isFormValid}
+                        disabled={!isFormValid || disabled}
                     >
                         {confirmText}
                     </Button>
-
+                    {optionalText && onOptionalClick && (
+                        <Button
+                            variant="outlined"
+                            sx={{
+                                color: "#EA4040",
+                                borderColor: "#EA4040",
+                                textTransform: "none",
+                                ":hover": { backgroundColor: "#f2f2f2", borderColor: "#d13333", color: "#d13333" },
+                            }}
+                            onClick={onOptionalClick}
+                            disabled={!isFormValid || disabled}
+                        >
+                            {optionalText}
+                        </Button>
+                    )}
                     <Button
                         variant="text"
                         sx={{
@@ -154,6 +174,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
                             ":hover": { backgroundColor: "#f2f2f2", color: "#d13333" },
                         }}
                         onClick={handleClose}
+                        disabled={!isFormValid || disabled}
                     >
                         Cancel
                     </Button>
