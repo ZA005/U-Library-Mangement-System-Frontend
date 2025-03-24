@@ -6,6 +6,7 @@ export const useFetchUser = (user_id: string) => {
     const { data } = useQuery<UserData>({
         queryKey: ["user", user_id],
         queryFn: () => getUserData(user_id),
+        enabled: !!user_id
     });
 
     return { data };
