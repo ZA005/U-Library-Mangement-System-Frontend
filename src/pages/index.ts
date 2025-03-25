@@ -82,6 +82,10 @@ export const ManageCirculation = loadable(() => import("./Circulation/Manage"), 
 export const TransactionHistory = loadable(() => import("./Circulation/TransactionHistory"), {
     fallback: LoadingSpinner()
 })
+
+export const Overdues = loadable(() => import("./Circulation/OverseeOverdue"), {
+    fallback: LoadingSpinner()
+})
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
