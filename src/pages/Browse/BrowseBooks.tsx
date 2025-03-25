@@ -33,7 +33,6 @@ const BrowseBookPage: React.FC = () => {
         <>
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <CustomSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
                 <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2} marginBottom="30px">
                     <BookGrid books={allBooks} />
                 </Box>

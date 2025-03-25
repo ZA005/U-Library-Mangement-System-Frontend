@@ -13,6 +13,8 @@ import { useFetchBaseAccessionNumber } from "./useFetchBaseAccessionNumber";
 import { generateAccessionNumbersCopies } from "../../../utils/generateAccessionNumbersCopies";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
 import { useAddBook } from "./useAddBook";
+import { useNavigate } from "react-router-dom";
+import { PROTECTED_ROUTES } from "../../../config/routeConfig";
 
 /**
  * SecondPage Component
@@ -30,6 +32,8 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
     const { data: allLibraryLocations = [] } = useFetchAllLibraryLocations();
     const showSnackbar = useSnackbarContext();
     const { addBook, isPending: isSaving } = useAddBook();
+    const navigate = useNavigate();
+
     const selectedLocation = allLibraryLocations.find(
         (loc) => loc.codeName === formData.location
     ) || null;
@@ -86,8 +90,7 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
         addBook(formData, {
             onSuccess: () => {
                 showSnackbar(`Successfully added "${formData.book_title}" to the catalog`, "success");
-                // // Optionally reset form or navigate away
-                // setFormData({}); // Reset form (adjust as needed)
+                navigate(PROTECTED_ROUTES.ACCESSION)
             },
             onError: (err) => {
                 showSnackbar(`Error saving book: ${err.message || err}`, "error");
