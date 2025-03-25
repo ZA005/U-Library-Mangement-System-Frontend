@@ -124,7 +124,14 @@ const ProtectedRoutes = () => {
                 }
             />
 
-
+            <Route
+                path={PROTECTED_ROUTES.OVERDUES}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.Overdues />
+                    </PrivateRoute>
+                }
+            />
             {/* Default fallback to PageNotFound */}
             <Route path="*" element={<Pages.PageNotFound />} />
         </Routes>

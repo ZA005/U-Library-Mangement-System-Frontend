@@ -30,4 +30,5 @@ export const PROTECTED_ROUTES = {
     //////////////////////////////////////
     CIRCULATION: "/circulation",
     TRANSACTION_HISTORY: "/circulation/transaction-history",
+    OVERDUES: "/circulation/overdues",
 }
