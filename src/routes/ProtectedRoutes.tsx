@@ -115,7 +115,14 @@ const ProtectedRoutes = () => {
                 }
             />
 
-
+            <Route
+                path={PROTECTED_ROUTES.TRANSACTION_HISTORY}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.TransactionHistory />
+                    </PrivateRoute>
+                }
+            />
 
 
             {/* Default fallback to PageNotFound */}

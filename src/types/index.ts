@@ -8,6 +8,7 @@ export * from './Catalog/LibraryLocation';
 export * from './Catalog/LibrarySection';
 //Circulation
 export * from './Circulation/Loan';
+export * from './Circulation/Transaction';
 //Curriculum
 export * from './Curriculum/BookReference'
 export * from './Curriculum/Course'
