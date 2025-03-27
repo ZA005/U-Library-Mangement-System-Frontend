@@ -9,6 +9,7 @@ export * from './Catalog/LibrarySection';
 //Circulation
 export * from './Circulation/Loan';
 export * from './Circulation/Transaction';
+export * from './Circulation/Fine'
 //Curriculum
 export * from './Curriculum/BookReference'
 export * from './Curriculum/Course'
