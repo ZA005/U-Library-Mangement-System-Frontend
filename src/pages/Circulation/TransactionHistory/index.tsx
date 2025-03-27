@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box } from "@mui/material";
 import { PageTitle, Dropdown, DynamicTable } from "../../../components";
 import { useFetchTransactionHistory } from "./useFetchTransactionHistory";
+import { convertJsonDateAndTime } from "../../../utils/convert";
 import { Menu } from "lucide-react";
 const TransactionHistory: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +37,7 @@ const TransactionHistory: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const columns = [
-        { key: "transDateTime", label: "DATE" },
+        { key: "transDateTime", label: "DATE", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.transDateTime) },
         { key: "user_id", label: "USER ID" },
         { key: "type", label: "TYPE" },
     ]
