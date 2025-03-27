@@ -51,11 +51,15 @@ const OverseeOverdues: React.FC = () => {
                     showSnackbar("Successfully paid the overdue fee!");
                     refetch();
                 },
-                onError: (errorPaying) => showSnackbar(`${errorPaying}`, "error"),
+                onError: (errorPaying: any) => {
+                    const errorMessage = errorPaying.message || "Failed to process updating the fine. Please try again.";
+                    showSnackbar(errorMessage, "error");
+                },
             });
         }
         closeDialog();
     };
+
 
     const handleOpenDialog = (fine: Fine) => {
         setSelectedFine(fine);

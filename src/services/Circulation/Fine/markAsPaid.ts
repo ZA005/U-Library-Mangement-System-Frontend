@@ -5,9 +5,9 @@ const markAsPaid = async (id: number) => {
     try {
         const response = await apiClient.put(`/paid/${id}`);
         return response.data;
-    } catch (error) {
-        console.error("Error fetching programs:", error);
-        throw error;
+    } catch (error: any) {
+        const errorMessage = error.response?.data || "An unexpected error occurred. Please try again.";
+        throw new Error(errorMessage);
     }
 };
 
