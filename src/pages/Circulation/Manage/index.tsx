@@ -3,7 +3,10 @@ import { IconButton, Container, Box, Button, TextField, InputAdornment } from "@
 import { useOutletContext } from "react-router-dom";
 import { PageTitle, DynamicTable, DynamicTableCell, Identification } from "../../../components";
 import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
+import { useFetchUnreturnedLoan } from "./useFetchUnreturnedLoans";
+import { convertJsonDateAndTime } from "../../../utils/convert";
 import { useModal } from "../../../hooks/Modal/useModal";
+import { Loan } from "../../../types";
 import { Menu, Search } from "lucide-react";
 
 const ManageCirculation: React.FC = () => {
@@ -41,6 +44,34 @@ const ManageCirculation: React.FC = () => {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
+
+    const { isLoading, data: loans = [], error, refetch } = useFetchUnreturnedLoan()
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 10;
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    const columns = [
+        { key: "book_accession_no", label: "Accession #" },
+        { key: "book_title", label: "Book Title" },
+        { key: "user_id", label: "User ID" },
+        { key: "fullname", label: "Name" },
+        { key: "loanDate", label: "Borrow Timestamp", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.loanDate) },
+        { key: "dueDate", label: "Due Timestamp", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.dueDate) },
+        {
+            key: "action",
+            label: "",
+            render: (row: Loan) => (
+                <DynamicTableCell
+                    type="menu"
+                    options={[
+                        { value: "return", label: "Return" },
+                        { value: "renew", label: "Renew" },
+                    ]}
+                    onAction={(value) => { }}
+                />
+            )
+        }
+    ]
     return (
         <>
             <PageTitle title="Manage Circulation" />
@@ -81,7 +112,7 @@ const ManageCirculation: React.FC = () => {
 
                     <TextField
                         size="small"
-                        label="Search Courses"
+                        label="Search By Title/ID/Name"
                         variant="outlined"
                         fullWidth
                         value={searchQuery}
@@ -93,6 +124,18 @@ const ManageCirculation: React.FC = () => {
                                 </InputAdornment>
                             ),
                         }}
+                    />
+                </Box>
+
+                <Box mt={4}>
+                    <DynamicTable
+                        columns={columns}
+                        data={loans}
+                        loading={isLoading}
+                        error={error}
+                        page={page}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={(_, value) => setPage(value)}
                     />
                 </Box>
             </Container>

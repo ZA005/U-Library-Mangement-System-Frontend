@@ -6,9 +6,7 @@ export interface Loan {
     account_id: number
     user_id: string
     email: string
-    firstName: string
-    middleName: string
-    lastName: string
+    fullName: string
     suffix: string
     role: string
     loanDate: string
