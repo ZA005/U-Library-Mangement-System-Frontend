@@ -26,6 +26,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     setRole(savedRole);
                     setId(savedId);
                 } else {
+                    navigate(GENERAL_ROUTES.HOME);
+                    showSnackbar("Your session has expired. Redirecting to the landing page...", "info")
                     logout();
                 }
             } else {
@@ -55,8 +57,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.clear();
         setIsAuthenticated(false);
         setRole(null);
-        navigate(GENERAL_ROUTES.HOME);
-        showSnackbar("Your session has expired. Redirecting to the landing page...", "info")
     };
 
     if (!isInitialized) {
