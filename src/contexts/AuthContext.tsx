@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { GENERAL_ROUTES } from "../config/routeConfig";
+import { useSnackbarContext } from "./SnackbarContext";
 import { AuthContextType } from "../types";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const navigate = useNavigate()
+    const showSnackbar = useSnackbarContext()
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [role, setRole] = useState<string | null>(null);
     const [id, setId] = useState<string | null>(null);
@@ -50,6 +55,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.clear();
         setIsAuthenticated(false);
         setRole(null);
+        navigate(GENERAL_ROUTES.HOME);
+        showSnackbar("Your session has expired. Redirecting to the landing page...", "info")
     };
 
     if (!isInitialized) {
