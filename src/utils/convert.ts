@@ -37,3 +37,31 @@ export const convertYearRange = (input?: string): string => {
     return `${startYear}-${endYear}`;
 };
 
+export const convertJsonDateAndTime = {
+    formatDateTime: (dateString) => {
+        if (!dateString) return "Invalid Date";
+
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Invalid Date";
+
+        return date.toLocaleString(); // Default local format
+    },
+
+    formatDate: (dateString) => {
+        if (!dateString) return "Invalid Date";
+
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Invalid Date";
+
+        return date.toLocaleDateString(); // Only date
+    },
+
+    formatTime: (dateString) => {
+        if (!dateString) return "Invalid Time";
+
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Invalid Time";
+
+        return date.toLocaleTimeString(); // Only time
+    }
+};
