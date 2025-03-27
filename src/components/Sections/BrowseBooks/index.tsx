@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Box, Typography, Divider } from "@mui/material";
 import BookGrid from "../../Book/BookGrid";
 import { useFetchAllBooks } from "./useFetchAllBooks";
@@ -6,7 +5,7 @@ import { PROTECTED_ROUTES } from "../../../config/routeConfig";
 import { useNavigate } from "react-router-dom";
 
 const BrowseBooks: React.FC = () => {
-    const [searchQuery, setSearchQuery] = useState("");
+    // const [searchQuery, setSearchQuery] = useState("");
 
     const { data: allBooks = [] } = useFetchAllBooks();
     const limitedBooks = allBooks?.slice(0, 6) || [];
@@ -27,7 +26,7 @@ const BrowseBooks: React.FC = () => {
             <Divider sx={{ marginY: 1 }} />
 
             {/* <CustomSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} /> */}
-            <BookGrid searchQuery={searchQuery} books={limitedBooks} />
+            <BookGrid books={limitedBooks} />
         </Box>
     );
 };

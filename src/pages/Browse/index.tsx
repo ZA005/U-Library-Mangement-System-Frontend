@@ -4,6 +4,8 @@ import { IconButton, Container, Box } from "@mui/material";
 import { Menu } from "lucide-react";
 import { NewlyAcquiredBookSection, BrowseBookSection, AccountOverviewSection } from "../../components";
 import CustomSearchBar from "../../components/CustomSearchBar";
+import { Books } from "../../types";
+
 const Browse: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
@@ -11,12 +13,13 @@ const Browse: React.FC = () => {
         setSidebarOpen: Dispatch<SetStateAction<boolean>>;
     }>();
 
+    const [, setBooks] = useState<Books[]>([]);
 
 
     useEffect(() => {
         setTitle("Books - Library Management System");
         setHeaderButtons(
-            <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>
+            <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
                 <Menu color="#d32f2f" />
             </IconButton>
         );
@@ -27,29 +30,23 @@ const Browse: React.FC = () => {
         };
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
 
-    const [searchQuery, setSearchQuery] = useState("");
+    const handleSearchResults = (newBooks: Books[]) => {
+        setBooks(newBooks);
+    };
 
     return (
-        <>
-            {/* <PageTitle title="Browse Books" /> */}
-            <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
-                <CustomSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
-                <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2} marginBottom="30px">
-                    {/* Left Side: Main Content */}
-                    <Box flex={3} display="flex" flexDirection="column" gap={2}>
-                        {/* <FeaturedBookSection /> */}
-                        <NewlyAcquiredBookSection />
-                        <BrowseBookSection />
-                    </Box>
-
-                    {/* Right Side: Sidebar */}
-                    <Box flex={1} display="flex" flexDirection="column" gap={2}>
-                        <AccountOverviewSection />
-                    </Box>
+        <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
+            <CustomSearchBar onSearch={handleSearchResults} />
+            <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2} marginBottom="30px">
+                <Box flex={3} display="flex" flexDirection="column" gap={2}>
+                    <NewlyAcquiredBookSection />
+                    <BrowseBookSection /> {/* No books prop passed */}
                 </Box>
-            </Container>
-        </>
+                <Box flex={1} display="flex" flexDirection="column" gap={2}>
+                    <AccountOverviewSection />
+                </Box>
+            </Box>
+        </Container>
     );
 };
 
