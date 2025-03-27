@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useState } from "react";
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Paper, CircularProgress, Box, Typography, Pagination
@@ -16,18 +16,33 @@ interface TableProps {
     data: any[];
     loading: boolean;
     error?: string;
-    page: number;
-    itemsPerPage: number;
-    onPageChange: (event: React.ChangeEvent<unknown>, value: number) => void;
+    page?: number;
+    itemsPerPage?: number;
+    onPageChange?: (event: React.ChangeEvent<unknown>, value: number) => void;
     customMsg?: string;
     hasSelection?: boolean;
     customSize?: string; // New prop for last column size
 }
 
 const DynamicTable: React.FC<TableProps> = ({
-    columns, data, loading, error, page, itemsPerPage, onPageChange,
-    customMsg, hasSelection, customSize
+    columns, data, loading, error,
+    page: controlledPage, itemsPerPage: controlledItemsPerPage,
+    onPageChange, customMsg, hasSelection, customSize
 }) => {
+
+    const defaultItemsPerPage = controlledItemsPerPage ?? 10;
+    const [internalPage, setInternalPage] = useState(1);
+    const page = controlledPage ?? internalPage;
+    const itemsPerPage = defaultItemsPerPage;
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        if (onPageChange) {
+            onPageChange(event, value);
+        } else {
+            setInternalPage(value);
+        }
+    };
+
     const paginatedData = React.useMemo(() => {
         return data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
     }, [data, page, itemsPerPage]);
@@ -81,7 +96,7 @@ const DynamicTable: React.FC<TableProps> = ({
                         <Pagination
                             count={Math.ceil(data.length / itemsPerPage)}
                             page={page}
-                            onChange={onPageChange}
+                            onChange={handlePageChange}
                         />
                     </Box>
                 </>

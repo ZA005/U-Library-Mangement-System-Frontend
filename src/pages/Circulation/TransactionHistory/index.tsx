@@ -32,8 +32,6 @@ const TransactionHistory: React.FC = () => {
 
     const { isLoading, data: TransactionHistory = [], error } = useFetchTransactionHistory();
     const [selectedOption, setSelectedOption] = useState("");
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,9 +75,6 @@ const TransactionHistory: React.FC = () => {
                         data={TransactionHistory}
                         loading={isLoading}
                         error={error}
-                        page={page}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={(_, value) => setPage(value)}
                     />
                 </Box>
             </Container>

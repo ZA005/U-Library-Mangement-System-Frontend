@@ -34,8 +34,6 @@ const OverseeOverdues: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { isLoading, data: nonPaidFines = [], error, refetch } = useFetchNonPaidFines();
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,9 +68,6 @@ const OverseeOverdues: React.FC = () => {
                     data={nonPaidFines}
                     loading={isLoading}
                     error={error}
-                    page={page}
-                    itemsPerPage={itemsPerPage}
-                    onPageChange={(_, value) => setPage(value)}
                 />
             </Container>
         </>

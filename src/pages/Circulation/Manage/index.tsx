@@ -46,8 +46,6 @@ const ManageCirculation: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { isLoading, data: loans = [], error, refetch } = useFetchUnreturnedLoan()
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
 
     /////////////////////////////////////////////////////////////////////////////////////
     const columns = [
@@ -133,9 +131,6 @@ const ManageCirculation: React.FC = () => {
                         data={loans}
                         loading={isLoading}
                         error={error}
-                        page={page}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={(_, value) => setPage(value)}
                     />
                 </Box>
             </Container>

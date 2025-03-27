@@ -54,9 +54,6 @@ const BookReferencing: React.FC = () => {
     const { isOpen, openDialog, closeDialog } = useDialog();
     const [searchQuery, setSearchQuery] = useState("");
 
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
-
     /////////////////////////////////////////////////////////////////////////////////////
 
     const handleViewReferences = (course: Course) => {
@@ -148,9 +145,6 @@ const BookReferencing: React.FC = () => {
                         data={filteredCourses}
                         loading={isFetchingCourse}
                         error={error}
-                        page={page}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={(_, value) => setPage(value)}
                         customMsg="Please select Department, Program, and Revision to view Courses"
                         hasSelection={!!selectedDepartment && !!selectedProgram && !!selectedRevision}
                         customSize="200px"

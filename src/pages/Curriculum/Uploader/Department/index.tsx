@@ -37,9 +37,6 @@ const UploadDepartments: React.FC = () => {
     const showSnackbar = useSnackbarContext();
     const { isLoading, data: departments = [], error, refetch } = useFetchAllDepartments()
 
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
-
     /////////////////////////////////////////////////////////////////////////////////////
 
     const handleUploadDepartment = (parsedData: any) => {
@@ -86,9 +83,6 @@ const UploadDepartments: React.FC = () => {
                         data={departments}
                         loading={isLoading}
                         error={error}
-                        page={page}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={(_, value) => setPage(value)}
                     />
                 </Box>
             </Container>

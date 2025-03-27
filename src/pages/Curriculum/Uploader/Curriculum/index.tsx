@@ -51,8 +51,6 @@ const UploadDepartments: React.FC = () => {
     const { uploadCurriculums } = useUploadCurriculums()
 
     const showSnackbar = useSnackbarContext();
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -138,9 +136,6 @@ const UploadDepartments: React.FC = () => {
                         data={curriculums}
                         loading={isFetchingCurriculum}
                         error={error}
-                        page={page}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={(_, value) => setPage(value)}
                         customMsg="Please select Department and Program to view Curriculum"
                         hasSelection={!!selectedDepartment && !!selectedProgram}
                     />
