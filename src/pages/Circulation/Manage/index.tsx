@@ -2,7 +2,9 @@ import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 
 import { IconButton, Container, Box, Button, TextField, InputAdornment } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { PageTitle, DynamicTable, DynamicTableCell, Identification } from "../../../components";
-import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
+import { useSnackbarContext } from "../../../contexts/SnackbarContext";
+import { useReturnLoan } from "./useReturnLoan";
+import { useRenewLoan } from "./useRenewLoan";
 import { useFetchUnreturnedLoan } from "./useFetchUnreturnedLoans";
 import { convertJsonDateAndTime } from "../../../utils/convert";
 import { useModal } from "../../../hooks/Modal/useModal";
@@ -34,6 +36,7 @@ const ManageCirculation: React.FC = () => {
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
 
     /////////////////////////////////////////////////////////////////////////////////////
+    const showSnackbar = useSnackbarContext()
     const { isOpen, close, open } = useModal();
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -46,6 +49,39 @@ const ManageCirculation: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { isLoading, data: loans = [], error, refetch } = useFetchUnreturnedLoan()
+    const { returnLoan, error: errorReturnLoan } = useReturnLoan();
+    const { renewLoan, error: errorRenewingLoan } = useRenewLoan();
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const handleAction = (value: string, loan: Loan) => {
+        console.log(`Action selected: ${value} for`, loan);
+
+        if (value === "return") {
+            handleReturn(loan);
+        } else if (value === "renew") {
+            handleRenew(loan);
+        }
+    };
+
+    const handleReturn = (loan: Loan) => {
+        returnLoan(loan, {
+            onSuccess: () => {
+                showSnackbar("Book returned successfully!", "success");
+                refetch();
+            },
+            onError: (error) => showSnackbar(`${error}`, "error"),
+        });
+    };
+
+    const handleRenew = (loan: Loan) => {
+        renewLoan(loan, {
+            onSuccess: () => {
+                showSnackbar("Loan renewed successfully!", "success");
+                refetch();
+            },
+            onError: (error) => showSnackbar(`${error}`, "error"),
+        });
+    };
 
     /////////////////////////////////////////////////////////////////////////////////////
     const columns = [
@@ -65,7 +101,7 @@ const ManageCirculation: React.FC = () => {
                         { value: "return", label: "Return" },
                         { value: "renew", label: "Renew" },
                     ]}
-                    onAction={(value) => { }}
+                    onAction={(value) => handleAction(value, row)}
                 />
             )
         }
