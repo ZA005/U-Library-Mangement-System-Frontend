@@ -142,7 +142,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) =
                     <DialogContentText>Are you sure you want to select "{selectedBook?.title}"?</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setConfirmOpen(false)} sx={{ color: "#d32f2f" }}>
+                    <Button onClick={() => { setSelectedBook(null); setConfirmOpen(false); }} sx={{ color: "#d32f2f" }}>
                         Cancel
                     </Button>
                     <Button onClick={handleConfirmSelection} sx={{ color: "#d32f2f" }} autoFocus>
