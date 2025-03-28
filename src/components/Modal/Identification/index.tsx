@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ModalForm } from '../..';
 import Borrow from '../../../pages/Circulation/Dialog/Borrow';
 import { useDialog } from '../../../hooks/useDialog';
@@ -20,18 +20,19 @@ const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }
     const { data: account, error, isLoading } = useFetchAccount(submittedUserID);
     const { isOpen, openDialog, closeDialog } = useDialog();
 
-    useEffect(() => {
-        if (error) {
-            showSnackbar(error.message, "error");
-        }
-    }, [error, showSnackbar]);
+    // Handle error immediately when it occurs
+    if (error) {
+        showSnackbar(error.message, "error");
+    }
 
-    useEffect(() => {
+    // Conditionally open dialog and hide identification when account is fetched
+    const handleAccountFetch = () => {
         if (account && submittedUserID && !isOpen) {
             setShowIdentification(false);
             openDialog();
         }
-    }, [account, submittedUserID, isOpen, openDialog]);
+        return null;
+    };
 
     const fields = [
         {
@@ -52,6 +53,9 @@ const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }
         closeDialog();
         onClose();
     };
+
+    // Call the handler immediately after rendering
+    handleAccountFetch();
 
     return (
         <>
@@ -75,4 +79,4 @@ const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }
     )
 }
 
-export default Identification
+export default Identification;

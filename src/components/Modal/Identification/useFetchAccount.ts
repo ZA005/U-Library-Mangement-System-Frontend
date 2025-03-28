@@ -8,7 +8,8 @@ export const useFetchAccount = (user_id: string) => {
         queryKey: ["user", user_id],
         queryFn: () => getAccountData(user_id),
         enabled: !!user_id,
+        retry: 0
     });
 
-    return { data, error, isLoading };
+    return { data, error: error as Error | null, isLoading };
 };

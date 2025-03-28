@@ -26,7 +26,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) =
 
     useEffect(() => {
         if (books && books.length > 0 && searchQuery) {
-            showSnackbar(`Successfully found ${books.length} copies`, "success");
+            showSnackbar(`Successfully found ${books.length} books`, "success");
         }
     }, [books, searchQuery, showSnackbar]);
 
@@ -121,7 +121,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) =
                     ))}
                 </List>
             ) : searchQuery ? (
-                <Typography>No book found</Typography>
+                <Typography>Sorry, no books were found, or all copies have already been borrowed.</Typography>
             ) : null}
         </>
     );
@@ -142,7 +142,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) =
                     <DialogContentText>Are you sure you want to select "{selectedBook?.title}"?</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setConfirmOpen(false)} sx={{ color: "#d32f2f" }}>
+                    <Button onClick={() => { setSelectedBook(null); setConfirmOpen(false); }} sx={{ color: "#d32f2f" }}>
                         Cancel
                     </Button>
                     <Button onClick={handleConfirmSelection} sx={{ color: "#d32f2f" }} autoFocus>

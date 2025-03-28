@@ -135,7 +135,7 @@ const ManageCirculation: React.FC = () => {
                             New Borrow
                         </Button>
 
-                        <Button variant="outlined"
+                        {/* <Button variant="outlined"
                             sx={{
                                 width: { xs: "100%", md: "200px" },
                                 color: "#d32f2f",
@@ -145,7 +145,7 @@ const ManageCirculation: React.FC = () => {
                                 },
                             }}>
                             Pending
-                        </Button>
+                        </Button> */}
                     </Box>
 
 

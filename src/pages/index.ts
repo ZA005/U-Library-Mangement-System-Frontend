@@ -79,6 +79,10 @@ export const ManageCirculation = loadable(() => import("./Circulation/Manage"), 
     fallback: LoadingSpinner()
 })
 
+export const ManageReservation = loadable(() => import("./Circulation/Reservation"), {
+    fallback: LoadingSpinner()
+})
+
 export const TransactionHistory = loadable(() => import("./Circulation/TransactionHistory"), {
     fallback: LoadingSpinner()
 })
