@@ -26,7 +26,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) =
 
     useEffect(() => {
         if (books && books.length > 0 && searchQuery) {
-            showSnackbar(`Successfully found ${books.length} copies`, "success");
+            showSnackbar(`Successfully found ${books.length} books`, "success");
         }
     }, [books, searchQuery, showSnackbar]);
 
@@ -121,7 +121,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) =
                     ))}
                 </List>
             ) : searchQuery ? (
-                <Typography>No book found</Typography>
+                <Typography>Sorry, no books were found, or all copies have already been borrowed.</Typography>
             ) : null}
         </>
     );

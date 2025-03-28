@@ -132,6 +132,15 @@ const ProtectedRoutes = () => {
                     </PrivateRoute>
                 }
             />
+
+            <Route
+                path={PROTECTED_ROUTES.RESERVATION}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.ManageReservation />
+                    </PrivateRoute>
+                }
+            />
             {/* Default fallback to PageNotFound */}
             <Route path="*" element={<Pages.PageNotFound />} />
         </Routes>
