@@ -6,10 +6,11 @@ import { useSnackbarContext } from '../../../contexts/SnackbarContext';
 import { useFetchAccount } from './useFetchAccount';
 
 interface IdentificationProps {
+    refetchLoans: () => void;
     onClose: () => void;
 }
 
-const Identification: React.FC<IdentificationProps> = ({ onClose }) => {
+const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }) => {
     const showSnackbar = useSnackbarContext()
 
     const [userID, setUserID] = useState("");
@@ -68,7 +69,7 @@ const Identification: React.FC<IdentificationProps> = ({ onClose }) => {
                 />
             )}
             {isOpen && account && (
-                <Borrow accountData={account} onClose={handleBorrowClose} />
+                <Borrow accountData={account} onClose={handleBorrowClose} refetchLoans={refetchLoans} />
             )}
         </>
     )

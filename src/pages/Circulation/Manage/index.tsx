@@ -1,8 +1,10 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { IconButton, Container, Box, Button, TextField, InputAdornment } from "@mui/material";
+import { IconButton, Container, Box, Button, TextField, InputAdornment, Modal, Typography, Paper } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { PageTitle, DynamicTable, DynamicTableCell, Identification } from "../../../components";
-import { useSnackbarContext } from "../../../../contexts/SnackbarContext";
+import { useSnackbarContext } from "../../../contexts/SnackbarContext";
+import { useReturnLoan } from "./useReturnLoan";
+import { useRenewLoan } from "./useRenewLoan";
 import { useFetchUnreturnedLoan } from "./useFetchUnreturnedLoans";
 import { convertJsonDateAndTime } from "../../../utils/convert";
 import { useModal } from "../../../hooks/Modal/useModal";
@@ -34,18 +36,57 @@ const ManageCirculation: React.FC = () => {
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
 
     /////////////////////////////////////////////////////////////////////////////////////
-    const { isOpen, close, open } = useModal();
+    const showSnackbar = useSnackbarContext()
+    const { isOpen: IdentificationOpen, close: closeIdentification, open: openIdentification } = useModal();
+    const { isOpen: ReturnRenewOpen, close, open } = useModal();
+    const [dialogState, setDialogState] = useState<{ loan: Loan | null; action: "return" | "renew" | null }>({
+        loan: null,
+        action: null,
+    });
     const [searchQuery, setSearchQuery] = useState("");
 
     /////////////////////////////////////////////////////////////////////////////////////
 
     const handleNewBorrow = () => {
-        open()
+        openIdentification()
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { isLoading, data: loans = [], error, refetch } = useFetchUnreturnedLoan()
+    const { returnLoan, error: errorReturnLoan } = useReturnLoan();
+    const { renewLoan, error: errorRenewingLoan } = useRenewLoan();
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const handleAction = (action: "return" | "renew", loan: Loan) => {
+        setDialogState({ loan, action });
+        open()
+    };
+
+    const handleConfirm = () => {
+        if (!dialogState.loan || !dialogState.action) return;
+
+        const actionFn = dialogState.action === "return" ? returnLoan : renewLoan;
+
+        actionFn(dialogState.loan, {
+            onSuccess: () => {
+                showSnackbar(
+                    `Book successfully ${dialogState.action === "return" ? "returned" : "renewed"}!`,
+                    "success"
+                );
+                refetch();
+            },
+            onError: (error) => showSnackbar(`${error}`, "error"),
+        });
+
+        close()
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    const refetchLoans = () => {
+        refetch()
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////
     const columns = [
@@ -65,7 +106,7 @@ const ManageCirculation: React.FC = () => {
                         { value: "return", label: "Return" },
                         { value: "renew", label: "Renew" },
                     ]}
-                    onAction={(value) => { }}
+                    onAction={(value) => handleAction(value as "return" | "renew", row)}
                 />
             )
         }
@@ -134,9 +175,26 @@ const ManageCirculation: React.FC = () => {
                     />
                 </Box>
             </Container>
-            {isOpen && (
-                <Identification onClose={close} />
+            {IdentificationOpen && (
+                <Identification onClose={closeIdentification} refetchLoans={refetchLoans} />
             )}
+
+            <Modal open={ReturnRenewOpen} onClose={close}>
+                <Paper sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", padding: 3, width: 300 }}>
+                    <Typography variant="h6" gutterBottom>
+                        Confirm {dialogState.action === "return" ? "Return" : "Renew"} Loan
+                    </Typography>
+                    <Typography>Are you sure you want to {dialogState.action} this loan?</Typography>
+                    <Box mt={2} display="flex" justifyContent="flex-end" gap={1}>
+                        <Button onClick={handleConfirm} variant="contained" size="small" sx={{ backgroundColor: "#d32f2f" }}>
+                            Confirm
+                        </Button>
+                        <Button onClick={close} variant="text" size="small" sx={{ color: "#d32f2f" }}>
+                            Cancel
+                        </Button>
+                    </Box>
+                </Paper>
+            </Modal>
         </>
     )
 }

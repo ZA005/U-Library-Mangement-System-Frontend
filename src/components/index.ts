@@ -25,6 +25,7 @@ export const ModalForm = loadable(() => import("./Modal/ModalForm"))
 // TABLE AND BUTTON
 export const DynamicTable = loadable(() => import("./Table"))
 export const DynamicTableCell = loadable(() => import("./Table/ActionCell"))
+export const Dialog = loadable(() => import("./Dialog"))
 export const UploadButton = loadable(() => import("./UploadButton"))
 export const Dropdown = loadable(() => import("./SelectMenu"))
 export const DropdownSwitch = loadable(() => import("./SelectMenu/Switch") as Promise<{ default: React.ComponentType<any> }>);

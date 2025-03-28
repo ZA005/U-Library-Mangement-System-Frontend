@@ -9,10 +9,11 @@ interface BookUserDetailsProps {
     bookData: Books;
     account_id: number;
     user_id: string;
+    refetchLoans: () => void;
     onClose: () => void;
 }
 
-const BookUserDetails: React.FC<BookUserDetailsProps> = ({ bookData, account_id, user_id, onClose }) => {
+const BookUserDetails: React.FC<BookUserDetailsProps> = ({ bookData, account_id, user_id, refetchLoans, onClose }) => {
     const [loan, setLoan] = useState<Loan | null>(null);
 
     const showSnackbar = useSnackbarContext();
@@ -23,7 +24,6 @@ const BookUserDetails: React.FC<BookUserDetailsProps> = ({ bookData, account_id,
         const formattedTime = now.toISOString().slice(0, 19);
 
         setLoan({
-            id: 0,
             book_id: bookData.id,
             book_accession_no: bookData.accessionNumber,
             book_title: bookData.title,
@@ -72,9 +72,11 @@ const BookUserDetails: React.FC<BookUserDetailsProps> = ({ bookData, account_id,
         recordLoan(loan, {
             onSuccess: () => {
                 showSnackbar("Successfully recorded new loan!", "success");
+                refetchLoans()
                 onClose();
             },
             onError: (error) => {
+                console.log("LOAN: ", loan)
                 showSnackbar(`Error: ${error}`, "error");
             },
         });

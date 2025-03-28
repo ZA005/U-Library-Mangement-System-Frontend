@@ -50,7 +50,6 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
     };
 
     useEffect(() => {
-        // Only attempt to open the window when book data is loaded and we're in viewing mode
         if (isViewingBook && !isLoadingBookData && bookData) {
             const bookUrl = PROTECTED_ROUTES.BOOKINFORMATION.replace(":isbn", bookData?.isbn13 || bookData?.isbn10);
             sessionStorage.setItem("book", JSON.stringify(bookData));
