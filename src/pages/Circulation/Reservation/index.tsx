@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box, Button } from "@mui/material";
 import { PageTitle, DynamicTable, Identification } from "../../../components";
 import { useModal } from "../../../hooks/Modal/useModal";
+import { useFetchAllReservations } from "./useFetchAllReservations";
 import { convertJsonDateAndTime } from "../../../utils/convert";
 import { Menu } from "lucide-react";
 const Reservation: React.FC = () => {
@@ -32,20 +33,21 @@ const Reservation: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { close, isOpen, open } = useModal()
+    const { isLoading, data: reservations = [], error, refetch } = useFetchAllReservations();
 
     const handleReserveBook = () => {
         open()
     }
 
-
+    /////////////////////////////////////////////////////////////////////////////////////
 
 
     const columns = [
         { key: "book_accession_no", label: "Accession #" },
         { key: "book_title", label: "Title" },
         { key: "user_id", label: "User ID" },
-        { key: "reservationDateTime", label: "Reservation Timestamp", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.transDateTime) },
-        { key: "expirationDate", label: "Expiration", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.transDateTime) },
+        { key: "reservationDateTime", label: "Reservation Timestamp", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.reservationDateTime) },
+        { key: "expirationDate", label: "Expiration", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.expirationDate) },
         { key: "status", label: "Status" },
     ]
 
@@ -74,7 +76,12 @@ const Reservation: React.FC = () => {
                     </Button>
                 </Box>
                 <Box mt={4}>
-
+                    <DynamicTable
+                        columns={columns}
+                        data={reservations}
+                        loading={isLoading}
+                        error={error}
+                    />
                 </Box>
             </Container>
             {
@@ -82,7 +89,7 @@ const Reservation: React.FC = () => {
                     <Identification
                         onClose={close}
                         type="RESERVATION"
-                        refetchLoans={() => { }}
+                        refetch={refetch}
                     />
                 )
             }
