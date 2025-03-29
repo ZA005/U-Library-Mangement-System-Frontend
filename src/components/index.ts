@@ -20,6 +20,7 @@ export const Login = loadable(() => import("./Modal/Login/Login"))
 export const ConfirmOTP = loadable(() => import("./Modal/Verification/confirmOTP"))
 export const SendOTP = loadable(() => import("./Modal/Verification/sendOTP"))
 export const Identification = loadable(() => import("./Modal/Identification"))
+export const AccessionNumber = loadable(() => import("./Modal/AccessionNumber"))
 export const ModalForm = loadable(() => import("./Modal/ModalForm"))
 
 // TABLE AND BUTTON

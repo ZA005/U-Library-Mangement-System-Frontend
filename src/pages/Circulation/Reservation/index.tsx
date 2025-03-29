@@ -1,7 +1,8 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box, Button } from "@mui/material";
-import { PageTitle, Dropdown, DynamicTable } from "../../../components";
+import { PageTitle, DynamicTable, Identification } from "../../../components";
+import { useModal } from "../../../hooks/Modal/useModal";
 import { convertJsonDateAndTime } from "../../../utils/convert";
 import { Menu } from "lucide-react";
 const Reservation: React.FC = () => {
@@ -30,23 +31,22 @@ const Reservation: React.FC = () => {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    const [selectedOption, setSelectedOption] = useState("");
+    const { close, isOpen, open } = useModal()
 
-    /////////////////////////////////////////////////////////////////////////////////////
+    const handleReserveBook = () => {
+        open()
+    }
+
+
+
 
     const columns = [
-        { key: "transDateTime", label: "DATE", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.transDateTime) },
-        { key: "user_id", label: "USER ID" },
-        { key: "type", label: "TYPE" },
-    ]
-
-    const options = [
-        { id: 1, name: "LOAN" },
-        { id: 2, name: "RETURNED" },
-        { id: 3, name: "RENEWED" },
-        { id: 4, name: "RESERVATION" },
-        { id: 5, name: "FINE_PAYMENT" },
-        { id: 6, name: "OVERDUE" },
+        { key: "book_accession_no", label: "Accession #" },
+        { key: "book_title", label: "Title" },
+        { key: "user_id", label: "User ID" },
+        { key: "reservationDateTime", label: "Reservation Timestamp", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.transDateTime) },
+        { key: "expirationDate", label: "Expiration", render: (row: any) => convertJsonDateAndTime.formatDateTime(row.transDateTime) },
+        { key: "status", label: "Status" },
     ]
 
     return (
@@ -62,7 +62,7 @@ const Reservation: React.FC = () => {
                 >
                     <Button
                         variant="contained"
-                        onClick={() => { }}
+                        onClick={handleReserveBook}
                         sx={{
                             width: { xs: "100%", md: "200px" },
                             backgroundColor: "#d32f2f",
@@ -72,23 +72,20 @@ const Reservation: React.FC = () => {
                         }}>
                         New Reservation
                     </Button>
-                    {/* <Dropdown
-                        menuSize="small"
-                        label="Filter By"
-                        value={selectedOption}
-                        onChange={(e) => setSelectedOption(e.target.value)}
-                        options={options}
-                    /> */}
                 </Box>
                 <Box mt={4}>
-                    {/* <DynamicTable
-                        columns={columns}
-                        data={TransactionHistory}
-                        loading={isLoading}
-                        error={error}
-                    /> */}
+
                 </Box>
             </Container>
+            {
+                isOpen && (
+                    <Identification
+                        onClose={close}
+                        type="RESERVATION"
+                        refetchLoans={() => { }}
+                    />
+                )
+            }
         </>
     )
 }
