@@ -1,11 +1,11 @@
 import { createApiClient } from "../../api/apiClient";
 import { Reservation } from "../../../types";
 
-const addReservation = async (reservation: Reservation): Promise<Reservation> => {
-    const apiClient = createApiClient("adminuser/reservation")
+const getAllReservation = async (): Promise<Reservation[]> => {
+    const apiClient = createApiClient("adminuser/reservations")
 
     try {
-        const response = await apiClient.post("/add", reservation, {
+        const response = await apiClient.get("/all", {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
         return response.data;
@@ -15,4 +15,4 @@ const addReservation = async (reservation: Reservation): Promise<Reservation> =>
     }
 }
 
-export default addReservation
+export default getAllReservation
