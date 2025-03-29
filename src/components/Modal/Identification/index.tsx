@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import { ModalForm } from '../..';
+import React, { useState, useEffect } from 'react';
+import { ModalForm, AccessionNumber } from '../..';
 import Borrow from '../../../pages/Circulation/Dialog/Borrow';
 import { useDialog } from '../../../hooks/useDialog';
+import { useModal } from '../../../hooks/Modal/useModal';
 import { useSnackbarContext } from '../../../contexts/SnackbarContext';
 import { useFetchAccount } from './useFetchAccount';
 
 interface IdentificationProps {
-    refetchLoans: () => void;
+    refetch?: () => void;
+    type?: "RESERVATION" | "BORROW";
     onClose: () => void;
 }
 
-const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }) => {
+const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW", onClose }) => {
     const showSnackbar = useSnackbarContext()
 
     const [userID, setUserID] = useState("");
@@ -18,21 +20,28 @@ const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }
     const [showIdentification, setShowIdentification] = useState(true);
 
     const { data: account, error, isLoading } = useFetchAccount(submittedUserID);
-    const { isOpen, openDialog, closeDialog } = useDialog();
+    const { isOpen: isBorrowOpen, openDialog: openBorrow, closeDialog: closeBorrow } = useDialog();
+    const { close: closeAccessionModal, isOpen: isAccessionModalOpen, open: openAccessionModal } = useModal();
 
     // Handle error immediately when it occurs
-    if (error) {
-        showSnackbar(error.message, "error");
-    }
-
-    // Conditionally open dialog and hide identification when account is fetched
-    const handleAccountFetch = () => {
-        if (account && submittedUserID && !isOpen) {
-            setShowIdentification(false);
-            openDialog();
+    useEffect(() => {
+        if (error) {
+            showSnackbar(error.message, "error");
         }
-        return null;
-    };
+    }, [error, showSnackbar]);
+
+    // Conditionally open dialog or modal based on type
+    useEffect(() => {
+        if (account && submittedUserID) {
+            setShowIdentification(false);
+
+            if (type === "BORROW") {
+                openBorrow();
+            } else if (type === "RESERVATION") {
+                openAccessionModal();
+            }
+        }
+    }, [account, submittedUserID, type, openBorrow, openAccessionModal]);
 
     const fields = [
         {
@@ -49,13 +58,14 @@ const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }
         }
     };
 
-    const handleBorrowClose = () => {
-        closeDialog();
+    const handleClose = () => {
+        if (type === "BORROW") {
+            closeBorrow();
+        } else if (type === "RESERVATION") {
+            closeAccessionModal();
+        }
         onClose();
     };
-
-    // Call the handler immediately after rendering
-    handleAccountFetch();
 
     return (
         <>
@@ -72,8 +82,15 @@ const Identification: React.FC<IdentificationProps> = ({ refetchLoans, onClose }
                     disabled={isLoading}
                 />
             )}
-            {isOpen && account && (
-                <Borrow accountData={account} onClose={handleBorrowClose} refetchLoans={refetchLoans} />
+            {isBorrowOpen && account && type === "BORROW" && (
+                <Borrow accountData={account} onClose={handleClose} refetch={refetch} />
+            )}
+            {isAccessionModalOpen && account && type === "RESERVATION" && (
+                <AccessionNumber
+                    accountData={account}
+                    onClose={handleClose}
+                    refetch={() => { }}
+                />
             )}
         </>
     )

@@ -176,7 +176,7 @@ const ManageCirculation: React.FC = () => {
                 </Box>
             </Container>
             {IdentificationOpen && (
-                <Identification onClose={closeIdentification} refetchLoans={refetchLoans} />
+                <Identification onClose={closeIdentification} refetchLoans={refetchLoans} type="BORROW" />
             )}
 
             <Modal open={ReturnRenewOpen} onClose={close}>

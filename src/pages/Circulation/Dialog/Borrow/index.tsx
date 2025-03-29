@@ -11,10 +11,10 @@ import { useDialog } from "../../../../hooks/useDialog";
 interface BorrowProps {
     accountData?: AccountData,
     onClose: () => void;
-    refetchLoans: () => void;
+    refetch: () => void;
 }
 
-const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) => {
+const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetch }) => {
     const showSnackbar = useSnackbarContext();
     const { closeDialog, isOpen, openDialog } = useDialog()
     const [showBorrow, setShowBorrow] = useState(true);
@@ -156,7 +156,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetchLoans }) =
                     account_id={accountData?.account_id}
                     user_id={accountData?.user_id}
                     bookData={selectedBook}
-                    refetchLoans={refetchLoans}
+                    refetchLoans={refetch}
                     onClose={handleBookUserDetailsClose}
                 />
             )}

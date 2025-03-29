@@ -60,7 +60,6 @@ const OverseeOverdues: React.FC = () => {
         closeDialog();
     };
 
-
     const handleOpenDialog = (fine: Fine) => {
         setSelectedFine(fine);
         openDialog();
