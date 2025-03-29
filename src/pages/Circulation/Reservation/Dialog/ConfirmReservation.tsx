@@ -64,7 +64,7 @@ const ConfirmReservation: React.FC<ConfirmReservationProps> = ({ bookData, accou
 
         addReservation(reservation, {
             onSuccess: () => {
-                showSnackbar("Successfully recorded new loan!", "success");
+                showSnackbar("Successfully reserved the book!", "success");
                 refetchReservations()
                 onClose();
             },
