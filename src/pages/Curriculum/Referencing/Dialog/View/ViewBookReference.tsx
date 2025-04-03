@@ -10,7 +10,7 @@ import { Plus, Search, Trash, Copy } from "lucide-react";
 import { PROTECTED_ROUTES } from "../../../../../config/routeConfig";
 import { CustomDialog } from "../../../../../components";
 import AddBookReference from "../Add/AddBookReference";
-
+import CopyBookReference from "../Copy/CopyBookReference";
 interface ViewBookReferenceProps {
     course: Course;
     onClose: () => void;
@@ -22,6 +22,7 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
     const [searchQuery, setSearchQuery] = useState("");
     const [isAddBookOpen, setIsAddBookOpen] = useState(false);
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(true);
+    const [isCopyBookOpen, setIsCopyBookOpen] = useState(false);
     const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
     const { data: bookData, isLoading: isLoadingBookData } = useFetchBookByID(selectedBookId!);
     const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
@@ -32,6 +33,16 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
     const handleAddBookClick = () => {
         setIsViewDialogOpen(false);
         setIsAddBookOpen(true);
+    };
+
+    const handleCopyBookRefClick = () => {
+        setIsViewDialogOpen(false);
+        setIsCopyBookOpen(true);
+    }
+
+    const handleCopyBookClose = () => {
+        setIsCopyBookOpen(false);
+        onClose();
     };
 
     const handleViewDialogClose = () => {
@@ -141,13 +152,14 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                     title={`Book References for ${course.course_name}`}
                     onClose={handleViewDialogClose}
                     iconButtons={[
-                        <Copy size="20px" color="#d32f2f" onClick={handleAddBookClick} />,
+                        <Copy size="20px" color="#d32f2f" onClick={handleCopyBookRefClick} />,
                         <Plus size="20px" color="#d32f2f" onClick={handleAddBookClick} />
                     ]}
                     content={content}
                 />
             )}
             {isAddBookOpen && <AddBookReference course={course} onClose={handleAddBookClose} />}
+            {isCopyBookOpen && <CopyBookReference course={course} onClose={handleCopyBookClose} />}
 
             <Dialog open={isRemoveDialogOpen} onClose={() => setIsRemoveDialogOpen(false)}>
                 <DialogTitle>Confirm Removal</DialogTitle>
