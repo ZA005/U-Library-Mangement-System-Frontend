@@ -46,7 +46,6 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
         setConfirmationOpen(false);
     };
 
-    // Fetch books for each bookReference
     useEffect(() => {
         const fetchBooks = async () => {
             if (!bookReferences || bookReferences.length === 0) return;
@@ -64,7 +63,6 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                     })
                 );
 
-                // Filter out any null values
                 setBooks(booksData.filter((book): book is Books => book !== null));
             } catch (error) {
                 console.error("Error fetching books:", error);
