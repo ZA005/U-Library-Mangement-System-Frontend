@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { CustomDialog, Dropdown, Loading } from "../../../../../components";
 import { useSnackbarContext } from "../../../../../contexts/SnackbarContext";
-import { List, ListItem, ListItemText, Box, TextField, Typography, Button, InputAdornment, Checkbox, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { List, ListItem, ListItemText, Box, Typography, Button } from "@mui/material";
 import { useFetchAllDepartments } from "../../../Uploader/Department/useFetchAllDepartments";
 import { useFetchAllProgramsByDepartment } from "../../../Uploader/Program/useFetchAllProgramsByDepartment";
 import { useFetchRevisionsByProgram } from "../../../Uploader/Curriculum/useFetchRevisionsByProgram";
 import { useFetchAllCourseByRevision } from "../../../Uploader/Course/useFetchAllCourseByRevision";
-import { Course, BookReference, Program } from "../../../../../types";
-
+import { Course, Program } from "../../../../../types";
+import ViewBookReference from "./ViewReference";
 interface CopyBookReferenceProps {
     course: Course;
     onClose: () => void;
@@ -20,7 +20,6 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
     const [selectedRevision, setSelectedRevision] = useState<number | null>(null);
-    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
     /////////////////////
 
@@ -28,7 +27,18 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
     const { data: revisions = [], isLoading: isFetchingRevisions } = useFetchRevisionsByProgram(selectedProgram?.program_id ?? 0);
     const { isLoading: isFetchingCourse, data: courses = [], error, refetch } = useFetchAllCourseByRevision(selectedRevision ?? 0);
 
+    const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
     /////////////////////
+
+    const handleViewReference = () => {
+        setIsViewDialogOpen(true);
+    }
+
+    const handleViewReferenceClose = () => {
+        setIsViewDialogOpen(false);
+    };
+
+
     const content = (
         <>
             <Box
@@ -70,45 +80,37 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
                     <Loading />
                 </Box>
             ) : error ? (
-                <Typography>Error fetching book references</Typography>
+                <Typography>Error fetching courses</Typography>
             ) : courses?.length > 0 ? (
                 <List>
-                    {courses.map((course, index) => (
-                        <ListItem key={index}>
-                            <ListItemText
-                                primary={course.course_name}
-                                secondary={`${course.program_description}`}
-                            />
-                            <Box display="flex" alignItems="center" gap={1}>
-                                <Button
-                                    variant="text"
-                                    size="small"
-                                    sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}
-                                    onClick={() => { }}
-                                >
-                                    Select
-                                </Button>
-
-                                <Button
-                                    variant="text"
-                                    size="small"
-                                    sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}
-                                    onClick={() => { }}
-                                >
-                                    View
-                                </Button>
-
-
-                            </Box>
-                        </ListItem>
-                    ))}
+                    {courses
+                        .filter((c) => c.course_id !== course.course_id)
+                        .map((course, index) => (
+                            <ListItem key={index}>
+                                <ListItemText
+                                    primary={course.course_name}
+                                    secondary={`${course.program_description}`}
+                                />
+                                <Box display="flex" alignItems="center" gap={1}>
+                                    <Button
+                                        variant="text"
+                                        size="small"
+                                        sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}
+                                        onClick={() => { handleViewReference(); }}
+                                    >
+                                        View References
+                                    </Button>
+                                </Box>
+                            </ListItem>
+                        ))}
                 </List>
             ) : (
-                <Typography>No book references found</Typography>
+                <Typography>No courses found</Typography>
             )}
 
         </>
     )
+
     return (
         <>
             <CustomDialog
@@ -117,6 +119,8 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
                 onClose={onClose}
                 content={content}
             />
+
+            {isViewDialogOpen && <ViewBookReference course={course} onClose={handleViewReferenceClose} />}
         </>
     )
 }
