@@ -7,18 +7,44 @@ import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const navigate = useNavigate()
-    const showSnackbar = useSnackbarContext()
+    const navigate = useNavigate();
+    const showSnackbar = useSnackbarContext();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [role, setRole] = useState<string | null>(null);
     const [id, setId] = useState<string | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
+    const safeStorageGet = (key: string): string | null => {
+        try {
+            return localStorage.getItem(key);
+        } catch (err) {
+            console.warn(`Storage getItem failed for key "${key}"`, err);
+            return null;
+        }
+    };
+
+    const safeStorageSet = (key: string, value: string) => {
+        try {
+            localStorage.setItem(key, value);
+        } catch (err) {
+            console.warn(`Storage setItem failed for key "${key}"`, err);
+        }
+    };
+
+    const safeStorageClear = () => {
+        try {
+            localStorage.clear();
+        } catch (err) {
+            console.warn("Storage clear failed", err);
+        }
+    };
+
     useEffect(() => {
         const initializeAuth = async () => {
-            const token = localStorage.getItem("token");
-            const savedRole = localStorage.getItem("role");
-            const savedId = localStorage.getItem("id")
+            const token = safeStorageGet("token");
+            const savedRole = safeStorageGet("role");
+            const savedId = safeStorageGet("id");
+
             if (token && savedRole) {
                 const { isTokenExpired } = await import("../utils/jwtUtils");
                 if (!isTokenExpired(token)) {
@@ -27,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     setId(savedId);
                 } else {
                     navigate(GENERAL_ROUTES.HOME);
-                    showSnackbar("Your session has expired. Redirecting to the landing page...", "info")
+                    showSnackbar("Your session has expired. Redirecting to the landing page...", "info");
                     logout();
                 }
             } else {
@@ -41,9 +67,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const login = async (token: string, role: string, user_id: string) => {
-        localStorage.setItem("token", token);
-        localStorage.setItem("role", role);
-        localStorage.setItem("id", user_id);
+        safeStorageSet("token", token);
+        safeStorageSet("role", role);
+        safeStorageSet("id", user_id);
         setIsAuthenticated(true);
         setRole(role);
         setId(user_id);
@@ -54,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = () => {
-        localStorage.clear();
+        safeStorageClear();
         setIsAuthenticated(false);
         setRole(null);
     };
