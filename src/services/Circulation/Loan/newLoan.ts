@@ -8,9 +8,6 @@ const newLoan = async (loan: Loan): Promise<Loan> => {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
 
-        if (!response.data) {
-            throw new Error("Received empty response from server");
-        }
         return response.data;
     } catch (error) {
         console.error("Error recording loan:", error.response?.data || error.message);
