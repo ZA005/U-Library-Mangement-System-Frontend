@@ -34,6 +34,9 @@ const CatalogBookInformation: React.FC = () => {
             navigate(PROTECTED_ROUTES.BROWSE, { replace: true });
             return;
         }
+
+        sessionStorage.setItem("book", JSON.stringify(book));
+
         setTitle(`${book.title} - Library Management System`);
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen(prev => !prev)}>

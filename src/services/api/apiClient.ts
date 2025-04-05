@@ -30,7 +30,7 @@ export const createApiClient = (basePath: string): AxiosInstance => {
                     const status = error.response.status;
                     const data = error.response.data;
 
-                    let errorMessage = `Error ${status}: ${data.message || JSON.stringify(data)}`;
+                    let errorMessage = `${status}: ${data.message || JSON.stringify(data)}`;
 
                     if (status === 400) errorMessage = `Bad Request: ${typeof data === "string" ? data : data.message}`;
                     if (status === 401) errorMessage = `Unauthorized: ${typeof data === "string" ? data : data.message}`;
