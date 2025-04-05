@@ -5,9 +5,10 @@ import { Books } from "../../../types";
 interface BookGridProps {
     searchQuery?: string;
     books: Books[];
+    acquisitionData?: unknown;
 }
 
-const BookGrid: React.FC<BookGridProps> = ({ searchQuery, books = [] }) => {
+const BookGrid: React.FC<BookGridProps> = ({ searchQuery, books = [], acquisitionData }) => {
     const filteredBooks = books.filter(book =>
         searchQuery ? book.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
     );
@@ -28,6 +29,7 @@ const BookGrid: React.FC<BookGridProps> = ({ searchQuery, books = [] }) => {
                 filteredBooks.map((book) => (
                     <CardComponent
                         book={book}
+                        acquisitionData={acquisitionData}
                     />
                 ))
             ) : (

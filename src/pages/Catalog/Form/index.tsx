@@ -49,13 +49,12 @@ const CatalogForm: React.FC = () => {
     return (
         <Container maxWidth="md" sx={{ padding: 3 }}>
             <Paper elevation={3} sx={{ padding: 3 }}>
-                <CardComponent title={formData.book_title} callNumber={formData.callNumber} isbn={formData.isbn} copyright={formData.copyright} accessionNumbers={formData.accessionNumbers} />
-
+                <CardComponent thumbnail={formData.thumbnail} title={formData.book_title || formData.title} callNumber={formData.callNumber} isbn={formData.isbn || formData.isbn13} copyright={formData.copyright} accessionNumbers={formData.accessionNumbers} />
                 {/* Conditional rendering for the two-page form */}
                 {page === 1 ? (
                     <FirstPage onNext={() => setPage(2)} formData={formData} setFormData={setFormData} />
                 ) : (
-                    <SecondPage onBack={() => setPage(1)} formData={formData} setFormData={setFormData} />
+                    <SecondPage onBack={() => setPage(1)} formData={formData} setFormData={setFormData} acquisitionData={acquisitionData} />
                 )}
             </Paper>
         </Container>

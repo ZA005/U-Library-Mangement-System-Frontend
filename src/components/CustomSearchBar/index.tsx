@@ -1,56 +1,91 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, TextField, Button, Menu, MenuItem, FormControl, InputLabel, Select, IconButton } from "@mui/material";
 import { ListFilter } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { searchIndexLabels } from "../../utils/searchIndexLabels";
 import { useFetchAllLibraryLocations } from "../Book/BookForm/Location/useFetchLibraryLocations";
 import SelectMenu from "../SelectMenu";
-import { AdvanceSearchParams } from "../../types/Catalog/advanceSearchParams";
 import { useFetchBookSearched } from "./useFetchBookSearched";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import { Books } from "../../types";
+import Z3950SRUSearch from "../Modal/SRUSearch/Z3950SRUSearch";
+import { AdvanceSearchParams } from "../../types/Catalog/advanceSearchParams";
 
 interface CustomSearchBarProps {
     initialQuery?: string;
     initialLibrary?: string;
     onSearch: (books: Books[], library: string, query: AdvanceSearchParams) => void;
+    modalParams?: {
+        criteria?: { idx: string; searchTerm: string }[];
+    };
 }
 
-const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', initialLibrary = 'All libraries', onSearch }) => {
+const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', initialLibrary = 'All libraries', onSearch, modalParams }) => {
     const { role } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [searchIndex, setSearchIndex] = useState("q");
     const [library, setLibrary] = useState(initialLibrary);
-    const [searchQuery, setSearchQuery] = useState(initialQuery);
+    const [query, setQuery] = useState(initialQuery);
     const { data: libraryLocations, isLoading } = useFetchAllLibraryLocations();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        keyword: '',
+        title: '',
+        author: '',
+        publisher: '',
+        isbn: '',
+        lccn: '',
+    });
+
+    useEffect(() => {
+        if (modalParams?.criteria) {
+            const newFormData = {
+                keyword: modalParams.criteria.find(c => c.idx === "q")?.searchTerm || "",
+                title: modalParams.criteria.find(c => c.idx === "intitle")?.searchTerm || "",
+                author: modalParams.criteria.find(c => c.idx === "inauthor")?.searchTerm || "",
+                publisher: modalParams.criteria.find(c => c.idx === "inpublisher")?.searchTerm || "",
+                isbn: modalParams.criteria.find(c => c.idx === "isbn")?.searchTerm || "",
+                lccn: modalParams.criteria.find(c => c.idx === "lccn")?.searchTerm || "",
+            };
+            setFormData(newFormData);
+            setQuery(newFormData.keyword || newFormData.title);
+            setSearchIndex(newFormData.title ? "intitle" : "q");
+        }
+    }, [modalParams]);
 
     const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleClose = () => { setAnchorEl(null); };
+
+    const handleOpenSRUModal = () => {
+        setModalOpen(true);
+    };
+    const handleCloseModal = () => {
+        setModalOpen(false);
     };
 
-    const searchParams: AdvanceSearchParams = {
+    const searchParams: AdvanceSearchParams = useMemo(() => ({
         criteria: [
             {
                 idx: searchIndex,
-                searchTerm: searchQuery,
+                searchTerm: query,
                 operator: "AND",
             },
         ],
         library: library === "All libraries" ? undefined : library,
-    };
+    }), [searchIndex, query, library]);
 
     const {
         isLoading: isSearching,
         refetch: refetchSearch,
     } = useFetchBookSearched(searchParams);
 
-    const handleSearch = async () => {
+    const handleSearch = useCallback(async () => {
         try {
             const result = await refetchSearch();
             const updatedResults = result.data || [];
@@ -58,15 +93,31 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
             onSearch(updatedResults, library, searchParams);
 
             navigate(PROTECTED_ROUTES.BROWSEALLBOOKS, {
-                state: { searchResults: updatedResults, searchParams, library },
+                state: {
+                    searchResults: updatedResults,
+                    searchParams,
+                    library,
+                    acquisitionData: location.state?.acquisitionData
+                },
             });
         } catch (error) {
             console.error("Search failed:", error);
             navigate(PROTECTED_ROUTES.BROWSEALLBOOKS, {
-                state: { searchResults: [], query: "Search failed", source: library },
+                state: {
+                    searchResults: [],
+                    query: "Search failed",
+                    source: library,
+                    acquisitionData: location.state?.acquisitionData
+                },
             });
         }
-    };
+    }, [refetchSearch, onSearch, library, searchParams, navigate, location.state]);
+
+    useEffect(() => {
+        if (modalParams && query) {
+            handleSearch();
+        }
+    }, [modalParams, query, handleSearch]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -82,8 +133,8 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
                     placeholder={`Search in ${searchIndexLabels[searchIndex]} at ${library}`}
                     fullWidth
                     size="small"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
                 />
                 <IconButton onClick={handleFilterClick} sx={{ position: "absolute", right: 8 }}>
@@ -95,7 +146,7 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
                 variant="contained"
                 sx={{ backgroundColor: "#d32f2f" }}
                 onClick={handleSearch}
-                disabled={isSearching || !searchQuery}
+                disabled={isSearching || !query}
             >
                 {isSearching ? "Searching..." : "Search"}
             </Button>
@@ -104,8 +155,8 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
             </Button>
 
             {(role === "LIBRARIAN" || role === "LIBRARY DIRECTOR") && (
-                <Button variant="text" sx={{ color: "#d32f2f" }}>
-                    Z39.50/50
+                <Button variant="text" sx={{ color: "#d32f2f" }} onClick={handleOpenSRUModal}>
+                    Z39.50/SRU
                 </Button>
             )}
 
@@ -143,6 +194,14 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
                     </FormControl>
                 </MenuItem>
             </Menu>
+            <Z3950SRUSearch
+                open={modalOpen}
+                onClose={handleCloseModal}
+                onSubmit={(books, source, query) => {
+                    onSearch(books, source, query);
+                }}
+                initialFormData={formData}
+            />
         </Box>
     );
 };

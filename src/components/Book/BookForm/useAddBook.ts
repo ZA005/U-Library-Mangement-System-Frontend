@@ -12,11 +12,23 @@ export const useAddBook = () => {
         isSuccess,
         data
     } = useMutation({
-        mutationFn: async (formData: Record<string, any>) => {
+        mutationFn: async ({ formData, acquisitionData }: { formData: Record<string, any>; acquisitionData?: any }) => {
+            const getAuthorsArray = (authors: any): string[] => {
+                if (!authors) return [];
+                if (typeof authors === "string") {
+                    return authors.split(",").map(author => author.trim());
+                }
+                if (Array.isArray(authors)) {
+                    return authors.map(author =>
+                        typeof author === "string" ? author.trim() : author?.name?.trim() || ""
+                    ).filter(author => author); // Filter out empty strings
+                }
+                return [];
+            };
             const bookData: Books = {
                 accessionNumber: formData.baseAccessionNumber || "",
                 title: formData.book_title || "",
-                authors: formData.authors ? formData.authors.split(",") : [],
+                authors: getAuthorsArray(formData.authors),
                 isbn10: formData.isbn10 || "",
                 isbn13: formData.isbn || "",
                 description: formData.description || "",
@@ -39,7 +51,7 @@ export const useAddBook = () => {
                     collectionType: formData.collectionType || "",
                     section: formData.selectedSection,
                     acquisitionDetails: {
-                        id: formData.id,
+                        id: acquisitionData?.id || formData.id || "",
                         purchase_price: formData.purchase_price || "",
                         vendor_location: formData.vendor_location || "",
                         acquired_date: formData.acquired_date || "",

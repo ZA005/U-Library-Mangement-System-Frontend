@@ -1,18 +1,27 @@
 import { Card, CardContent, CardMedia, Typography, Box, Button } from "@mui/material";
 import { Books } from "../../../types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PROTECTED_ROUTES } from "../../../config/routeConfig";
 interface BookCardProps {
     book: Books;
+    acquisitionData?: unknown;
 }
 
 const CardComponent: React.FC<BookCardProps> = ({
-    book
+    book,
+    acquisitionData
 }) => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const authorsList = book.authors.map((author) => author.name || String(author)).join(", ");
 
     const handleViewBook = () => {
-        navigate(PROTECTED_ROUTES.BOOKINFORMATION.replace(":isbn", book.isbn13 || book.isbn10), { state: { book } })
+        navigate(PROTECTED_ROUTES.BOOKINFORMATION.replace(":isbn", book.isbn13 || book.isbn10), {
+            state: {
+                book,
+                acquisitionData: acquisitionData || location.state?.acquisitionData
+            }
+        })
     };
 
     return (
@@ -65,20 +74,25 @@ const CardComponent: React.FC<BookCardProps> = ({
                             color: "text.secondary"
                         }}
                     >
-                        <strong>Author(s):</strong> {book.authors}
+                        <strong>Author(s):</strong> {authorsList || "Unknown"}
                     </Typography>
                     <Typography variant="body2" sx={{ color: "text.secondary" }}>
                         <strong>ISBN:</strong> {book.isbn13}
                     </Typography>
                     <Typography variant="body2" paddingBottom="10px">
-                        <strong>Copies Available:</strong> {book.bookCatalog.copies}
+                        {book?.bookCatalog?.copies != null ? (
+                            <>
+                                <strong>Copies Available:</strong> {book.bookCatalog.copies}
+                            </>
+                        ) : (
+                            <strong></strong>
+                        )}
                     </Typography>
+
                     <Button sx={{ padding: "0", lineHeight: "0" }} onClick={handleViewBook}>
                         View Book
                     </Button>
                 </Box>
-
-
             </CardContent>
         </Card>
     );

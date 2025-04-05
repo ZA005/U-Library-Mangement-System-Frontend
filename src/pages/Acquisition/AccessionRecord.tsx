@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext, useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import { useFetchPendingRecords } from "./useFetchPendingRecords";
 import { AcquisitionRecord } from "../../types";
 import { Menu } from "lucide-react";
+import { AdvanceSearchParams } from "../../types/Catalog/AdvanceSearchParams";
 
 const AccessionRecord: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +66,27 @@ const AccessionRecord: React.FC = () => {
             navigate(PROTECTED_ROUTES.CATALOG.replace(":isbn", record.isbn), {
                 state: { acquisitionData: record }
             });
+        } else if (value === "copyCatalog") {
+            const advancedSearchParams: AdvanceSearchParams = {
+                criteria: [
+                    { idx: "q", searchTerm: record.book_title, operator: "AND" },
+                    { idx: "intitle", searchTerm: record.book_title, operator: "AND" },
+                    { idx: "isbn", searchTerm: record.isbn, operator: "AND" },
+                    { idx: "inpublisher", searchTerm: record.publisher, operator: "AND" },
+                ],
+                library: "All libraries",
+            };
+            navigate(PROTECTED_ROUTES.BROWSEALLBOOKS, {
+                state: {
+                    searchParams: advancedSearchParams,
+                    searchResults: [],
+                    library: "All libraries",
+                    modalParams: {
+                        criteria: advancedSearchParams.criteria
+                    },
+                    acquisitionData: record
+                }
+            });
         }
     };
 
@@ -116,7 +139,7 @@ const AccessionRecord: React.FC = () => {
                         columns={columns}
                         data={pendingRecords}
                         loading={isFetching}
-                        error={error}
+                        error={error ? error.message : undefined}
                         page={page}
                         itemsPerPage={itemsPerPage}
                         onPageChange={(_, value) => setPage(value)}
