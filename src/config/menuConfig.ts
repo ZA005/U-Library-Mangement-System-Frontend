@@ -21,10 +21,10 @@ export const menuItems = {
         {
             label: "Circulation",
             children: [
-                { label: "Transaction History", path: PROTECTED_ROUTES.UPLOAD_MANAGER },
+                { label: "Transaction History", path: PROTECTED_ROUTES.TRANSACTION_HISTORY },
                 { label: "Manage Circulation", path: PROTECTED_ROUTES.CIRCULATION },
-                { label: "Reservations", path: PROTECTED_ROUTES.BOOK_REFERENCING },
-                { label: "Oversee Overdues", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+                { label: "Reservations", path: PROTECTED_ROUTES.RESERVATION },
+                { label: "Oversee Overdues", path: PROTECTED_ROUTES.OVERDUES },
             ],
             icon: CirculationIcon
         },

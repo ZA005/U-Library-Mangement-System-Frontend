@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import loadable from "@loadable/component";
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop, Typography, Box, Collapse } from "@mui/material";
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Backdrop, Typography, Box, Collapse, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { styled } from "@mui/material/styles";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useDialog } from "../hooks/useDialog";
 import { menuItems } from "../config/menuConfig";
 
 const LogoutIcon = loadable(() => import("lucide-react").then((icon) => ({ default: icon.LogOut })));
@@ -21,13 +22,15 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { logout, role, id } = useAuth();
+  const { isOpen, openDialog, closeDialog } = useDialog();
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
 
-  const handleLogout = () => {
+  const handleLogoutConfirm = () => {
     logout();
     localStorage.clear();
     navigate("/");
     onClose();
+    closeDialog();
   };
 
   const handleNavigation = (path: string) => {
@@ -119,7 +122,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
           ))}
 
           <ListItem disablePadding>
-            <ListItemButton onClick={handleLogout}>
+            <ListItemButton onClick={openDialog}>
               <ListItemIcon sx={{ color: "white" }}>
                 <LogoutIcon />
               </ListItemIcon>
@@ -128,6 +131,21 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
           </ListItem>
         </List>
       </Drawer>
+
+      <Dialog open={isOpen} onClose={closeDialog}>
+        <DialogTitle>Confirm Logout</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to logout?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog} sx={{ color: "#d32f2f" }}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleLogoutConfirm} sx={{ backgroundColor: "#d32f2f" }}>
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

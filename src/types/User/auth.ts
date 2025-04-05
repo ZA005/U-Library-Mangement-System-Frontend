@@ -32,7 +32,7 @@ export interface UserData {
 }
 
 export interface AccountData {
-    id: number;
+    account_id: number;
     user_id: string;
     password: string;
     role: string;

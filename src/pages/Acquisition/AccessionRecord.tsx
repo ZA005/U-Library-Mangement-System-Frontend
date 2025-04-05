@@ -27,9 +27,6 @@ const AccessionRecord: React.FC = () => {
     const showSnackbar = useSnackbarContext();
     const { isLoading: isFetching, data: pendingRecords = [], error, refetch } = useFetchPendingRecords();
 
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 5;
-
     /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
@@ -134,15 +131,12 @@ const AccessionRecord: React.FC = () => {
                 </Box>
 
                 {/* Table to display pending records */}
-                <Box mt={4}>
+                <Box mt={1}>
                     <DynamicTable
                         columns={columns}
                         data={pendingRecords}
                         loading={isFetching}
-                        error={error ? error.message : undefined}
-                        page={page}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={(_, value) => setPage(value)}
+                        error={error}
                     />
                 </Box>
             </Container>

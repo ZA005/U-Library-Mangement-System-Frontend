@@ -10,7 +10,7 @@ export const useLogin = (onSuccessCallback: () => void) => {
     const login = useMutation<AuthResponse, Error, { userId: string; password: string }>({
         mutationFn: async ({ userId, password }) => {
             const { default: login } = await import("../../../services/Authentication/login")
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay
+            await new Promise((resolve) => setTimeout(resolve, 500)); // 2-second delay
             return login(userId, password);
         },
         onSuccess: (data) => {

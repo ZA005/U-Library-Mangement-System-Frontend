@@ -30,13 +30,13 @@ export const createApiClient = (basePath: string): AxiosInstance => {
                     const status = error.response.status;
                     const data = error.response.data;
 
-                    let errorMessage = `Error ${status}: ${data.message || JSON.stringify(data)}`;
+                    let errorMessage = `${status}: ${data.message || JSON.stringify(data)}`;
 
-                    if (status === 400) errorMessage = `Bad Request: ${data.message}`;
-                    if (status === 401) errorMessage = `Unauthorized: ${data.message}`;
-                    if (status === 403) errorMessage = `Forbidden: ${data.message}`;
-                    if (status === 404) errorMessage = `Not Found: ${data.message}`;
-                    if (status >= 500) errorMessage = `Server Error: ${data.message}`;
+                    if (status === 400) errorMessage = `Bad Request: ${typeof data === "string" ? data : data.message}`;
+                    if (status === 401) errorMessage = `Unauthorized: ${typeof data === "string" ? data : data.message}`;
+                    if (status === 403) errorMessage = `Forbidden: ${typeof data === "string" ? data : data.message}`;
+                    if (status === 404) errorMessage = `Not Found: ${typeof data === "string" ? data : data.message}`;
+                    if (status >= 500) errorMessage = `Server Error: ${typeof data === "string" ? data : data.message}`;
 
                     return Promise.reject(new Error(errorMessage));
                 } else if (error.request) {

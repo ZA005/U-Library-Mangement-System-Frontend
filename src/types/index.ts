@@ -6,6 +6,11 @@ export * from './Catalog/Book';
 export * from './Catalog/BookCatalog';
 export * from './Catalog/LibraryLocation';
 export * from './Catalog/LibrarySection';
+//Circulation
+export * from './Circulation/Loan';
+export * from './Circulation/Transaction';
+export * from './Circulation/Fine'
+export * from './Circulation/Reservation'
 //Curriculum
 export * from './Curriculum/BookReference'
 export * from './Curriculum/Course'

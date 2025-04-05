@@ -21,9 +21,6 @@ const UploadPrograms: React.FC = () => {
     const showSnackbar = useSnackbarContext();
     const { uploadPrograms } = useUploadPrograms()
 
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 10;
-
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -112,9 +109,6 @@ const UploadPrograms: React.FC = () => {
                         data={programs}
                         loading={isFetchingProgram}
                         error={error}
-                        page={page}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={(_, value) => setPage(value)}
                     />
                 </Box>
             </Container>

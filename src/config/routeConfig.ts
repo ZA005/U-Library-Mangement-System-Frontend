@@ -28,5 +28,8 @@ export const PROTECTED_ROUTES = {
     BOOK_REFERENCING: "/curriculum/book-referencing",
 
     //////////////////////////////////////
-    CIRCULATION: "/circulation"
+    CIRCULATION: "/circulation",
+    RESERVATION: "/circulation/reservation",
+    TRANSACTION_HISTORY: "/circulation/transaction-history",
+    OVERDUES: "/circulation/overdues",
 }
