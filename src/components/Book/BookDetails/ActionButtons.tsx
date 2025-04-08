@@ -9,11 +9,11 @@ import { Books } from "../../../types";
 
 interface ActionButtonsProps {
     role: string | null;
-    book?: Books;
+    books?: Books;
     acquisitionData?: unknown;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({ role, book, acquisitionData }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionData }) => {
     const showSnackbar = useSnackbarContext();
     const location = useLocation();
     const book = location.state?.book || JSON.parse(sessionStorage.getItem("book") || "null");
@@ -60,7 +60,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, book, acquisitionDa
     const handleCatalogClick = () => {
         navigate(PROTECTED_ROUTES.CATALOG, {
             state: {
-                googleBookApiData: book,
+                googleBookApiData: books,
                 acquisitionData
             }
         });

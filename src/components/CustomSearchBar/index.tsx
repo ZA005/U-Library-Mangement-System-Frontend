@@ -150,7 +150,8 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
             >
                 {isSearching ? "Searching..." : "Search"}
             </Button>
-            <Button variant="outlined" sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}>
+            <Button variant="outlined" sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}
+                onClick={() => navigate(PROTECTED_ROUTES.ADVANCESEARCH)}>
                 Advanced Search
             </Button>
 

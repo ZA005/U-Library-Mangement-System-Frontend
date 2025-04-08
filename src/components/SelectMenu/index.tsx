@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, Select, MenuItem, InputLabel, SelectChangeEvent } from "@mui/material";
+import { FormControl, Select, MenuItem, InputLabel, SelectChangeEvent, SxProps, Theme } from "@mui/material";
 
 interface SelectMenuProps {
     label: string;
@@ -8,17 +8,28 @@ interface SelectMenuProps {
     options?: { id: string | number; name: string }[];
     disabled?: boolean;
     menuSize?: "small" | "medium";
+    sx?: SxProps<Theme>;
 }
 
-const SelectMenu: React.FC<SelectMenuProps> = ({ label, value, onChange, options = [], disabled = false, menuSize }) => {
+const SelectMenu: React.FC<SelectMenuProps> = ({
+    label,
+    value,
+    onChange,
+    options = [],
+    disabled = false,
+    menuSize,
+    sx,
+}) => {
+    const defaultSx = {
+        width: { xs: "100%", md: "250px", lg: "100%" },
+    };
+
     return (
         <FormControl
             variant="outlined"
             size={menuSize || "small"}
             disabled={disabled}
-            sx={{
-                width: { xs: "100%", md: "250px", lg: "100%" },
-            }}
+            sx={sx || defaultSx} // Use provided sx if available, otherwise use defaultSx
         >
             <InputLabel id={`${label}-label`}>{label}</InputLabel>
             <Select
@@ -37,7 +48,7 @@ const SelectMenu: React.FC<SelectMenuProps> = ({ label, value, onChange, options
                     ))
                 )}
             </Select>
-        </FormControl >
+        </FormControl>
     );
 };
 
