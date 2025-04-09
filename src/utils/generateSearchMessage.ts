@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AdvanceSearchParams } from "../types/Catalog/advanceSearchParams";
+import { SearchParams } from "../types/Catalog/SearchParams";
 
-export const generateSearchMessage = (query: AdvanceSearchParams | string | null) => {
+export const generateSearchMessage = (query: SearchParams | string | null) => {
     // Start building the criteria message
     const criteria = [];
 

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { AdvanceSearchParams } from "../../types/Catalog/advanceSearchParams";
+import { SearchParams } from "../../types/Catalog/SearchParams";
 import { Books } from "../../types";
 import getBookSearched from "../../services/Catalog/getBookSearched";
 
-export const useFetchBookSearched = (advanceSearchParams: AdvanceSearchParams) => {
+export const useFetchBookSearched = (advanceSearchParams: SearchParams) => {
     const {
         isLoading,
         data,

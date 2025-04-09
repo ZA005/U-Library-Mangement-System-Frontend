@@ -1,13 +1,16 @@
 import { useEffect, Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { IconButton, Container, Stack, Typography, Divider, Tabs, Tab, Box, Button } from "@mui/material";
 import { Menu } from "lucide-react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { PageTitle } from "../../../components";
 import CriteriaSection from "./CriteriaSection";
 import TabCheckboxGroup from "./TabCheckboxGroup";
 import LimitsSection from "./LimitsSection";
 import LocationAvailabilitySection from "./LocationAvailabilitySection";
 import SortingSection from "./SortingSection";
+import { useFetchAdvanceSearch } from "./useFetchAdvanceSearch";
+import { AdvanceSearchParams } from "../../../types/Catalog/AdvanceSearchParams";
+import { PROTECTED_ROUTES } from "../../../config/routeConfig";
 const AdvanceSearchPage: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,24 +36,24 @@ const AdvanceSearchPage: React.FC = () => {
         };
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
     /////////////////////////////////////////////////////////////////////////////////////
-    const [searchParams, setSearchParams] = useState({
-        criteria: [{ idx: "q", searchTerm: "", operator: "AND" }],
+    const [searchParams, setSearchParams] = useState<AdvanceSearchParams>({
+        criteria: [{ idx: "q", searchTerm: "", operator: 'AND' }],
         yearRange: "",
         language: "No limit",
         isAvailableOnly: false,
         individualLibrary: "All libraries",
         sortOrder: "Acquisition date: newest to oldest",
-        sections: [] as string[],
-        collection: [] as string[],
+        sections: [],
+        collection: [],
     });
     const [activeTab, setActiveTab] = useState(0);
     const [yearRangeError, setYearRangeError] = useState(false);
-
+    const navigate = useNavigate();
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => { setActiveTab(newValue); };
 
     const resetSearch = () => {
         setSearchParams({
-            criteria: [{ idx: "", searchTerm: "", operator: "AND" }],
+            criteria: [{ idx: "", searchTerm: "", operator: 'AND' }],
             yearRange: "",
             language: "No limit",
             isAvailableOnly: false,
@@ -60,9 +63,48 @@ const AdvanceSearchPage: React.FC = () => {
             collection: [],
         });
     };
+    const requestBody = {
+        criteria: searchParams.criteria.filter(
+            (criterion) => criterion.searchTerm.trim() !== ""
+        ),
+        yearRange: searchParams.yearRange,
+        language: searchParams.language !== "No limit" ? searchParams.language : null,
+        isAvailableOnly: searchParams.isAvailableOnly,
+        individualLibrary:
+            searchParams.individualLibrary !== "All libraries"
+                ? searchParams.individualLibrary
+                : "All libraries",
+        sortOrder: searchParams.sortOrder,
+        sections: searchParams.sections.length > 0 ? searchParams.sections : [],
+        collection: searchParams.collection.length > 0 ? searchParams.collection : [],
+    };
+
+    const {
+        refetch: refetchSearch,
+    } = useFetchAdvanceSearch(requestBody);
+
 
     const handleSearch = async () => {
-
+        try {
+            const result = await refetchSearch();
+            const updatedResults = result.data || [];
+            navigate(PROTECTED_ROUTES.BROWSEALLBOOKS, {
+                state: {
+                    searchResults: updatedResults,
+                    searchParams,
+                    library: searchParams.individualLibrary
+                },
+            });
+        } catch (error) {
+            console.error("Search failed:", error);
+            navigate(PROTECTED_ROUTES.BROWSEALLBOOKS, {
+                state: {
+                    searchResults: [],
+                    query: "Search failed",
+                    source: searchParams.individualLibrary || "All libraries",
+                },
+            });
+        }
     }
 
     return (

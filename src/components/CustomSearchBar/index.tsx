@@ -10,12 +10,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import { Books } from "../../types";
 import Z3950SRUSearch from "../Modal/SRUSearch/Z3950SRUSearch";
-import { AdvanceSearchParams } from "../../types/Catalog/advanceSearchParams";
+import { SearchParams } from "../../types/Catalog/SearchParams";
 
 interface CustomSearchBarProps {
     initialQuery?: string;
     initialLibrary?: string;
-    onSearch: (books: Books[], library: string, query: AdvanceSearchParams) => void;
+    onSearch: (books: Books[], library: string, query: SearchParams) => void;
     modalParams?: {
         criteria?: { idx: string; searchTerm: string }[];
     };
@@ -69,7 +69,7 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
         setModalOpen(false);
     };
 
-    const searchParams: AdvanceSearchParams = useMemo(() => ({
+    const searchParams: SearchParams = useMemo(() => ({
         criteria: [
             {
                 idx: searchIndex,

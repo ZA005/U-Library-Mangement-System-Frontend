@@ -1,8 +1,8 @@
 import { Books } from "../../types";
-import { SearchParams } from "../../types/Catalog/SearchParams";
+import { AdvanceSearchParams } from "../../types/Catalog/AdvanceSearchParams";
 import { createApiClient } from "../api/apiClient";
 
-const getBookSearched = async (advanceSearchParams: SearchParams): Promise<Books[]> => {
+const getBookAdvanceSearched = async (advanceSearchParams: AdvanceSearchParams): Promise<Books[]> => {
     const apiClient = createApiClient('adminuser');
 
     try {
@@ -16,4 +16,4 @@ const getBookSearched = async (advanceSearchParams: SearchParams): Promise<Books
     }
 }
 
-export default getBookSearched; 
+export default getBookAdvanceSearched; 

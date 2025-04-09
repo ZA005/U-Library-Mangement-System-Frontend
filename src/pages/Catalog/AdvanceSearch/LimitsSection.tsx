@@ -4,7 +4,7 @@ import SelectMenu from "../../../components/SelectMenu";
 
 interface LimitsSectionProps {
     yearRange: string;
-    language: string;
+    language: string | null;
     setYearRange: (value: string) => void;
     setLanguage: (value: string) => void;
     setYearRangeError: (error: boolean) => void;
@@ -59,7 +59,7 @@ const LimitsSection: React.FC<LimitsSectionProps> = ({
                 <Grid2 size={{ xs: 12, sm: 3 }}>
                     <SelectMenu
                         label="Language"
-                        value={language}
+                        value={language ?? ""}
                         onChange={(e) => setLanguage(e.target.value as string)}
                         options={languageOptions}
                         menuSize="medium"

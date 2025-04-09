@@ -11,7 +11,11 @@ interface SearchCriteria {
 
 interface CriteriaSectionProps {
     criteria: SearchCriteria[];
-    setCriteria: (newCriteria: SearchCriteria[]) => void;
+    setCriteria: (newCriteria: Array<{
+        idx: string;
+        searchTerm: string;
+        operator: string;
+    }>) => void;
 }
 
 const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria }) => {
@@ -63,7 +67,7 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                     key={index}
                     display="flex"
                     alignItems="center"
-                    marginBottom={index === criteria.length - 1 ? 0 : 1.5} // Reduced margin between rows
+                    marginBottom={index === criteria.length - 1 ? 0 : 1.5}
                 >
                     {/* Logical operator dropdown */}
                     {index > 0 && (
@@ -74,8 +78,8 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                             options={operatorOptions}
                             menuSize="medium"
                             sx={{
-                                minWidth: 100, // Smaller width for Operator
-                                marginRight: 1.5, // Tighter spacing
+                                minWidth: 100,
+                                marginRight: 1.5,
                             }}
                         />
                     )}
@@ -88,9 +92,9 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                         options={criteriaOptions}
                         menuSize="medium"
                         sx={{
-                            width: "100%", // Full width but constrained by parent
-                            maxWidth: 300, // Limit max width for better control
-                            marginRight: 2, // Slightly larger spacing
+                            width: "100%",
+                            maxWidth: 300,
+                            marginRight: 2,
                         }}
                     />
 
@@ -100,7 +104,7 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                         value={param.searchTerm}
                         onChange={(e) => handleCriteriaChange(e, index, "searchTerm")}
                         fullWidth
-                        sx={{ marginRight: 1.5 }} // Reduced margin
+                        sx={{ marginRight: 1.5 }}
                     />
 
                     {/* Remove criterion (X icon) */}
@@ -108,7 +112,7 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                         <IconButton
                             color="error"
                             onClick={() => handleRemoveCriterion(index)}
-                            sx={{ marginLeft: 1 }} // Tighter margin on the left
+                            sx={{ marginLeft: 1 }}
                         >
                             <CloseIcon />
                         </IconButton>

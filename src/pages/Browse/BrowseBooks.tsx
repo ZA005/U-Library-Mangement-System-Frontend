@@ -6,7 +6,7 @@ import { useFetchAllBooks } from "../../components/Sections/BrowseBooks/useFetch
 import BookGrid from "../../components/Book/BookGrid";
 import { Menu } from "lucide-react";
 import { Books } from "../../types";
-import { AdvanceSearchParams } from "../../types/Catalog/AdvanceSearchParams";
+import { SearchParams } from "../../types/Catalog/SearchParams";
 import { generateSearchMessage } from "../../utils/generateSearchMessage";
 
 const BrowseBookPage: React.FC = () => {
@@ -18,7 +18,7 @@ const BrowseBookPage: React.FC = () => {
 
     const location = useLocation();
     const state = location.state as {
-        searchParams?: AdvanceSearchParams;
+        searchParams?: SearchParams;
         searchResults?: Books[];
         library?: string;
         modalParams?: { criteria?: { idx: string; searchTerm: string }[] };
@@ -26,7 +26,7 @@ const BrowseBookPage: React.FC = () => {
     };
 
     const [books, setBooks] = useState<Books[]>(state?.searchResults || []);
-    const [query, setQuery] = useState<AdvanceSearchParams | null>(state?.searchParams || null);
+    const [query, setQuery] = useState<SearchParams | null>(state?.searchParams || null);
     const [source, setSource] = useState(state?.library || "All libraries");
 
     useEffect(() => {
@@ -45,7 +45,7 @@ const BrowseBookPage: React.FC = () => {
 
     const { data: allBooks = [] } = useFetchAllBooks();
 
-    const handleSearch = (searchResults: Books[], library: string, searchQuery: AdvanceSearchParams) => {
+    const handleSearch = (searchResults: Books[], library: string, searchQuery: SearchParams) => {
         setBooks(searchResults);
         setSource(library);
         setQuery(searchQuery);

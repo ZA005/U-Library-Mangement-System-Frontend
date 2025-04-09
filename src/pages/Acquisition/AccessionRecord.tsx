@@ -9,7 +9,7 @@ import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import { useFetchPendingRecords } from "./useFetchPendingRecords";
 import { AcquisitionRecord } from "../../types";
 import { Menu } from "lucide-react";
-import { AdvanceSearchParams } from "../../types/Catalog/AdvanceSearchParams";
+import { SearchParams } from "../../types/Catalog/SearchParams";
 
 const AccessionRecord: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ const AccessionRecord: React.FC = () => {
                 state: { acquisitionData: record }
             });
         } else if (value === "copyCatalog") {
-            const advancedSearchParams: AdvanceSearchParams = {
+            const advancedSearchParams: SearchParams = {
                 criteria: [
                     { idx: "q", searchTerm: record.book_title, operator: "AND" },
                     { idx: "intitle", searchTerm: record.book_title, operator: "AND" },
