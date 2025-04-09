@@ -17,6 +17,7 @@ export const PROTECTED_ROUTES = {
     NEWLYACQUIRED: "/library/newly-acquired-books",
     BROWSEALLBOOKS: "/library/browse/all",
     BOOKINFORMATION: "/library/book/:isbn",
+    ADVANCESEARCH: "/library/advance-search",
     //////////////////////////////////////
 
     CURRICULUM: "/curriculum",

@@ -13,6 +13,8 @@ import { useFetchBaseAccessionNumber } from "./useFetchBaseAccessionNumber";
 import { generateAccessionNumbersCopies } from "../../../utils/generateAccessionNumbersCopies";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
 import { useAddBook } from "./useAddBook";
+import { useNavigate } from "react-router-dom";
+import { PROTECTED_ROUTES } from "../../../config/routeConfig";
 
 /**
  * SecondPage Component
@@ -24,12 +26,15 @@ interface SecondPageProps {
     onBack: () => void;
     formData: Record<string, any>;
     setFormData: (data: Record<string, any>) => void;
+    acquisitionData?: unknown;
 }
 
-const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }) => {
+const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData, acquisitionData }) => {
     const { data: allLibraryLocations = [] } = useFetchAllLibraryLocations();
     const showSnackbar = useSnackbarContext();
     const { addBook, isPending: isSaving } = useAddBook();
+    const navigate = useNavigate();
+
     const selectedLocation = allLibraryLocations.find(
         (loc) => loc.codeName === formData.location
     ) || null;
@@ -78,16 +83,15 @@ const SecondPage: React.FC<SecondPageProps> = ({ onBack, formData, setFormData }
     const handleSectionChange = (selectedSection: LibrarySections | null) => {
         setFormData({
             ...formData,
-            section: selectedSection ? selectedSection.sectionName : "", // Store sectionName for BookCatalog
-            selectedSection: selectedSection // Store full object separately
+            section: selectedSection ? selectedSection.sectionName : "",
+            selectedSection: selectedSection
         });
     };
     const handleSave = () => {
-        addBook(formData, {
+        addBook({ formData, acquisitionData }, {
             onSuccess: () => {
                 showSnackbar(`Successfully added "${formData.book_title}" to the catalog`, "success");
-                // // Optionally reset form or navigate away
-                // setFormData({}); // Reset form (adjust as needed)
+                navigate(PROTECTED_ROUTES.ACCESSION)
             },
             onError: (err) => {
                 showSnackbar(`Error saving book: ${err.message || err}`, "error");

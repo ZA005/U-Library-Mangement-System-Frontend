@@ -22,12 +22,29 @@ const FirstPage: React.FC<FirstPageProps> = ({ onNext, formData, setFormData }) 
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const getAuthorsArray = (authors) => {
+        if (!authors) return [];
+
+        // If authors is already a string, split it
+        if (typeof authors === 'string') {
+            return authors.split(",");
+        }
+
+        // If authors is an array of objects, get first author's name
+        if (Array.isArray(authors) && authors.length > 0) {
+            const firstAuthor = authors[0];
+            return [typeof firstAuthor === 'string' ? firstAuthor : firstAuthor?.name || ""];
+        }
+
+        return [];
+    };
+
     // Use the useFetchCallNumber hook
     const { isLoading, refetch } = useFetchCallNumber(
-        formData.book_title || "",
+        formData.book_title || formData.title || "",
         formData.categories || "",
-        formData.authors ? formData.authors.split(",") : [],
-        formData.published_date || ""
+        getAuthorsArray(formData.authors),
+        formData.published_date || formData.publishedDate || ""
     );
 
     // Function to handle generating the call number
@@ -37,15 +54,35 @@ const FirstPage: React.FC<FirstPageProps> = ({ onNext, formData, setFormData }) 
             setFormData({ ...formData, callNumber: result.data });
         }
     };
+    // Get display value for authors
+    const getAuthorsDisplayValue = (authors) => {
+        if (!authors) return '';
+
+        if (typeof authors === 'string') {
+            return authors; // Return as-is if it's already a string
+        }
+
+        if (Array.isArray(authors) && authors.length > 0) {
+            // Map through all authors and extract names, then join them
+            return authors
+                .map(author => typeof author === 'string' ? author : author?.name || '')
+                .filter(name => name) // Remove empty entries
+                .join(', ');
+        }
+
+        return '';
+    };
 
     return (
         <Box display="grid" gap={2}>
-            <TextField fullWidth label="Title" name="title" value={formData.book_title} disabled
+            <TextField fullWidth label="Title" name="title" value={formData.book_title || formData.title || ''} disabled
                 slotProps={{ inputLabel: { shrink: true } }} />
-            <TextField fullWidth label="Author(s)" name="authors" value={formData.authors || ''} onChange={handleChange}
-                slotProps={{ inputLabel: { shrink: true } }} />
+            <TextField fullWidth label="Author(s)" name="authors" value={getAuthorsDisplayValue(formData.authors)}
+                onChange={handleChange}
+                slotProps={{ inputLabel: { shrink: true } }}
+            />
             <Box display="flex" gap={2}>
-                <TextField fullWidth label="ISBN13" name="isbn13" value={formData.isbn} onChange={handleChange} />
+                <TextField fullWidth label="ISBN13" name="isbn13" value={formData.isbn || formData.isbn13} onChange={handleChange} />
                 <TextField fullWidth label="ISBN10" name="isbn10" value={formData.isbn10} onChange={handleChange} />
             </Box>
 
@@ -53,7 +90,7 @@ const FirstPage: React.FC<FirstPageProps> = ({ onNext, formData, setFormData }) 
                 slotProps={{ inputLabel: { shrink: true }, input: { inputProps: { min: 1000, max: new Date().getFullYear(), }, }, }} />
             <TextField fullWidth label="Publisher" name="publisher" value={formData.publisher} onChange={handleChange}
                 slotProps={{ inputLabel: { shrink: true } }} />
-            <TextField fullWidth label="Published Date" name="publishedDate" type="date" value={formData.published_date || ''} onChange={handleChange}
+            <TextField fullWidth label="Published Date" name="publishedDate" type="date" value={formData.published_date || formData.publishedDate || ''} onChange={handleChange}
                 slotProps={{ inputLabel: { shrink: true } }} />
             <Box display="flex" gap={2}>
                 <TextField fullWidth label="Edition" name="edition" value={formData.edition}

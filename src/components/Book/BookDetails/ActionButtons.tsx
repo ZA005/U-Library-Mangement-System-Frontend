@@ -3,12 +3,17 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, Typogra
 import { useLocation } from "react-router-dom";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
 import { useRecordNewLoan } from "../../../pages/Circulation/Dialog/BookAndUserDetails/useRecordNewLoan";
-import { Loan } from "../../../types";
+import { Loan } from "../../../types"; import { useNavigate } from "react-router-dom";
+import { PROTECTED_ROUTES } from "../../../config/routeConfig";
+import { Books } from "../../../types";
+
 interface ActionButtonsProps {
     role: string | null;
+    books?: Books;
+    acquisitionData?: unknown;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({ role }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionData }) => {
     const showSnackbar = useSnackbarContext();
     const location = useLocation();
     const book = location.state?.book || JSON.parse(sessionStorage.getItem("book") || "null");
@@ -51,6 +56,15 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role }) => {
     const handleOpenDialog = () => setDialogOpen(true);
     const handleCloseDialog = () => setDialogOpen(false);
 
+    const navigate = useNavigate();
+    const handleCatalogClick = () => {
+        navigate(PROTECTED_ROUTES.CATALOG, {
+            state: {
+                googleBookApiData: books,
+                acquisitionData
+            }
+        });
+    };
     return (
         <>
             <Box display="flex" gap={2} mt={1} mb={2}>
@@ -72,7 +86,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role }) => {
                         </Button>
                     </>
                 ) : (
-                    <Button variant="contained" sx={{ backgroundColor: "#d32f2f" }}>
+                    <Button variant="contained" onClick={handleCatalogClick} sx={{ backgroundColor: "#d32f2f" }}>
                         Catalog
                     </Button>
                 )}

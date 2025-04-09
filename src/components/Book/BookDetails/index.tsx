@@ -2,16 +2,19 @@ import { useState } from "react";
 import { Books } from "../../../types";
 import { Box, Card, Typography, Divider } from "@mui/material";
 import ActionButtons from "./ActionButtons";
+import { useLocation } from "react-router-dom";
 interface BookDetailsProps {
     role: string | null;
     book: Books;
 }
 
 const BookDetails: React.FC<BookDetailsProps> = ({ book, role }) => {
-
+    const location = useLocation();
+    const { acquisitionData } = location.state || {};
     const [expanded, setExpanded] = useState(false);
     const shortDescription = book.description ? book.description.slice(0, 300) + "..." : "";
     const thumbnailInfo = book.thumbnail?.trim() ? book.thumbnail : "https://dummyimage.com/1000x1600/000/fff";
+    const authorsList = book.authors.map((author) => author.name || String(author)).join(", ");
     return (
         <Card sx={{ width: "800px", margin: "20px auto", padding: "20px" }}>
             <Box
@@ -41,7 +44,7 @@ const BookDetails: React.FC<BookDetailsProps> = ({ book, role }) => {
                         {book.title}
                     </Typography>
                     <Typography variant="body1">
-                        <strong>Authors:</strong> {book.authors.join(", ")}
+                        <strong>Author(s):</strong> {authorsList || "Unknown"}
                     </Typography>
                     <Typography variant="body2">
                         <strong>ISBN-10:</strong> {book.isbn10} | <strong>ISBN-13:</strong> {book.isbn13}
@@ -50,7 +53,7 @@ const BookDetails: React.FC<BookDetailsProps> = ({ book, role }) => {
                         <strong>Edition:</strong> {book.edition} {book.series && `- ${book.series}`}
                     </Typography>
 
-                    <ActionButtons role={role} />
+                    <ActionButtons role={role} book={book} acquisitionData={acquisitionData} />
                 </Box>
             </Box>
 
@@ -107,25 +110,33 @@ const BookDetails: React.FC<BookDetailsProps> = ({ book, role }) => {
 
             <Divider sx={{ my: 2 }} />
 
-            <Typography variant="h6" fontWeight="bold" sx={{ my: 2 }}>Catalog Information</Typography>
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-                <Box>
-                    <Typography variant="body1">
-                        <strong>Call Number:</strong> {book.bookCatalog.callNumber}
-                    </Typography>
-                    <Typography variant="body1">
-                        <strong>Collection Type:</strong> {book.bookCatalog.collectionType}
-                    </Typography>
-                </Box>
-                <Box>
-                    <Typography variant="body1">
-                        <strong>Copies Available:</strong> {book.bookCatalog.copies}
-                    </Typography>
-                    <Typography variant="body1">
-                        <strong>Publisher:</strong> {book.publisher}
-                    </Typography>
-                </Box>
-            </Box>
+            {book.bookCatalog ? (
+                <>
+                    <Typography variant="h6" fontWeight="bold" sx={{ my: 2 }}>Catalog Information</Typography>
+                    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
+                        <Box>
+                            <Typography variant="body1">
+                                <strong>Call Number:</strong> {book.bookCatalog.callNumber}
+                            </Typography>
+                            <Typography variant="body1">
+                                <strong>Collection Type:</strong> {book.bookCatalog.collectionType}
+                            </Typography>
+                        </Box>
+                        <Box>
+                            <Typography variant="body1">
+                                <strong>Copies Available:</strong> {book.bookCatalog.copies}
+                            </Typography>
+                            <Typography variant="body1">
+                                <strong>Publisher:</strong> {book.publisher}
+                            </Typography>
+                        </Box>
+                    </Box>
+                </>
+            ) : (
+                <Typography variant="body1" sx={{ my: 2 }}>
+                    No catalog information available
+                </Typography>
+            )}
         </Card>
     );
 };

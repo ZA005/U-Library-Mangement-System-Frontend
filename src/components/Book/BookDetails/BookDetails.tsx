@@ -107,25 +107,33 @@ const BookDetails: React.FC<BookDetailsProps> = ({ book, role }) => {
 
       <Divider sx={{ my: 2 }} />
 
-      <Typography variant="h6" fontWeight="bold" sx={{ my: 2 }}>Catalog Information</Typography>
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-        <Box>
-          <Typography variant="body1">
-            <strong>Call Number:</strong> {book.bookCatalog.callNumber}
-          </Typography>
-          <Typography variant="body1">
-            <strong>Collection Type:</strong> {book.bookCatalog.collectionType}
-          </Typography>
-        </Box>
-        <Box>
-          <Typography variant="body1">
-            <strong>Copies Available:</strong> {book.bookCatalog.copies}
-          </Typography>
-          <Typography variant="body1">
-            <strong>Publisher:</strong> {book.publisher}
-          </Typography>
-        </Box>
-      </Box>
+      {book.bookCatalog ? (
+        <>
+          <Typography variant="h6" fontWeight="bold" sx={{ my: 2 }}>Catalog Information</Typography>
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
+            <Box>
+              <Typography variant="body1">
+                <strong>Call Number:</strong> {book.bookCatalog.callNumber}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Collection Type:</strong> {book.bookCatalog.collectionType}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="body1">
+                <strong>Copies Available:</strong> {book.bookCatalog.copies}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Publisher:</strong> {book.publisher}
+              </Typography>
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <Typography variant="body1" sx={{ my: 2 }}>
+          No catalog information available
+        </Typography>
+      )}
     </Card>
   );
 };
