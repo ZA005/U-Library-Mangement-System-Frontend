@@ -53,7 +53,7 @@ const AdvanceSearchPage: React.FC = () => {
 
     const resetSearch = () => {
         setSearchParams({
-            criteria: [{ idx: "", searchTerm: "", operator: 'AND' }],
+            criteria: [{ idx: "q", searchTerm: "", operator: 'AND' }],
             yearRange: "",
             language: "No limit",
             isAvailableOnly: false,
