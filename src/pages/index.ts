@@ -42,6 +42,9 @@ export const BookInformation = loadable(() => import("./Catalog/Information"), {
 export const AdvanceSearch = loadable(() => import("./Catalog/AdvanceSearch"), {
     fallback: LoadingSpinner(),
 });
+export const BookWeeding = loadable(() => import("./Catalog/BookWeeding"), {
+    fallback: LoadingSpinner(),
+});
 
 
 
