@@ -2,19 +2,23 @@ import React, { useState } from "react";
 import { FormControl, Select, MenuItem, Typography } from "@mui/material";
 
 interface ActionCellProps {
-    type: "menu" | "button";
+    type: "menu" | "button" | "custom";
     buttonText?: string;
     options?: { value: string; label: string }[];
-    onAction: (value: string) => void;
+    onAction?: (value: string) => void;
+    content?: React.ReactNode;
 }
 
-const ActionCell: React.FC<ActionCellProps> = ({ type, buttonText, options, onAction }) => {
+const ActionCell: React.FC<ActionCellProps> = ({ type, buttonText, options, onAction, content }) => {
     const [selectedValue, setSelectedValue] = useState<string>("");
 
     const handleSelectChange = (value: string) => {
-        onAction(value);
+        onAction?.(value);
         setSelectedValue("");
     };
+    if (type === "custom") {
+        return <>{content}</>;
+    }
 
     if (type === "menu") {
         return (
@@ -40,7 +44,7 @@ const ActionCell: React.FC<ActionCellProps> = ({ type, buttonText, options, onAc
     return (
         <Typography
             component="button"
-            onClick={() => onAction("clicked")}
+            onClick={() => onAction?.("clicked")}
             sx={{
                 color: "#d32f2f",
                 background: "none",

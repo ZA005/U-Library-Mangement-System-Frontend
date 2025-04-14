@@ -1,5 +1,6 @@
-import { WeedingInfo } from "../../types/Catalog/WeedingInfo";
-import { createApiClient } from "../api/apiClient"
+import { WeedingInfo } from "../../../types/Catalog/WeedingInfo";
+import { createApiClient } from "../../api/apiClient";
+
 
 const getAllFlaggedBooks = async (): Promise<WeedingInfo[]> => {
     const apiClient = createApiClient('admin');

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import getAllFlaggedBooks from "../../../services/Catalog/getAllFlaggedBooks"
+import getAllFlaggedBooks from "../../../services/Catalog/BookWeeding/getAllFlaggedBooks"
 
 export const useFetchFlaggedBooks = () => {
     const {

@@ -6,18 +6,32 @@ import { Dropdown, DynamicTable, DynamicTableCell, PageTitle } from "../../../co
 import { bookWeedingStatusOptions } from "../../../utils/BookWeedingStatusOptions";
 import { WeedingInfo } from "../../../types/Catalog/WeedingInfo";
 import { useFetchFlaggedBooks } from "./useFetchFlaggedBooks";
+import { useFetchAddFlaggedBooks } from "./useFetchAddFlaggedBooks";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useSnackbarContext } from "../../../contexts/SnackbarContext";
+import renderActionBasedOnStatus from "./redenderActionBasedOnStatus";
 
 const WeedingPage: React.FC = () => {
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
         setHeaderButtons: Dispatch<SetStateAction<ReactNode>>;
         setTitle: Dispatch<SetStateAction<ReactNode>>;
         setSidebarOpen: Dispatch<SetStateAction<boolean>>;
     }>();
 
-    /////////////////////////////////////////////////////////////////////////////////////
+    const { role } = useAuth();
+    const showSnackbar = useSnackbarContext();
+    const { isLoading, data, error: fetchError, refetch } = useFetchFlaggedBooks();
+    const flaggedBooks = Array.isArray(data) ? data : [];
+    const { initiateWeeding, isLoading: isInitiating, data: initiationResult, error: initiationError } =
+        useFetchAddFlaggedBooks();
+
+    const [filter, setFilter] = useState<{
+        criteria?: string;
+        accessionNumber?: string;
+        status: string;
+    }>({
+        status: "FLAGGED",
+    });
 
     useEffect(() => {
         setTitle("Book Weeding - Library Management System");
@@ -32,17 +46,52 @@ const WeedingPage: React.FC = () => {
         };
     }, [setHeaderButtons, setTitle, setSidebarOpen]);
 
-    /////////////////////////////////////////////////////////////////////////////////////
-    const [filter, setFilter] = useState<{ criteria?: string, accessionNo?: string, status: string }>({
-        status: 'FLAGGED'
-    });
-    const { isLoading, data: flaggedBooks = [], error, refetch } = useFetchFlaggedBooks();
-    const handleFilterChange = (field: keyof typeof filter, value: string) => {
-        setFilter(prev => ({ ...prev, [field]: value }));
-    };
-    const handleViewReferences = () => {
+    useEffect(() => {
+        if (fetchError) {
+            console.error("Fetch error:", fetchError);
+            showSnackbar("Unable to load books. Please try again later.", "error");
+        }
+    }, [fetchError, showSnackbar]);
 
-    }
+    const handleFilterChange = (field: keyof typeof filter, value: string) => {
+        setFilter((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleOpenModal = (weedInfo: WeedingInfo) => {
+        console.log("Open modal for:", weedInfo);
+    };
+
+    const onOverrideWeeding = (id: number) => {
+        console.log("Override weeding for ID:", id);
+    };
+
+    const initiateWeedingProcess = () => {
+        const initiator = role || "SYSTEM";
+        initiateWeeding(initiator, {
+            onSuccess: () => {
+                showSnackbar("Weeding process initiated successfully.", "success");
+                refetch();
+            },
+            onError: (err) => {
+                showSnackbar(`Failed to initiate weeding process: ${err.message}`, "error");
+            },
+        });
+    };
+
+    const filteredBooks = flaggedBooks.filter((book) => {
+        const matchesCriteria = filter.criteria
+            ? book.weedingCriteriaDdc?.toLowerCase().includes(filter.criteria.toLowerCase())
+            : true;
+        const matchesAccession = filter.accessionNumber
+            ? book.accessionNumber?.toLowerCase().includes(filter.accessionNumber.toLowerCase())
+            : true;
+        const matchesStatus =
+            !filter.status || filter.status === "All Status" ? true : book.weedStatus === filter.status;
+
+        return matchesCriteria && matchesAccession && matchesStatus;
+    });
+
+
     const columns = [
         { key: "accessionNumber", label: "Accession Number" },
         { key: "callNumber", label: "Call Number" },
@@ -51,28 +100,27 @@ const WeedingPage: React.FC = () => {
         { key: "weedingCriteriaDdc", label: "Weeding Criteria" },
         {
             key: "action",
-            label: "",
+            label: "Status/Action",
             render: (row: WeedingInfo) => (
                 <DynamicTableCell
-                    type="button"
-                    buttonText="View Book Reference"
-                    onAction={() => { handleViewReferences(row) }}
+                    type="custom"
+                    content={renderActionBasedOnStatus(row, handleOpenModal, onOverrideWeeding, role || "")}
                 />
             ),
-        }
-    ]
+        },
+    ];
+
     return (
         <>
             <PageTitle title="Manage Book Weeding" />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+                <Box sx={{ display: "flex", gap: 2, maxWidth: "70%" }}>
                     <TextField
                         size="small"
                         label="Search Criteria"
                         variant="outlined"
-                        fullWidth
-                        value={filter.criteria || ''}
-                        onChange={(e) => handleFilterChange('criteria', e.target.value)}
+                        value={filter.criteria || ""}
+                        onChange={(e) => handleFilterChange("criteria", e.target.value)}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -83,14 +131,12 @@ const WeedingPage: React.FC = () => {
                             },
                         }}
                     />
-
                     <TextField
                         size="small"
                         label="Search Accession Number"
                         variant="outlined"
-                        fullWidth
-                        value={filter.accessionNo || ''}
-                        onChange={(e) => handleFilterChange('accessionNumber', e.target.value)}
+                        value={filter.accessionNumber || ""}
+                        onChange={(e) => handleFilterChange("accessionNumber", e.target.value)}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -101,15 +147,17 @@ const WeedingPage: React.FC = () => {
                             },
                         }}
                     />
-
                     <Dropdown
                         label="Select Status"
-                        value={filter.status || ''}
-                        onChange={(e) => handleFilterChange('status', e.target.value as string)}
-                        options={bookWeedingStatusOptions.map((status) => ({ id: status.id, name: status.name }))}
+                        value={filter.status}
+                        onChange={(e) => handleFilterChange("status", e.target.value as string)}
+                        options={bookWeedingStatusOptions.map((status) => ({
+                            id: status.id,
+                            name: status.name,
+                        }))}
                     />
                 </Box>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ display: "flex", gap: 2 }}>
                     <Button
                         variant="text"
                         sx={{
@@ -127,7 +175,8 @@ const WeedingPage: React.FC = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                    // onClick={}
+                        onClick={initiateWeedingProcess}
+                        disabled={isInitiating}
                     >
                         Initiate Book Weeding Process
                     </Button>
@@ -136,15 +185,21 @@ const WeedingPage: React.FC = () => {
             <Box mt={2}>
                 <DynamicTable
                     columns={columns}
-                    data={flaggedBooks}
+                    data={filteredBooks}
                     loading={isLoading}
-                    error={error ? error.message : undefined}
+                    customMsg={
+                        !isLoading && flaggedBooks.length === 0
+                            ? "No books flagged for weeding."
+                            : !isLoading && filteredBooks.length === 0
+                                ? "No matching records found with the current filters."
+                                : "No books available"
+                    }
                     customSize="200px"
                 />
-            </Box>
 
+            </Box>
         </>
     );
-}
+};
 
 export default WeedingPage;
