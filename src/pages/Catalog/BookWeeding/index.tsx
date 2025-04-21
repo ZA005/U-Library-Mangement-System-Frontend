@@ -10,6 +10,11 @@ import { useFetchAddFlaggedBooks } from "./useFetchAddFlaggedBooks";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
 import renderActionBasedOnStatus from "./redenderActionBasedOnStatus";
+import ReviewModal from "./Dialog/Dialog";
+import { useWeedBook } from "./Dialog/useWeedBook";
+import { useArchiveBook } from "./Dialog/useArchiveBook";
+import { useFinalizeWeedingProcess } from "./Dialog/useFinalizeWeedingProcess";
+import { useOverrideWeeding } from "./Dialog/useOverrideWeeding";
 
 const WeedingPage: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -20,18 +25,25 @@ const WeedingPage: React.FC = () => {
 
     const { role } = useAuth();
     const showSnackbar = useSnackbarContext();
+    const [openModal, setOpenModal] = useState<boolean>(false);
     const { isLoading, data, error: fetchError, refetch } = useFetchFlaggedBooks();
     const flaggedBooks = Array.isArray(data) ? data : [];
-    const { initiateWeeding, isLoading: isInitiating, data: initiationResult, error: initiationError } =
-        useFetchAddFlaggedBooks();
-
-    const [filter, setFilter] = useState<{
-        criteria?: string;
-        accessionNumber?: string;
-        status: string;
-    }>({
-        status: "FLAGGED",
+    const [weedInfos, setWeedInfos] = useState<WeedingInfo[]>([]);
+    const [currentWeedInfo, setCurrentWeedInfo] = useState<WeedingInfo | null>(null);
+    const [isOverride, setIsOverride] = useState<boolean>(false);
+    const [isArchiving, setIsArchiving] = useState<boolean>(false);
+    const [processNotes, setProcessNotes] = useState<string>("");
+    const [allProcessed, setAllProcessed] = useState<boolean>(false);
+    const [filter, setFilter] = useState<{ criteria?: string, accessionNumber?: string, status: string }>({
+        status: role === "ADMIN" ? "REVIEWED" : "FLAGGED",
     });
+    const { initiateWeeding, isLoading: isInitiating, error: initiationError } = useFetchAddFlaggedBooks();
+
+    // Use the provided hooks
+    const { mutate: weedBook, isPending: isWeeding, error: weedError } = useWeedBook();
+    const { mutate: overrideWeeding, isPending: isOverriding, error: overrideError } = useOverrideWeeding();
+    const { mutate: archiveBook, isPending: isArchivingPending, error: archiveError } = useArchiveBook();
+    const { mutate: finalizeWeedingProcess, isPending: isFinalizing, error: finalizeError } = useFinalizeWeedingProcess();
 
     useEffect(() => {
         setTitle("Book Weeding - Library Management System");
@@ -53,16 +65,104 @@ const WeedingPage: React.FC = () => {
         }
     }, [fetchError, showSnackbar]);
 
+    useEffect(() => {
+        setWeedInfos(flaggedBooks);
+    }, [flaggedBooks]);
+
+    useEffect(() => {
+        if (weedError) {
+            showSnackbar(`Failed to process weeding: ${weedError.message}`, "error");
+        }
+        if (overrideError) {
+            showSnackbar(`Failed to override weeding: ${overrideError.message}`, "error");
+        }
+        if (archiveError) {
+            showSnackbar(`Failed to archive book: ${archiveError.message}`, "error");
+        }
+        if (finalizeError) {
+            showSnackbar(`Failed to finalize process: ${finalizeError.message}`, "error");
+        }
+    }, [weedError, overrideError, archiveError, finalizeError, showSnackbar]);
+
     const handleFilterChange = (field: keyof typeof filter, value: string) => {
         setFilter((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleOpenModal = (weedInfo: WeedingInfo) => {
-        console.log("Open modal for:", weedInfo);
+    const handleOpenModal = (weedInfo: WeedingInfo, override = false, archiving = false) => {
+        setCurrentWeedInfo(weedInfo);
+        setIsOverride(override);
+        setIsArchiving(archiving);
+        setOpenModal(true);
     };
 
-    const onOverrideWeeding = (id: number) => {
-        console.log("Override weeding for ID:", id);
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setIsOverride(false);
+        setIsArchiving(false);
+        setCurrentWeedInfo(null);
+    };
+
+    const onOverrideWeeding = (bookId: number) => {
+        const bookToOverride = weedInfos.find(book => book.id === bookId);
+        if (bookToOverride) {
+            handleOpenModal(bookToOverride, true);
+        } else {
+            showSnackbar("Book not found for overriding.", "error");
+        }
+    };
+
+    const handleWeedBook = (bookWeedingStatusNotes: string) => {
+        if (currentWeedInfo) {
+            const newStatus = role === "LIBRARIAN" ? "REVIEWED" : "WEEDED";
+            const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes, weedStatus: newStatus };
+            weedBook(updatedWeedInfo, {
+                onSuccess: () => {
+                    showSnackbar(
+                        newStatus === "REVIEWED"
+                            ? "Book marked for review by Library Director."
+                            : "Book successfully marked for weeding.",
+                        "success"
+                    );
+                    refetch();
+                },
+                onError: (err) => {
+                    showSnackbar(`Failed to process weeding: ${err.message}`, "error");
+                },
+            });
+        }
+    };
+
+    const finalizeArchiving = (bookWeedingStatusNotes: string) => {
+        if (currentWeedInfo) {
+            const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes, weedStatus: "ARCHIVED" };
+            archiveBook(updatedWeedInfo, {
+                onSuccess: () => {
+                    showSnackbar("Book successfully archived.", "success");
+                    refetch();
+                },
+                onError: (err) => {
+                    showSnackbar(`Failed to archive book: ${err.message}`, "error");
+                },
+            });
+        }
+    };
+
+    const finalizeProcess = (bookWeedingStatusNotes: string) => {
+        if (currentWeedInfo) {
+            finalizeWeedingProcess(
+                { weedProcessId: currentWeedInfo.weedProcessId, notes: bookWeedingStatusNotes },
+                {
+                    onSuccess: () => {
+                        showSnackbar("Weeding process successfully finalized.", "success");
+                        setAllProcessed(false);
+                        refetch();
+                    },
+                    onError: (err) => {
+                        showSnackbar(`Failed to finalize process: ${err.message}`, "error");
+                    },
+                }
+            );
+        }
     };
 
     const initiateWeedingProcess = () => {
@@ -90,7 +190,6 @@ const WeedingPage: React.FC = () => {
 
         return matchesCriteria && matchesAccession && matchesStatus;
     });
-
 
     const columns = [
         { key: "accessionNumber", label: "Accession Number" },
@@ -196,8 +295,45 @@ const WeedingPage: React.FC = () => {
                     }
                     customSize="200px"
                 />
-
             </Box>
+            {currentWeedInfo && (
+                <ReviewModal
+                    open={openModal}
+                    handleClose={handleCloseModal}
+                    onConfirm={
+                        isArchiving
+                            ? finalizeArchiving
+                            : allProcessed
+                                ? finalizeProcess
+                                : isOverride
+                                    ? (notes) => {
+                                        if (currentWeedInfo) {
+                                            const updatedWeedInfo = {
+                                                ...currentWeedInfo,
+                                                bookWeedingStatusNotes: notes,
+                                                weedStatus: "KEPT",
+                                            };
+                                            overrideWeeding(updatedWeedInfo, {
+                                                onSuccess: () => {
+                                                    showSnackbar("Book successfully kept.", "success");
+                                                    refetch();
+                                                },
+                                                onError: (err) => {
+                                                    showSnackbar(`Failed to keep book: ${err.message}`, "error");
+                                                },
+                                            });
+                                        }
+                                    }
+                                    : handleWeedBook
+                    }
+                    weedInfo={currentWeedInfo}
+                    isOverride={isOverride}
+                    processNotes={processNotes}
+                    setProcessNotes={setProcessNotes}
+                    isFinalizingProcess={allProcessed}
+                    isArchiving={isArchiving}
+                />
+            )}
         </>
     );
 };

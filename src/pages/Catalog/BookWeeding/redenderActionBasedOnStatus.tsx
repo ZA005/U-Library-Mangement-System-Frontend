@@ -1,4 +1,4 @@
-import { Button, Box, Typography } from "@mui/material"; // Use MUI Box and Typography
+import { Button, Box, Typography } from "@mui/material";
 import { WeedingInfo } from "../../../types/Catalog/WeedingInfo";
 import { statusToDisplay } from "../../../utils/weedingStatus";
 
@@ -11,7 +11,7 @@ const renderActionBasedOnStatus = (
     const statusInfo = statusToDisplay(weedInfo.weedStatus);
 
     if (statusInfo) {
-        if (weedInfo.weedStatus === "REVIEWED" && role === "LIBRARY DIRECTOR") {
+        if (weedInfo.weedStatus === "REVIEWED" && (role === "ADMIN" || role === "LIBRARY DIRECTOR")) {
             return (
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                     <Button
@@ -19,19 +19,23 @@ const renderActionBasedOnStatus = (
                         variant="contained"
                         size="small"
                         onClick={() => handleOpenModal(weedInfo)}
+                        sx={{ textTransform: "none" }}
                     >
                         Weed
                     </Button>
                     <Button
-                        onClick={() => onOverrideWeeding(weedInfo.id)}
+                        color="success"
                         variant="outlined"
                         size="small"
+                        onClick={() => onOverrideWeeding(weedInfo.id)}
+                        sx={{ textTransform: "none" }}
                     >
                         Override
                     </Button>
                 </Box>
             );
         }
+
         if (weedInfo.weedStatus === "FLAGGED" && role === "LIBRARIAN") {
             return (
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -40,20 +44,23 @@ const renderActionBasedOnStatus = (
                         variant="contained"
                         size="small"
                         onClick={() => handleOpenModal(weedInfo)}
+                        sx={{ textTransform: "none" }}
                     >
                         Weed
                     </Button>
                     <Button
-                        onClick={() => onOverrideWeeding(weedInfo.id)}
+                        color="success"
                         variant="outlined"
                         size="small"
+                        onClick={() => onOverrideWeeding(weedInfo.id)}
+                        sx={{ textTransform: "none" }}
                     >
                         Override
                     </Button>
                 </Box>
             );
         }
-        // Render status text with color and icon for other statuses
+
         return (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Typography color={statusInfo.color} sx={{ fontWeight: "medium" }}>
@@ -62,6 +69,7 @@ const renderActionBasedOnStatus = (
             </Box>
         );
     }
+
     return null;
 };
 
