@@ -60,6 +60,16 @@ const ProtectedRoutes = () => {
             />
 
             <Route
+                path={PROTECTED_ROUTES.WEEDINGCRITERIA}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.WeedingCriteria />
+                    </PrivateRoute>
+                }
+            />
+
+
+            <Route
                 path={PROTECTED_ROUTES.ACCESSION}
                 element={
                     <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>

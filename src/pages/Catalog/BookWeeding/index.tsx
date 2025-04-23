@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Menu, Search } from "lucide-react";
 import { Dropdown, DynamicTable, DynamicTableCell, PageTitle } from "../../../components";
 import { bookWeedingStatusOptions } from "../../../utils/BookWeedingStatusOptions";
@@ -15,6 +15,7 @@ import { useWeedBook } from "./Dialog/useWeedBook";
 import { useArchiveBook } from "./Dialog/useArchiveBook";
 import { useFinalizeWeedingProcess } from "./Dialog/useFinalizeWeedingProcess";
 import { useOverrideWeeding } from "./Dialog/useOverrideWeeding";
+import { PROTECTED_ROUTES } from "../../../config/routeConfig";
 
 const WeedingPage: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -24,6 +25,7 @@ const WeedingPage: React.FC = () => {
     }>();
 
     const { role } = useAuth();
+    const navigate = useNavigate();
     const showSnackbar = useSnackbarContext();
     const [openModal, setOpenModal] = useState<boolean>(false);
     const { isLoading, data, error: fetchError, refetch } = useFetchFlaggedBooks();
@@ -267,7 +269,7 @@ const WeedingPage: React.FC = () => {
                                 color: "#d13333",
                             },
                         }}
-                    // onClick={() => navigate('/admin/catalog/management/criteria')}
+                        onClick={() => navigate(PROTECTED_ROUTES.WEEDINGCRITERIA)}
                     >
                         View Criteria
                     </Button>

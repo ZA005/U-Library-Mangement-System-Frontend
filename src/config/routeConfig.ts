@@ -19,6 +19,7 @@ export const PROTECTED_ROUTES = {
     BOOKINFORMATION: "/library/book/:isbn",
     ADVANCESEARCH: "/library/advance-search",
     BOOKWEEDING: "/library/book-weeding",
+    WEEDINGCRITERIA: "/library/book-weeding/criteria",
     //////////////////////////////////////
 
     CURRICULUM: "/curriculum",
