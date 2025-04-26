@@ -69,7 +69,9 @@ export const BookReferencing = loadable(() => import("./Curriculum/Referencing")
 export const CurriculumBrowse = loadable(() => import("./Curriculum/Browse"), {
     fallback: LoadingSpinner()
 })
-
+export const CurriculumProgram = loadable(() => import("./Curriculum/Program"), {
+    fallback: LoadingSpinner()
+})
 
 
 

@@ -114,6 +114,15 @@ const ProtectedRoutes = () => {
             />
 
             <Route
+                path={PROTECTED_ROUTES.CURRICULUM_PROGRAM}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN", "STUDENT", "PROGRAM_HEAD"]}>
+                        <Pages.CurriculumProgram />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
                 path={PROTECTED_ROUTES.BOOK_REFERENCING}
                 element={
                     <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
