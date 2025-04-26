@@ -9,7 +9,7 @@ export const PROTECTED_ROUTES = {
     //////////////////////////////////////
 
     BROWSE: "/library/browse",
-
+    ACCOUNT_OVERVIEW: "/library/account",
     //////////////////////////////////////
 
     CATALOG: "/library/accession/catalog/:isbn",

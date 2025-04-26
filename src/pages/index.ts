@@ -14,6 +14,9 @@ export const ActivateUser = loadable(() => import("./AccountActivation/ActivateU
 export const AccountLibraryCard = loadable(() => import("./AccountActivation/AccountLibraryCard"), {
     fallback: LoadingSpinner(),
 });
+export const AccountOverview = loadable(() => import("./AccountOverview"), {
+    fallback: LoadingSpinner(),
+});
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
