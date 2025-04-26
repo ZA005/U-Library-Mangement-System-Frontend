@@ -1,5 +1,5 @@
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { IconButton, Container, Box, TextField, InputAdornment } from "@mui/material";
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
+import { IconButton, Container, Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { Menu } from "lucide-react";
 import LeftContent from "./leftContent";
