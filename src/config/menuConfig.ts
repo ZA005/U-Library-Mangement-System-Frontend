@@ -40,9 +40,23 @@ export const menuItems = {
     ],
     STUDENT: [
         { label: "Account Management", path: GENERAL_ROUTES.HOME, icon: UserIcon },
+        {
+            label: "Curriculum",
+            children: [
+                { label: "Browse", path: PROTECTED_ROUTES.CURRICULUM_BROWSE },
+            ],
+            icon: CurriculumIcon,
+        },
     ],
     PROGRAMHEAD: [
-        { label: "Curriculum", path: GENERAL_ROUTES.HOME, icon: CurriculumIcon },
+        {
+            label: "Curriculum",
+            children: [
+                { label: "Browse", path: PROTECTED_ROUTES.CURRICULUM_BROWSE },
+                { label: "Book Referencing", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+            ],
+            icon: CurriculumIcon,
+        },
     ],
     FACULTY: [
         { label: "Catalog", path: PROTECTED_ROUTES.CATALOG, icon: CatalogIcon },
