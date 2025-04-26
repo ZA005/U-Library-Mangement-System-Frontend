@@ -1,7 +1,10 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { IconButton, Container, Box, TextField, InputAdornment } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import { Search, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
+import LeftContent from "./leftContent";
+import RightContent from "./RightContent";
+import { PageTitle } from "../../../components";
 
 const BrowseCurriculum: React.FC = () => {
 
@@ -31,6 +34,18 @@ const BrowseCurriculum: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
     return (
         <>
+            <PageTitle title="Courses and Programs" />
+            <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
+                <Box display="flex" justifyContent="space-between">
+                    <Box flex={1}>
+                        <LeftContent />
+                    </Box>
+
+                    <Box flex={1}>
+                        <RightContent />
+                    </Box>
+                </Box>
+            </Container>
         </>
     )
 }
