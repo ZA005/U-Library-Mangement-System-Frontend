@@ -10,8 +10,7 @@ import { useFetchAllCourseByRevision } from "../Uploader/Course/useFetchAllCours
 import ViewBookReference from "./Dialog/View/ViewBookReference";
 import { useDialog } from "../../../hooks/useDialog";
 import { Program, Course } from "../../../types";
-import { Search } from "lucide-react";
-import { Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 
 const BookReferencing: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////

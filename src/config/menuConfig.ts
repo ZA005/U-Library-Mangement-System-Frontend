@@ -31,6 +31,7 @@ export const menuItems = {
         {
             label: "Curriculum",
             children: [
+                { label: "Browse", path: PROTECTED_ROUTES.CURRICULUM_BROWSE },
                 { label: "Upload Manager", path: PROTECTED_ROUTES.UPLOAD_MANAGER },
                 { label: "Book Referencing", path: PROTECTED_ROUTES.BOOK_REFERENCING },
             ],
