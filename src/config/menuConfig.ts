@@ -39,7 +39,6 @@ export const menuItems = {
         },
     ],
     STUDENT: [
-        { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
         {
             label: "Curriculum",
             children: [
@@ -47,6 +46,7 @@ export const menuItems = {
             ],
             icon: CurriculumIcon,
         },
+        { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
     ],
     PROGRAMHEAD: [
         {
