@@ -99,6 +99,10 @@ export const TransactionHistory = loadable(() => import("./Circulation/Transacti
 export const Overdues = loadable(() => import("./Circulation/OverseeOverdue"), {
     fallback: LoadingSpinner()
 })
+
+export const IndividualHistory = loadable(() => import("./Circulation/IndividualHistory"), {
+    fallback: LoadingSpinner()
+})
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
