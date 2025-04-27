@@ -9,13 +9,15 @@ import { useFetchFlaggedBooks } from "./useFetchFlaggedBooks";
 import { useFetchAddFlaggedBooks } from "./useFetchAddFlaggedBooks";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
-import renderActionBasedOnStatus from "./redenderActionBasedOnStatus";
 import ReviewModal from "./Dialog/Dialog";
 import { useWeedBook } from "./Dialog/useWeedBook";
 import { useArchiveBook } from "./Dialog/useArchiveBook";
 import { useFinalizeWeedingProcess } from "./Dialog/useFinalizeWeedingProcess";
 import { useOverrideWeeding } from "./Dialog/useOverrideWeeding";
 import { PROTECTED_ROUTES } from "../../../config/routeConfig";
+import ConfirmationDialog from "../WeedingCriteria/Dialog";
+import { useQueryClient } from "@tanstack/react-query";
+import renderActionBasedOnStatus from "./redenderActionBasedOnStatus";
 
 const WeedingPage: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -27,25 +29,27 @@ const WeedingPage: React.FC = () => {
     const { role } = useAuth();
     const navigate = useNavigate();
     const showSnackbar = useSnackbarContext();
+    const queryClient = useQueryClient();
     const [openModal, setOpenModal] = useState<boolean>(false);
+    const [openArchiveDialog, setOpenArchiveDialog] = useState<boolean>(false);
     const { isLoading, data, error: fetchError, refetch } = useFetchFlaggedBooks();
-    const flaggedBooks = Array.isArray(data) ? data : [];
+    const flaggedBooks = React.useMemo(() => (Array.isArray(data) ? data : []), [data]);
     const [weedInfos, setWeedInfos] = useState<WeedingInfo[]>([]);
     const [currentWeedInfo, setCurrentWeedInfo] = useState<WeedingInfo | null>(null);
     const [isOverride, setIsOverride] = useState<boolean>(false);
     const [isArchiving, setIsArchiving] = useState<boolean>(false);
     const [processNotes, setProcessNotes] = useState<string>("");
     const [allProcessed, setAllProcessed] = useState<boolean>(false);
-    const [filter, setFilter] = useState<{ criteria?: string, accessionNumber?: string, status: string }>({
+    const [archiveNotes, setArchiveNotes] = useState<string>("");
+    const [filter, setFilter] = useState<{ criteria?: string; accessionNumber?: string; status: string }>({
         status: role === "ADMIN" ? "REVIEWED" : "FLAGGED",
     });
-    const { initiateWeeding, isLoading: isInitiating, error: initiationError } = useFetchAddFlaggedBooks();
+    const { initiateWeeding, isLoading: isInitiating } = useFetchAddFlaggedBooks();
 
-    // Use the provided hooks
-    const { mutate: weedBook, isPending: isWeeding, error: weedError } = useWeedBook();
-    const { mutate: overrideWeeding, isPending: isOverriding, error: overrideError } = useOverrideWeeding();
-    const { mutate: archiveBook, isPending: isArchivingPending, error: archiveError } = useArchiveBook();
-    const { mutate: finalizeWeedingProcess, isPending: isFinalizing, error: finalizeError } = useFinalizeWeedingProcess();
+    const { mutate: weedBook, error: weedError, isPending: isWeeding } = useWeedBook();
+    const { mutate: overrideWeeding, error: overrideError } = useOverrideWeeding();
+    const { mutate: archiveBook, error: archiveError, isPending: isArchivingBook } = useArchiveBook();
+    const { mutate: finalizeWeedingProcess, error: finalizeError } = useFinalizeWeedingProcess();
 
     useEffect(() => {
         setTitle("Book Weeding - Library Management System");
@@ -68,8 +72,17 @@ const WeedingPage: React.FC = () => {
     }, [fetchError, showSnackbar]);
 
     useEffect(() => {
-        setWeedInfos(flaggedBooks);
-    }, [flaggedBooks]);
+        console.log("flaggedBooks:", flaggedBooks);
+        // Validate WeedingInfo objects
+        const validBooks = flaggedBooks.filter(
+            (book) => book?.id && book?.bookTitle && book?.weedStatus
+        );
+        if (flaggedBooks.length !== validBooks.length) {
+            console.warn("Invalid WeedingInfo objects detected:", flaggedBooks);
+            showSnackbar("Some books have invalid data. Please check the data source.", "warning");
+        }
+        setWeedInfos(validBooks);
+    }, [flaggedBooks, showSnackbar]);
 
     useEffect(() => {
         if (weedError) {
@@ -91,6 +104,12 @@ const WeedingPage: React.FC = () => {
     };
 
     const handleOpenModal = (weedInfo: WeedingInfo, override = false, archiving = false) => {
+        if (!weedInfo?.id || !weedInfo?.bookTitle) {
+            console.error("Invalid WeedingInfo:", weedInfo);
+            showSnackbar("Cannot open modal: Invalid book data.", "error");
+            return;
+        }
+        console.log("handleOpenModal: weedInfo =", weedInfo);
         setCurrentWeedInfo(weedInfo);
         setIsOverride(override);
         setIsArchiving(archiving);
@@ -101,11 +120,21 @@ const WeedingPage: React.FC = () => {
         setOpenModal(false);
         setIsOverride(false);
         setIsArchiving(false);
-        setCurrentWeedInfo(null);
+        // Preserve currentWeedInfo for archive dialog
+        setArchiveNotes("");
+    };
+
+    const handleCloseArchiveDialog = () => {
+        setOpenArchiveDialog(false);
+        setArchiveNotes("");
+        // Reset currentWeedInfo only if no mutation is pending
+        if (!isWeeding && !isArchivingBook) {
+            setCurrentWeedInfo(null);
+        }
     };
 
     const onOverrideWeeding = (bookId: number) => {
-        const bookToOverride = weedInfos.find(book => book.id === bookId);
+        const bookToOverride = weedInfos.find((book) => book.id === bookId);
         if (bookToOverride) {
             handleOpenModal(bookToOverride, true);
         } else {
@@ -114,9 +143,21 @@ const WeedingPage: React.FC = () => {
     };
 
     const handleWeedBook = (bookWeedingStatusNotes: string) => {
-        if (currentWeedInfo) {
-            const newStatus = role === "LIBRARIAN" ? "REVIEWED" : "WEEDED";
-            const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes, weedStatus: newStatus };
+        if (!currentWeedInfo) {
+            console.error("handleWeedBook: currentWeedInfo is null");
+            showSnackbar("No book selected for weeding.", "error");
+            return;
+        }
+
+        console.log("handleWeedBook: currentWeedInfo =", currentWeedInfo);
+        const newStatus = role === "LIBRARIAN" ? "REVIEWED" : "WEEDED";
+        const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes, weedStatus: newStatus };
+
+        if (role === "ADMIN" && newStatus === "WEEDED") {
+            setArchiveNotes(bookWeedingStatusNotes);
+            setOpenArchiveDialog(true);
+            setOpenModal(false);
+        } else {
             weedBook(updatedWeedInfo, {
                 onSuccess: () => {
                     showSnackbar(
@@ -125,6 +166,9 @@ const WeedingPage: React.FC = () => {
                             : "Book successfully marked for weeding.",
                         "success"
                     );
+                    handleCloseModal();
+                    setCurrentWeedInfo(null);
+                    queryClient.invalidateQueries({ queryKey: ["flaggedBooks"] });
                     refetch();
                 },
                 onError: (err) => {
@@ -134,37 +178,95 @@ const WeedingPage: React.FC = () => {
         }
     };
 
-    const finalizeArchiving = (bookWeedingStatusNotes: string) => {
-        if (currentWeedInfo) {
-            const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes, weedStatus: "ARCHIVED" };
-            archiveBook(updatedWeedInfo, {
-                onSuccess: () => {
-                    showSnackbar("Book successfully archived.", "success");
-                    refetch();
-                },
-                onError: (err) => {
-                    showSnackbar(`Failed to archive book: ${err.message}`, "error");
-                },
-            });
+    const handleConfirmArchive = () => {
+        if (!currentWeedInfo) {
+            console.error("handleConfirmArchive: currentWeedInfo is null");
+            showSnackbar("No book selected for archiving.", "error");
+            return;
         }
+
+        const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes: archiveNotes, weedStatus: "ARCHIVED" };
+        archiveBook(updatedWeedInfo, {
+            onSuccess: () => {
+                showSnackbar("Book successfully archived.", "success");
+                handleCloseArchiveDialog();
+                setCurrentWeedInfo(null);
+                queryClient.invalidateQueries({ queryKey: ["flaggedBooks"] });
+                refetch();
+            },
+            onError: (err) => {
+                showSnackbar(`Failed to archive book: ${err.message}`, "error");
+            },
+        });
+    };
+
+    const handleConfirmWeed = () => {
+        if (!currentWeedInfo) {
+            console.error("handleConfirmWeed: currentWeedInfo is null");
+            showSnackbar("No book selected for weeding.", "error");
+            return;
+        }
+
+        const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes: archiveNotes, weedStatus: "WEEDED" };
+        weedBook(updatedWeedInfo, {
+            onSuccess: () => {
+                showSnackbar("Book successfully marked for weeding.", "success");
+                handleCloseArchiveDialog();
+                setCurrentWeedInfo(null);
+                queryClient.invalidateQueries({ queryKey: ["flaggedBooks"] });
+                refetch();
+            },
+            onError: (err) => {
+                showSnackbar(`Failed to process weeding: ${err.message}`, "error");
+            },
+        });
+    };
+
+    const finalizeArchiving = (bookWeedingStatusNotes: string) => {
+        if (!currentWeedInfo) {
+            console.error("finalizeArchiving: currentWeedInfo is null");
+            showSnackbar("No book selected for archiving.", "error");
+            return;
+        }
+
+        const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes, weedStatus: "ARCHIVED" };
+        archiveBook(updatedWeedInfo, {
+            onSuccess: () => {
+                showSnackbar("Book successfully archived.", "success");
+                handleCloseModal();
+                setCurrentWeedInfo(null);
+                queryClient.invalidateQueries({ queryKey: ["flaggedBooks"] });
+                refetch();
+            },
+            onError: (err) => {
+                showSnackbar(`Failed to archive book: ${err.message}`, "error");
+            },
+        });
     };
 
     const finalizeProcess = (bookWeedingStatusNotes: string) => {
-        if (currentWeedInfo) {
-            finalizeWeedingProcess(
-                { weedProcessId: currentWeedInfo.weedProcessId, notes: bookWeedingStatusNotes },
-                {
-                    onSuccess: () => {
-                        showSnackbar("Weeding process successfully finalized.", "success");
-                        setAllProcessed(false);
-                        refetch();
-                    },
-                    onError: (err) => {
-                        showSnackbar(`Failed to finalize process: ${err.message}`, "error");
-                    },
-                }
-            );
+        if (!currentWeedInfo) {
+            console.error("finalizeProcess: currentWeedInfo is null");
+            showSnackbar("No book selected for finalizing.", "error");
+            return;
         }
+
+        finalizeWeedingProcess(
+            { weedProcessId: currentWeedInfo.weedProcessId, notes: bookWeedingStatusNotes },
+            {
+                onSuccess: () => {
+                    showSnackbar("Weeding process successfully finalized.", "success");
+                    setAllProcessed(false);
+                    handleCloseModal();
+                    setCurrentWeedInfo(null);
+                    queryClient.invalidateQueries({ queryKey: ["flaggedBooks"] });
+                    refetch();
+                },
+                onError: (err) => {
+                    showSnackbar(`Failed to finalize process: ${err.message}`, "error");
+                },
+            }
+        );
     };
 
     const initiateWeedingProcess = () => {
@@ -172,6 +274,7 @@ const WeedingPage: React.FC = () => {
         initiateWeeding(initiator, {
             onSuccess: () => {
                 showSnackbar("Weeding process initiated successfully.", "success");
+                queryClient.invalidateQueries({ queryKey: ["flaggedBooks"] });
                 refetch();
             },
             onError: (err) => {
@@ -309,22 +412,28 @@ const WeedingPage: React.FC = () => {
                                 ? finalizeProcess
                                 : isOverride
                                     ? (notes) => {
-                                        if (currentWeedInfo) {
-                                            const updatedWeedInfo = {
-                                                ...currentWeedInfo,
-                                                bookWeedingStatusNotes: notes,
-                                                weedStatus: "KEPT",
-                                            };
-                                            overrideWeeding(updatedWeedInfo, {
-                                                onSuccess: () => {
-                                                    showSnackbar("Book successfully kept.", "success");
-                                                    refetch();
-                                                },
-                                                onError: (err) => {
-                                                    showSnackbar(`Failed to keep book: ${err.message}`, "error");
-                                                },
-                                            });
+                                        if (!currentWeedInfo) {
+                                            console.error("overrideWeeding: currentWeedInfo is null");
+                                            showSnackbar("No book selected for overriding.", "error");
+                                            return;
                                         }
+                                        const updatedWeedInfo = {
+                                            ...currentWeedInfo,
+                                            bookWeedingStatusNotes: notes,
+                                            weedStatus: "KEPT",
+                                        };
+                                        overrideWeeding(updatedWeedInfo, {
+                                            onSuccess: () => {
+                                                showSnackbar("Book successfully kept.", "success");
+                                                handleCloseModal();
+                                                setCurrentWeedInfo(null);
+                                                queryClient.invalidateQueries({ queryKey: ["flaggedBooks"] });
+                                                refetch();
+                                            },
+                                            onError: (err) => {
+                                                showSnackbar(`Failed to keep book: ${err.message}`, "error");
+                                            },
+                                        });
                                     }
                                     : handleWeedBook
                     }
@@ -336,6 +445,21 @@ const WeedingPage: React.FC = () => {
                     isArchiving={isArchiving}
                 />
             )}
+            <ConfirmationDialog
+                open={openArchiveDialog && !!currentWeedInfo} // Only open if currentWeedInfo is set
+                onClose={handleCloseArchiveDialog}
+                onConfirm={handleConfirmArchive}
+                onCancel={handleConfirmWeed}
+                title="Archive Book?"
+                message={
+                    currentWeedInfo?.bookTitle
+                        ? `Would you like to archive the book "${currentWeedInfo.bookTitle}" instead of weeding it?`
+                        : "Would you like to archive this book instead of weeding it?"
+                }
+                confirmText="Archive"
+                cancelText="Weed"
+                isSubmitting={isWeeding || isArchivingBook}
+            />
         </>
     );
 };
