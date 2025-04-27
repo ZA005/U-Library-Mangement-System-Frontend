@@ -8,8 +8,8 @@ import { UserData } from "../../../types";
 import { AlertCircle } from "lucide-react";
 
 const AccountOverview: React.FC = () => {
-    const navigate = useNavigate()
-    const { id } = useAuth();
+    const navigate = useNavigate();
+    const { id, role } = useAuth();
     const { data: user } = useFetchUser(id ?? "");
     const userData: UserData | null = user ?? null;
 
@@ -18,6 +18,9 @@ const AccountOverview: React.FC = () => {
     const fullName = userData
         ? `${userData.firstName} ${userData.middleName ? userData.middleName + " " : ""}${userData.lastName}`
         : "N/A";
+
+    // Check if the role is either STUDENT or FACULTY
+    const isEligibleRole = role === "STUDENT" || role === "FACULTY";
 
     return (
         <Box padding={2} border="2px solid #EFF3EA">
@@ -32,23 +35,28 @@ const AccountOverview: React.FC = () => {
             </Box>
 
             <Divider sx={{ marginBottom: "20px" }} />
-            {/* Account Statistics */}
-            <Box display="flex" flexDirection="column" gap={1} marginBottom={2} justifyContent="center" alignItems="center">
-                <AlertCircle size={50} color="#d32f2f" />
-                <Typography variant="body1"><strong>Outstanding Fines</strong></Typography>
-                <Typography variant="body1" color="#d32f2f" fontSize="40px"><strong>₱ {fine?.toFixed(2)}</strong></Typography>
-            </Box>
 
-            {/* Actions */}
-            <Box display="flex" flexDirection="column" gap={1}>
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: "#d32f2f" }}
-                    onClick={() => navigate(PROTECTED_ROUTES.ACCOUNT_OVERVIEW)}
-                >
-                    Account Management
-                </Button>
-            </Box>
+            {/* Account Statistics - Show only for STUDENT or FACULTY */}
+            {isEligibleRole && (
+                <Box display="flex" flexDirection="column" gap={1} marginBottom={2} justifyContent="center" alignItems="center">
+                    <AlertCircle size={50} color="#d32f2f" />
+                    <Typography variant="body1"><strong>Outstanding Fines</strong></Typography>
+                    <Typography variant="body1" color="#d32f2f" fontSize="40px"><strong>₱ {fine?.toFixed(2)}</strong></Typography>
+                </Box>
+            )}
+
+            {/* Actions - Show only for STUDENT or FACULTY */}
+            {isEligibleRole && (
+                <Box display="flex" flexDirection="column" gap={1}>
+                    <Button
+                        variant="contained"
+                        sx={{ backgroundColor: "#d32f2f" }}
+                        onClick={() => navigate(PROTECTED_ROUTES.ACCOUNT_OVERVIEW)}
+                    >
+                        Account Management
+                    </Button>
+                </Box>
+            )}
         </Box>
     );
 };

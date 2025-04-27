@@ -1,5 +1,5 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { IconButton, Container, Box, TextField, InputAdornment } from "@mui/material";
+import { IconButton, Container, Box, TextField, InputAdornment, Button } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { PageTitle, DynamicTable, DynamicTableCell, Dropdown } from "../../../components";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
@@ -7,6 +7,8 @@ import { useFetchAllDepartments } from "../Uploader/Department/useFetchAllDepart
 import { useFetchAllProgramsByDepartment } from "../Uploader/Program/useFetchAllProgramsByDepartment";
 import { useFetchRevisionsByProgram } from "../Uploader/Curriculum/useFetchRevisionsByProgram";
 import { useFetchAllCourseByRevision } from "../Uploader/Course/useFetchAllCourseByRevision";
+import { useFetchReferenceByProgram } from "./useFetchReferencesByProgram";
+import { exportReferenceDataAsCSV } from "../../../utils/exportReferenceData";
 import ViewBookReference from "./Dialog/View/ViewBookReference";
 import { useDialog } from "../../../hooks/useDialog";
 import { Program, Course } from "../../../types";
@@ -49,11 +51,18 @@ const BookReferencing: React.FC = () => {
     const { data: programs } = useFetchAllProgramsByDepartment(selectedDepartment);
     const { data: revisions = [], isLoading: isFetchingRevisions } = useFetchRevisionsByProgram(selectedProgram?.program_id ?? 0);
     const { isLoading: isFetchingCourse, data: courses = [], error, refetch } = useFetchAllCourseByRevision(selectedRevision ?? 0);
+    const { data: referenceData, isLoading: isFetchingReference } = useFetchReferenceByProgram(selectedRevision ?? 0, selectedProgram?.program_id ?? 0);
     const showSnackbar = useSnackbarContext();
     const { isOpen, openDialog, closeDialog } = useDialog();
     const [searchQuery, setSearchQuery] = useState("");
 
     /////////////////////////////////////////////////////////////////////////////////////
+
+    useEffect(() => {
+        if (referenceData) {
+            console.log("Fetched Reference Data:", referenceData);
+        }
+    }, [referenceData]);
 
     const handleViewReferences = (course: Course) => {
         setSelectedCourse(course);
@@ -89,7 +98,7 @@ const BookReferencing: React.FC = () => {
             <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
                 <Box
                     display="grid"
-                    gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr 1fr 1fr" }}
+                    gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr 1fr 1fr 1fr" }}
                     alignItems="center"
                     gap={1}
                 >
@@ -136,6 +145,18 @@ const BookReferencing: React.FC = () => {
                             ),
                         }}
                     />
+                    <Button
+                        variant="contained"
+                        sx={{ backgroundColor: "#d32f2f" }}
+                        disabled={!selectedRevision || !referenceData || referenceData.length === 0}
+                        onClick={() => {
+                            if (referenceData) {
+                                exportReferenceDataAsCSV(referenceData);
+                            }
+                        }}
+                    >
+                        EXPORT REFERENCES
+                    </Button>
                 </Box>
 
                 <Box mt={2}>
