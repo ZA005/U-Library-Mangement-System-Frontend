@@ -20,6 +20,7 @@ export const PROTECTED_ROUTES = {
     ADVANCESEARCH: "/library/advance-search",
     BOOKWEEDING: "/library/book-weeding",
     WEEDINGCRITERIA: "/library/book-weeding/criteria",
+    QRGENERATE: "/library/qr-generate",
     //////////////////////////////////////
 
     CURRICULUM: "/curriculum",

@@ -68,6 +68,15 @@ const ProtectedRoutes = () => {
                 }
             />
 
+            <Route
+                path={PROTECTED_ROUTES.QRGENERATE}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                        <Pages.QRGenerate />
+                    </PrivateRoute>
+                }
+            />
+
 
             <Route
                 path={PROTECTED_ROUTES.ACCESSION}

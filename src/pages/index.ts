@@ -52,6 +52,12 @@ export const WeedingCriteria = loadable(() => import("./Catalog/WeedingCriteria"
     fallback: LoadingSpinner(),
 });
 
+export const QRGenerate = loadable(() => import("./Catalog/QRGenerate"), {
+    fallback: LoadingSpinner(),
+});
+
+
+
 
 
 

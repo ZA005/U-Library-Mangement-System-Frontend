@@ -14,7 +14,7 @@ export const menuItems = {
             children: [
                 { label: "Accession Record", path: PROTECTED_ROUTES.ACCESSION },
                 { label: "Book Weeding", path: PROTECTED_ROUTES.BOOKWEEDING },
-                { label: "Barcode Generator", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+                { label: "QR Code Generator", path: PROTECTED_ROUTES.QRGENERATE },
             ],
             icon: CatalogIcon,
         },
@@ -43,7 +43,7 @@ export const menuItems = {
             children: [
                 { label: "Accession Record", path: PROTECTED_ROUTES.ACCESSION },
                 { label: "Book Weeding", path: PROTECTED_ROUTES.BOOKWEEDING },
-                { label: "Barcode Generator", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+                { label: "QR Code Generator", path: PROTECTED_ROUTES.QRGENERATE },
             ],
             icon: CatalogIcon,
         },
