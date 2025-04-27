@@ -3,7 +3,7 @@ export interface WeedingCriteria {
     id?: number;
     ddcCategory: string;
     yearsBeforeWeeding: number;
-    conditionThreshold: number;
+    conditionThreshold: string;
     usageThreshold: number;
     language: string;
     duplicationCheck: boolean;

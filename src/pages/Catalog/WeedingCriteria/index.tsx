@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, IconButton, MenuItem, Select, FormControlLabel, Container, Button, TextField, InputAdornment } from "@mui/material";
 import { Menu, Search } from "lucide-react";
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 import { DynamicTable, IosSwitch, PageTitle } from "../../../components";
 import { useFetchWeedingCriterias } from "./useFetchWeedingCriterias";
 import { WeedingCriteria } from "../../../types/Catalog/WeedingCriteria";
 import ConfirmationDialog from "./Dialog";
 import { useUpdateWeedingCriteria } from "./useUpdateWeedingCriteria";
+import CriteriaModal from "./Dialog/CriteriaModal";
+import { useRemoveCriteria } from "./useRemoveCriteria";
+import { useSnackbarContext } from "../../../contexts/SnackbarContext";
 
 const WeedingCriteriaPage: React.FC = () => {
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -16,16 +19,20 @@ const WeedingCriteriaPage: React.FC = () => {
         setSidebarOpen: Dispatch<SetStateAction<boolean>>;
     }>();
 
-    const [selectedOption, setSelectedOption] = useState<string>("");
-    const [criteriaData, setCriteriaData] = useState<any[]>([]);
+    const showSnackbar = useSnackbarContext();
+    const [, setSelectedOption] = useState<string>("");
+    const [criteriaData, setCriteriaData] = useState<WeedingCriteria[]>([]);
     const [currentToggle, setCurrentToggle] = useState<WeedingCriteria & { additionalMessage?: string } | null>(null);
     const [secondaryConfirmationOpen, setSecondaryConfirmationOpen] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
     const [toDeleteCriteria, setToDeleteCriteria] = useState<WeedingCriteria | null>(null);
-
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [editingCriteria, setEditingCriteria] = useState<WeedingCriteria | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
     const { isLoading, data: WeedingCriteria = [], error, refetch } = useFetchWeedingCriterias();
-    const { mutateAsync: updateWeedingCriteria, isPending: isUpdating } = useUpdateWeedingCriteria();
+    const { mutateAsync: updateWeedingCriteria } = useUpdateWeedingCriteria();
+    const { removeCriteria, isPending: isDeleting } = useRemoveCriteria();
 
     useEffect(() => {
         setTitle("Book Weeding Criteria - Library Management System");
@@ -44,20 +51,50 @@ const WeedingCriteriaPage: React.FC = () => {
         setCriteriaData(WeedingCriteria);
     }, [WeedingCriteria]);
 
+    // Filter criteriaData based on searchQuery
+    const filteredCriteria = useMemo(() => {
+        if (!searchQuery.trim()) {
+            return criteriaData;
+        }
+
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        return criteriaData.filter((item) => {
+            const ddcCategory = item.ddcCategory?.toLowerCase() || "";
+            const statusText = item.criteriaStatus ? "activated" : "deactivated";
+            return ddcCategory.includes(lowerCaseQuery) || statusText.includes(lowerCaseQuery);
+        });
+    }, [criteriaData, searchQuery]);
+
     const handleToggleSwitch = (item: WeedingCriteria) => {
         setCurrentToggle(item);
         setDialogOpen(true);
     };
 
-    const handleSelectChange = (value: string, item: any) => {
+    const handleSelectChange = (value: string, item: WeedingCriteria) => {
         setSelectedOption(value);
         if (value === "edit") {
-            // Edit logic here
-            console.log("Editing item:", item);
+            setEditingCriteria(item);
+            setModalOpen(true);
         } else if (value === "remove") {
-            // Remove logic here
-            console.log("Removing item:", item);
+            setToDeleteCriteria(item);
+            setDeleteConfirmationOpen(true);
         }
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setEditingCriteria(null);
+    };
+
+    const handleModalConfirm = (updatedCriteria: WeedingCriteria) => {
+        setCriteriaData((prev) =>
+            updatedCriteria.id
+                ? prev.map((c) => (c.id === updatedCriteria.id ? updatedCriteria : c)) // Update existing criteria
+                : [...prev, updatedCriteria] // Add new criteria
+        );
+        setModalOpen(false);
+        setEditingCriteria(null);
+        refetch();
     };
 
     const columns = [
@@ -69,12 +106,12 @@ const WeedingCriteriaPage: React.FC = () => {
         {
             key: "duplicationCheck",
             label: "Duplication Check",
-            render: (row: any) => (row.duplicationCheck ? "Yes" : "No"),
+            render: (row: WeedingCriteria) => (row.duplicationCheck ? "Yes" : "No"),
         },
         {
             key: "criteriaStatus",
             label: "Criteria Status",
-            render: (row: any) => (
+            render: (row: WeedingCriteria) => (
                 <FormControlLabel
                     control={
                         <IosSwitch
@@ -90,7 +127,7 @@ const WeedingCriteriaPage: React.FC = () => {
         {
             key: "action",
             label: "Action",
-            render: (row: any) => (
+            render: (row: WeedingCriteria) => (
                 <Select
                     value=""
                     onChange={(e) => handleSelectChange(e.target.value, row)}
@@ -112,9 +149,7 @@ const WeedingCriteriaPage: React.FC = () => {
 
         const isActivating = !currentToggle.criteriaStatus;
 
-        const sameCategory = criteriaData.filter(
-            (c) => c.ddcCategory === currentToggle.ddcCategory
-        );
+        const sameCategory = criteriaData.filter((c) => c.ddcCategory === currentToggle.ddcCategory);
 
         const currentlyActive = sameCategory.find((c) => c.criteriaStatus);
 
@@ -127,10 +162,12 @@ const WeedingCriteriaPage: React.FC = () => {
                     ...currentToggle,
                     criteriaStatus: isActivating,
                 });
+                showSnackbar(`Criteria ${isActivating ? "activated" : "deactivated"} successfully!`, "success");
                 setDialogOpen(false);
                 refetch();
             } catch (err) {
                 console.error("Error while toggling criteria:", err);
+                showSnackbar("Failed to toggle criteria!", "error");
             }
         }
     };
@@ -138,9 +175,7 @@ const WeedingCriteriaPage: React.FC = () => {
     const handleSecondaryConfirmation = async () => {
         if (!currentToggle) return;
 
-        const sameCategory = criteriaData.filter(
-            (c) => c.ddcCategory === currentToggle.ddcCategory
-        );
+        const sameCategory = criteriaData.filter((c) => c.ddcCategory === currentToggle.ddcCategory);
 
         const currentlyActive = sameCategory.find((c) => c.criteriaStatus);
 
@@ -157,10 +192,12 @@ const WeedingCriteriaPage: React.FC = () => {
                 criteriaStatus: true,
             });
 
+            showSnackbar("Criteria activated successfully!", "success");
             setSecondaryConfirmationOpen(false);
             refetch();
         } catch (err) {
             console.error("Error in secondary confirmation update:", err);
+            showSnackbar("Failed to update criteria!", "error");
         }
     };
 
@@ -169,18 +206,27 @@ const WeedingCriteriaPage: React.FC = () => {
         setToDeleteCriteria(null);
     };
 
-    const handleConfirmDelete = async () => {
-        if (!toDeleteCriteria) return;
-        try {
-            refetch();
-        } catch (err) {
-            console.error("Error deleting the criteria:", err);
-        }
+    const handleConfirmDelete = () => {
+        if (!toDeleteCriteria || !toDeleteCriteria.id) return;
+
+        removeCriteria(toDeleteCriteria.id, {
+            onSuccess: () => {
+                showSnackbar("Criteria deleted successfully!", "success");
+                setDeleteConfirmationOpen(false);
+                setToDeleteCriteria(null);
+                refetch();
+            },
+            onError: (err) => {
+                console.error("Error deleting the criteria:", err);
+                showSnackbar(err.message || "Failed to delete criteria!", "error");
+            },
+        });
     };
 
-    const handleNewCriteria = () => {
-
-    }
+    const handleOpenModal = (criteriaToEdit?: WeedingCriteria) => {
+        setEditingCriteria(criteriaToEdit || null);
+        setModalOpen(true);
+    };
 
     return (
         <>
@@ -195,21 +241,23 @@ const WeedingCriteriaPage: React.FC = () => {
                     <Box display="flex" gap={1}>
                         <Button
                             variant="contained"
-                            onClick={handleNewCriteria}
+                            onClick={() => handleOpenModal()}
                             sx={{
                                 width: { xs: "100%", md: "200px" },
                                 backgroundColor: "#d32f2f",
                                 "&:disabled": {
                                     backgroundColor: "#b71c1c",
                                 },
-                            }}>
+                            }}
+                            disabled={isDeleting}
+                        >
                             New Criteria
                         </Button>
                     </Box>
 
                     <TextField
                         size="small"
-                        label="Search By Title/ID/Name"
+                        label="Search By Criteria/Status"
                         variant="outlined"
                         fullWidth
                         value={searchQuery}
@@ -227,25 +275,42 @@ const WeedingCriteriaPage: React.FC = () => {
             <Box mt={4}>
                 <DynamicTable
                     columns={columns}
-                    data={criteriaData}
-                    loading={isLoading}
-                    error={error}
-                    customMsg="No Weeding Criteria Found"
+                    data={filteredCriteria}
+                    loading={isLoading || isDeleting}
+                    error={error ? error.message || "An unknown error occurred" : undefined}
+                    customMsg={searchQuery ? "No matching criteria found" : "No Weeding Criteria Found"}
                     hasSelection={false}
                 />
             </Box>
-
+            {/* Modal for Adding/Editing Criteria */}
+            <CriteriaModal
+                open={modalOpen}
+                onClose={handleCloseModal}
+                onConfirm={handleModalConfirm}
+                initialCriteria={editingCriteria}
+                allCriteria={criteriaData}
+            />
             {/* Confirmation Dialog */}
             <ConfirmationDialog
                 open={dialogOpen}
                 onClose={() => {
-                    setCurrentToggle(prev => prev ? { ...prev, additionalMessage: undefined } : null);
+                    setCurrentToggle((prev) => (prev ? { ...prev, additionalMessage: undefined } : null));
                     setDialogOpen(false);
                 }}
                 onConfirm={handleConfirmToggle}
                 title={currentToggle?.additionalMessage ? "Confirm Criteria Change" : "Confirm Status Change"}
-                message={currentToggle?.additionalMessage || `Are you sure you want to ${currentToggle?.criteriaStatus ? 'deactivate' : 'activate'} '${currentToggle?.ddcCategory}' weeding criteria?`}
-                confirmText={currentToggle?.criteriaStatus ? 'Deactivate' : (currentToggle?.additionalMessage ? 'Activate New' : 'Activate')}
+                message={
+                    currentToggle?.additionalMessage ||
+                    `Are you sure you want to ${currentToggle?.criteriaStatus ? "deactivate" : "activate"} '${currentToggle?.ddcCategory
+                    }' weeding criteria?`
+                }
+                confirmText={
+                    currentToggle?.criteriaStatus
+                        ? "Deactivate"
+                        : currentToggle?.additionalMessage
+                            ? "Activate New"
+                            : "Activate"
+                }
             />
 
             {/* Secondary Confirmation Dialog */}
@@ -253,7 +318,7 @@ const WeedingCriteriaPage: React.FC = () => {
                 open={secondaryConfirmationOpen}
                 onClose={() => {
                     setSecondaryConfirmationOpen(false);
-                    setCurrentToggle(prev => prev ? { ...prev, additionalMessage: undefined } : null);
+                    setCurrentToggle((prev) => (prev ? { ...prev, additionalMessage: undefined } : null));
                 }}
                 onConfirm={handleSecondaryConfirmation}
                 title="Confirm Criteria Change"
@@ -269,6 +334,7 @@ const WeedingCriteriaPage: React.FC = () => {
                 title="Confirm Deletion"
                 message={`Are you sure you want to delete the criteria for DDC ${toDeleteCriteria?.ddcCategory}?`}
                 confirmText="Delete"
+                isSubmitting={isDeleting}
             />
         </>
     );

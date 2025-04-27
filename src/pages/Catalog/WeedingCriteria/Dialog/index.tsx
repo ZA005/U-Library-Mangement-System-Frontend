@@ -9,9 +9,10 @@ interface ConfirmationDialogProps {
     message: string;
     confirmText: string;
     cancelText?: string;
+    isSubmitting?: boolean;
 }
 
-const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose, onConfirm, title, message, confirmText, cancelText = "Cancel" }) => {
+const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose, onConfirm, title, message, confirmText, cancelText = "Cancel", isSubmitting = false }) => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -27,7 +28,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose, 
                 <DialogContentText>{message}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} autoFocus>
+                <Button onClick={onClose} autoFocus disabled={isSubmitting}>
                     {cancelText}
                 </Button>
                 <Button onClick={onConfirm} color="primary">
