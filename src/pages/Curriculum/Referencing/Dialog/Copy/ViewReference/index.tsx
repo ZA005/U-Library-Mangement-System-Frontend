@@ -14,6 +14,8 @@ interface ViewBookReferenceProps {
 
 const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }) => {
     const { isLoading: isFetchingReferences, data: bookReferences, error: errorFetchingReferences, refetch } = useFetchBookReferencesByCourse(course.course_id);
+
+    console.log("DATA:", course)
     const { addMultipleBookReference } = useAddMultipleBookReference();
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(true);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
