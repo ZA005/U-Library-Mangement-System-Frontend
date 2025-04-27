@@ -159,7 +159,7 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
                 />
             )}
             {isAddBookOpen && <AddBookReference course={course} onClose={handleAddBookClose} />}
-            {isCopyBookOpen && <CopyBookReference course={course} onClose={handleCopyBookClose} />}
+            {isCopyBookOpen && <CopyBookReference courseFromParent={course} onClose={handleCopyBookClose} />}
 
             <Dialog open={isRemoveDialogOpen} onClose={() => setIsRemoveDialogOpen(false)}>
                 <DialogTitle>Confirm Removal</DialogTitle>
