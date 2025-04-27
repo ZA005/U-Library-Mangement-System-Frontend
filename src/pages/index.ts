@@ -14,6 +14,9 @@ export const ActivateUser = loadable(() => import("./AccountActivation/ActivateU
 export const AccountLibraryCard = loadable(() => import("./AccountActivation/AccountLibraryCard"), {
     fallback: LoadingSpinner(),
 });
+export const AccountOverview = loadable(() => import("./AccountOverview"), {
+    fallback: LoadingSpinner(),
+});
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -94,6 +97,10 @@ export const TransactionHistory = loadable(() => import("./Circulation/Transacti
 })
 
 export const Overdues = loadable(() => import("./Circulation/OverseeOverdue"), {
+    fallback: LoadingSpinner()
+})
+
+export const IndividualHistory = loadable(() => import("./Circulation/IndividualHistory"), {
     fallback: LoadingSpinner()
 })
 // export const = loadable(() => import("./"))

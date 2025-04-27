@@ -39,7 +39,7 @@ export const menuItems = {
         },
     ],
     STUDENT: [
-        { label: "Account Management", path: GENERAL_ROUTES.HOME, icon: UserIcon },
+        { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
         {
             label: "Curriculum",
             children: [

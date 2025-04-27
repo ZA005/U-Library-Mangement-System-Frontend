@@ -10,7 +10,7 @@ export const Header = loadable(() => import("./Header/Header"))
 export const HeaderButtons = loadable(() => import("./Header/HeaderButtons"))
 
 // LIBRARY CARD
-export const eCard = loadable(() => import("./LibraryCard"))
+export const ECard = loadable(() => import("./LibraryCard"))
 
 // LINE
 export const PageTitle = loadable(() => import("./PageTitle"))
