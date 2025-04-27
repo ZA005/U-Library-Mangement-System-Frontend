@@ -18,6 +18,8 @@ export const PROTECTED_ROUTES = {
     BROWSEALLBOOKS: "/library/browse/all",
     BOOKINFORMATION: "/library/book/:isbn",
     ADVANCESEARCH: "/library/advance-search",
+    BOOKWEEDING: "/library/book-weeding",
+    WEEDINGCRITERIA: "/library/book-weeding/criteria",
     //////////////////////////////////////
 
     CURRICULUM: "/curriculum",

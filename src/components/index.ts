@@ -46,7 +46,7 @@ export const BookDetails = loadable(() => import("./Book/BookDetails"))
 
 export const Loading = loadable(() => import("./LoadingSpinner"))
 export const CustomDialog = loadable(() => import("./Dialog"))
-// export const = loadable(() => import("./"))
+export const IosSwitch = loadable(() => import("./IOSSwitch"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
 // export const = loadable(() => import("./"))
