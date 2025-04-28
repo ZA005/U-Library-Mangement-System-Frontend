@@ -11,6 +11,7 @@ import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import { Books } from "../../types";
 import Z3950SRUSearch from "../Modal/SRUSearch/Z3950SRUSearch";
 import { SearchParams } from "../../types/Catalog/SearchParams";
+import { useSnackbarContext } from "../../contexts/SnackbarContext";
 
 interface CustomSearchBarProps {
     initialQuery?: string;
@@ -22,6 +23,8 @@ interface CustomSearchBarProps {
 }
 
 const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', initialLibrary = 'All libraries', onSearch, modalParams }) => {
+
+    const showSnackbar = useSnackbarContext();
     const { role } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -29,7 +32,7 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
     const [searchIndex, setSearchIndex] = useState("q");
     const [library, setLibrary] = useState(initialLibrary);
     const [query, setQuery] = useState(initialQuery);
-    const { data: libraryLocations, isLoading } = useFetchAllLibraryLocations();
+    const { data: libraryLocations = [], isLoading } = useFetchAllLibraryLocations();
     const [modalOpen, setModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         keyword: '',
@@ -114,6 +117,12 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
     }, [refetchSearch, onSearch, library, searchParams, navigate, location.state]);
 
     useEffect(() => {
+        if (!isLoading && libraryLocations.length === 0) {
+            showSnackbar("No library locations available. Using 'All libraries'.", "warning");
+        }
+    }, [isLoading, libraryLocations, showSnackbar]);
+
+    useEffect(() => {
         if (modalParams && query) {
             handleSearch();
         }
@@ -124,6 +133,13 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
             handleSearch();
         }
     };
+
+    const libraryOptions = useMemo(() => [
+        { id: "All libraries", name: "All libraries" },
+        ...(libraryLocations
+            .filter((loc) => loc.status)
+            .map((loc) => ({ id: loc.name, name: loc.name })) || []),
+    ], [libraryLocations]);
 
     return (
         <Box display="flex" alignItems="center" gap={1} marginY={2} sx={{ flexDirection: { xs: "column", md: "row" }, alignItems: { xs: "stretch", md: "center" } }}>
@@ -155,7 +171,7 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
                 Advanced Search
             </Button>
 
-            {(role === "LIBRARIAN" || role === "LIBRARY DIRECTOR") && (
+            {(role === "LIBRARIAN" || role === "LIBRARYDIRECTOR") && (
                 <Button variant="text" sx={{ color: "#d32f2f" }} onClick={handleOpenSRUModal}>
                     Z39.50/SRU
                 </Button>
@@ -185,12 +201,8 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({ initialQuery = '', in
                             label="Library"
                             value={library}
                             onChange={(e) => setLibrary(e.target.value as string)}
-                            options={[
-                                { id: "All libraries", name: "All libraries" },
-                                ...(libraryLocations?.filter((loc) => loc.status)
-                                    .map((loc) => ({ id: loc.name, name: loc.name })) || []),
-                            ]}
-                            disabled={isLoading}
+                            options={libraryOptions}
+                            disabled={isLoading && libraryOptions.length === 1}
                         />
                     </FormControl>
                 </MenuItem>

@@ -130,7 +130,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             ? 'Review Archiving'
             : isOverride
                 ? 'Override Weeding'
-                : weedInfo.weedStatus === 'REVIEWED' && (role === 'ADMIN' || role === 'LIBRARY DIRECTOR')
+                : weedInfo.weedStatus === 'REVIEWED' && role === 'LIBRARYDIRECTOR'
                     ? 'Confirm Weeding'
                     : 'Review Weeding';
     const confirmButtonText = isFinalizingProcess
@@ -139,7 +139,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             ? 'Confirm Archiving'
             : isOverride
                 ? 'Confirm Keeping'
-                : weedInfo.weedStatus === 'REVIEWED' && (role === 'ADMIN' || role === 'LIBRARY DIRECTOR')
+                : weedInfo.weedStatus === 'REVIEWED' && role === 'LIBRARYDIRECTOR'
                     ? 'Confirm Weeding'
                     : role === 'LIBRARIAN'
                         ? 'Mark for Review'
@@ -213,7 +213,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 
         return (
             <Stack spacing={2}>
-                {(role === 'LIBRARY DIRECTOR' || role === 'ADMIN') && bookInfo}
+                {role === 'LIBRARYDIRECTOR' && bookInfo}
                 {(isOverride || isArchiving || !isFinalizingProcess) && reasonsAndNotes}
             </Stack>
         );

@@ -37,7 +37,7 @@ export const menuItems = {
             icon: CurriculumIcon,
         },
     ],
-    ADMIN: [
+    LIBRARYDIRECTOR: [
         {
             label: "Catalog",
             children: [
