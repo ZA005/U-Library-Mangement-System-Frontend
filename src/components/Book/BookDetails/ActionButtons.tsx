@@ -68,7 +68,15 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
     return (
         <>
             <Box display="flex" gap={2} mt={1} mb={2}>
-                {role === "STUDENT" ? (
+                {(role === "LIBRARIAN" || role === "ADMIN") ? (
+                    <Button
+                        variant="contained"
+                        onClick={handleCatalogClick}
+                        sx={{ backgroundColor: "#d32f2f" }}
+                    >
+                        Catalog
+                    </Button>
+                ) : (
                     <>
                         <Button
                             variant="contained"
@@ -85,10 +93,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
                             Reserve
                         </Button>
                     </>
-                ) : (
-                    <Button variant="contained" onClick={handleCatalogClick} sx={{ backgroundColor: "#d32f2f" }}>
-                        Catalog
-                    </Button>
                 )}
             </Box>
 

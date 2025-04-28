@@ -8,21 +8,21 @@ const ProtectedRoutes = () => {
         <Routes>
             <Route
                 path={PROTECTED_ROUTES.BROWSE}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARY DIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
                     <Pages.Browse />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.NEWLYACQUIRED}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
                     <Pages.NewlyAcquiredBooks />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.BROWSEALLBOOKS}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
                     <Pages.BrowseAllBooks />
                 </PrivateRoute>}
             />
@@ -38,7 +38,7 @@ const ProtectedRoutes = () => {
 
             <Route
                 path={PROTECTED_ROUTES.BOOKINFORMATION}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
                     <Pages.BookInformation />
                 </PrivateRoute>}
             />
@@ -133,9 +133,27 @@ const ProtectedRoutes = () => {
             />
 
             <Route
+                path={PROTECTED_ROUTES.CURRICULUM_BROWSE}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN", "STUDENT", "PROGRAMHEAD", "FACULTY"]}>
+                        <Pages.CurriculumBrowse />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path={PROTECTED_ROUTES.CURRICULUM_PROGRAM}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN", "STUDENT", "PROGRAMHEAD", "FACULTY"]}>
+                        <Pages.CurriculumProgram />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
                 path={PROTECTED_ROUTES.BOOK_REFERENCING}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD"]}>
                         <Pages.BookReferencing />
                     </PrivateRoute>
                 }
@@ -176,6 +194,25 @@ const ProtectedRoutes = () => {
                     </PrivateRoute>
                 }
             />
+
+            <Route
+                path={PROTECTED_ROUTES.ACCOUNT_OVERVIEW}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN", "STUDENT", "PROGRAMHEAD", "FACULTY"]}>
+                        <Pages.AccountOverview />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route
+                path={PROTECTED_ROUTES.INDIVIDUAL_HISTORY}
+                element={
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN", "STUDENT"]}>
+                        <Pages.IndividualHistory />
+                    </PrivateRoute>
+                }
+            />
+
             {/* Default fallback to PageNotFound */}
             <Route path="*" element={<Pages.PageNotFound />} />
         </Routes>

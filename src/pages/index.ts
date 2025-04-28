@@ -14,6 +14,9 @@ export const ActivateUser = loadable(() => import("./AccountActivation/ActivateU
 export const AccountLibraryCard = loadable(() => import("./AccountActivation/AccountLibraryCard"), {
     fallback: LoadingSpinner(),
 });
+export const AccountOverview = loadable(() => import("./AccountOverview"), {
+    fallback: LoadingSpinner(),
+});
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -78,9 +81,12 @@ export const UploadCourse = loadable(() => import("./Curriculum/Uploader/Course"
 export const BookReferencing = loadable(() => import("./Curriculum/Referencing"), {
     fallback: LoadingSpinner()
 })
-
-
-
+export const CurriculumBrowse = loadable(() => import("./Curriculum/Browse"), {
+    fallback: LoadingSpinner()
+})
+export const CurriculumProgram = loadable(() => import("./Curriculum/Program"), {
+    fallback: LoadingSpinner()
+})
 
 
 
@@ -103,6 +109,10 @@ export const TransactionHistory = loadable(() => import("./Circulation/Transacti
 })
 
 export const Overdues = loadable(() => import("./Circulation/OverseeOverdue"), {
+    fallback: LoadingSpinner()
+})
+
+export const IndividualHistory = loadable(() => import("./Circulation/IndividualHistory"), {
     fallback: LoadingSpinner()
 })
 // export const = loadable(() => import("./"))

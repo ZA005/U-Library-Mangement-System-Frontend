@@ -129,7 +129,7 @@ const ActivateUser: React.FC = () => {
                             <TextField label="Department" fullWidth value={userData.department.toUpperCase()} disabled required />
                         </Box>
                         <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 calc(50% - 16px)" } }}>
-                            <TextField label="Program" fullWidth value={userData.program.toUpperCase() || "N/A"} disabled required />
+                            <TextField label="Program" fullWidth value={userData.program?.toUpperCase() || "N/A"} disabled required />
                         </Box>
                         <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 calc(50% - 16px)" } }}>
                             <TextField label="Email Address" fullWidth value={userData.emailAdd} disabled required />

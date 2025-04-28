@@ -9,11 +9,12 @@ import { useFetchAllCourseByRevision } from "../../../Uploader/Course/useFetchAl
 import { Course, Program } from "../../../../../types";
 import ViewBookReference from "./ViewReference";
 interface CopyBookReferenceProps {
-    course: Course;
+    courseFromParent: Course;
     onClose: () => void;
 }
 
-const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }) => {
+const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ courseFromParent, onClose }) => {
+    console.log("COURSE FROM PARENT", courseFromParent)
     const showSnackbar = useSnackbarContext();
 
     const { data: departments } = useFetchAllDepartments();
@@ -28,14 +29,18 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
     const { isLoading: isFetchingCourse, data: courses = [], error, refetch } = useFetchAllCourseByRevision(selectedRevision ?? 0);
 
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
     /////////////////////
 
-    const handleViewReference = () => {
+    const handleViewReference = (course: Course) => {
         setIsViewDialogOpen(true);
+        setSelectedCourse(course);
     }
 
     const handleViewReferenceClose = () => {
         setIsViewDialogOpen(false);
+        setSelectedCourse(null);
     };
 
 
@@ -84,7 +89,7 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
             ) : courses?.length > 0 ? (
                 <List>
                     {courses
-                        .filter((c) => c.course_id !== course.course_id)
+                        .filter((c) => c.course_id !== courseFromParent.course_id)
                         .map((course, index) => (
                             <ListItem key={index}>
                                 <ListItemText
@@ -96,7 +101,7 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
                                         variant="text"
                                         size="small"
                                         sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}
-                                        onClick={() => { handleViewReference(); }}
+                                        onClick={() => handleViewReference(course)}
                                     >
                                         View References
                                     </Button>
@@ -115,12 +120,12 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ course, onClose }
         <>
             <CustomDialog
                 open={true}
-                title={`Select a Course to Copy Its Book Reference for ${course.course_name}`}
+                title={`Select a Course to Copy Its Book Reference for ${courseFromParent.course_name}`}
                 onClose={onClose}
                 content={content}
             />
 
-            {isViewDialogOpen && <ViewBookReference course={course} onClose={handleViewReferenceClose} />}
+            {isViewDialogOpen && <ViewBookReference course={selectedCourse!} onClose={handleViewReferenceClose} />}
         </>
     )
 }

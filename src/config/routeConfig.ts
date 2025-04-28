@@ -9,7 +9,7 @@ export const PROTECTED_ROUTES = {
     //////////////////////////////////////
 
     BROWSE: "/library/browse",
-
+    ACCOUNT_OVERVIEW: "/library/account",
     //////////////////////////////////////
 
     CATALOG: "/library/accession/catalog/:isbn",
@@ -24,6 +24,8 @@ export const PROTECTED_ROUTES = {
     //////////////////////////////////////
 
     CURRICULUM: "/curriculum",
+    CURRICULUM_BROWSE: "/curriculum/browse",
+    CURRICULUM_PROGRAM: "/curriculum/:program",
     UPLOAD_MANAGER: "/curriculum/upload-manager",
     UPLOAD_DEPARTMENT: "/curriculum/upload/department",
     UPLOAD_PROGRAM: "/curriculum/upload/program",
@@ -35,5 +37,6 @@ export const PROTECTED_ROUTES = {
     CIRCULATION: "/circulation",
     RESERVATION: "/circulation/reservation",
     TRANSACTION_HISTORY: "/circulation/transaction-history",
+    INDIVIDUAL_HISTORY: "/:user_id/transaction-history",
     OVERDUES: "/circulation/overdues",
 }
