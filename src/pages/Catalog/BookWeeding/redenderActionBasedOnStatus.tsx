@@ -11,7 +11,7 @@ const renderActionBasedOnStatus = (
     const statusInfo = statusToDisplay(weedInfo.weedStatus);
 
     if (statusInfo) {
-        if (weedInfo.weedStatus === "REVIEWED" && (role === "ADMIN" || role === "LIBRARY DIRECTOR")) {
+        if (weedInfo.weedStatus === "REVIEWED" && role === "LIBRARYDIRECTOR") {
             return (
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                     <Button

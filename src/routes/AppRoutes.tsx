@@ -17,7 +17,7 @@ const AppRoutes = () => {
     switch (role) {
       case "STUDENT":
       case "LIBRARIAN":
-      case "ADMIN":
+      case "LIBRARYDIRECTOR":
         return <Navigate to={PROTECTED_ROUTES.BROWSE} replace />;
       default:
         return <Pages.HomeScreen />;

@@ -75,7 +75,7 @@ const Sidebar: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClo
         <List>
           <ListItem>
             <Box>
-              <Typography variant="h5" fontWeight="bold">{role}</Typography>
+              <Typography variant="h6" fontWeight="bold">{role}</Typography>
               <Typography variant="subtitle2">{id}</Typography>
             </Box>
           </ListItem>
