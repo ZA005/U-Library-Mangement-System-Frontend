@@ -42,7 +42,7 @@ const WeedingPage: React.FC = () => {
     const [allProcessed, setAllProcessed] = useState<boolean>(false);
     const [archiveNotes, setArchiveNotes] = useState<string>("");
     const [filter, setFilter] = useState<{ criteria?: string; accessionNumber?: string; status: string }>({
-        status: role === "ADMIN" ? "REVIEWED" : "FLAGGED",
+        status: role === "LIBRARY DIRECTOR" ? "REVIEWED" : "FLAGGED",
     });
     const { initiateWeeding, isLoading: isInitiating } = useFetchAddFlaggedBooks();
 
@@ -153,7 +153,7 @@ const WeedingPage: React.FC = () => {
         const newStatus = role === "LIBRARIAN" ? "REVIEWED" : "WEEDED";
         const updatedWeedInfo = { ...currentWeedInfo, bookWeedingStatusNotes, weedStatus: newStatus };
 
-        if (role === "ADMIN" && newStatus === "WEEDED") {
+        if (role === "LIBRARY DIRECTOR" && newStatus === "WEEDED") {
             setArchiveNotes(bookWeedingStatusNotes);
             setOpenArchiveDialog(true);
             setOpenModal(false);
