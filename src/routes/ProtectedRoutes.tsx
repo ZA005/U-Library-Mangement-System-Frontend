@@ -8,21 +8,21 @@ const ProtectedRoutes = () => {
         <Routes>
             <Route
                 path={PROTECTED_ROUTES.BROWSE}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARY DIRECTOR"]}>
                     <Pages.Browse />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.NEWLYACQUIRED}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARY DIRECTOR"]}>
                     <Pages.NewlyAcquiredBooks />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.BROWSEALLBOOKS}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARY DIRECTOR"]}>
                     <Pages.BrowseAllBooks />
                 </PrivateRoute>}
             />
@@ -30,7 +30,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.CATALOG}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.Catalog />
                     </PrivateRoute>
                 }
@@ -38,14 +38,14 @@ const ProtectedRoutes = () => {
 
             <Route
                 path={PROTECTED_ROUTES.BOOKINFORMATION}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARY DIRECTOR"]}>
                     <Pages.BookInformation />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.ADVANCESEARCH}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "ADMIN"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARY DIRECTOR"]}>
                     <Pages.AdvanceSearch />
                 </PrivateRoute>}
             />
@@ -53,7 +53,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.BOOKWEEDING}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.BookWeeding />
                     </PrivateRoute>
                 }
@@ -62,7 +62,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.WEEDINGCRITERIA}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.WeedingCriteria />
                     </PrivateRoute>
                 }
@@ -71,7 +71,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.QRGENERATE}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.QRGenerate />
                     </PrivateRoute>
                 }
@@ -81,7 +81,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.ACCESSION}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.AccessionRecord />
                     </PrivateRoute>
                 }
@@ -90,7 +90,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.UPLOAD_MANAGER}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.UploadManager />
                     </PrivateRoute>
                 }
@@ -99,7 +99,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.UPLOAD_DEPARTMENT}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.UploadDepartment />
                     </PrivateRoute>
                 }
@@ -108,7 +108,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.UPLOAD_PROGRAM}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.UploadProgram />
                     </PrivateRoute>
                 }
@@ -117,7 +117,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.UPLOAD_CURRICULUM}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.UploadCurriculum />
                     </PrivateRoute>
                 }
@@ -126,7 +126,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.UPLOAD_COURSE}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.UploadCourse />
                     </PrivateRoute>
                 }
@@ -153,7 +153,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.BOOK_REFERENCING}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.BookReferencing />
                     </PrivateRoute>
                 }
@@ -162,7 +162,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.CIRCULATION}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.ManageCirculation />
                     </PrivateRoute>
                 }
@@ -171,7 +171,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.TRANSACTION_HISTORY}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.TransactionHistory />
                     </PrivateRoute>
                 }
@@ -180,7 +180,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.OVERDUES}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.Overdues />
                     </PrivateRoute>
                 }
@@ -189,7 +189,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.RESERVATION}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARY DIRECTOR"]}>
                         <Pages.ManageReservation />
                     </PrivateRoute>
                 }
