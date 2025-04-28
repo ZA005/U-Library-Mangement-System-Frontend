@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, TextField, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { CircleX } from "lucide-react";
 import SelectMenu from "../../../components/SelectMenu";
 
 interface SearchCriteria {
@@ -114,7 +114,7 @@ const CriteriaSection: React.FC<CriteriaSectionProps> = ({ criteria, setCriteria
                             onClick={() => handleRemoveCriterion(index)}
                             sx={{ marginLeft: 1 }}
                         >
-                            <CloseIcon />
+                            <CircleX />
                         </IconButton>
                     )}
                 </Box>

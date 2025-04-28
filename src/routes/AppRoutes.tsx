@@ -17,6 +17,8 @@ const AppRoutes = () => {
     switch (role) {
       case "STUDENT":
       case "LIBRARIAN":
+      case "FACULTY":
+      case "PROGRAMHEAD":
       case "ADMIN":
         return <Navigate to={PROTECTED_ROUTES.BROWSE} replace />;
       default:

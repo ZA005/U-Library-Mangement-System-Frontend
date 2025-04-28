@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box } from "@mui/material";
 import { PageTitle, Dropdown, DynamicTable } from "../../../components";
 import { useFetchTransactionHistory } from "./useFetchTransactionHistory";
+import { useFetchTransactionHistoryByFilter } from "./useFetchTransactionHistoryByFilter";
 import { convertJsonDateAndTime } from "../../../utils/convert";
 import { Menu } from "lucide-react";
 const TransactionHistory: React.FC = () => {
@@ -32,7 +33,7 @@ const TransactionHistory: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { isLoading, data: TransactionHistory = [], error } = useFetchTransactionHistory();
-    const [selectedOption, setSelectedOption] = useState("");
+    const [selectedOption, setSelectedOption] = useState<string | number>("");
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +52,13 @@ const TransactionHistory: React.FC = () => {
         { id: 6, name: "OVERDUE" },
     ]
 
+    const convertedOption = options.find(option => option.id === selectedOption)?.name || "";
+
+    const { data: history = [], error: errorFetching, isLoading: loadingHistory, refetch: refesh } = useFetchTransactionHistoryByFilter(convertedOption!);
+
+    const tableData = selectedOption ? history : TransactionHistory;
+    const tableLoading = selectedOption ? loadingHistory : isLoading;
+    const tableError = selectedOption ? errorFetching : error;
     return (
         <>
             <PageTitle title="Transaction History" />
@@ -73,9 +81,9 @@ const TransactionHistory: React.FC = () => {
                 <Box mt={4}>
                     <DynamicTable
                         columns={columns}
-                        data={TransactionHistory}
-                        loading={isLoading}
-                        error={error}
+                        data={tableData}
+                        loading={tableLoading}
+                        error={tableError}
                     />
                 </Box>
             </Container>
