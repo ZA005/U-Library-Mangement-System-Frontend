@@ -49,7 +49,7 @@ const LibraryCard: React.FC<LibraryCardProps> = ({ userData }) => {
 
 				<Box>
 					<Typography fontWeight="bold" fontSize="16px" sx={{ fontFamily: "Spartan, sans-serif !important" }}>
-						Student ID
+						User ID
 					</Typography>
 					<Typography fontWeight="bold" fontSize="11px" sx={{ fontFamily: "Spartan, sans-serif !important" }}>
 						{userData.id || "N/A"}
@@ -73,7 +73,7 @@ const LibraryCard: React.FC<LibraryCardProps> = ({ userData }) => {
 					<strong>Department:</strong> {userData.department.toUpperCase() || "N/A"}
 				</Typography>
 				<Typography fontSize="14px" fontFamily="Spartan, sans-serif !important">
-					<strong>Program:</strong> {userData.program.toUpperCase() || "N/A"}
+					<strong>Program:</strong> {userData.program?.toUpperCase() || "N/A"}
 				</Typography>
 				<Typography fontSize="14px" fontFamily="Spartan, sans-serif !important">
 					<strong>Email:</strong> {userData.emailAdd || "N/A"}
