@@ -19,38 +19,33 @@ const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW
     const [userID, setUserID] = useState("");
     const [submittedUserID, setSubmittedUserID] = useState("");
     const [showIdentification, setShowIdentification] = useState(true);
-    const [isScanning, setIsScanning] = useState(false); // State to control QR scanner visibility
+    const [isScanning, setIsScanning] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     const { data: account, error, isLoading } = useFetchAccount(submittedUserID);
     const { isOpen: isBorrowOpen, openDialog: openBorrow, closeDialog: closeBorrow } = useDialog();
     const { close: closeAccessionModal, isOpen: isAccessionModalOpen, open: openAccessionModal } = useModal();
 
-    // Handle error immediately when it occurs
+    // Handle error once when it occurs
     useEffect(() => {
-        if (error) {
-            showSnackbar(error.message, "error");
+        if (error && !hasError) {
+            showSnackbar(error.message, "error"); // Show error message
+            setHasError(true); // Set error state to prevent snackbar from showing again
         }
-    }, [error, showSnackbar]);
+    }, [error, showSnackbar, hasError]);
 
-    // Conditionally open dialog or modal based on type
+    // Conditionally open dialog or modal based on type (only when no error)
     useEffect(() => {
-        if (account && submittedUserID) {
+        if (account && submittedUserID && !hasError) {
             setShowIdentification(false);
 
-            // Check for errors and only open modal if no error
-            if (error) {
-                showSnackbar(error.message, "error");  // Show error message if there is one
-                return;  // Prevent opening the modal if there's an error
-            }
-
-            // Open modal based on the type after confirming there's no error
             if (type === "BORROW") {
                 openBorrow();
             } else if (type === "RESERVATION") {
                 openAccessionModal();
             }
         }
-    }, [account, submittedUserID, type, openBorrow, openAccessionModal, error, showSnackbar]);
+    }, [account, submittedUserID, type, openBorrow, openAccessionModal, hasError]);
 
     const fields = [
         {
@@ -64,6 +59,7 @@ const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW
     const handleSubmit = () => {
         if (userID) {
             setSubmittedUserID(userID);
+            setHasError(false); // Reset error state before submitting
         }
     };
 
