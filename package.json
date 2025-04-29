@@ -26,7 +26,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
-    "react-qr-barcode-scanner": "^2.0.0",
+    "react-qr-barcode-scanner": "^2.1.0",
     "react-router-dom": "^6.26.2",
     "react-slick": "^0.30.2",
     "react-to-print": "^3.0.5",

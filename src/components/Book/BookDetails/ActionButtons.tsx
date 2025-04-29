@@ -3,9 +3,11 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, Typogra
 import { useLocation } from "react-router-dom";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
 import { useRecordNewLoan } from "../../../pages/Circulation/Dialog/BookAndUserDetails/useRecordNewLoan";
+import { useAddReservation } from "../../../pages/Circulation/Reservation/Dialog/useAddReservation";
 import { Loan } from "../../../types"; import { useNavigate } from "react-router-dom";
 import { PROTECTED_ROUTES } from "../../../config/routeConfig";
-import { Books } from "../../../types";
+import { useAuth } from "../../../contexts/AuthContext";
+import { Books, Reservation } from "../../../types";
 
 interface ActionButtonsProps {
     role: string | null;
@@ -14,16 +16,26 @@ interface ActionButtonsProps {
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionData }) => {
+    const { id } = useAuth();
     const showSnackbar = useSnackbarContext();
     const location = useLocation();
+    const navigate = useNavigate();
     const book = location.state?.book || JSON.parse(sessionStorage.getItem("book") || "null");
     const user_id = localStorage.getItem("id");
 
-    const { recordLoan, isPending, error } = useRecordNewLoan();
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const { recordLoan, isPending: isBorrowPending } = useRecordNewLoan();
+    const { addReservation, isPending: isReservePending } = useAddReservation()
 
+    const [borrowDialogOpen, setBorrowDialogOpen] = useState(false);
+    const [reserveDialogOpen, setReserveDialogOpen] = useState(false);
 
-    const handleConfirm = () => {
+    const handleOpenBorrowDialog = () => setBorrowDialogOpen(true);
+    const handleCloseBorrowDialog = () => setBorrowDialogOpen(false);
+
+    const handleOpenReserveDialog = () => setReserveDialogOpen(true);
+    const handleCloseReserveDialog = () => setReserveDialogOpen(false);
+
+    const handleConfirmBorrow = () => {
         if (!user_id || !book) {
             showSnackbar("Missing user or book data", "error");
             return;
@@ -44,19 +56,45 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
         recordLoan(newLoan, {
             onSuccess: () => {
                 showSnackbar("Book successfully borrowed!", "success");
-                setDialogOpen(false);
+                setBorrowDialogOpen(false);
             },
             onError: (error) => {
                 showSnackbar(`${error}`, "error");
-                setDialogOpen(false);
+                setBorrowDialogOpen(false);
             },
         });
     };
 
-    const handleOpenDialog = () => setDialogOpen(true);
-    const handleCloseDialog = () => setDialogOpen(false);
+    const handleConfirmReserve = () => {
+        if (!user_id || !book) {
+            showSnackbar("Missing user or book data", "error");
+            return;
+        }
 
-    const navigate = useNavigate();
+        const now = new Date();
+        now.setUTCHours(now.getUTCHours() + 8);
+        const formattedReservationDate = now.toISOString().slice(0, 19);
+
+        const newReservation: Reservation = {
+            book_id: book.id,
+            book_title: book.title,
+            book_accession_no: book.accessionNumber,
+            user_id: user_id,
+            reservationDateTime: formattedReservationDate,
+        };
+
+        addReservation(newReservation, {
+            onSuccess: () => {
+                showSnackbar("Book successfully reserved!", "success");
+                setReserveDialogOpen(false);
+            },
+            onError: (error) => {
+                showSnackbar(`${error}`, "error");
+                setReserveDialogOpen(false);
+            },
+        });
+    };
+
     const handleCatalogClick = () => {
         navigate(PROTECTED_ROUTES.CATALOG, {
             state: {
@@ -65,6 +103,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
             }
         });
     };
+
     return (
         <>
             <Box display="flex" gap={2} mt={1} mb={2}>
@@ -81,14 +120,16 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
                         <Button
                             variant="contained"
                             sx={{ backgroundColor: "#d32f2f" }}
-                            onClick={handleOpenDialog}
-                            disabled={isPending}
+                            onClick={handleOpenBorrowDialog}
+                            disabled={isBorrowPending}
                         >
                             Borrow
                         </Button>
                         <Button
                             variant="outlined"
                             sx={{ color: "#d32f2f", borderColor: "#d32f2f" }}
+                            onClick={handleOpenReserveDialog}
+                            disabled={isReservePending}
                         >
                             Reserve
                         </Button>
@@ -96,7 +137,8 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
                 )}
             </Box>
 
-            <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+            {/* Borrow Confirmation Dialog */}
+            <Dialog open={borrowDialogOpen} onClose={handleCloseBorrowDialog}>
                 <DialogTitle>Confirm Borrow</DialogTitle>
                 <DialogContent>
                     <Typography>
@@ -105,16 +147,40 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseDialog} disabled={isPending}>
+                    <Button onClick={handleCloseBorrowDialog} disabled={isBorrowPending}>
                         Cancel
                     </Button>
                     <Button
-                        onClick={handleConfirm}
+                        onClick={handleConfirmBorrow}
                         variant="contained"
                         color="primary"
-                        disabled={isPending}
+                        disabled={isBorrowPending}
                     >
-                        {isPending ? "Borrowing..." : "Confirm"}
+                        {isBorrowPending ? "Borrowing..." : "Confirm"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Reserve Confirmation Dialog */}
+            <Dialog open={reserveDialogOpen} onClose={handleCloseReserveDialog}>
+                <DialogTitle>Confirm Reservation</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to reserve the book:{" "}
+                        <strong>{book?.title || "Unknown Title"}</strong>?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseReserveDialog} disabled={isReservePending}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleConfirmReserve}
+                        variant="contained"
+                        color="primary"
+                        disabled={isReservePending}
+                    >
+                        {isReservePending ? "Reserving..." : "Confirm"}
                     </Button>
                 </DialogActions>
             </Dialog>

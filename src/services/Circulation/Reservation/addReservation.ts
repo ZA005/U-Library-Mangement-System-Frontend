@@ -2,7 +2,7 @@ import { createApiClient } from "../../api/apiClient";
 import { Reservation } from "../../../types";
 
 const addReservation = async (reservation: Reservation): Promise<Reservation> => {
-    const apiClient = createApiClient("adminuser/reservation")
+    const apiClient = createApiClient("adminuser/reservations")
 
     try {
         const response = await apiClient.post("/add", reservation, {

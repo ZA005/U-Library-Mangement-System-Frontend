@@ -134,18 +134,6 @@ const ManageCirculation: React.FC = () => {
                             }}>
                             New Borrow
                         </Button>
-
-                        {/* <Button variant="outlined"
-                            sx={{
-                                width: { xs: "100%", md: "200px" },
-                                color: "#d32f2f",
-                                borderColor: "#d32f2f",
-                                "&:disabled": {
-                                    backgroundColor: "#b71c1c",
-                                },
-                            }}>
-                            Pending
-                        </Button> */}
                     </Box>
 
 
