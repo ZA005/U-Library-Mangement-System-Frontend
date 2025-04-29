@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ModalForm, AccessionNumber } from '../..';
+import { Button, Box } from '@mui/material';
 import Borrow from '../../../pages/Circulation/Dialog/Borrow';
 import { useDialog } from '../../../hooks/useDialog';
 import { useModal } from '../../../hooks/Modal/useModal';
 import { useSnackbarContext } from '../../../contexts/SnackbarContext';
 import { useFetchAccount } from './useFetchAccount';
-
+import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 interface IdentificationProps {
     refetch?: () => void;
     type?: "RESERVATION" | "BORROW";
@@ -13,11 +14,12 @@ interface IdentificationProps {
 }
 
 const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW", onClose }) => {
-    const showSnackbar = useSnackbarContext()
+    const showSnackbar = useSnackbarContext();
 
     const [userID, setUserID] = useState("");
     const [submittedUserID, setSubmittedUserID] = useState("");
     const [showIdentification, setShowIdentification] = useState(true);
+    const [isScanning, setIsScanning] = useState(false); // State to control QR scanner visibility
 
     const { data: account, error, isLoading } = useFetchAccount(submittedUserID);
     const { isOpen: isBorrowOpen, openDialog: openBorrow, closeDialog: closeBorrow } = useDialog();
@@ -35,13 +37,20 @@ const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW
         if (account && submittedUserID) {
             setShowIdentification(false);
 
+            // Check for errors and only open modal if no error
+            if (error) {
+                showSnackbar(error.message, "error");  // Show error message if there is one
+                return;  // Prevent opening the modal if there's an error
+            }
+
+            // Open modal based on the type after confirming there's no error
             if (type === "BORROW") {
                 openBorrow();
             } else if (type === "RESERVATION") {
                 openAccessionModal();
             }
         }
-    }, [account, submittedUserID, type, openBorrow, openAccessionModal]);
+    }, [account, submittedUserID, type, openBorrow, openAccessionModal, error, showSnackbar]);
 
     const fields = [
         {
@@ -67,6 +76,17 @@ const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW
         onClose();
     };
 
+    const handleScan = (err: any, result: any) => {
+        if (result) {
+            setUserID(result.text);
+            setIsScanning(false);
+        }
+    };
+
+    const handleError = (err: any) => {
+        console.error("QR code scanner error:", err);
+    };
+
     return (
         <>
             {showIdentification && (
@@ -77,10 +97,50 @@ const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW
                     fields={fields}
                     onConfirm={handleSubmit}
                     confirmText="Submit"
-                    onOptionalClick={() => { }}
+                    onOptionalClick={() => setIsScanning(true)}
                     optionalText="Scan QR"
                     disabled={isLoading}
                 />
+            )}
+            {isScanning && (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 2000,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: 'white',
+                            padding: 3,
+                            borderRadius: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <BarcodeScannerComponent
+                            width={500}
+                            height={500}
+                            onUpdate={handleScan}
+                        />
+                        <Button
+                            variant="contained"
+                            onClick={() => setIsScanning(false)}
+                            sx={{ marginTop: 2 }}
+                        >
+                            Close Scanner
+                        </Button>
+                    </Box>
+                </Box>
             )}
             {isBorrowOpen && account && type === "BORROW" && (
                 <Borrow accountData={account} onClose={handleClose} refetch={refetch} />
@@ -93,7 +153,7 @@ const Identification: React.FC<IdentificationProps> = ({ refetch, type = "BORROW
                 />
             )}
         </>
-    )
+    );
 }
 
 export default Identification;
