@@ -7,6 +7,7 @@ import { Loading } from "../../../../components";
 import { CustomDialog } from "../../../../components";
 import { AccountData } from "../../../../types";
 import BookUserDetails from "../BookAndUserDetails";
+import QrScanner from "../../../../components/QRScan";
 import { useDialog } from "../../../../hooks/useDialog";
 interface BorrowProps {
     accountData?: AccountData,
@@ -23,6 +24,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetch }) => {
     const { isLoading, data: books, error } = useFetchBookByQuery(searchQuery);
     const [selectedBook, setSelectedBook] = useState<any>(null);
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [isScanning, setIsScanning] = useState(false);
 
     useEffect(() => {
         if (books && books.length > 0 && searchQuery) {
@@ -92,6 +94,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetch }) => {
                     variant="outlined"
                     size="small"
                     sx={{ width: { xs: "100%", sm: "150px" }, color: "#d32f2f", borderColor: "#d32f2f" }}
+                    onClick={() => setIsScanning(true)}
                 >
                     Scan Book QR
                 </Button>
@@ -123,6 +126,16 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetch }) => {
             ) : searchQuery ? (
                 <Typography>Sorry, no books were found, or all copies have already been borrowed.</Typography>
             ) : null}
+
+            {isScanning && (
+                <QrScanner
+                    onScan={(value) => {
+                        setSearchValue(value);
+                        setIsScanning(false);
+                    }}
+                    onClose={() => setIsScanning(false)}
+                />
+            )}
         </>
     );
 
