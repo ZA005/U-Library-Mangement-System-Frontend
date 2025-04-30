@@ -41,6 +41,7 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ courseFromParent,
     const handleViewReferenceClose = () => {
         setIsViewDialogOpen(false);
         setSelectedCourse(null);
+        onClose();
     };
 
 
@@ -125,7 +126,7 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ courseFromParent,
                 content={content}
             />
 
-            {isViewDialogOpen && <ViewBookReference course={selectedCourse!} onClose={handleViewReferenceClose} />}
+            {isViewDialogOpen && <ViewBookReference course={selectedCourse!} courseFromParent={courseFromParent!} onClose={handleViewReferenceClose} />}
         </>
     )
 }

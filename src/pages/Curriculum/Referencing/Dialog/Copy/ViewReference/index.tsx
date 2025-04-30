@@ -9,13 +9,13 @@ import { Course, Books } from "../../../../../../types";
 
 interface ViewBookReferenceProps {
     course: Course;
+    courseFromParent: Course;
     onClose: () => void;
 }
 
-const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }) => {
+const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, courseFromParent, onClose }) => {
     const { isLoading: isFetchingReferences, data: bookReferences, error: errorFetchingReferences, refetch } = useFetchBookReferencesByCourse(course.course_id);
 
-    console.log("DATA:", course)
     const { addMultipleBookReference } = useAddMultipleBookReference();
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(true);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -35,11 +35,14 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
     const handleConfirmAddBook = () => {
         if (books.length) {
             addMultipleBookReference(
-                { course, books },
+                { course: courseFromParent, books },
                 {
                     onSuccess: () => {
-                        showSnackbar(`Successfully added ${books.length} book(s) as reference for ${course.course_name}`, "success");
+                        showSnackbar(`Successfully added ${books.length} book(s) as reference for ${courseFromParent.course_name}`, "success");
                         refetch();
+                        setIsViewDialogOpen(false);
+                        setConfirmationOpen(false);
+                        onClose();
                     },
                     onError: (error) => showSnackbar(`${error}`, "error"),
                 }
@@ -133,7 +136,7 @@ const ViewBookReference: React.FC<ViewBookReferenceProps> = ({ course, onClose }
             }}>
                 <DialogTitle>Confirm Book Addition</DialogTitle>
                 <DialogContent>
-                    <Typography>Are you sure you want to copy these references for <b>{course.course_name}</b>?</Typography>
+                    <Typography>Are you sure you want to copy these references for <b>{courseFromParent.course_name}</b>?</Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button

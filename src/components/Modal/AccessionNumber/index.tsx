@@ -4,7 +4,7 @@ import { useSnackbarContext } from '../../../contexts/SnackbarContext';
 import { useFetchBookByAccessionNumber } from './useFetchBookByAccessionNumber';
 import { Books, AccountData } from '../../../types';
 import ConfirmReservation from '../../../pages/Circulation/Reservation/Dialog/ConfirmReservation';
-
+import QrScanner from '../../QRScan';
 interface AccessionNumberProps {
     accountData: AccountData
     refetch: () => void;
@@ -18,6 +18,7 @@ const AccessionNumber: React.FC<AccessionNumberProps> = ({ accountData, refetch,
     const [shouldFetch, setShouldFetch] = useState(false);
     const [showConfirmReservation, setShowConfirmReservation] = useState(false);
     const [fetchedBook, setFetchedBook] = useState<Books | null>(null);
+    const [isScanning, setIsScanning] = useState(false);
 
     const { data: book, error, isLoading } = useFetchBookByAccessionNumber(
         shouldFetch ? accessionNumber : ""
@@ -76,11 +77,19 @@ const AccessionNumber: React.FC<AccessionNumberProps> = ({ accountData, refetch,
                 fields={fields}
                 onConfirm={handleSubmit}
                 confirmText="Submit"
-                onOptionalClick={() => { }}
+                onOptionalClick={() => setIsScanning(true)}
                 optionalText="Scan QR"
                 disabled={isLoading}
             />
-
+            {isScanning && (
+                <QrScanner
+                    onScan={(value) => {
+                        setAccessionNumber(value);
+                        setIsScanning(false);
+                    }}
+                    onClose={() => setIsScanning(false)}
+                />
+            )}
             {showConfirmReservation && fetchedBook && (
                 <ConfirmReservation
                     bookData={fetchedBook}
