@@ -107,7 +107,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
     return (
         <>
             <Box display="flex" gap={2} mt={1} mb={2}>
-                {(role === "LIBRARIAN" || role === "ADMIN") ? (
+                {(role === "LIBRARIAN" || role === "LIBRARYDIRECTOR") ? (
                     <Button
                         variant="contained"
                         onClick={handleCatalogClick}
