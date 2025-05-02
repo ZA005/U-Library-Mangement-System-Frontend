@@ -117,7 +117,6 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
                     <Typography variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
                         We have sent a code to your email <br /> <strong>{userData.emailAdd}</strong>
                     </Typography>
-
                     {/* OTP Input Fields */}
                     <Box sx={{ display: "flex", justifyContent: "center", gap: 1, mb: 2 }}>
                         {otp.map((digit, index) => (
@@ -166,7 +165,7 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
 
                     {/* Resend Code */}
                     <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
-                        Didn’t receive a code?{" "}
+                        Didn’t receive a code? <br />It might be in your spam or spam folder.{" "}<br />
                         <span
                             style={{ cursor: "pointer", color: "#d32f2f", textDecoration: "underline" }}
                             onClick={handleResend}

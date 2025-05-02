@@ -41,7 +41,9 @@ const AccountOverview: React.FC = () => {
                 <Box display="flex" flexDirection="column" gap={1} marginBottom={2} justifyContent="center" alignItems="center">
                     <AlertCircle size={50} color="#d32f2f" />
                     <Typography variant="body1"><strong>Outstanding Fines</strong></Typography>
-                    <Typography variant="body1" color="#d32f2f" fontSize="40px"><strong>₱ {fine?.toFixed(2)}</strong></Typography>
+                    <Typography variant="body1" color="#d32f2f" fontSize="40px">
+                        <strong>₱ {typeof fine === 'number' ? fine.toFixed(2) : '0.00'}</strong>
+                    </Typography>
                 </Box>
             )}
 
