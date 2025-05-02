@@ -2,7 +2,7 @@ import { LibraryLocations } from "../../../types";
 import { createApiClient } from "../../api/apiClient";
 
 const addLibraryLocation = async (location: LibraryLocations): Promise<LibraryLocations> => {
-    const apiClient = createApiClient('admin')
+    const apiClient = createApiClient('adminuser')
 
     try {
         const response = await apiClient.post('/location', location, {

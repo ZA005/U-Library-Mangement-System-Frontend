@@ -2,7 +2,7 @@ import { LibraryLocations } from "../../../types/Catalog/LibraryLocation";
 import { createApiClient } from "../../api/apiClient";
 
 const updateLibraryLocation = async (id: number, status: boolean): Promise<LibraryLocations> => {
-    const apiClient = createApiClient('admin');
+    const apiClient = createApiClient('adminuser');
 
     try {
         const response = await apiClient.put<LibraryLocations>(
