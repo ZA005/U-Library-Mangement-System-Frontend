@@ -19,7 +19,8 @@ const CardComponent: React.FC<BookCardProps> = ({
         navigate(PROTECTED_ROUTES.BOOKINFORMATION.replace(":isbn", book.isbn13 || book.isbn10), {
             state: {
                 book,
-                acquisitionData: acquisitionData || location.state?.acquisitionData
+                acquisitionData: acquisitionData || location.state?.acquisitionData,
+                googleBookApiData: book
             }
         })
     };

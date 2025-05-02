@@ -98,7 +98,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
     const handleCatalogClick = () => {
         navigate(PROTECTED_ROUTES.CATALOG, {
             state: {
-                googleBookApiData: books,
+                googleBookApiData: book,
                 acquisitionData
             }
         });
