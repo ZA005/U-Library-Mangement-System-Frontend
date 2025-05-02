@@ -206,10 +206,9 @@ const ProtectedRoutes = () => {
 
             <Route
                 path={PROTECTED_ROUTES.INDIVIDUAL_HISTORY}
-                element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "ADMIN", "STUDENT"]}>
-                        <Pages.IndividualHistory />
-                    </PrivateRoute>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARY DIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
+                    <Pages.IndividualHistory />
+                </PrivateRoute>
                 }
             />
 

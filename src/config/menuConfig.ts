@@ -66,6 +66,7 @@ export const menuItems = {
             ],
             icon: CurriculumIcon,
         },
+        { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
     ],
     STUDENT: [
         {
@@ -86,11 +87,16 @@ export const menuItems = {
             ],
             icon: CurriculumIcon,
         },
+        { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
     ],
     FACULTY: [
-        { label: "Catalog", path: PROTECTED_ROUTES.CATALOG, icon: CatalogIcon },
-        { label: "Circulation", path: GENERAL_ROUTES.HOME, icon: CirculationIcon },
-        { label: "Accession Record", path: PROTECTED_ROUTES.ACCESSION, icon: AcquisitionIcon },
-        { label: "Curriculum", path: GENERAL_ROUTES.HOME, icon: CurriculumIcon },
+        {
+            label: "Curriculum",
+            children: [
+                { label: "Browse", path: PROTECTED_ROUTES.CURRICULUM_BROWSE },
+            ],
+            icon: CurriculumIcon,
+        },
+        { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
     ],
 };
