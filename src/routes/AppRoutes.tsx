@@ -19,7 +19,7 @@ const AppRoutes = () => {
       case "LIBRARIAN":
       case "FACULTY":
       case "PROGRAMHEAD":
-      case "ADMIN":
+      case "LIBRARYDIRECTOR":
         return <Navigate to={PROTECTED_ROUTES.BROWSE} replace />;
       default:
         return <Pages.HomeScreen />;
