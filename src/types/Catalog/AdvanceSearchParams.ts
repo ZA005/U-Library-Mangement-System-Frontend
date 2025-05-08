@@ -7,7 +7,7 @@ export interface AdvanceSearchParams {
     yearRange: string;
     language: string | null;
     isAvailableOnly: boolean;
-    individualLibrary: string;
+    library: string;
     sortOrder: string;
     sections: string[];
     collection: string[];

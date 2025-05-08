@@ -41,7 +41,7 @@ const AdvanceSearchPage: React.FC = () => {
         yearRange: "",
         language: "No limit",
         isAvailableOnly: false,
-        individualLibrary: "All libraries",
+        library: "All libraries",
         sortOrder: "Acquisition date: newest to oldest",
         sections: [],
         collection: [],
@@ -57,7 +57,7 @@ const AdvanceSearchPage: React.FC = () => {
             yearRange: "",
             language: "No limit",
             isAvailableOnly: false,
-            individualLibrary: "All libraries",
+            library: "All libraries",
             sortOrder: "Acquisition date: newest to oldest",
             sections: [],
             collection: [],
@@ -70,9 +70,9 @@ const AdvanceSearchPage: React.FC = () => {
         yearRange: searchParams.yearRange,
         language: searchParams.language !== "No limit" ? searchParams.language : null,
         isAvailableOnly: searchParams.isAvailableOnly,
-        individualLibrary:
-            searchParams.individualLibrary !== "All libraries"
-                ? searchParams.individualLibrary
+        library:
+            searchParams.library !== "All libraries"
+                ? searchParams.library
                 : "All libraries",
         sortOrder: searchParams.sortOrder,
         sections: searchParams.sections.length > 0 ? searchParams.sections : [],
@@ -92,7 +92,7 @@ const AdvanceSearchPage: React.FC = () => {
                 state: {
                     searchResults: updatedResults,
                     searchParams,
-                    library: searchParams.individualLibrary
+                    library: searchParams.library
                 },
             });
         } catch (error) {
@@ -101,7 +101,7 @@ const AdvanceSearchPage: React.FC = () => {
                 state: {
                     searchResults: [],
                     query: "Search failed",
-                    source: searchParams.individualLibrary || "All libraries",
+                    source: searchParams.library || "All libraries",
                 },
             });
         }
@@ -178,11 +178,11 @@ const AdvanceSearchPage: React.FC = () => {
                     </Typography>
                     <LocationAvailabilitySection
                         isAvailableOnly={searchParams.isAvailableOnly}
-                        individualLibrary={searchParams.individualLibrary}
+                        library={searchParams.library}
                         setIsAvailableOnly={(value) =>
                             setSearchParams((prev) => ({ ...prev, isAvailableOnly: value }))}
-                        setIndividualLibrary={(value) =>
-                            setSearchParams((prev) => ({ ...prev, individualLibrary: value }))}
+                        setLibrary={(value) =>
+                            setSearchParams((prev) => ({ ...prev, library: value }))}
                     />
 
                     <Divider />
