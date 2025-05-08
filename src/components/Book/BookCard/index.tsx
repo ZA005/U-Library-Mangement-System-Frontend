@@ -81,13 +81,20 @@ const CardComponent: React.FC<BookCardProps> = ({
                         <strong>ISBN:</strong> {book.isbn13}
                     </Typography>
                     <Typography variant="body2" paddingBottom="10px">
-                        {book?.bookCatalog?.copies != null ? (
-                            <>
-                                <strong>Copies Available:</strong> {book.bookCatalog.copies}
-                            </>
-                        ) : (
-                            <strong></strong>
-                        )}
+                        <strong>Status:</strong>{" "}
+                        <span
+                            style={{
+                                color:
+                                    book.status === "AVAILABLE"
+                                        ? "green"
+                                        : book.status === "LOANED_OUT"
+                                            ? "red"
+                                            : "text.primary",
+                                fontWeight: "bold"
+                            }}
+                        >
+                            {book.status === "LOANED_OUT" ? "LOANED OUT" : book.status}
+                        </span>
                     </Typography>
 
                     <Button sx={{ padding: "0", lineHeight: "0" }} onClick={handleViewBook}>

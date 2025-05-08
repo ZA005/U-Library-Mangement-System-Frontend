@@ -28,7 +28,7 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetch }) => {
 
     useEffect(() => {
         if (books && books.length > 0 && searchQuery) {
-            showSnackbar(`Successfully found ${books.length} books`, "success");
+            showSnackbar(`Successfully found ${books.length} book copies`, "success");
         }
     }, [books, searchQuery, showSnackbar]);
 
@@ -62,6 +62,19 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetch }) => {
         onClose();
     };
 
+    const uniqueBooks = books?.reduce((acc: any[], current: any) => {
+        const exists = acc.find(
+            (book) =>
+                book.title === current.title &&
+                JSON.stringify(book.authors) === JSON.stringify(current.authors)
+        );
+        if (!exists) {
+            acc.push(current);
+        }
+        return acc;
+    }, []);
+
+    console.log(uniqueBooks)
     const content = (
         <>
             <Box display="grid" gridTemplateColumns={{ xs: "1fr", sm: "1fr auto auto" }} gap={1} marginBottom="2px">
@@ -107,9 +120,12 @@ const Borrow: React.FC<BorrowProps> = ({ accountData, onClose, refetch }) => {
                 <Typography>Error fetching book references</Typography>
             ) : books?.length > 0 ? (
                 <List>
-                    {books.map((book, index) => (
+                    {uniqueBooks?.map((book, index) => (
                         <ListItem key={index}>
-                            <ListItemText primary={book.title} secondary={`Author(s): ${book.authors} Status: ${book.status}`} />
+                            <ListItemText
+                                primary={book.title}
+                                secondary={`Author(s): ${book.authors} | Status: ${book.status}`}
+                            />
                             <Box display="flex" alignItems="center" gap={1}>
                                 <Button
                                     variant="text"

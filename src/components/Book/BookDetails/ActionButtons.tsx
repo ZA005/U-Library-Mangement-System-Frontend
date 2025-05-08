@@ -57,6 +57,8 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
             onSuccess: () => {
                 showSnackbar("Book successfully borrowed!", "success");
                 setBorrowDialogOpen(false);
+                navigate(PROTECTED_ROUTES.BROWSE)
+
             },
             onError: (error) => {
                 showSnackbar(`${error}`, "error");
@@ -87,6 +89,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
             onSuccess: () => {
                 showSnackbar("Book successfully reserved!", "success");
                 setReserveDialogOpen(false);
+                navigate(PROTECTED_ROUTES.BROWSE)
             },
             onError: (error) => {
                 showSnackbar(`${error}`, "error");

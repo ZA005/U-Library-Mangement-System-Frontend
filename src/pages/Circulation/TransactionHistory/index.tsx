@@ -56,7 +56,9 @@ const TransactionHistory: React.FC = () => {
 
     const { data: history = [], error: errorFetching, isLoading: loadingHistory, refetch: refesh } = useFetchTransactionHistoryByFilter(convertedOption!);
 
-    const tableData = selectedOption ? history : TransactionHistory;
+    const tableData = selectedOption
+        ? history.slice().reverse()
+        : TransactionHistory.slice().reverse();
     const tableLoading = selectedOption ? loadingHistory : isLoading;
     const tableError = selectedOption ? errorFetching : error;
     return (

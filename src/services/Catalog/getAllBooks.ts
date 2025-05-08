@@ -9,6 +9,7 @@ const getAllBooks = async (): Promise<Books[]> => {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
 
+        console.log("ALL BOOKS", response.data)
         return response.data;
     } catch (e) {
         console.error(e);
