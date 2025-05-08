@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { AppBar, Toolbar, Box, Typography, IconButton, Drawer, useMediaQuery, useTheme } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import eliblogo from "../../assets/images/lms-logo.png";
 import loadable from "@loadable/component";
+import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import { Menu } from "lucide-react";
 interface HeaderProps {
   buttons?: React.ReactNode;
@@ -40,22 +41,24 @@ const Header: React.FC<HeaderProps> = ({ buttons, title, setSidebarOpen, sidebar
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
           {/* Left Section - Logo & Title */}
-          <Box display="flex" alignItems="center">
-            <img src={eliblogo} alt="Library Logo" height={40} />
-            <Box ml={2} display="flex" flexDirection="column">
-              <Typography
-                variant="caption"
-                fontSize="14px"
-                fontWeight="bold"
-                sx={{ fontFamily: "Spartan, sans-serif !important" }}
-              >
-                <span style={{ color: "red" }}>A</span>CQUIRE
-              </Typography>
-              <Typography variant="caption" fontSize="12px">
-                Library Management System
-              </Typography>
+          <Link to={PROTECTED_ROUTES.BROWSE} style={{ textDecoration: "none", color: "inherit" }}>
+            <Box display="flex" alignItems="center" sx={{ cursor: "pointer" }}>
+              <img src={eliblogo} alt="Library Logo" height={40} />
+              <Box ml={2} display="flex" flexDirection="column">
+                <Typography
+                  variant="caption"
+                  fontSize="14px"
+                  fontWeight="bold"
+                  sx={{ fontFamily: "Spartan, sans-serif !important" }}
+                >
+                  <span style={{ color: "red" }}>A</span>CQUIRE
+                </Typography>
+                <Typography variant="caption" fontSize="12px">
+                  Library Management System
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          </Link>
 
           {/* Right Section - Buttons */}
           <Box sx={{ display: { xs: "none", md: "block" } }}>{buttons}</Box>

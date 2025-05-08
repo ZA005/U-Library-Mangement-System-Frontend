@@ -6,6 +6,7 @@ const getNewlyAcquired = async (): Promise<Books[]> => {
 
     try {
         const response = await apiClient.get<Books[]>('book/fetchAllNewlyAcquired');
+        console.log("NEWLY ACQUIRED: ", response.data)
         return response.data;
     } catch (e) {
         console.error(e);

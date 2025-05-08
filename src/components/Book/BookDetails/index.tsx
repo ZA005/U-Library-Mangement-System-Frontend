@@ -52,7 +52,9 @@ const BookDetails: React.FC<BookDetailsProps> = ({ book, role }) => {
                     <Typography variant="body2">
                         <strong>Edition:</strong> {book.edition} {book.series && `- ${book.series}`}
                     </Typography>
-
+                    <Typography variant="body2">
+                        <strong>Status:</strong> {book.status}
+                    </Typography>
                     <ActionButtons role={role} book={book} acquisitionData={acquisitionData} />
                 </Box>
             </Box>
@@ -112,7 +114,7 @@ const BookDetails: React.FC<BookDetailsProps> = ({ book, role }) => {
 
             {book.bookCatalog ? (
                 <>
-                    <Typography variant="h6" fontWeight="bold" sx={{ my: 2 }}>Catalog Information</Typography>
+                    <Typography variant="h6" fontWeight="bold" sx={{ my: 2 }}>Catalog Informations</Typography>
                     <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
                         <Box>
                             <Typography variant="body1">

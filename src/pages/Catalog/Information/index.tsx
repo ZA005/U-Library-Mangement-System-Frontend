@@ -16,6 +16,7 @@ const CatalogBookInformation: React.FC = () => {
     const book = location.state?.book || JSON.parse(sessionStorage.getItem("book") || "null");
     const navigate = useNavigate();
 
+    console.log("BOOK DETAILS: ", book)
     // State for expanding/collapsing the "More on this author" section
     const [showMoreBooks, setShowMoreBooks] = useState(false);
 
