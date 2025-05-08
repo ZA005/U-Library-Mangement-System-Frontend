@@ -57,24 +57,38 @@ const BrowseBookPage: React.FC = () => {
         }
     }, [state]);
 
-    const searchMessage = generateSearchMessage(query);
-    const booksToShow = books.length > 0 ? books : allBooks;
+    // Determine if a search is active
+    const isSearchActive = (query?.criteria ?? []).length > 0;
+
+    // Set booksToShow: use books for search results, allBooks otherwise
+    const booksToShow = isSearchActive && books.length > 0 ? books : allBooks;
+
+    // Generate search message with search result count (books.length)
+    const searchMessage = generateSearchMessage(query, books.length);
+    const [criteriaMessage, resultMessage] = searchMessage.split("\n");
 
     return (
         <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
             <CustomSearchBar
                 onSearch={handleSearch}
-                initialQuery={state?.searchParams?.criteria?.find(c => c.idx === "q")?.searchTerm || ""}
+                initialQuery={state?.searchParams?.criteria?.find((c) => c.idx === "q")?.searchTerm || ""}
                 initialLibrary={state?.library || "All libraries"}
                 modalParams={state?.modalParams}
             />
             <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2} marginBottom="30px">
                 <Box width="100%">
-                    <Typography variant="body1" sx={{ mb: 2 }}>
-                        {searchMessage} {source !== "All libraries" ? ` in ${source}` : ""}
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                        {criteriaMessage} {source !== "All libraries" ? ` in ${source}` : ""}
                     </Typography>
+                    {isSearchActive && resultMessage && (
+                        <Typography
+                            variant="body2"
+                            sx={{ mb: 2, color: books.length === 0 ? "error.main" : "text.secondary" }}
+                        >
+                            {resultMessage}
+                        </Typography>
+                    )}
                     <BookGrid books={booksToShow} acquisitionData={state?.acquisitionData} />
-
                 </Box>
             </Box>
         </Container>
