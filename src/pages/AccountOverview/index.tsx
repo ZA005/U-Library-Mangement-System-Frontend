@@ -1,18 +1,20 @@
-import React, { useEffect, Dispatch, ReactNode, SetStateAction, useRef } from "react";
+import React, { useEffect, Dispatch, ReactNode, SetStateAction, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box, Card, CardContent, Typography } from "@mui/material";
 import { PageTitle, ECard } from "../../components";
 import { useFetchUser } from "../../components/Sections/AccountOverview/useFetchUser";
 import { useAuth } from "../../contexts/AuthContext";
 import { Menu } from "lucide-react";
-import { Download, History, BookOpen, Bookmark } from "lucide-react";
+import { Download, History, BookOpen, Bookmark, Lock } from "lucide-react";
 import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import html2canvas from "html2canvas";
+import NewPassword from "../../components/Modal/ForgotPassword/NewPassword";
 
 const AccountOverview: React.FC = () => {
     const { id } = useAuth();
     const { data: userData } = useFetchUser(id!);
     const libraryCardRef = useRef<HTMLDivElement>(null);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -61,6 +63,7 @@ const AccountOverview: React.FC = () => {
             console.error("Error generating the QR code image", error);
         }
     };
+
 
     return (
         <>
@@ -121,6 +124,13 @@ const AccountOverview: React.FC = () => {
                                     icon: Bookmark,
                                     path: PROTECTED_ROUTES.BROWSEALLBOOKS
                                 },
+                                {
+                                    title: "Change Password",
+                                    description: "Update your account password.",
+                                    icon: Lock,
+                                    action: () => setShowPasswordModal(true)
+                                }
+
                             ].map((item, index) => (
                                 <Card
                                     key={index}
@@ -165,6 +175,16 @@ const AccountOverview: React.FC = () => {
                         </Box>
                     </Box>
                 </Container>
+            )}
+
+            {/* Password Modal */}
+            {showPasswordModal && (
+                <NewPassword
+                    open={showPasswordModal}
+                    onClose={() => setShowPasswordModal(false)}
+                    mode="change"
+                    userId={id!}
+                />
             )}
         </>
     );
