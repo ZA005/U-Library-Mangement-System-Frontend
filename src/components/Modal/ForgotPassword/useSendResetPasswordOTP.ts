@@ -1,8 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query"
 
-export const useSendOTP = () => {
+export const useSendResetPasswordOTP = () => {
     const {
-        mutate: sendOtp,
+        mutate: sendOTPResetPassword,
         isPending,
         isError,
         error,
@@ -12,8 +12,8 @@ export const useSendOTP = () => {
         mutationFn: async ({ userId, isActivation }: { userId: string; isActivation: boolean }) => {
             if (!userId) throw new Error("User ID is required");
 
-            const { default: sendOTP } = await import("../../../services/Authentication/sendOTP")
-            const result = await sendOTP(userId, isActivation);
+            const { default: sendOTPResetPassword } = await import("../../../services/Authentication/sendOTPResetPassword")
+            const result = await sendOTPResetPassword(userId, isActivation);
             await new Promise((resolve) => setTimeout(resolve, 3000));
             return result;
         },
@@ -25,5 +25,5 @@ export const useSendOTP = () => {
         }
     });
 
-    return { sendOtp, isPending, isError, error, isSuccess, data };
+    return { sendOTPResetPassword, isPending, isError, error, isSuccess, data };
 };
