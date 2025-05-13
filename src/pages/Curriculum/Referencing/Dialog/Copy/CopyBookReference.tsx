@@ -41,7 +41,6 @@ const CopyBookReference: React.FC<CopyBookReferenceProps> = ({ courseFromParent,
     const handleViewReferenceClose = () => {
         setIsViewDialogOpen(false);
         setSelectedCourse(null);
-        onClose();
     };
 
 
