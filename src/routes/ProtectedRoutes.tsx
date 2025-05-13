@@ -45,7 +45,7 @@ const ProtectedRoutes = () => {
 
             <Route
                 path={PROTECTED_ROUTES.ADVANCESEARCH}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "FACULTY", "PROGRAMHEAD", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
                     <Pages.AdvanceSearch />
                 </PrivateRoute>}
             />
