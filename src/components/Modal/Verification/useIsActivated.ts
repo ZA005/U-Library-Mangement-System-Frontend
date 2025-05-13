@@ -10,9 +10,9 @@ export const useIsActivated = () => {
         isSuccess,
         data,
     } = useMutation({
-        mutationFn: async (user_id: string) => {
+        mutationFn: async ({ user_id, isActivation }: { user_id: string; isActivation: boolean }) => {
             const { default: isActivated } = await import("../../../services/Authentication/isActivated")
-            const result = await isActivated(user_id);
+            const result = await isActivated(user_id, isActivation);
             // await new Promise((resolve) => setTimeout(resolve, 3000));
             return result;
         },

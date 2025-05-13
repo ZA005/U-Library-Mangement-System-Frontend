@@ -4,7 +4,7 @@ import elibLogo from '../../../assets/images/lms-logo.png';
 import styles from './styles.module.css';
 import { useLogin } from './useLogin';
 import { useModal } from '../../../hooks/Modal/useModal';
-import { SendOTP } from '../..';
+import { ForgotPassword, SendOTP } from '../..';
 import { Eye, EyeOff, Lock, CircleUser } from 'lucide-react';
 interface LoginProps {
     open: boolean;
@@ -21,6 +21,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const verifyModal = useModal();
+    const forgotPasswordModal = useModal();
     const { login, errorMessage, setErrorMessage } = useLogin(onClose);
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -130,6 +131,18 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                                 }}
                             />
 
+                            {/* Forgot Password Link */}
+                            <Typography
+                                variant="body2"
+                                sx={{ mt: 1, textAlign: 'right', color: '#d32f2f', cursor: 'pointer' }}
+                                onClick={() => {
+                                    forgotPasswordModal.open();
+                                    onClose();
+                                }}
+                            >
+                                Forgot Password?
+                            </Typography>
+
                             {errorMessage && (
                                 <Typography color="error" variant="body2" sx={{ mt: 1 }}>
                                     {errorMessage}
@@ -172,6 +185,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
                 </Box>
             </Modal>
             <SendOTP open={verifyModal.isOpen} onClose={verifyModal.close} />
+            <ForgotPassword open={forgotPasswordModal.isOpen} onClose={forgotPasswordModal.close} />
         </>
 
 

@@ -52,9 +52,9 @@ const Z3950SRUSearch: React.FC<Z3950SRUSearchProps> = ({ open, onClose, onSubmit
 
     const handleSubmit = async () => {
         const newErrors: { [key: string]: string } = {};
-        if (!formData.keyword) {
-            newErrors.keyword = "Keyword is required";
-        }
+        // if (!formData.keyword) {
+        //     newErrors.keyword = "Keyword is required";
+        // }
 
         if (Object.keys(newErrors).length > 0) {
             setFieldErrors(newErrors);
@@ -104,7 +104,6 @@ const Z3950SRUSearch: React.FC<Z3950SRUSearchProps> = ({ open, onClose, onSubmit
                             className={styles.textField}
                             error={!!fieldErrors[field.key]}
                             helperText={fieldErrors[field.key]}
-                            required={field.required}
                         />
                     ))}
                     <Button

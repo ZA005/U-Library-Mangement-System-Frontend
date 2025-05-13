@@ -10,14 +10,17 @@ interface VerifyOtpProps {
     open: boolean;
     onClose: () => void;
     userData: UserData;
+    isPasswordReset?: boolean;
+    onSuccessVerifyOTP?: () => void;
 }
 
-const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
+const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData, isPasswordReset, onSuccessVerifyOTP }) => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const navigate = useNavigate();
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -30,14 +33,19 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
             { email: userData.emailAdd, otp: otpCode },
             {
                 onSuccess: () => {
-                    onClose();
-                    const path = generatePath(GENERAL_ROUTES.REGISTER, { user_id: userData.id });
-                    navigate(path, { state: { userData } });
-                    console.log("TO REGISTER: ", userData)
+                    if (isPasswordReset) {
+                        onClose();
+                        onSuccessVerifyOTP?.();
+                    } else {
+                        onClose();
+                        const path = generatePath(GENERAL_ROUTES.REGISTER, { user_id: userData.id });
+                        navigate(path, { state: { userData } });
+                    }
                 },
             }
         );
     };
+
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -176,6 +184,7 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData }) => {
                 </Box>
             </Box>
         </Modal>
+
     );
 };
 

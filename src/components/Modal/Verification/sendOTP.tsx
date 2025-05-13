@@ -35,14 +35,14 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
             return;
         }
 
-        verifyUser(userId, {
+        verifyUser({ user_id: userId, isActivation: true }, {
             onSuccess: (data) => {
                 console.log(data)
                 if (data == 409) {
                     return;
                 }
 
-                sendOtp(userId, {
+                sendOtp({ userId, isActivation: true }, {
                     onSuccess: (data) => {
                         setUserData(data);
                         setOtpModalOpen(true);

@@ -6,16 +6,16 @@ import SelectMenu from "../../../components/SelectMenu";
 
 interface LocationAvailabilitySectionProps {
     isAvailableOnly: boolean;
-    individualLibrary: string;
+    library: string;
     setIsAvailableOnly: (value: boolean) => void;
-    setIndividualLibrary: (value: string) => void;
+    setLibrary: (value: string) => void;
 }
 
 const LocationAvailabilitySection: React.FC<LocationAvailabilitySectionProps> = ({
     isAvailableOnly,
-    individualLibrary,
+    library,
     setIsAvailableOnly,
-    setIndividualLibrary,
+    setLibrary,
 }) => {
     const { data: libraryLocations, isLoading } = useFetchAllLibraryLocations();
     return (
@@ -36,9 +36,9 @@ const LocationAvailabilitySection: React.FC<LocationAvailabilitySectionProps> = 
                     <FormControl fullWidth variant="outlined">
                         <SelectMenu
                             label="Library Locations"
-                            value={individualLibrary}
+                            value={library}
                             menuSize="medium"
-                            onChange={(e) => setIndividualLibrary(e.target.value as string)}
+                            onChange={(e) => setLibrary(e.target.value as string)}
                             options={[
                                 { id: "All libraries", name: "All libraries" },
                                 ...(libraryLocations?.filter((loc) => loc.status)
