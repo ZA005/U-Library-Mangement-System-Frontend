@@ -3,18 +3,21 @@ import { useOutletContext } from "react-router-dom";
 import { IconButton, Container, Box, Card, CardContent, Typography } from "@mui/material";
 import { PageTitle, ECard } from "../../components";
 import { useFetchUser } from "../../components/Sections/AccountOverview/useFetchUser";
+import { useUploadUsers } from "./useUploadUsers";
+import { useSnackbarContext } from "../../contexts/SnackbarContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { Menu } from "lucide-react";
-import { Download, History, BookOpen, Bookmark, Lock } from "lucide-react";
+import { useCSVParser } from "../../hooks/CSVParse/useCSVParser";
+import { Download, History, Lock, Upload, Menu } from "lucide-react";
 import { PROTECTED_ROUTES } from "../../config/routeConfig";
 import html2canvas from "html2canvas";
 import NewPassword from "../../components/Modal/ForgotPassword/NewPassword";
 
 const AccountOverview: React.FC = () => {
-    const { id } = useAuth();
+    const { id, role } = useAuth();
     const { data: userData } = useFetchUser(id!);
     const libraryCardRef = useRef<HTMLDivElement>(null);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const showSnackbar = useSnackbarContext();
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { setHeaderButtons, setTitle, setSidebarOpen } = useOutletContext<{
@@ -26,7 +29,7 @@ const AccountOverview: React.FC = () => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
-        setTitle("Oversee Overdues - Library Management System");
+        setTitle("Account Management - Library Management System");
         setHeaderButtons(
             <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)}>
                 <Menu color="#d32f2f" />
@@ -64,13 +67,45 @@ const AccountOverview: React.FC = () => {
         }
     };
 
+    const { uploadUsers } = useUploadUsers()
+    const { isLoading, validateAndParseCSV } = useCSVParser();
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            await validateAndParseCSV(file, 'users', (parsedData) => {
+                uploadUsers(parsedData, {
+                    onSuccess: () => {
+                        showSnackbar("CSV Parsed Successfully!", "success");
+                    },
+                    onError: (error) => showSnackbar(`${error}`, "error"),
+                })
+            });
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setIsUploading(false);
+            (event.target as HTMLInputElement).value = "";
+        }
+    };
 
     return (
         <>
-            <PageTitle title="Account Overview" />
+            <PageTitle title="Account Management" />
             {userData && (
                 <Container maxWidth="lg" sx={{ padding: "0 !important" }}>
-                    <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={4} alignItems="center" justifyContent="space-between" marginBottom="25px">
+                    <Box
+                        display="flex"
+                        flexDirection={{ xs: "column", md: "row" }}
+                        gap={4}
+                        alignItems="center"
+                        justifyContent="space-between"
+                        marginBottom="25px"
+                    >
                         {/* ECard */}
                         <Box
                             ref={libraryCardRef}
@@ -78,7 +113,7 @@ const AccountOverview: React.FC = () => {
                                 display: "flex",
                                 justifyContent: {
                                     xs: "center",
-                                    md: "flex-start"
+                                    md: "flex-start",
                                 },
                             }}
                         >
@@ -104,33 +139,32 @@ const AccountOverview: React.FC = () => {
                                     title: "Download QR Code",
                                     description: "Download your unique QR code.",
                                     icon: Download,
-                                    action: handleDownloadQRCode
+                                    action: handleDownloadQRCode,
                                 },
                                 {
                                     title: "View Transaction History",
                                     description: "See your transaction history.",
                                     icon: History,
-                                    path: PROTECTED_ROUTES.INDIVIDUAL_HISTORY.replace(":user_id", id!)
-                                },
-                                {
-                                    title: "Borrow Book",
-                                    description: "Borrow books from the library.",
-                                    icon: BookOpen,
-                                    path: PROTECTED_ROUTES.BROWSEALLBOOKS
-                                },
-                                {
-                                    title: "Reserve Book",
-                                    description: "Reserve books for later pickup.",
-                                    icon: Bookmark,
-                                    path: PROTECTED_ROUTES.BROWSEALLBOOKS
+                                    path: PROTECTED_ROUTES.INDIVIDUAL_HISTORY.replace(":user_id", id!),
                                 },
                                 {
                                     title: "Change Password",
                                     description: "Update your account password.",
                                     icon: Lock,
-                                    action: () => setShowPasswordModal(true)
-                                }
-
+                                    action: () => setShowPasswordModal(true),
+                                },
+                                ...(role === "LIBRARYDIRECTOR"
+                                    ? [
+                                        {
+                                            title: "Upload Users",
+                                            description: "Upload users to the database.",
+                                            icon: Upload,
+                                            action: () => {
+                                                document.getElementById("csvFileInput")?.click();
+                                            },
+                                        },
+                                    ]
+                                    : []),
                             ].map((item, index) => (
                                 <Card
                                     key={index}
@@ -176,7 +210,13 @@ const AccountOverview: React.FC = () => {
                     </Box>
                 </Container>
             )}
-
+            <input
+                id="csvFileInput"
+                type="file"
+                accept=".csv"
+                style={{ display: "none" }}
+                onChange={handleFileUpload}
+            />
             {/* Password Modal */}
             {showPasswordModal && (
                 <NewPassword
@@ -186,6 +226,8 @@ const AccountOverview: React.FC = () => {
                     userId={id!}
                 />
             )}
+
+
         </>
     );
 };
