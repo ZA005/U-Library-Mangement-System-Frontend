@@ -165,7 +165,7 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
 
             {/* OTP Modal */}
             {otpModalOpen && userData && (
-                <ConfirmOTP open={otpModalOpen} onClose={handleOtpModalClose} userData={userData} />
+                <ConfirmOTP open={otpModalOpen} onClose={handleOtpModalClose} userData={userData} setUserData={setUserData} />
             )}
         </>
     );

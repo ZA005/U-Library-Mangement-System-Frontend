@@ -28,7 +28,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ open, onClose }) => {
         setError(null);
 
         if (!userId) {
-            setError("User ID is required");
+            setError("UNC ID number is required");
             return;
         }
 
@@ -56,7 +56,6 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ open, onClose }) => {
 
     const handleOtpModalClose = () => {
         setOtpModalOpen(false);
-        setShowPasswordModal(true);
     };
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +67,12 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ open, onClose }) => {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
+    const handleOtpSuccess = () => {
+        setOtpModalOpen(false);
+        setShowPasswordModal(true);
+    };
 
+    /////////////////////////////////////////////////////////////////////////////////////
 
 
     return (
@@ -192,7 +196,9 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ open, onClose }) => {
 
             {/* OTP Modal */}
             {otpModalOpen && userData && (
-                <ConfirmOTP open={otpModalOpen} onClose={handleOtpModalClose} userData={userData} isPasswordReset={true} onSuccessVerifyOTP={handleOtpModalClose} />
+                <ConfirmOTP open={otpModalOpen} onClose={handleOtpModalClose}
+                    userData={userData} isPasswordReset={true}
+                    onSuccessVerifyOTP={handleOtpSuccess} setUserData={setUserData} />
             )}
 
             {/* Password Modal */}
@@ -200,8 +206,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ open, onClose }) => {
                 <NewPassword
                     open={showPasswordModal}
                     onClose={() => setShowPasswordModal(false)}
-                    userId={userData?.id || ""}
-                />
+                    userId={userData?.id || ""} mode={'reset'} />
             )}
         </>
     );
