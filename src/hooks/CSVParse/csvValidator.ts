@@ -6,7 +6,7 @@ const HEADERS_MAP: Record<string, string[]> = {
     ],
     department: ["dept_id", "dept_name", "dept_code"],
     course: ["course_id", "curr_id", "course_code", "course_name", "year_level", "sem"],
-    curriculum: ["curr_id", "program_id", "revision_no", "effectivity_sem", "effectivity_sy", "status"],
+    curriculum: ["curr_id", "program_id", "revision_no", "effectivity_sy", "status"],
     program: ["program_id", "dept_id", "code", "description", "status"],
 };
 
