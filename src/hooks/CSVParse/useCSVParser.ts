@@ -20,6 +20,7 @@ export const useCSVParser = () => {
 
         try {
             const parsedData = await parseCSVFile(file);
+            console.log(parsedData)
             const validationResult = validateCSVHeaders(type, parsedData);
 
             console.log(parsedData)
