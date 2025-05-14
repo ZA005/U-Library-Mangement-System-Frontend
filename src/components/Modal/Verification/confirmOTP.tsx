@@ -1,30 +1,39 @@
 import React, { useState, useRef } from "react";
 import { useNavigate, generatePath } from "react-router-dom";
 import { GENERAL_ROUTES } from "../../../config/routeConfig";
-import { Modal, Box, Typography, Button, TextField } from "@mui/material";
+import { Modal, Box, Typography, Button, TextField, CircularProgress } from "@mui/material";
 import { BadgeCheck } from "lucide-react";
 import { UserData } from "../../../types";
 import { useConfirmOTP } from "./useConfirmOTP";
+import { useSendOTP } from "./useSendOTP";
+import { useSendResetPasswordOTP } from "../ForgotPassword/useSendResetPasswordOTP";
+import { useSnackbarContext } from "../../../contexts/SnackbarContext";
 
 interface VerifyOtpProps {
     open: boolean;
     onClose: () => void;
     userData: UserData;
+    setUserData: (data: UserData) => void;
     isPasswordReset?: boolean;
     onSuccessVerifyOTP?: () => void;
 }
 
-const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData, isPasswordReset, onSuccessVerifyOTP }) => {
+const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData, setUserData, isPasswordReset, onSuccessVerifyOTP }) => {
     /////////////////////////////////////////////////////////////////////////////////////
 
     const navigate = useNavigate();
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const [resendError, setResendError] = useState<string | null>(null);
+    const [isResending, setIsResending] = useState(false);
 
+    const showSnackbar = useSnackbarContext();
 
     /////////////////////////////////////////////////////////////////////////////////////
 
     const { confirmOTP, isError, error } = useConfirmOTP();
+    const { sendOtp } = useSendOTP();
+    const { sendOTPResetPassword } = useSendResetPasswordOTP();
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +59,27 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData, isPassw
     /////////////////////////////////////////////////////////////////////////////////////
 
     const handleResend = () => {
-        console.log("Resend OTP triggered");
+        setResendError(null);
+        setIsResending(true);
+
+        const sendFunction = isPasswordReset ? sendOTPResetPassword : sendOtp;
+        const isActivation = !isPasswordReset;
+        sendFunction(
+            { userId: userData.id, isActivation },
+            {
+                onSuccess: (data) => {
+                    setIsResending(false);
+                    setOtp(["", "", "", "", "", ""]);
+                    setUserData(data);
+                    showSnackbar("OTP resent successfully! Check your email.", "success");
+                },
+                onError: (err) => {
+                    setIsResending(false);
+                    setResendError(err.message || "Failed to resend OTP. Please try again.");
+                    showSnackbar(resendError, "error");
+                },
+            }
+        );
     };
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -178,7 +207,7 @@ const ConfirmOTP: React.FC<VerifyOtpProps> = ({ open, onClose, userData, isPassw
                             style={{ cursor: "pointer", color: "#d32f2f", textDecoration: "underline" }}
                             onClick={handleResend}
                         >
-                            Resend
+                            {isResending ? <CircularProgress size={16} color="inherit" /> : "Resend"}
                         </span>
                     </Typography>
                 </Box>
