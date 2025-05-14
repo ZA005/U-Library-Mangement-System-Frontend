@@ -121,10 +121,15 @@ const VerifyUser: React.FC<VerifyUserModalProps> = ({ open, onClose }) => {
                                 value={userId}
                                 onChange={(e) => {
                                     const input = e.target.value;
-                                    // Allow only digits and enforce the "XX-XXXXX" pattern
-                                    const formattedInput = input.replace(/[^\d-]/g, "").slice(0, 8);
-                                    if (/^\d{0,2}(-\d{0,5})?$/.test(formattedInput)) {
-                                        setUserId(formattedInput);
+                                    // Remove all non-digit and non-dash characters
+                                    const sanitized = input.replace(/[^\d-]/g, "");
+
+                                    // Allow either 'XX-XXXXX' or 'XXXXXXXX' (both max 8 characters total)
+                                    if (
+                                        /^\d{0,2}-?\d{0,5}$/.test(sanitized) || // Matches student ID pattern
+                                        /^\d{0,8}$/.test(sanitized)             // Matches employee ID pattern
+                                    ) {
+                                        setUserId(sanitized);
                                     }
                                 }}
                                 required
