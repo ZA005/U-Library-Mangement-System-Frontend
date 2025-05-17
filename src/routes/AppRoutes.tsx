@@ -19,6 +19,7 @@ const AppRoutes = () => {
       case "LIBRARIAN":
       case "FACULTY":
       case "PROGRAMHEAD":
+      case "DEAN":
       case "LIBRARYDIRECTOR":
         return <Navigate to={PROTECTED_ROUTES.BROWSE} replace />;
       default:

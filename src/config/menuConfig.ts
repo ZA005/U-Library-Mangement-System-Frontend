@@ -89,6 +89,17 @@ export const menuItems = {
         },
         { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
     ],
+    DEAN: [
+        {
+            label: "Curriculum",
+            children: [
+                { label: "Browse", path: PROTECTED_ROUTES.CURRICULUM_BROWSE },
+                { label: "Book Referencing", path: PROTECTED_ROUTES.BOOK_REFERENCING },
+            ],
+            icon: CurriculumIcon,
+        },
+        { label: "Account Management", path: PROTECTED_ROUTES.ACCOUNT_OVERVIEW, icon: UserIcon },
+    ],
     FACULTY: [
         {
             label: "Curriculum",
