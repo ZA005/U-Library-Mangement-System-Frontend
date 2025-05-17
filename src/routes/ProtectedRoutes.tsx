@@ -8,21 +8,21 @@ const ProtectedRoutes = () => {
         <Routes>
             <Route
                 path={PROTECTED_ROUTES.BROWSE}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                     <Pages.Browse />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.NEWLYACQUIRED}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                     <Pages.NewlyAcquiredBooks />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.BROWSEALLBOOKS}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                     <Pages.BrowseAllBooks />
                 </PrivateRoute>}
             />
@@ -38,14 +38,14 @@ const ProtectedRoutes = () => {
 
             <Route
                 path={PROTECTED_ROUTES.BOOKINFORMATION}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                     <Pages.BookInformation />
                 </PrivateRoute>}
             />
 
             <Route
                 path={PROTECTED_ROUTES.ADVANCESEARCH}
-                element={<PrivateRoute allowedRoles={["STUDENT", "FACULTY", "PROGRAMHEAD", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "FACULTY", "PROGRAMHEAD", "DEAN", "LIBRARIAN", "LIBRARYDIRECTOR"]}>
                     <Pages.AdvanceSearch />
                 </PrivateRoute>}
             />
@@ -135,7 +135,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.CURRICULUM_BROWSE}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "STUDENT", "PROGRAMHEAD", "FACULTY"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "STUDENT", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                         <Pages.CurriculumBrowse />
                     </PrivateRoute>
                 }
@@ -144,7 +144,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.CURRICULUM_PROGRAM}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "STUDENT", "PROGRAMHEAD", "FACULTY"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "STUDENT", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                         <Pages.CurriculumProgram />
                     </PrivateRoute>
                 }
@@ -153,7 +153,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.BOOK_REFERENCING}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "DEAN"]}>
                         <Pages.BookReferencing />
                     </PrivateRoute>
                 }
@@ -198,7 +198,7 @@ const ProtectedRoutes = () => {
             <Route
                 path={PROTECTED_ROUTES.ACCOUNT_OVERVIEW}
                 element={
-                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "STUDENT", "PROGRAMHEAD", "FACULTY"]}>
+                    <PrivateRoute allowedRoles={["LIBRARIAN", "LIBRARYDIRECTOR", "STUDENT", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                         <Pages.AccountOverview />
                     </PrivateRoute>
                 }
@@ -206,7 +206,7 @@ const ProtectedRoutes = () => {
 
             <Route
                 path={PROTECTED_ROUTES.INDIVIDUAL_HISTORY}
-                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "FACULTY"]}>
+                element={<PrivateRoute allowedRoles={["STUDENT", "LIBRARIAN", "LIBRARYDIRECTOR", "PROGRAMHEAD", "DEAN", "FACULTY"]}>
                     <Pages.IndividualHistory />
                 </PrivateRoute>
                 }
