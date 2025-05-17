@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { useSnackbarContext } from "../../../contexts/SnackbarContext";
@@ -107,6 +107,8 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
         });
     };
 
+    const isBorrowDisabled = isBorrowPending || book?.bookCatalog?.copies === 0;
+
     return (
         <>
             <Box display="flex" gap={2} mt={1} mb={2}>
@@ -124,7 +126,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ role, books, acquisitionD
                             variant="contained"
                             sx={{ backgroundColor: "#d32f2f" }}
                             onClick={handleOpenBorrowDialog}
-                            disabled={isBorrowPending}
+                            disabled={isBorrowDisabled}
                         >
                             Borrow
                         </Button>
